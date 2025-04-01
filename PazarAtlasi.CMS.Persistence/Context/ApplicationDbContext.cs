@@ -14,6 +14,8 @@ namespace PazarAtlasi.CMS.Persistence.Context
         {
         }
 
+        public DbSet<WebUrl> WebUrls { get; set; }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var now = DateTime.UtcNow;
