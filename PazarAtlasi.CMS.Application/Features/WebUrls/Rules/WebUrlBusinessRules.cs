@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -32,24 +33,24 @@ namespace PazarAtlasi.CMS.Application.Features.WebUrls.Rules
                 webUrls = webUrls.Where(w => w.Id != excludeId.Value).ToList();
 
             if (webUrls.Any())
-                throw new ValidationException(WebUrlMessages.SlugAlreadyExists);
+                throw new BusinessRuleException(WebUrlMessages.SlugAlreadyExists);
         }
 
         public void SlugMustBeValid(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug))
-                throw new ValidationException(WebUrlMessages.SlugRequired);
+                throw new BusinessRuleException(WebUrlMessages.SlugRequired);
 
             // Slug should contain only lowercase letters, numbers, and hyphens
             var regex = new Regex("^[a-z0-9-]+$");
             if (!regex.IsMatch(slug))
-                throw new ValidationException(WebUrlMessages.InvalidSlugFormat);
+                throw new BusinessRuleException(WebUrlMessages.InvalidSlugFormat);
         }
 
         public void TargetUrlMustBeValid(string targetUrl)
         {
             if (string.IsNullOrWhiteSpace(targetUrl))
-                throw new ValidationException(WebUrlMessages.TargetUrlRequired);
+                throw new BusinessRuleException(WebUrlMessages.TargetUrlRequired);
         }
     }
 }
