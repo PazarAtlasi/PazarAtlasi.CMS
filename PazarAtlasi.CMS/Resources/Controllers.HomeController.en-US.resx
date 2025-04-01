@@ -151,4 +151,7 @@
   <data name="Recent Activities" xml:space="preserve">
     <value>Recent Activities</value>
   </data>
+  <data name="WebUrl Management" xml:space="preserve">
+    <value>WebUrl Management</value>
+  </data>
 </root> 

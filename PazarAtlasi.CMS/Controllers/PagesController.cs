@@ -11,6 +11,12 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         [HttpGet]
+        public IActionResult WebUrl()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Editor(int id = 0)
         {
             // In a real application, you would load the page data from a database

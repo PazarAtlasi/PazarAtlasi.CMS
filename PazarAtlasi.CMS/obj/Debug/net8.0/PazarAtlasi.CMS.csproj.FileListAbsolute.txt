@@ -37,3 +37,4 @@ C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS\obj\Debug\net8.0\en-
 C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS\obj\Debug\net8.0\en-US\PazarAtlasi.CMS.resources.dll
 C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS\obj\Debug\net8.0\tr-TR\PazarAtlasi.CMS.resources.cs
 C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS\obj\Debug\net8.0\tr-TR\PazarAtlasi.CMS.resources.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\pazaratlasi.cms\obj\Debug\net8.0\PazarAtlasi.CMS.sourcelink.json

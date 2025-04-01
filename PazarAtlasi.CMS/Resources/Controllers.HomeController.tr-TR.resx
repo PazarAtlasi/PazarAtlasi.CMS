@@ -151,4 +151,7 @@
   <data name="Recent Activities" xml:space="preserve">
     <value>Son Aktiviteler</value>
   </data>
+  <data name="WebUrl Management" xml:space="preserve">
+    <value>URL Yönetimi</value>
+  </data>
 </root> 

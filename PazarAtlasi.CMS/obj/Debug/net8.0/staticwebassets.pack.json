@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\js\\menuData.js",
+      "PackagePath": "staticwebassets\\js\\menuData.js"
+    },
+    {
+      "Id": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\js\\menuEditor.js",
+      "PackagePath": "staticwebassets\\js\\menuEditor.js"
+    },
+    {
       "Id": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
