@@ -1,0 +1,403 @@
+﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// for details on configuring this project to bundle and minify static web assets.
+
+// DOM elements
+const sidebar = document.getElementById("sidebar");
+const mainContent = document.querySelector(".main-content");
+const menuBtn = document.getElementById("menu-btn");
+const submenuItems = document.querySelectorAll(
+  ".sidebar-item.has-submenu"
+);
+const searchInput = document.querySelector(".search-box input");
+const dropdownMenus = document.querySelectorAll(".dropdown");
+const profileDropdown = document.querySelector(".profile-dropdown");
+const profileButton = document.querySelector(
+  ".profile-dropdown .profile-link"
+);
+const profileMenu = document.querySelector(
+  ".profile-dropdown .dropdown-menu"
+);
+const languageDropdown = document.querySelector(".language-dropdown");
+const languageButton = document.querySelector(
+  ".language-dropdown .language-link"
+);
+const languageMenu = document.querySelector(
+  ".language-dropdown .language-menu"
+);
+
+// Set initial state on page load
+if (mainContent) {
+  mainContent.style.marginLeft = "var(--sidebar-collapsed-width)";
+  document.documentElement.style.setProperty(
+    "--sidebar-width",
+    "var(--sidebar-collapsed-width)"
+  );
+}
+
+// Function to update sidebar state and appearance
+function updateSidebarState(isCollapsed) {
+  if (!sidebar || !mainContent) return;
+
+  if (isCollapsed) {
+    sidebar.classList.add("collapsed");
+    mainContent.style.marginLeft = "var(--sidebar-collapsed-width)";
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      "var(--sidebar-collapsed-width)"
+    );
+  } else {
+    sidebar.classList.remove("collapsed");
+    mainContent.style.marginLeft = "250px";
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      "250px"
+    );
+  }
+
+  // Save state to localStorage
+  localStorage.setItem("sidebar-collapsed", isCollapsed);
+}
+
+// Force sidebar to be collapsed by default - executed immediately
+if (sidebar && mainContent) {
+  // Default to collapsed
+  updateSidebarState(true);
+}
+
+// Toggle sidebar on menu button click
+if (menuBtn) {
+  menuBtn.addEventListener("click", function () {
+    console.log("Menu button clicked");
+
+    // Get current state
+    const isCurrentlyCollapsed =
+      sidebar.classList.contains("collapsed");
+
+    // Toggle to the opposite state
+    updateSidebarState(!isCurrentlyCollapsed);
+
+    // Explicitly save the state for hover control
+    localStorage.setItem("sidebar-collapsed", !isCurrentlyCollapsed);
+
+    // Force DOM reflow to ensure styles are applied
+    sidebar.offsetHeight;
+  });
+}
+
+// Toggle submenu on sidebar item click
+submenuItems.forEach((item) => {
+  const link = item.querySelector(".sidebar-link");
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    // Close any other open submenus
+    if (!item.classList.contains("active")) {
+      submenuItems.forEach((i) => {
+        if (i !== item && i.classList.contains("active")) {
+          i.classList.remove("active");
+          const submenu = i.querySelector(".sidebar-submenu");
+          submenu.style.maxHeight = "0px";
+        }
+      });
+    }
+
+    // Toggle active class on clicked item
+    item.classList.toggle("active");
+
+    // Toggle submenu height
+    const submenu = item.querySelector(".sidebar-submenu");
+    if (item.classList.contains("active")) {
+      submenu.style.maxHeight = submenu.scrollHeight + "px";
+    } else {
+      submenu.style.maxHeight = "0px";
+    }
+  });
+});
+
+// Initialize dropdown menus
+dropdownMenus.forEach((dropdown) => {
+  const button = dropdown.querySelector("button");
+  const menu = dropdown.querySelector("ul");
+
+  if (button && menu) {
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menu.classList.toggle("hidden");
+    });
+
+    // Close when clicking outside
+    document.addEventListener("click", () => {
+      menu.classList.add("hidden");
+    });
+
+    // Prevent closing when clicking the menu itself
+    menu.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+});
+
+// Profile dropdown toggle with fix for hover issue
+if (profileButton && profileMenu) {
+  // Click event for toggling dropdown
+  profileButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    profileMenu.classList.toggle("hidden");
+
+    // Close language menu when opening profile menu
+    if (languageMenu) {
+      languageMenu.classList.add("hidden");
+    }
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", () => {
+    profileMenu.classList.add("hidden");
+  });
+
+  // Prevent menu from closing when clicking inside it
+  profileMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  // Prevent mouseleave from closing the menu
+  const handleMenuInteraction = () => {
+    profileMenu.classList.contains("hidden")
+      ? null
+      : profileMenu.classList.remove("hidden");
+  };
+
+  profileDropdown.addEventListener(
+    "mouseenter",
+    handleMenuInteraction
+  );
+  profileMenu.addEventListener("mouseenter", handleMenuInteraction);
+}
+
+// Language dropdown toggle
+if (languageButton && languageMenu) {
+  // Click event for toggling dropdown
+  languageButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    languageMenu.classList.toggle("hidden");
+
+    // Close profile menu when opening language menu
+    if (profileMenu) {
+      profileMenu.classList.add("hidden");
+    }
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", () => {
+    languageMenu.classList.add("hidden");
+  });
+
+  // Prevent closing when clicking the menu itself
+  languageMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+}
+
+// Notification icons animation
+const notificationIcons = document.querySelectorAll(
+  ".notification-icon"
+);
+notificationIcons.forEach((icon) => {
+  icon.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // Add pulse animation class
+    icon.classList.add("animate-pulse");
+
+    // Remove after animation completes
+    setTimeout(() => {
+      icon.classList.remove("animate-pulse");
+    }, 1000);
+  });
+});
+
+// Auto-collapse sidebar on small screens
+function checkScreenSize() {
+  if (!sidebar || !mainContent) return;
+
+  if (window.innerWidth <= 992) {
+    // Only collapse on small screens if it's not already opened by user
+    if (!localStorage.getItem("sidebar-opened-by-user")) {
+      updateSidebarState(true);
+    }
+  } else {
+    // On desktop, respect the last state set by the user
+    const savedState = localStorage.getItem("sidebar-collapsed");
+    if (savedState !== null) {
+      updateSidebarState(savedState === "true");
+    } else {
+      // Default to collapsed if no saved state
+      updateSidebarState(true);
+    }
+  }
+}
+
+// Add smooth transitions to card elements
+function animateCards() {
+  // Add staggered animation to cards
+  const cards = document.querySelectorAll(".dashboard .rounded-xl");
+
+  cards.forEach((card, index) => {
+    card.style.opacity = "0";
+    card.style.transform = "translateY(20px)";
+
+    setTimeout(() => {
+      card.style.transition = "all 0.4s ease";
+      card.style.opacity = "1";
+      card.style.transform = "translateY(0)";
+    }, 100 + index * 50);
+  });
+}
+
+// Set active menu item based on current page
+function setActiveMenuItem() {
+  const currentPath = window.location.pathname;
+  const menuLinks = document.querySelectorAll(".sidebar-link");
+
+  menuLinks.forEach((link) => {
+    const href = link.getAttribute("href");
+    if (
+      href &&
+      href !== "#" &&
+      (href === currentPath || currentPath.startsWith(href))
+    ) {
+      const item = link.closest(".sidebar-item");
+      item.classList.add("active");
+
+      // If it's a submenu item, expand parent menu
+      const parentSubmenu = link.closest(".sidebar-submenu");
+      if (parentSubmenu) {
+        const parentItem = parentSubmenu.closest(".sidebar-item");
+        parentItem.classList.add("active");
+        parentSubmenu.style.maxHeight =
+          parentSubmenu.scrollHeight + "px";
+      }
+    }
+  });
+}
+
+// Initialize
+document.addEventListener("DOMContentLoaded", function () {
+  // Check if there is a saved state
+  const savedState = localStorage.getItem("sidebar-collapsed");
+
+  // Always start in collapsed mode if there's no saved state
+  if (savedState === null) {
+    updateSidebarState(true);
+  } else {
+    // Otherwise respect the saved state
+    updateSidebarState(savedState === "true");
+  }
+
+  // Initialize components
+  animateCards();
+  setActiveMenuItem();
+  checkScreenSize();
+
+  // Check window resize
+  window.addEventListener("resize", checkScreenSize);
+});
+
+// Focus effect on search input
+if (searchInput) {
+  searchInput.addEventListener("focus", () => {
+    searchInput.parentElement.classList.add("focused");
+  });
+
+  searchInput.addEventListener("blur", () => {
+    searchInput.parentElement.classList.remove("focused");
+  });
+}
+
+// Add CSS to support animations and hover behavior
+const style = document.createElement("style");
+style.textContent = `
+.icon-pulse {
+    animation: iconPulse 0.6s ease;
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.search-box.focused input {
+    background-color: white;
+    box-shadow: 0 0 0 2px rgba(91, 33, 182, 0.2);
+}
+
+.profile-dropdown .dropdown-menu {
+    pointer-events: auto;
+}
+
+.language-dropdown .language-menu {
+    pointer-events: auto;
+}
+
+/* Ensure element level styles for sidebar */
+#sidebar {
+    transition: width 0.3s ease;
+}
+
+#sidebar.collapsed {
+    width: var(--sidebar-collapsed-width) !important;
+}
+
+/* Special hover styles with high priority */
+#sidebar:hover {
+    width: 250px !important;
+}
+
+#sidebar:hover .sidebar-header h3,
+#sidebar:hover .sidebar-link span,
+#sidebar:hover .dropdown-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: opacity 0.1s ease-in !important;
+}
+
+/* Hide elements in collapsed state */
+.sidebar.collapsed .sidebar-header h3,
+.sidebar.collapsed .sidebar-link span,
+.sidebar.collapsed .dropdown-icon {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+`;
+document.head.appendChild(style);
+
+// Add event listener for hover on the sidebar
+if (sidebar) {
+  sidebar.addEventListener("mouseenter", function () {
+    // Force opacity on text elements
+    const textElements = sidebar.querySelectorAll(
+      ".sidebar-header h3, .sidebar-link span, .dropdown-icon"
+    );
+    textElements.forEach((el) => {
+      el.style.opacity = "1";
+      el.style.visibility = "visible";
+    });
+  });
+
+  sidebar.addEventListener("mouseleave", function () {
+    if (sidebar.classList.contains("collapsed")) {
+      // Hide text elements again when mouse leaves
+      const textElements = sidebar.querySelectorAll(
+        ".sidebar-header h3, .sidebar-link span, .dropdown-icon"
+      );
+      textElements.forEach((el) => {
+        el.style.opacity = "0";
+        el.style.visibility = "hidden";
+      });
+    }
+  });
+}

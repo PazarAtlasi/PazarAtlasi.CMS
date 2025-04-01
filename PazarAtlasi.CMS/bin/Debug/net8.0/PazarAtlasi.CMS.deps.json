@@ -1,0 +1,31 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "PazarAtlasi.CMS/1.0.0": {
+        "runtime": {
+          "PazarAtlasi.CMS.dll": {}
+        },
+        "resources": {
+          "en-US/PazarAtlasi.CMS.resources.dll": {
+            "locale": "en-US"
+          },
+          "tr-TR/PazarAtlasi.CMS.resources.dll": {
+            "locale": "tr-TR"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "PazarAtlasi.CMS/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
