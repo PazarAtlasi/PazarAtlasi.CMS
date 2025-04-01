@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "r0CvduM/X3oG4QXraQfqBPbVd/9SRQPpOqZisRic+as=",
+  "Hash": "+F7+KYXazvH7r/HYmKdLNLHERTuZsPHDLQONzXSUXMo=",
   "Source": "PazarAtlasi.CMS",
   "BasePath": "_content/PazarAtlasi.CMS",
   "Mode": "Default",
@@ -17,10 +17,10 @@
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\obj\\Debug\\net8.0\\scopedcss\\bundle\\PazarAtlasi.CMS.styles.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\obj\\Debug\\net8.0\\scopedcss\\bundle\\PazarAtlasi.CMS.styles.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
       "BasePath": "_content/PazarAtlasi.CMS",
       "RelativePath": "PazarAtlasi.CMS.styles.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\obj\\Debug\\net8.0\\scopedcss\\bundle\\PazarAtlasi.CMS.styles.css"
+      "OriginalItemSpec": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\obj\\Debug\\net8.0\\scopedcss\\bundle\\PazarAtlasi.CMS.styles.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\PazarAtlasi.CMS.bundle.scp.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\PazarAtlasi.CMS.bundle.scp.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
+      "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
       "BasePath": "_content/PazarAtlasi.CMS",
       "RelativePath": "PazarAtlasi.CMS.bundle.scp.css",
       "AssetKind": "All",
@@ -52,10 +52,10 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\PazarAtlasi.CMS.bundle.scp.css"
+      "OriginalItemSpec": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\PazarAtlasi.CMS.bundle.scp.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\css\\site.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\css\\site.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -74,7 +74,7 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\favicon.ico",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\favicon.ico",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -93,7 +93,7 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\js\\menuData.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\js\\menuData.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -112,7 +112,7 @@
       "OriginalItemSpec": "wwwroot\\js\\menuData.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\js\\menuEditor.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\js\\menuEditor.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -131,7 +131,7 @@
       "OriginalItemSpec": "wwwroot\\js\\menuEditor.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\js\\site.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\js\\site.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -150,7 +150,26 @@
       "OriginalItemSpec": "wwwroot\\js\\site.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\js\\weburl.js",
+      "SourceId": "PazarAtlasi.CMS",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
+      "BasePath": "_content/PazarAtlasi.CMS",
+      "RelativePath": "js/weburl.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\weburl.js"
+    },
+    {
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -169,7 +188,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -188,7 +207,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -207,7 +226,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -226,7 +245,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -245,7 +264,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -264,7 +283,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -283,7 +302,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -302,7 +321,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -321,7 +340,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -340,7 +359,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -359,7 +378,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -378,7 +397,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -397,7 +416,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -416,7 +435,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -435,7 +454,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -454,7 +473,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -473,7 +492,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -492,7 +511,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -511,7 +530,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -530,7 +549,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -549,7 +568,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -568,7 +587,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -587,7 +606,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -606,7 +625,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -625,7 +644,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -644,7 +663,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -663,7 +682,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -682,7 +701,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -701,7 +720,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -720,7 +739,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -739,7 +758,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -758,7 +777,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -777,7 +796,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -796,7 +815,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -815,7 +834,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -834,7 +853,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -853,7 +872,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -872,7 +891,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -891,7 +910,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -910,7 +929,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -929,7 +948,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -948,7 +967,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -967,7 +986,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -986,7 +1005,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\bootstrap\\LICENSE",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1005,7 +1024,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\bootstrap\\LICENSE"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1024,7 +1043,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1043,7 +1062,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1062,7 +1081,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1081,7 +1100,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1100,7 +1119,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1119,7 +1138,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1138,7 +1157,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1157,7 +1176,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\LICENSE.md"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery\\dist\\jquery.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1176,7 +1195,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1195,7 +1214,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery.min.js"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
@@ -1214,7 +1233,7 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
-      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "Identity": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\pazaratlasi.cms\\wwwroot\\lib\\jquery\\LICENSE.txt",
       "SourceId": "PazarAtlasi.CMS",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",

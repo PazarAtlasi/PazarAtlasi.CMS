@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PazarAtlasi.CMS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3f0d6d747b3d82ed9353f0190ed0947e24a7fa0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+166ce02916c0c2cfa81fc2e55370df98b521fbbd")]
 [assembly: System.Reflection.AssemblyProductAttribute("PazarAtlasi.CMS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PazarAtlasi.CMS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
