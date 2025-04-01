@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "Ecs2je+vC/J+j0l0n3QHbOsLD+kiy7oADFobWS5xeKsLn9q5fU+2HwPE8cVE2C4xBLXrq/A/zn+0pTv/9cJwbQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sezgi\\.nuget\\packages\\mediatr\\12.5.0\\mediatr.12.5.0.nupkg.sha512",
+    "C:\\Users\\sezgi\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\sezgi\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
