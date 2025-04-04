@@ -1117,10 +1117,7 @@
           "PazarAtlasi.CMS.Domain": "1.0.0"
         },
         "runtime": {
-          "PazarAtlasi.CMS.Application.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "PazarAtlasi.CMS.Application.dll": {}
         }
       },
       "PazarAtlasi.CMS.Domain/1.0.0": {
@@ -1128,10 +1125,7 @@
           "MediatR": "12.0.1"
         },
         "runtime": {
-          "PazarAtlasi.CMS.Domain.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "PazarAtlasi.CMS.Domain.dll": {}
         }
       },
       "PazarAtlasi.CMS.Infrastructure/1.0.0": {
@@ -1141,10 +1135,7 @@
           "PazarAtlasi.CMS.Application": "1.0.0"
         },
         "runtime": {
-          "PazarAtlasi.CMS.Infrastructure.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "PazarAtlasi.CMS.Infrastructure.dll": {}
         }
       },
       "PazarAtlasi.CMS.Persistence/1.0.0": {
@@ -1155,10 +1146,7 @@
           "PazarAtlasi.CMS.Application": "1.0.0"
         },
         "runtime": {
-          "PazarAtlasi.CMS.Persistence.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "PazarAtlasi.CMS.Persistence.dll": {}
         }
       }
     }

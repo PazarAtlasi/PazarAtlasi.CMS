@@ -17,157 +17,155 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = PazarAtlasi.CMS
 build_property.RootNamespace = PazarAtlasi.CMS
-build_property.ProjectDir = C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS\
+build_property.ProjectDir = C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS
+build_property.MSBuildProjectDirectory = C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS
 build_property._RazorSourceGeneratorDebug = 
-build_property.EffectiveAnalysisLevelStyle = 8.0
-build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Error.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Privacy.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/_ViewImports.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/_ViewStart.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Announcements/Create.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Announcements/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5ub3VuY2VtZW50c1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Announcements/Edit.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Announcements/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5ub3VuY2VtZW50c1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Announcements/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Announcements/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5ub3VuY2VtZW50c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Campaigns/Create.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Campaigns/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FtcGFpZ25zXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Campaigns/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Campaigns/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FtcGFpZ25zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Home/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/WebUrl.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/WebUrl.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnZXNcV2ViVXJsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_CategorizedEditor.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_CategorizedEditor.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnZXNcX0NhdGVnb3JpemVkRWRpdG9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_DropdownEditor.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_DropdownEditor.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnZXNcX0Ryb3Bkb3duRWRpdG9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_LinkEditor.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_LinkEditor.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnZXNcX0xpbmtFZGl0b3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_Navbar.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_Navbar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnZXNcX05hdmJhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_ServiceTabsEditor.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Pages/_ServiceTabsEditor.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFnZXNcX1NlcnZpY2VUYWJzRWRpdG9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Permissions/Create.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Permissions/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVybWlzc2lvbnNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Permissions/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Permissions/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVybWlzc2lvbnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Roles/Create.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Roles/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Roles/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Roles/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/Error.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_Layout.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_ViewImports.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WaWV3SW1wb3J0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlCreate.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlCreate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9XZWJVcmxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlDelete.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlDelete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9XZWJVcmxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlEdit.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlEdit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9XZWJVcmxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlList.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Shared/_WebUrlList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9XZWJVcmxMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Users/Create.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Users/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Users/Edit.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Users/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Users/Index.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/Users/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/_ViewImports.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/_ViewStart.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Ali Cem/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Shared/_Layout.cshtml]
+[C:/Users/sezgi/source/repos/PazarAtlasi.CMS/PazarAtlasi.CMS/Pages/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-gbaefcuwew
