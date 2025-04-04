@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\PazarAtlasi.CMS.props" />
-</Project>
