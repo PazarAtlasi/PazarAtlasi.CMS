@@ -11,3 +11,16 @@ C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAt
 C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\refint\PazarAtlasi.CMS.Domain.dll
 C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.pdb
 C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\ref\PazarAtlasi.CMS.Domain.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.deps.json
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.csproj.AssemblyReference.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.AssemblyInfoInputs.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.AssemblyInfo.cs
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.csproj.CoreCompileInputs.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.sourcelink.json
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\refint\PazarAtlasi.CMS.Domain.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\PazarAtlasi.CMS.Domain.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Domain\obj\Debug\net8.0\ref\PazarAtlasi.CMS.Domain.dll

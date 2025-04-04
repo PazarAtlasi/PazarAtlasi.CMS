@@ -14,3 +14,19 @@ C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\Pa
 C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\refint\PazarAtlasi.CMS.Application.dll
 C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.pdb
 C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\ref\PazarAtlasi.CMS.Application.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\bin\Debug\net8.0\PazarAtlasi.CMS.Application.deps.json
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\bin\Debug\net8.0\PazarAtlasi.CMS.Application.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\bin\Debug\net8.0\PazarAtlasi.CMS.Application.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.csproj.AssemblyReference.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.AssemblyInfoInputs.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.AssemblyInfo.cs
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.csproj.CoreCompileInputs.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.sourcelink.json
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.csproj.CopyComplete
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\refint\PazarAtlasi.CMS.Application.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\PazarAtlasi.CMS.Application.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Application\obj\Debug\net8.0\ref\PazarAtlasi.CMS.Application.dll
