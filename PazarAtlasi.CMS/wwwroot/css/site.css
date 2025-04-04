@@ -1,0 +1,809 @@
+:root {
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
+  --header-height: 60px;
+  --primary-color: #5b21b6;
+  --primary-hover: #7c3aed;
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --info-color: #0ea5e9;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --light-color: #f8fafc;
+  --dark-color: #334155;
+  --sidebar-bg: #1e293b;
+  --sidebar-color: #f8fafc;
+  --sidebar-hover-bg: #334155;
+  --submenu-bg: #0f172a;
+  --header-bg: #fff;
+  --body-bg: #f1f5f9;
+  --card-bg: #fff;
+  --border-radius: 0.5rem;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition-speed: 0.3s;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--dark-color);
+  background-color: var(--body-bg);
+}
+
+/* Admin container */
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--sidebar-bg);
+  color: white;
+  z-index: 1000;
+  transition: width 0.5s ease !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: var(--sidebar-bg);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--sidebar-hover-bg);
+  border-radius: 20px;
+}
+
+/* Important: Set width with !important to override inline styles */
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed-width) !important;
+}
+
+/* Hover state for sidebar - pure CSS solution */
+#sidebar:hover {
+  width: 250px !important;
+  z-index: 2000;
+}
+
+/* Show text when hovering - direct selector with !important */
+#sidebar:hover .sidebar-header h3,
+#sidebar:hover .sidebar-link span,
+#sidebar:hover .dropdown-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: none !important;
+}
+
+/* Move content when hovering sidebar */
+#sidebar:hover + .main-content {
+  margin-left: 250px !important;
+}
+
+/* Critical: Hide text in collapsed state */
+.sidebar.collapsed .sidebar-header h3,
+.sidebar.collapsed .sidebar-link span,
+.sidebar.collapsed .dropdown-icon {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show text in hover or expanded state */
+.sidebar.sidebar-hover .sidebar-header h3,
+.sidebar.sidebar-hover .sidebar-link span,
+.sidebar.sidebar-hover .dropdown-icon,
+.sidebar:not(.collapsed) .sidebar-header h3,
+.sidebar:not(.collapsed) .sidebar-link span,
+.sidebar:not(.collapsed) .dropdown-icon {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0s;
+  transition-delay: 0.2s;
+}
+
+.sidebar-header {
+  padding: 1.25rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--primary-hover)
+  );
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-menu {
+  padding: 0.75rem 0;
+  list-style: none;
+  margin: 0;
+}
+
+.sidebar-item {
+  position: relative;
+  margin: 0.25rem 0.75rem;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.sidebar-item.active > .sidebar-link {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  border-radius: var(--border-radius);
+}
+
+.sidebar-link:hover {
+  background-color: var(--sidebar-hover-bg);
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar-link i {
+  width: 20px;
+  margin-right: 12px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.sidebar-link span {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.dropdown-icon {
+  transition: transform var(--transition-speed) ease;
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.sidebar-item.active > .sidebar-link .dropdown-icon,
+.sidebar-item:hover > .sidebar-link .dropdown-icon {
+  opacity: 1;
+}
+
+.sidebar-item.active > .sidebar-link .dropdown-icon {
+  transform: rotate(90deg);
+}
+
+.sidebar-submenu {
+  max-height: 0;
+  overflow: hidden;
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  background-color: var(--submenu-bg);
+  transition: max-height var(--transition-speed) ease;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.sidebar-item.active > .sidebar-submenu,
+.sidebar-item:hover > .sidebar-submenu {
+  max-height: 1000px;
+}
+
+.sidebar-submenu li a {
+  display: flex;
+  align-items: center;
+  padding: 0.625rem 1rem 0.625rem 2.7rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  font-size: 0.9rem;
+}
+
+.sidebar-submenu li a:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-submenu li a i {
+  width: 18px;
+  margin-right: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-collapsed-width);
+  transition: margin-left 0.5s ease !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--body-bg);
+}
+
+/* Adjust main content based on sidebar state */
+.sidebar:not(.collapsed) + .main-content,
+.sidebar.sidebar-hover + .main-content,
+.sidebar:hover + .main-content {
+  margin-left: var(--sidebar-width) !important;
+}
+
+/* Header */
+.header {
+  height: var(--header-height);
+  background-color: var(--header-bg);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.menu-toggle button {
+  background: none;
+  border: none;
+  color: var(--dark-color);
+  font-size: 1.25rem;
+  cursor: pointer;
+  outline: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.menu-toggle button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon {
+  position: relative;
+  margin-right: 1.5rem;
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.notification-icon:hover {
+  color: var(--primary-color);
+}
+
+.notification-icon .badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px white;
+}
+
+.profile-dropdown {
+  position: relative;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  color: var(--dark-color);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s;
+}
+
+.profile-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.profile-photo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 0.75rem;
+  border: 2px solid #e2e8f0;
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  margin-right: 0.5rem;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--dark-color);
+}
+
+.profile-role {
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+  font-weight: 400;
+}
+
+.profile-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 200px;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem 0;
+  z-index: 1000;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.profile-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.profile-dropdown .dropdown-menu li a {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  color: var(--dark-color);
+  text-decoration: none;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.profile-dropdown .dropdown-menu li a:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--primary-color);
+}
+
+.profile-dropdown .dropdown-menu li a i {
+  width: 20px;
+  margin-right: 10px;
+  text-align: center;
+  color: var(--secondary-color);
+}
+
+/* Dropdown Divider */
+.dropdown-divider {
+  height: 0;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.profile-dropdown .dropdown-menu li a.text-danger {
+  color: var(--danger-color);
+}
+
+.profile-dropdown .dropdown-menu li a.text-danger:hover {
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Page Content */
+.page-content {
+  padding: 1.75rem;
+  flex: 1;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--light-color);
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--secondary-color);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Dashboard styles */
+.dashboard .card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  background: var(--card-bg);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+
+.dashboard .card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.dashboard .bg-primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  ) !important;
+}
+
+.dashboard .bg-success {
+  background: linear-gradient(
+    135deg,
+    var(--success-color),
+    #059669
+  ) !important;
+}
+
+.dashboard .bg-warning {
+  background: linear-gradient(
+    135deg,
+    var(--warning-color),
+    #d97706
+  ) !important;
+}
+
+.dashboard .bg-danger {
+  background: linear-gradient(
+    135deg,
+    var(--danger-color),
+    #dc2626
+  ) !important;
+}
+
+.dashboard .card-icon {
+  opacity: 0.5;
+}
+
+.dashboard .card-body {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.dashboard .card-body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: skewX(-15deg) translateX(60%);
+  z-index: -1;
+}
+
+.dashboard .activity-feed {
+  max-height: 330px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.dashboard .activity-feed::-webkit-scrollbar {
+  width: 5px;
+}
+
+.dashboard .activity-feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard .activity-feed::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+}
+
+.dashboard .activity-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
+}
+
+.dashboard .activity-item:hover {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+.dashboard .activity-item:last-child {
+  border-bottom: 0;
+}
+
+.dashboard .activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard .activity-content {
+  flex: 1;
+}
+
+.dashboard .activity-content p {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.dashboard .activity-time {
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+}
+
+.page-title-box {
+  margin-bottom: 1.75rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--dark-color);
+  position: relative;
+  display: inline-block;
+}
+
+.page-title:after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.25rem 1.5rem;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+/* Search Box */
+.search-container {
+  flex: 1;
+  max-width: 450px;
+  margin: 0 2rem;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+}
+
+.search-box input {
+  width: 100%;
+  height: 40px;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  border: none;
+  background-color: #f1f5f9;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.search-box input:focus {
+  background-color: white;
+  box-shadow: 0 0 0 2px rgba(91, 33, 182, 0.2);
+  outline: none;
+}
+
+.search-box i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .main-content.expanded {
+    margin-left: 0;
+  }
+
+  .header {
+    padding: 0 1rem;
+  }
+
+  .profile-name {
+    display: none;
+  }
+}
+
+@media (min-width: 993px) {
+  #sidebar:hover {
+    width: 250px !important;
+  }
+
+  #sidebar:hover .sidebar-header h3,
+  #sidebar:hover .sidebar-link span,
+  #sidebar:hover .dropdown-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+/* Custom CSS that's difficult to do with Tailwind */
+
+/* Sidebar transitions */
+.sidebar-item.active > .sidebar-submenu {
+  max-height: 1000px;
+}
+
+.sidebar-item:hover > .sidebar-submenu {
+  max-height: 1000px;
+}
+
+.sidebar-item.active > .sidebar-link .dropdown-icon {
+  transform: rotate(90deg);
+}
+
+/* Animation for skewed card background */
+@keyframes shimmer {
+  0% {
+    transform: skewX(-15deg) translateX(60%);
+  }
+  100% {
+    transform: skewX(-15deg) translateX(65%);
+  }
+}
+
+.bg-gradient-to-r::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: skewX(-15deg) translateX(60%);
+  animation: shimmer 3s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+/* Custom scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+/* Custom Animation Classes */
+.animate-pulse {
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+/* Collapsed sidebar styles - extra override for safety */
+.sidebar.collapsed .sidebar-header h3,
+.sidebar.collapsed .sidebar-link span,
+.sidebar.collapsed .dropdown-icon {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar:not(.collapsed) .sidebar-header h3,
+.sidebar:not(.collapsed) .sidebar-link span,
+.sidebar:not(.collapsed) .dropdown-icon,
+.sidebar.collapsed:hover .sidebar-header h3,
+.sidebar.collapsed:hover .sidebar-link span,
+.sidebar.collapsed:hover .dropdown-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition-delay: 0.2s;
+}
+
+/* Mobile styles */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+}
