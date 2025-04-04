@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PazarAtlasi.CMS.Application\PazarAtlasi.CMS.Application.csproj" />
+    <ProjectReference Include="..\PazarAtlasi.CMS.Infrastructure\PazarAtlasi.CMS.Infrastructure.csproj" />
+    <ProjectReference Include="..\PazarAtlasi.CMS.Persistence\PazarAtlasi.CMS.Persistence.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MediatR" Version="12.0.1" />
+  </ItemGroup>
+
+</Project>
