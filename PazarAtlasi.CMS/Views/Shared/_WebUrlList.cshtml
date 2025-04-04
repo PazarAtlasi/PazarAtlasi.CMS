@@ -1,0 +1,70 @@
+@{
+    Layout = null;
+}
+
+<div class="bg-white rounded-xl shadow-md">
+    <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+        <h5 class="text-lg font-semibold text-slate-800 m-0">Web URL Listesi</h5>
+        <div class="flex space-x-2">
+            <div class="relative">
+                <input type="text" id="search-weburl"
+                    class="w-64 pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                    placeholder="URL ara...">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+            </div>
+            <button id="create-weburl"
+                class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center">
+                <i class="fas fa-plus mr-2"></i> Yeni URL Ekle
+            </button>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-100">
+            <thead>
+                <tr class="bg-slate-50">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">URL Adı
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">URL</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        Controller/Action</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Şablon
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Menü
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Durum
+                    </th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-slate-100" id="weburl-list">
+                <!-- JavaScript ile doldurulacak -->
+                <tr>
+                    <td colspan="7" class="px-6 py-4 text-center text-slate-500">
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-spinner fa-spin mr-2"></i> Veriler yükleniyor...
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="p-4 border-t border-slate-100 flex justify-between items-center">
+        <div class="text-sm text-slate-600">
+            Toplam <span id="total-rows" class="font-medium">0</span> kayıt
+        </div>
+        <div class="flex space-x-1">
+            <button
+                class="p-2 text-sm rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button
+                class="p-2 text-sm rounded border border-slate-200 bg-purple-700 text-white hover:bg-purple-800">1</button>
+            <button class="p-2 text-sm rounded border border-slate-200 bg-white text-slate-600 hover:bg-slate-50">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.deps.json
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.dll
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.pdb
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Application.dll
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.dll
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Application.pdb
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.pdb
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.AssemblyInfo.cs
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.sourcelink.json
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtl.2D3EFBA7.Up2Date
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.dll
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\refint\PazarAtlasi.CMS.Infrastructure.dll
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.pdb
+C:\Users\Ali Cem\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\ref\PazarAtlasi.CMS.Infrastructure.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.deps.json
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Application.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Application.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\bin\Debug\net8.0\PazarAtlasi.CMS.Domain.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.AssemblyInfo.cs
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.sourcelink.json
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.csproj.CopyComplete
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\refint\PazarAtlasi.CMS.Infrastructure.dll
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\PazarAtlasi.CMS.Infrastructure.pdb
+C:\Users\sezgi\source\repos\PazarAtlasi.CMS\PazarAtlasi.CMS.Infrastructure\obj\Debug\net8.0\ref\PazarAtlasi.CMS.Infrastructure.dll
