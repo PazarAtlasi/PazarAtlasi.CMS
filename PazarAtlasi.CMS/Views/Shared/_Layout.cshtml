@@ -140,6 +140,22 @@
                             class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Dashboard"]</span>
                     </a>
                 </li>
+                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
+                    <a href="@Url.Action("Index", "Announcements")"
+                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
+                        <i class="fas fa-bullhorn w-5 mr-3 text-center text-lg"></i>
+                        <span
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Announcements"]</span>
+                    </a>
+                </li>
+                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
+                    <a href="@Url.Action("Index", "Campaigns")"
+                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
+                        <i class="fas fa-ad w-5 mr-3 text-center text-lg"></i>
+                        <span
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">Kampanyalar</span>
+                    </a>
+                </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
                     <a href="#"
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
@@ -195,16 +211,16 @@
                     </a>
                     <ul
                         class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
-                        <li><a href="#"
+                        <li><a href="@Url.Action("Index", "Users")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-plus w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Manage Users"]</a>
+                                    class="fas fa-user-plus w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["ManageUsers"]</a>
                         </li>
-                        <li><a href="#"
+                        <li><a href="@Url.Action("Index", "Roles")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-shield w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Roles"]</a></li>
-                        <li><a href="#"
+                                    class="fas fa-user-shield w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["ManageRoles"]</a></li>
+                        <li><a href="@Url.Action("Index", "Permissions")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-cog w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Permissions"]</a>
+                                    class="fas fa-user-cog w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["ManagePermissions"]</a>
                         </li>
                     </ul>
                 </li>

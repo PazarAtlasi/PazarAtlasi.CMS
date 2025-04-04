@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PazarAtlasi.CMS.Application.Common.Interfaces;
+using PazarAtlasi.CMS.Application.Interfaces.Repositories;
 using PazarAtlasi.CMS.Domain.Interfaces;
 using PazarAtlasi.CMS.Persistence.Context;
 using PazarAtlasi.CMS.Persistence.Repositories;
@@ -20,6 +21,7 @@ namespace PazarAtlasi.CMS.Persistence
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 
             return services;
         }
