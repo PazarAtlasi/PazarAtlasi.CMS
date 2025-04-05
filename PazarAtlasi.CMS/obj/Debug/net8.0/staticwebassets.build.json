@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "7+wKyBrGfVsYu+6b0GMDu7wZr3tnsLxY7GW4VqTQjss=",
+  "Hash": "7mhMS1n9petwCidveVkvzMckDIjqVTev1h2GyXkDFRQ=",
   "Source": "PazarAtlasi.CMS",
   "BasePath": "_content/PazarAtlasi.CMS",
   "Mode": "Default",
@@ -99,6 +99,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\images\\cms-image.jpg",
+      "SourceId": "PazarAtlasi.CMS",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\",
+      "BasePath": "_content/PazarAtlasi.CMS",
+      "RelativePath": "images/cms-image#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "vxz2zvikom",
+      "Integrity": "jd6GwgZ+g4KScspNULdtFWELnLotLRtCkoe6zsrlvCM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\cms-image.jpg"
     },
     {
       "Identity": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\js\\menuData.js",
@@ -1544,6 +1565,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-Jtxf9L+5ITKRc1gIRl4VbUpGkRNfOBXjYTdhJD4facM="
+        }
+      ]
+    },
+    {
+      "Route": "images/cms-image.jpg",
+      "AssetFile": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\images\\cms-image.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "263344"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jd6GwgZ+g4KScspNULdtFWELnLotLRtCkoe6zsrlvCM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 05 Apr 2025 12:44:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-jd6GwgZ+g4KScspNULdtFWELnLotLRtCkoe6zsrlvCM="
+        }
+      ]
+    },
+    {
+      "Route": "images/cms-image.vxz2zvikom.jpg",
+      "AssetFile": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\images\\cms-image.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "263344"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jd6GwgZ+g4KScspNULdtFWELnLotLRtCkoe6zsrlvCM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 05 Apr 2025 12:44:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vxz2zvikom"
+        },
+        {
+          "Name": "label",
+          "Value": "images/cms-image.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-jd6GwgZ+g4KScspNULdtFWELnLotLRtCkoe6zsrlvCM="
         }
       ]
     },
@@ -6572,7 +6675,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 02 Apr 2025 13:34:36 GMT"
+          "Value": "Sat, 05 Apr 2025 13:59:56 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6617,7 +6720,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 02 Apr 2025 13:34:36 GMT"
+          "Value": "Sat, 05 Apr 2025 13:59:56 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6662,7 +6765,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 02 Apr 2025 13:34:36 GMT"
+          "Value": "Sat, 05 Apr 2025 13:59:56 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6699,7 +6802,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 02 Apr 2025 13:34:36 GMT"
+          "Value": "Sat, 05 Apr 2025 13:59:56 GMT"
         },
         {
           "Name": "Cache-Control",

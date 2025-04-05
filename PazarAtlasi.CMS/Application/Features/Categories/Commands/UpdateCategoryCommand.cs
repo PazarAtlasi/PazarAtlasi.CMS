@@ -19,7 +19,7 @@ namespace PazarAtlasi.CMS.Application.Features.Categories.Commands
         [Range(0, int.MaxValue, ErrorMessage = "Sıralama değeri 0 veya daha büyük olmalıdır")]
         public int DisplayOrder { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public bool IsActive { get; set; }
     }

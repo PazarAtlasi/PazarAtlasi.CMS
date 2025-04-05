@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\images\\cms-image.jpg",
+      "PackagePath": "staticwebassets\\images\\cms-image.jpg"
+    },
+    {
       "Id": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS\\wwwroot\\js\\menuData.js",
       "PackagePath": "staticwebassets\\js\\menuData.js"
     },

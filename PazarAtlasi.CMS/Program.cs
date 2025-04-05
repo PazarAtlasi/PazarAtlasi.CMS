@@ -1,6 +1,12 @@
 using PazarAtlasi.CMS.Application;
 using PazarAtlasi.CMS.Infrastructure;
 using PazarAtlasi.CMS.Persistence;
+using Microsoft.AspNetCore.Identity;
+using PazarAtlasi.CMS.Models;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using PazarAtlasi.CMS.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +17,32 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddApplication();
 
 // Add Infrastructure Layer
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add Persistence Layer
 builder.Services.AddPersistence(builder.Configuration);
+
+// Add Identity services
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+// Configure cookie settings
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
 
 // Add localization services
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -22,33 +50,21 @@ builder.Services.AddMvc()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
-// Configure supported cultures
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    var supportedCultures = new[]
-    {
-        new System.Globalization.CultureInfo("en-US"),
-        new System.Globalization.CultureInfo("tr-TR")
-    };
-
-    options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
-    options.SupportedCultures = supportedCultures;
-    options.SupportedUICultures = supportedCultures;
-
-    // Add custom culture provider that will check for culture stored in cookies
-    options.RequestCultureProviders.Insert(0, new Microsoft.AspNetCore.Localization.CustomRequestCultureProvider(context =>
-    {
-        var userLanguage = context.Request.Cookies["Language"];
-        if (string.IsNullOrEmpty(userLanguage))
-        {
-            return Task.FromResult(new Microsoft.AspNetCore.Localization.ProviderCultureResult("en-US"));
-        }
-
-        return Task.FromResult(new Microsoft.AspNetCore.Localization.ProviderCultureResult(userLanguage));
-    }));
-});
-
 var app = builder.Build();
+
+// Configure localization
+var supportedCultures = new[]
+{
+    new CultureInfo("tr-TR"),
+    new CultureInfo("en-US"),
+};
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("tr-TR"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -63,9 +79,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Use request localization middleware
-app.UseRequestLocalization();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
