@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "SIPTJysOlW+lw7ofsbj+R9hB4HF7wTTWr4O1AIKM6o/Y9gz06Og5//4UKmfjKd8YG7fJUmW0DVk/6COMT2CWpA==",
+  "dgSpecHash": "/jNMUlJhpEU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj",
+  "projectFilePath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\sezgi\\.nuget\\packages\\mediatr\\12.0.1\\mediatr.12.0.1.nupkg.sha512",
-    "C:\\Users\\sezgi\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
-    "C:\\Users\\sezgi\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512"
+    "C:\\Users\\Ali Cem\\.nuget\\packages\\mediatr\\12.0.1\\mediatr.12.0.1.nupkg.sha512",
+    "C:\\Users\\Ali Cem\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\Ali Cem\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

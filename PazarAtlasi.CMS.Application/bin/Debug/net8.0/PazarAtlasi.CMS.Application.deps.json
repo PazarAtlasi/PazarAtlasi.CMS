@@ -210,7 +210,10 @@
           "MediatR": "12.0.1"
         },
         "runtime": {
-          "PazarAtlasi.CMS.Domain.dll": {}
+          "PazarAtlasi.CMS.Domain.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj": {}
+    "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj": {
+    "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj",
+        "projectUniqueName": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj",
         "projectName": "PazarAtlasi.CMS.Application",
-        "projectPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj",
-        "packagesPath": "C:\\Users\\sezgi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\obj\\",
+        "projectPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj",
+        "packagesPath": "C:\\Users\\Ali Cem\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\sezgi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ali Cem\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,14 +26,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj": {
-                "projectPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj"
+              "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj": {
+                "projectPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj"
               }
             }
           }
@@ -38,7 +43,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -85,21 +96,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj": {
+    "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj",
         "projectName": "PazarAtlasi.CMS.Domain",
-        "projectPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj",
-        "packagesPath": "C:\\Users\\sezgi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\obj\\",
+        "projectPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\PazarAtlasi.CMS.Domain.csproj",
+        "packagesPath": "C:\\Users\\Ali Cem\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\sezgi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ali Cem\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -107,6 +122,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -119,7 +135,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -146,21 +168,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj": {
+    "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj",
         "projectName": "PazarAtlasi.CMS.Persistence",
-        "projectPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj",
-        "packagesPath": "C:\\Users\\sezgi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\obj\\",
+        "projectPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\PazarAtlasi.CMS.Persistence.csproj",
+        "packagesPath": "C:\\Users\\Ali Cem\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Persistence\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\sezgi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ali Cem\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -168,14 +194,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj": {
-                "projectPath": "C:\\Users\\sezgi\\source\\repos\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj"
+              "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj": {
+                "projectPath": "C:\\Users\\Ali Cem\\PazarAtlasi.CMS\\PazarAtlasi.CMS.Application\\PazarAtlasi.CMS.Application.csproj"
               }
             }
           }
@@ -184,7 +211,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -225,7 +258,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
