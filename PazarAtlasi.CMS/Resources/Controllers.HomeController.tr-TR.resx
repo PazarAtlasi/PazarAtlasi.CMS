@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Kontrol Paneli</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Tekrar hoş geldin, John! CMS analitiğinin ve son etkinliklerinin bir özeti burada.</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>İçerik</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Sayfalar</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Haberler</value>
+  </data>
+  <data name="Blog" xml:space="preserve">
+    <value>Blog</value>
+  </data>
+  <data name="E-Commerce" xml:space="preserve">
+    <value>E-Ticaret</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>Ürünler</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Kategoriler</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Siparişler</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Kullanıcılar</value>
+  </data>
+  <data name="ManageUsers" xml:space="preserve">
+    <value>Kullanıcı Yönetimi</value>
+  </data>
+  <data name="ManageRoles" xml:space="preserve">
+    <value>Rol Yönetimi</value>
+  </data>
+  <data name="ManagePermissions" xml:space="preserve">
+    <value>İzin Yönetimi</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roller</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>İzinler</value>
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Analitik</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="Total Users" xml:space="preserve">
+    <value>Toplam Kullanıcı</value>
+  </data>
+  <data name="Total Revenue" xml:space="preserve">
+    <value>Toplam Gelir</value>
+  </data>
+  <data name="Support Tickets" xml:space="preserve">
+    <value>Destek Talepleri</value>
+  </data>
+  <data name="from last month" xml:space="preserve">
+    <value>geçen aya göre</value>
+  </data>
+  <data name="Sales Overview" xml:space="preserve">
+    <value>Satış Genel Bakışı</value>
+  </data>
+  <data name="Monthly" xml:space="preserve">
+    <value>Aylık</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Yardım</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Çıkış</value>
+  </data>
+  <data name="Last 7 days" xml:space="preserve">
+    <value>Son 7 gün</value>
+  </data>
+  <data name="Last 30 days" xml:space="preserve">
+    <value>Son 30 gün</value>
+  </data>
+  <data name="Last 90 days" xml:space="preserve">
+    <value>Son 90 gün</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Dışa Aktar</value>
+  </data>
+  <data name="Recent Activities" xml:space="preserve">
+    <value>Son Aktiviteler</value>
+  </data>
+  <data name="WebUrl Management" xml:space="preserve">
+    <value>URL Yönetimi</value>
+  </data>
+  <data name="Announcements" xml:space="preserve">
+    <value>Duyurular</value>
+  </data>
+</root> 

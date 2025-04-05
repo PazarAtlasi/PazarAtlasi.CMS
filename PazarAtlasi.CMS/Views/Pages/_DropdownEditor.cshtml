@@ -1,0 +1,144 @@
+@*
+  Dropdown Menu Editor Partial
+*@
+
+<div class="dropdown-editor-container">
+    <h6 class="text-md font-semibold text-slate-800 mb-4">Açılır Menü İçeriği</h6>
+    
+    <!-- İçerik Başlığı -->
+    <div class="bg-slate-50 p-4 rounded-lg mb-4">
+        <div class="flex justify-between items-center mb-3">
+            <h6 class="font-medium text-slate-700">Menü Başlığı</h6>
+        </div>
+        
+        <div class="mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1">Başlık</label>
+            <input type="text" class="dropdown-title w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" value="Bize Ulaşın" />
+        </div>
+    </div>
+    
+    <!-- İletişim Bilgileri -->
+    <div class="bg-slate-50 p-4 rounded-lg mb-4">
+        <div class="flex justify-between items-center mb-3">
+            <h6 class="font-medium text-slate-700">İletişim Bilgileri</h6>
+            <button id="add-contact-info" class="text-xs bg-purple-100 text-purple-800 hover:bg-purple-200 px-2 py-1 rounded">
+                <i class="fas fa-plus mr-1"></i> Bilgi Ekle
+            </button>
+        </div>
+        
+        <div id="contact-info-container" class="space-y-3 max-h-[300px] overflow-y-auto">
+            <!-- Örnek İletişim Bilgisi - E-posta -->
+            <div class="bg-white p-3 rounded-lg border border-slate-200 contact-info-item">
+                <div class="flex justify-between items-center mb-2">
+                    <h6 class="font-medium text-slate-800">E-posta</h6>
+                    <div class="flex items-center">
+                        <button class="info-move-up p-1 text-slate-500 hover:bg-slate-100 rounded mr-1">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="info-move-down p-1 text-slate-500 hover:bg-slate-100 rounded mr-1">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button class="info-delete p-1 text-red-500 hover:bg-red-50 rounded">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Tip</label>
+                        <select class="info-type w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                            <option value="email" selected>E-posta</option>
+                            <option value="address">Adres</option>
+                            <option value="phone">Telefon</option>
+                            <option value="working-hours">Çalışma Saatleri</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Etiket</label>
+                        <input type="text" class="info-label w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" value="E-posta" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">İkon</label>
+                        <select class="info-icon w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                            <option value="mail" selected>mail</option>
+                            <option value="map-pin">map-pin</option>
+                            <option value="phone">phone</option>
+                            <option value="clock">clock</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Değer</label>
+                        <input type="text" class="info-value w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" value="info@sentinelit.net" />
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Örnek İletişim Bilgisi - Adres -->
+            <div class="bg-white p-3 rounded-lg border border-slate-200 contact-info-item">
+                <div class="flex justify-between items-center mb-2">
+                    <h6 class="font-medium text-slate-800">Ofis</h6>
+                    <div class="flex items-center">
+                        <button class="info-move-up p-1 text-slate-500 hover:bg-slate-100 rounded mr-1">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="info-move-down p-1 text-slate-500 hover:bg-slate-100 rounded mr-1">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button class="info-delete p-1 text-red-500 hover:bg-red-50 rounded">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Tip</label>
+                        <select class="info-type w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                            <option value="email">E-posta</option>
+                            <option value="address" selected>Adres</option>
+                            <option value="phone">Telefon</option>
+                            <option value="working-hours">Çalışma Saatleri</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Etiket</label>
+                        <input type="text" class="info-label w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" value="Ofis" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">İkon</label>
+                        <select class="info-icon w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                            <option value="mail">mail</option>
+                            <option value="map-pin" selected>map-pin</option>
+                            <option value="phone">phone</option>
+                            <option value="clock">clock</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Değer</label>
+                        <textarea class="info-value w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" rows="2">Levent, İstanbul
+Türkiye</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Button -->
+    <div class="bg-slate-50 p-4 rounded-lg">
+        <div class="flex justify-between items-center mb-3">
+            <h6 class="font-medium text-slate-700">CTA Buton</h6>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Buton Metni</label>
+                <input type="text" class="cta-text w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" value="İletişim Formu" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">URL</label>
+                <input type="text" class="cta-url w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" value="#" />
+            </div>
+        </div>
+    </div>
+</div> 

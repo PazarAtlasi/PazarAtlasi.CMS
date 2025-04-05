@@ -1,0 +1,58 @@
+@*
+  Link Menu Editor Partial
+*@
+
+<div class="link-editor-container">
+    <h6 class="text-md font-semibold text-slate-800 mb-4">Basit Link Özellikleri</h6>
+
+    <div class="bg-slate-50 p-4 rounded-lg mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">URL</label>
+                <div class="flex items-center">
+                    <span class="text-slate-500 mr-2">/</span>
+                    <input type="text"
+                        class="link-url flex-grow px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                        value="system-status" />
+                </div>
+                <p class="text-xs text-slate-500 mt-1">URL başında / işareti otomatik olarak eklenir</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-slate-50 p-4 rounded-lg">
+        <div class="flex items-center mb-3">
+            <h6 class="font-medium text-slate-700">Durum Göstergesi</h6>
+            <span class="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">Opsiyonel</span>
+        </div>
+
+        <div class="space-y-3">
+            <div class="flex items-center">
+                <input type="checkbox" id="show-status"
+                    class="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500" checked />
+                <label for="show-status" class="ml-2 text-sm text-slate-700">Durum göstergesini göster</label>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Durum</label>
+                    <select id="status-value"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <option value="online" selected>Çevrimiçi</option>
+                        <option value="maintenance">Bakımda</option>
+                        <option value="partial">Kısmi Kesinti</option>
+                        <option value="offline">Çevrimdışı</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <div class="text-sm font-medium text-slate-700 mb-2">Önizleme:</div>
+                <div class="flex items-center">
+                    <span class="mr-2 text-sm">Veri Merkezi</span>
+                    <span class="inline-flex w-2 h-2 bg-green-500 rounded-full"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
