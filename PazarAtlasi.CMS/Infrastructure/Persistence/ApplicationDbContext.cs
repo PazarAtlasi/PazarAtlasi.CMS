@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PazarAtlasi.CMS.Models;
+using PazarAtlasi.CMS.Domain.Entities;
 
 namespace PazarAtlasi.CMS.Infrastructure.Persistence
 {
@@ -11,10 +12,18 @@ namespace PazarAtlasi.CMS.Infrastructure.Persistence
         {
         }
 
+        public DbSet<Blog> Blogs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Add your custom model configurations here
+
+            // Blog entity konfigürasyonları
+            builder.Entity<Blog>()
+                .HasOne(b => b.Author)
+                .WithMany()
+                .HasForeignKey(b => b.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 } 
