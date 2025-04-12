@@ -27,7 +27,7 @@ namespace PazarAtlasi.CMS.Controllers
                     ImageUrl = "/images/blog/glasses1.jpg",
                     PublishDate = DateTime.Now.AddDays(-5),
                     IsActive = true,
-                    AuthorId = "1",
+                    AuthorId = 1,
                     AuthorName = "Dr. Ahmet Yılmaz",
                     CreatedAt = DateTime.Now.AddDays(-5)
                 },
@@ -41,7 +41,7 @@ namespace PazarAtlasi.CMS.Controllers
                     ImageUrl = "/images/blog/sunglasses1.jpg",
                     PublishDate = DateTime.Now.AddDays(-3),
                     IsActive = true,
-                    AuthorId = "2",
+                    AuthorId = 2,
                     AuthorName = "Ayşe Kaya",
                     CreatedAt = DateTime.Now.AddDays(-3)
                 },
@@ -55,7 +55,7 @@ namespace PazarAtlasi.CMS.Controllers
                     ImageUrl = "/images/blog/kids-glasses1.jpg",
                     PublishDate = DateTime.Now.AddDays(-1),
                     IsActive = true,
-                    AuthorId = "1",
+                    AuthorId = 1,
                     AuthorName = "Dr. Ahmet Yılmaz",
                     CreatedAt = DateTime.Now.AddDays(-1)
                 },
@@ -69,7 +69,7 @@ namespace PazarAtlasi.CMS.Controllers
                     ImageUrl = "/images/blog/contact-lens1.jpg",
                     PublishDate = DateTime.Now,
                     IsActive = false,
-                    AuthorId = "3",
+                    AuthorId = 3,
                     AuthorName = "Dr. Mehmet Demir",
                     CreatedAt = DateTime.Now
                 }
@@ -113,7 +113,7 @@ namespace PazarAtlasi.CMS.Controllers
                 ImageUrl = "/images/blog/example.jpg",
                 PublishDate = DateTime.Now,
                 IsActive = true,
-                AuthorId = "1",
+                AuthorId = 1,
                 AuthorName = "Örnek Yazar",
                 CreatedAt = DateTime.Now
             };
@@ -153,7 +153,7 @@ namespace PazarAtlasi.CMS.Controllers
                 ImageUrl = "/images/blog/example.jpg",
                 PublishDate = DateTime.Now,
                 IsActive = true,
-                AuthorId = "1",
+                AuthorId = 1,
                 AuthorName = "Örnek Yazar",
                 CreatedAt = DateTime.Now
             };

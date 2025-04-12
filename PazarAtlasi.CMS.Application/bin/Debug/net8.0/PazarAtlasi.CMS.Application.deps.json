@@ -589,10 +589,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.0"
         },
         "runtime": {
-          "PazarAtlasi.CMS.Domain.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "PazarAtlasi.CMS.Domain.dll": {}
         }
       }
     }

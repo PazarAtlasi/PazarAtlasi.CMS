@@ -1,4 +1,6 @@
+using PazarAtlasi.CMS.Domain.Identity;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PazarAtlasi.CMS.Domain.Entities
 {
@@ -41,8 +43,7 @@ namespace PazarAtlasi.CMS.Domain.Entities
             BlogTags = new HashSet<BlogTag>();
             IsPublished = false;
         }
-        public string AuthorId { get; set; }
         public string AuthorName { get; set; }
-        public ApplicationUser Author { get; set; }
+        public ApplicationUser Authorr { get; set; }
     }
 } 

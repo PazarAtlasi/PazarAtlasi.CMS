@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PazarAtlasi.CMS.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4e92f4cd6f62f246988ea38a4141991fd9e3255")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+035e9341de242a8ccbbf7825f9357db5f56042f1")]
 [assembly: System.Reflection.AssemblyProductAttribute("PazarAtlasi.CMS.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PazarAtlasi.CMS.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
