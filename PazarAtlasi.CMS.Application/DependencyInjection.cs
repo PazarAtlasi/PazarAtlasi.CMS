@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using PazarAtlasi.CMS.Application.Features.Blogs.Rules;
 using PazarAtlasi.CMS.Application.Features.WebUrls.Rules;
 
 namespace PazarAtlasi.CMS.Application
@@ -16,6 +17,7 @@ namespace PazarAtlasi.CMS.Application
 
             // Register business rules
             services.AddScoped<WebUrlBusinessRules>();
+            services.AddScoped<BlogBusinessRules>();
 
             return services;
         }

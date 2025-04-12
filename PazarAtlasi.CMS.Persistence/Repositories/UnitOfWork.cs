@@ -1,9 +1,11 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using PazarAtlasi.CMS.Application.Interfaces;
 using PazarAtlasi.CMS.Domain.Entities;
-using PazarAtlasi.CMS.Domain.Interfaces;
 using PazarAtlasi.CMS.Persistence.Context;
 
 namespace PazarAtlasi.CMS.Persistence.Repositories
@@ -11,40 +13,42 @@ namespace PazarAtlasi.CMS.Persistence.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
-        private Hashtable _repositories;
-        private IDbContextTransaction _transaction;
+        private readonly Dictionary<Type, object> _repositories;
+        private IDbContextTransaction _currentTransaction;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _dbContext.SaveChangesAsync();
+            _repositories = new Dictionary<Type, object>();
         }
 
         public IRepository<T> Repository<T>() where T : BaseEntity
         {
-            if (_repositories == null)
-                _repositories = new Hashtable();
-
-            var type = typeof(T).Name;
+            var type = typeof(T);
 
             if (!_repositories.ContainsKey(type))
             {
-                var repositoryType = typeof(Repository<>);
-                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), _dbContext);
-
-                _repositories.Add(type, repositoryInstance);
+                var repository = new GenericRepository<T>(_dbContext);
+                _repositories.Add(type, repository);
             }
 
             return (IRepository<T>)_repositories[type];
         }
 
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _dbContext.Database.BeginTransactionAsync();
+            _currentTransaction ??= await _dbContext.Database.BeginTransactionAsync();
         }
 
         public async Task CommitTransactionAsync()
@@ -52,12 +56,15 @@ namespace PazarAtlasi.CMS.Persistence.Repositories
             try
             {
                 await _dbContext.SaveChangesAsync();
-                await _transaction.CommitAsync();
+                await _currentTransaction?.CommitAsync();
             }
             finally
             {
-                await _transaction.DisposeAsync();
-                _transaction = null;
+                if (_currentTransaction != null)
+                {
+                    await _currentTransaction.DisposeAsync();
+                    _currentTransaction = null;
+                }
             }
         }
 
@@ -65,12 +72,15 @@ namespace PazarAtlasi.CMS.Persistence.Repositories
         {
             try
             {
-                await _transaction.RollbackAsync();
+                await _currentTransaction?.RollbackAsync();
             }
             finally
             {
-                await _transaction.DisposeAsync();
-                _transaction = null;
+                if (_currentTransaction != null)
+                {
+                    await _currentTransaction.DisposeAsync();
+                    _currentTransaction = null;
+                }
             }
         }
 
