@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PazarAtlasi.CMS.Application.Models.Dtos
+{
+    public class SignInDto
+    {
+        public string Email { get; set; }
+
+        public string Password { get; set; }
+        public bool IsRemembered { get; set; } = false;
+    }
+}

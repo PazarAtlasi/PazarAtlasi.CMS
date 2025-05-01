@@ -6,7 +6,7 @@ using PazarAtlasi.CMS.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using PazarAtlasi.CMS.Infrastructure.Persistence;
+using PazarAtlasi.CMS.Persistence.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,6 @@ builder.Services.AddControllersWithViews();
 // Add Application Layer
 builder.Services.AddApplication();
 
-// Add Infrastructure Layer
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add Persistence Layer
