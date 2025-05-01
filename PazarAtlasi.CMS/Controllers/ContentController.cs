@@ -6,16 +6,20 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
+using PazarAtlasi.CMS.Application.Models;
 
 namespace PazarAtlasi.CMS.Controllers
 {
     public class ContentController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IContentService _contentService;
 
-        public ContentController(IMediator mediator)
+        public ContentController(IMediator mediator, IContentService contentService)
         {
             _mediator = mediator;
+            _contentService = contentService;
         }
 
         /// <summary>
@@ -229,5 +233,34 @@ namespace PazarAtlasi.CMS.Controllers
                 }
             };
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Discovery()
+        {
+            var discoveryResponse = await _contentService.DiscoverEndpointsAsync();
+            return View(discoveryResponse);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Categories()
+        {
+            var categories = await _contentService.GetCategoriesAsync();
+            return View(categories);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MenuItems(int pageIndex = 0, int pageSize = 10)
+        {
+            var pageRequest = new PageRequest { PageIndex = pageIndex, PageSize = pageSize };
+            var menus = await _contentService.GetListAsync<dynamic>("MenuItems", pageRequest);
+            return View(menus);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MenuItemDetails(int id)
+        {
+            var menu = await _contentService.GetByIdAsync<dynamic>("MenuItems", id);
+            return View(menu);
+        }
     }
-} 
+}

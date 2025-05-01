@@ -1,30 +1,47 @@
 ﻿using PazarAtlasi.CMS.Application.Features.Categories.Queries;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
+using PazarAtlasi.CMS.Application.Models;
+using PazarAtlasi.CMS.Infrastructure.MicroserviceBase;
 using PazarAtlasi.Core.Application.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PazarAtlasi.CMS.Infrastructure.Content
 {
-    public class ContentService : IContentService
+    public class ContentService : BaseDiscoveryService, IContentService
     {
-        private readonly HttpClient _httpClient;
-        public ContentService(HttpClient httpClient)
+        public ContentService(HttpClient httpClient) : base(httpClient)
         {
-            _httpClient = httpClient;
         }
 
         public async Task<GetListResponse<CategoryDto>> GetCategoriesAsync()
         {
-            // https:localhost:5000/services/catalog/course
-            var categoryTestResponse = await _httpClient.GetAsync("api/TestCategories?pageIndex=0&pageSize=10");
-            var categoryResponse = await categoryTestResponse.Content.ReadFromJsonAsync<GetListResponse<CategoryDto>>();
+            return await GetListAsync<CategoryDto>("Categories", new PageRequest { PageIndex = 0, PageSize = 10 });
+        }
 
-            return categoryResponse;
+        public async Task<GetListResponse<T>> GetListAsync<T>(string controllerName, object pageRequest) where T : class
+        {
+            return await GetListInternalAsync<T>(controllerName, pageRequest);
+        }
+
+        public async Task<T> GetByIdAsync<T>(string controllerName, int id) where T : class
+        {
+            return await GetByIdInternalAsync<T>(controllerName, id);
+        }
+
+        public async Task<T> CreateAsync<T>(string controllerName, object createCommand) where T : class
+        {
+            return await CreateInternalAsync<T>(controllerName, createCommand);
+        }
+
+        public async Task<T> UpdateAsync<T>(string controllerName, object updateCommand) where T : class
+        {
+            return await UpdateInternalAsync<T>(controllerName, updateCommand);
+        }
+
+        public async Task DeleteAsync(string controllerName, int id)
+        {
+            await DeleteInternalAsync(controllerName, id);
         }
     }
 }

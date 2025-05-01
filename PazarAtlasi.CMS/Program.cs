@@ -16,7 +16,9 @@ builder.Services.AddControllersWithViews();
 // Add Application Layer
 builder.Services.AddApplication();
 
-builder.Services.AddInfrastructure(builder.Configuration);
+// Register application and infrastructure services
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // Add Persistence Layer
 builder.Services.AddPersistence(builder.Configuration);
@@ -48,6 +50,9 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 builder.Services.AddMvc()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
+
+// Register a generic microservice if needed
+builder.Services.AddGenericMicroservice("MyOtherService", "http://localhost:5001");
 
 var app = builder.Build();
 
