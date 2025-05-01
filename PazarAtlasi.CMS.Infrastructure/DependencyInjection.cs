@@ -13,7 +13,7 @@ namespace PazarAtlasi.CMS.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfigurationManager configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfigurationManager configuration)
         {
             services.AddScoped<ClientCredentialTokenHandler>();
 

@@ -25,6 +25,9 @@
     <Reference Include="IdentityServer">
       <HintPath>..\..\PazarAtlasi.Identity\IdentityServer\bin\Debug\net8.0\IdentityServer.dll</HintPath>
     </Reference>
+    <Reference Include="PazarAtlasi.Core.Application">
+      <HintPath>..\..\PazarAtlasi.Core\PazarAtlasi.Core.Application\bin\Debug\net8.0\PazarAtlasi.Core.Application.dll</HintPath>
+    </Reference>
     <Reference Include="PazarAtlasi.Core.Common.Models">
       <HintPath>..\..\PazarAtlasi.Core\PazarAtlasi.Core.Security\bin\Debug\net8.0\PazarAtlasi.Core.Common.Models.dll</HintPath>
     </Reference>

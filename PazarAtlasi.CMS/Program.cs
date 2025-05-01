@@ -51,9 +51,6 @@ builder.Services.AddMvc()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
-// Register a generic microservice if needed
-builder.Services.AddGenericMicroservice("MyOtherService", "http://localhost:5001");
-
 var app = builder.Build();
 
 // Configure localization
