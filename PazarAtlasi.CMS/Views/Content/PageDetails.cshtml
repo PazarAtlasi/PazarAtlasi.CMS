@@ -56,9 +56,9 @@
         </div>
         <div class="w-full lg:w-1/3 text-left lg:text-right">
             <div class="inline-flex items-center space-x-2">
-                <button class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                <a href="@Url.Action("PageEdit", "Content", new { id = Model.Id })" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
                     <i class="fas fa-edit mr-2"></i> Edit Page
-                </button>
+                </a>
                 <button class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
                     <i class="fas fa-external-link-alt mr-2"></i> Preview
                 </button>
@@ -193,9 +193,9 @@
                     </h5>
                 </div>
                 <div class="p-6 space-y-3">
-                    <button class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                    <a href="@Url.Action("PageEdit", "Content", new { id = Model.Id })" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
                         <i class="fas fa-edit mr-2"></i> Edit Content
-                    </button>
+                    </a>
                     <button class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
                         <i class="fas fa-plus mr-2"></i> Add Section
                     </button>

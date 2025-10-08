@@ -1,0 +1,577 @@
+@model PazarAtlasi.CMS.Models.ViewModels.PageEditViewModel
+@{
+    ViewData["Title"] = $"Edit Page - {Model.Name}";
+}
+
+<div class="page-edit">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <div class="flex items-center mb-2">
+                    <a href="@Url.Action("PageDetails", "Content", new { id = Model.Id })"
+                       class="text-purple-600 hover:text-purple-800 mr-3">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h4 class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                        Edit: @Model.Name
+                    </h4>
+                    @{
+                        var css = "";
+                        switch (Model.Status)
+                        {
+                            case PazarAtlasi.CMS.Domain.Common.Status.Active:
+                                css = "bg-green-100 text-green-800";
+                                break;
+                            case PazarAtlasi.CMS.Domain.Common.Status.Pending:
+                                css = "bg-blue-100 text-blue-800";
+                                break;
+                            case PazarAtlasi.CMS.Domain.Common.Status.Draft:
+                                css = "bg-yellow-100 text-yellow-800";
+                                break;
+                            case PazarAtlasi.CMS.Domain.Common.Status.Archived:
+                                css = "bg-gray-100 text-gray-800";
+                                break;
+                            default:
+                                css = "bg-red-100 text-red-800";
+                                break;
+                        }
+
+                        <span class="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(css)">
+                            @Model.Status.ToString()
+                        </span>
+                    }
+                </div>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    Edit page content, sections, and settings. Changes will be saved as draft until published.
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <button class="py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-save mr-2"></i> Save Draft
+                </button>
+                <button class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-check mr-2"></i> Publish
+                </button>
+                <button class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-eye mr-2"></i> Preview
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form id="pageEditForm" method="post" action="@Url.Action("PageEdit", "Content")">
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Page Settings -->
+                <div class="bg-white rounded-xl shadow-md sticky top-4">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-cog mr-2 text-purple-600"></i>
+                            Page Settings
+                        </h5>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Page Name</label>
+                            <input type="text" name="Name" value="@Model.Name"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Page Code</label>
+                            <input type="text" name="Code" value="@Model.Code"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Page Type</label>
+                            <select name="PageType" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                                @foreach (var pageType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.PageType>())
+                                {
+                                    <!option value="@pageType" @(Model.PageType == pageType ? "selected" : "")>@pageType.ToString()</!option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                            <select name="Status" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                                @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
+                                {
+                                    <!option value="@status" @(Model.Status == status ? "selected" : "")>@status.ToString()</!option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                            <textarea name="Description" rows="3"
+                                      class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">@Model.Description</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-bolt mr-2 text-purple-600"></i>
+                            Quick Actions
+                        </h5>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <button type="button" class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center"
+                                onclick="addNewSection()">
+                            <i class="fas fa-plus mr-2"></i> Add Section
+                        </button>
+                        <button type="button" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center"
+                                onclick="toggleSEOPanel()">
+                            <i class="fas fa-search mr-2"></i> SEO Settings
+                        </button>
+                        <button type="button" class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center"
+                                onclick="toggleTranslationsPanel()">
+                            <i class="fas fa-language mr-2"></i> Translations
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- SEO Settings Panel (Hidden by default) -->
+                <div id="seoPanel" class="bg-white rounded-xl shadow-md" style="display: none;">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-search mr-2 text-purple-600"></i>
+                            SEO Parameters
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Meta Title</label>
+                                <input type="text" name="SEOParameter.MetaTitle" value="@Model.SEOParameter?.MetaTitle"
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Author</label>
+                                <input type="text" name="SEOParameter.Author" value="@Model.SEOParameter?.Author"
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Meta Description</label>
+                                <textarea name="SEOParameter.MetaDescription" rows="3"
+                                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">@Model.SEOParameter?.MetaDescription</textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Meta Keywords</label>
+                                <input type="text" name="SEOParameter.MetaKeywords" value="@Model.SEOParameter?.MetaKeywords"
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                       placeholder="keyword1, keyword2, keyword3" />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Canonical URL</label>
+                                <input type="url" name="SEOParameter.CanonicalURL" value="@Model.SEOParameter?.CanonicalURL"
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Sections -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-layer-group mr-2 text-purple-600"></i>
+                            Page Sections (@Model.Sections.Count)
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div id="sectionsContainer" class="space-y-6">
+                            @if (Model.Sections.Any())
+                            {
+                                @foreach (var sectionDetail in Model.Sections.OrderBy(s => s.SortOrder))
+                                {
+                                    <div class="section-editor border border-slate-200 rounded-lg p-6 @sectionDetail.TemplateClass" data-section-id="@sectionDetail.Id">
+                                        <!-- Section Header -->
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center">
+                                                <div class="drag-handle cursor-move mr-3 p-2 text-slate-400 hover:text-slate-600">
+                                                    <i class="fas fa-grip-vertical"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="font-medium text-slate-800">@sectionDetail.Code</h6>
+                                                    <p class="text-sm text-slate-500">@sectionDetail.Type.ToString() - @sectionDetail.TemplateType.ToString()</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-sm text-slate-500">Order: @sectionDetail.SortOrder</span>
+                                                <button type="button" class="text-blue-600 hover:text-blue-800 p-1" onclick="toggleSectionSettings(@sectionDetail.Id)">
+                                                    <i class="fas fa-cog"></i>
+                                                </button>
+                                                <button type="button" class="text-red-600 hover:text-red-800 p-1" onclick="removeSection(@sectionDetail.Id)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Section Settings (Hidden by default) -->
+                                        <div id="sectionSettings_@sectionDetail.Id" class="section-settings mb-4 p-4 bg-slate-50 rounded-lg" style="display: none;">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Code</label>
+                                                    <input type="text" name="Sections[@sectionDetail.Id].Code" value="@sectionDetail.Code"
+                                                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Type</label>
+                                                    <select name="Sections[@sectionDetail.Id].Type" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+                                                        @foreach (var sectionType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionType>())
+                                                        {
+                                                            <!option value="@sectionDetail.Type" @(sectionDetail.Type == sectionType ? "selected" : "")>@sectionDetail.Type.ToString()</!option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-700 mb-1">Template Type</label>
+                                                    <select name="Sections[@sectionDetail.Id].TemplateType" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" onchange="updateSectionTemplate(@sectionDetail.Id, this.value)">
+                                                        @foreach (var templateType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.TemplateType>())
+                                                        {
+                                                            <!option value="@templateType" @(sectionDetail.TemplateType == templateType ? "selected" : "")>@templateType.ToString()</!option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Section Items based on Template Type -->
+                                        <div class="section-items">
+                                            @if (sectionDetail.IsCarousel)
+                                            {
+                                                <!-- Carousel Template -->
+                                                <div class="carousel-container">
+                                                    <div class="flex items-center justify-between mb-4">
+                                                        <h6 class="font-medium text-slate-700">Carousel Items</h6>
+                                                        <button type="button" class="text-green-600 hover:text-green-800 text-sm" onclick="addCarouselItem(@sectionDetail.Id)">
+                                                            <i class="fas fa-plus mr-1"></i> Add Slide
+                                                        </button>
+                                                    </div>
+                                                    <div class="carousel-preview bg-slate-100 rounded-lg p-4 mb-4">
+                                                        <div class="flex space-x-4 overflow-x-auto">
+                                                            @foreach (var item in sectionDetail.SectionItems.OrderBy(si => si.SortOrder))
+                                                            {
+                                                                <div class="carousel-slide flex-shrink-0 w-64 bg-white rounded-lg p-4 border">
+                                                                    <div class="flex items-center justify-between mb-2">
+                                                                        <span class="text-xs text-slate-500">Slide @item.SortOrder</span>
+                                                                        <button type="button" class="text-red-600 hover:text-red-800 text-xs" onclick="removeItem(@item.Id)">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    @if (!string.IsNullOrEmpty(item.PictureUrl))
+                                                                    {
+                                                                        <div class="h-32 bg-slate-200 rounded mb-2 flex items-center justify-center">
+                                                                            <i class="fas fa-image text-slate-400"></i>
+                                                                        </div>
+                                                                    }
+                                                                    <div class="space-y-2">
+                                                                        <input type="text" placeholder="Item title" value="@item.Translations.FirstOrDefault()?.Title"
+                                                                               class="w-full px-2 py-1 border border-slate-300 rounded text-sm" />
+                                                                        <textarea placeholder="Item description" rows="2"
+                                                                  class="w-full px-2 py-1 border border-slate-300 rounded text-sm">@item.Translations.FirstOrDefault()?.Description</textarea>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (sectionDetail.IsSingleItem)
+                                            {
+                                                <!-- Single Item Template -->
+                                                <div class="single-item-container">
+                                                    <div class="flex items-center justify-between mb-4">
+                                                        <h6 class="font-medium text-slate-700">Single Item Content</h6>
+                                                        @if (!sectionDetail.SectionItems.Any())
+                                                        {
+                                                            <button type="button" class="text-green-600 hover:text-green-800 text-sm" onclick="addSingleItem(@sectionDetail.Id)">
+                                                                <i class="fas fa-plus mr-1"></i> Add Content
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    @if (sectionDetail.SectionItems.Any())
+                                                    {
+                                                        var singleItem = sectionDetail.SectionItems.First();
+                                                        <div class="single-item-editor bg-slate-50 rounded-lg p-6">
+                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                <div>
+                                                                    <label class="block text-sm font-medium text-slate-700 mb-2">Content Type</label>
+                                                                    <select class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm mb-4">
+                                                                        @foreach (var itemType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionItemType>())
+                                                                        {
+                                                                            <!option value="@itemType" @(singleItem.Type == itemType ? "selected" : "")>@itemType.ToString()</!option>
+                                                                        }
+                                                                    </select>
+                                                                    <div class="space-y-3">
+                                                                        <div>
+                                                                            <label class="block text-sm font-medium text-slate-700 mb-1">Title</label>
+                                                                            <input type="text" value="@singleItem.Translations.FirstOrDefault()?.Title"
+                                                                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+                                                                        </div>
+                                                                        <div>
+                                                                            <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                                                                            <textarea rows="4" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">@singleItem.Translations.FirstOrDefault()?.Description</textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <label class="block text-sm font-medium text-slate-700 mb-2">Media</label>
+                                                                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center">
+                                                                        @if (!string.IsNullOrEmpty(singleItem.PictureUrl))
+                                                                        {
+                                                                            <div class="mb-4">
+                                                                                <i class="fas fa-image text-slate-400 text-3xl"></i>
+                                                                                <p class="text-sm text-slate-500 mt-2">Current image</p>
+                                                                            </div>
+                                                                        }
+                                                                        <button type="button" class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm">
+                                                                            <i class="fas fa-upload mr-2"></i> Upload Media
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                            else if (sectionDetail.IsGrid)
+                                            {
+                                                <!-- Grid Template -->
+                                                <div class="grid-container">
+                                                    <div class="flex items-center justify-between mb-4">
+                                                        <h6 class="font-medium text-slate-700">Grid Items</h6>
+                                                        <button type="button" class="text-green-600 hover:text-green-800 text-sm" onclick="addGridItem(@sectionDetail.Id)">
+                                                            <i class="fas fa-plus mr-1"></i> Add Item
+                                                        </button>
+                                                    </div>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                        @foreach (var item in sectionDetail.SectionItems.OrderBy(si => si.SortOrder))
+                                                        {
+                                                            <div class="grid-item bg-slate-50 rounded-lg p-4 border">
+                                                                <div class="flex items-center justify-between mb-3">
+                                                                    <span class="text-xs text-slate-500 flex items-center">
+                                                                        <i class="@item.TypeIcon mr-1"></i> @item.Type.ToString()
+                                                                    </span>
+                                                                    <button type="button" class="text-red-600 hover:text-red-800 text-xs" onclick="removeItem(@item.Id)">
+                                                                        <i class="fas fa-times"></i>
+                                                                    </button>
+                                                                </div>
+                                                                @if (!string.IsNullOrEmpty(item.PictureUrl))
+                                                                {
+                                                                    <div class="h-24 bg-slate-200 rounded mb-3 flex items-center justify-center">
+                                                                        <i class="fas fa-image text-slate-400"></i>
+                                                                    </div>
+                                                                }
+                                                                <div class="space-y-2">
+                                                                    <input type="text" placeholder="Title" value="@item.Translations.FirstOrDefault()?.Title"
+                                                                           class="w-full px-2 py-1 border border-slate-300 rounded text-sm" />
+                                                                    <textarea placeholder="Description" rows="2"
+                                                              class="w-full px-2 py-1 border border-slate-300 rounded text-sm">@item.Translations.FirstOrDefault()?.Description</textarea>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        <!-- Add New Item Card -->
+                                                        <div class="grid-item-add border-2 border-dashed border-slate-300 rounded-lg p-4 flex items-center justify-center cursor-pointer hover:border-purple-400 hover:bg-purple-50" onclick="addGridItem(@sectionDetail.Id)">
+                                                            <div class="text-center text-slate-400">
+                                                                <i class="fas fa-plus text-2xl mb-2"></i>
+                                                                <p class="text-sm">Add New Item</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (sectionDetail.IsList)
+                                            {
+                                                <!-- List Template -->
+                                                <div class="list-container">
+                                                    <div class="flex items-center justify-between mb-4">
+                                                        <h6 class="font-medium text-slate-700">List Items</h6>
+                                                        <button type="button" class="text-green-600 hover:text-green-800 text-sm" onclick="addListItem(@sectionDetail.Id)">
+                                                            <i class="fas fa-plus mr-1"></i> Add Item
+                                                        </button>
+                                                    </div>
+                                                    <div class="space-y-3">
+                                                        @foreach (var item in sectionDetail.SectionItems.OrderBy(si => si.SortOrder))
+                                                        {
+                                                            <div class="list-item flex items-center p-3 bg-slate-50 rounded-lg border">
+                                                                <div class="drag-handle cursor-move mr-3 text-slate-400">
+                                                                    <i class="fas fa-grip-vertical"></i>
+                                                                </div>
+                                                                <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                                                    <span class="text-xs font-medium text-purple-600">@item.SortOrder</span>
+                                                                </div>
+                                                                <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                                    <input type="text" placeholder="Item title" value="@item.Translations.FirstOrDefault()?.Title"
+                                                                           class="px-3 py-2 border border-slate-300 rounded text-sm" />
+                                                                    <input type="text" placeholder="Item description" value="@item.Translations.FirstOrDefault()?.Description"
+                                                                           class="px-3 py-2 border border-slate-300 rounded text-sm" />
+                                                                </div>
+                                                                <button type="button" class="ml-3 text-red-600 hover:text-red-800" onclick="removeItem(@item.Id)">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <!-- Default Template -->
+                                                <div class="default-container">
+                                                    <div class="text-center py-8 text-slate-400">
+                                                        <i class="fas fa-layer-group text-4xl mb-4"></i>
+                                                        <p class="text-lg font-medium">Default Section</p>
+                                                        <p class="text-sm">Configure section settings to customize the layout</p>
+                                                        <button type="button" class="mt-4 py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm" onclick="toggleSectionSettings(@sectionDetail.Id)">
+                                                            Configure Section
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-center py-12 text-slate-400">
+                                    <i class="fas fa-layer-group text-6xl mb-4"></i>
+                                    <p class="text-xl font-medium mb-2">No sections yet</p>
+                                    <p class="text-sm mb-6">Start building your page by adding sections</p>
+                                    <button type="button" class="py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-lg" onclick="addNewSection()">
+                                        <i class="fas fa-plus mr-2"></i> Add Your First Section
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .carousel-section {
+        border-left: 4px solid #3b82f6;
+    }
+
+    .grid-section {
+        border-left: 4px solid #10b981;
+    }
+
+    .list-section {
+        border-left: 4px solid #f59e0b;
+    }
+
+    .single-item-section {
+        border-left: 4px solid #8b5cf6;
+    }
+
+    .masonry-section {
+        border-left: 4px solid #ef4444;
+    }
+
+    .default-section {
+        border-left: 4px solid #6b7280;
+    }
+
+    .drag-handle:hover {
+        color: #4f46e5;
+    }
+
+    .section-editor:hover {
+        border-color: #a855f7;
+    }
+</style>
+
+<script>
+    function toggleSEOPanel() {
+        const panel = document.getElementById('seoPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleTranslationsPanel() {
+        // Implementation for translations panel
+        console.log('Toggle translations panel');
+    }
+
+    function toggleSectionSettings(sectionId) {
+        const settings = document.getElementById(`sectionSettings_${sectionId}`);
+        settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateSectionTemplate(sectionId, templateType) {
+        // Update section template class and reload section items
+        const sectionEditor = document.querySelector(`[data-section-id="${sectionId}"]`);
+        sectionEditor.className = sectionEditor.className.replace(/\b\w+-section\b/g, '');
+
+        const templateClass = {
+            'Carousel': 'carousel-section',
+            'Grid': 'grid-section',
+            'List': 'list-section',
+            'SingleItem': 'single-item-section',
+            'Masonry': 'masonry-section'
+        }[templateType] || 'default-section';
+
+        sectionEditor.classList.add(templateClass);
+
+        // Reload the page to update section items display
+        // In a real application, you would use AJAX to update the section
+        console.log(`Update section ${sectionId} to template ${templateType}`);
+    }
+
+    function addNewSection() {
+        console.log('Add new section');
+        // Implementation for adding new section
+    }
+
+    function removeSection(sectionId) {
+        if (confirm('Are you sure you want to remove this section?')) {
+            document.querySelector(`[data-section-id="${sectionId}"]`).remove();
+        }
+    }
+
+    function addCarouselItem(sectionId) {
+        console.log(`Add carousel item to section ${sectionId}`);
+    }
+
+    function addSingleItem(sectionId) {
+        console.log(`Add single item to section ${sectionId}`);
+    }
+
+    function addGridItem(sectionId) {
+        console.log(`Add grid item to section ${sectionId}`);
+    }
+
+    function addListItem(sectionId) {
+        console.log(`Add list item to section ${sectionId}`);
+    }
+
+    function removeItem(itemId) {
+        if (confirm('Are you sure you want to remove this item?')) {
+            console.log(`Remove item ${itemId}`);
+        }
+    }
+
+    // Form submission
+    document.getElementById('pageEditForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Save page changes');
+        // Implementation for saving changes
+    });
+
+    // Make sections sortable (drag and drop)
+    // You would implement this with a library like SortableJS
+</script>

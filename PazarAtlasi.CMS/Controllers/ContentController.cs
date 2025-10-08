@@ -163,6 +163,110 @@ namespace PazarAtlasi.CMS.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Page edit form
+        /// </summary>
+        public async Task<IActionResult> PageEdit(int id)
+        {
+            var page = await _pazarAtlasiDbContext.Pages
+                .Include(p => p.PageSEOParameter)
+                .Include(p => p.Sections.OrderBy(s => s.SortOrder))
+                    .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
+                        .ThenInclude(si => si.Translations)
+                .Include(p => p.Sections)
+                    .ThenInclude(s => s.Translations)
+                .Include(p => p.PageTranslations)
+                    .ThenInclude(pt => pt.Language)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (page == null)
+            {
+                return NotFound();
+            }
+
+            // Get available languages
+            var languages = await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .ToListAsync();
+
+            var model = new PageEditViewModel
+            {
+                Id = page.Id,
+                Name = page.Name,
+                Code = page.Code,
+                PageType = page.PageType,
+                Description = page.Description,
+                Status = page.Status,
+                SEOParameter = page.PageSEOParameter != null ? new PageSEOParameterEditViewModel
+                {
+                    Id = page.PageSEOParameter.Id,
+                    MetaTitle = page.PageSEOParameter.MetaTitle,
+                    MetaDescription = page.PageSEOParameter.MetaDescription,
+                    MetaKeywords = page.PageSEOParameter.MetaKeywords,
+                    Title = page.PageSEOParameter.Title,
+                    CanonicalURL = page.PageSEOParameter.CanonicalURL,
+                    Author = page.PageSEOParameter.Author,
+                    Description = page.PageSEOParameter.Description
+                } : null,
+                Sections = page.Sections.Select(s => new SectionEditViewModel
+                {
+                    Id = s.Id,
+                    Code = s.Code,
+                    Type = s.Type,
+                    TemplateType = s.TemplateType,
+                    Attributes = s.Attributes,
+                    SortOrder = s.SortOrder,
+                    Configure = s.Configure,
+                    Status = s.Status,
+                    SectionItems = s.SectionItems.Select(si => new SectionItemEditViewModel
+                    {
+                        Id = si.Id,
+                        Code = si.Code,
+                        Type = si.Type,
+                        PictureUrl = si.PictureUrl,
+                        RedirectUrl = si.RedirectUrl,
+                        Icon = si.Icon,
+                        SortOrder = si.SortOrder,
+                        Status = si.Status,
+                        Translations = si.Translations.Select(sit => new SectionItemTranslationEditViewModel
+                        {
+                            Id = sit.Id,
+                            LanguageId = sit.LanguageId,
+                            Name = sit.Name,
+                            Title = sit.Title,
+                            Description = sit.Description
+                        }).ToList()
+                    }).ToList(),
+                    Translations = s.Translations.Select(st => new SectionTranslationEditViewModel
+                    {
+                        Id = st.Id,
+                        LanguageId = st.LanguageId,
+                        Name = st.Name,
+                        Title = st.Title,
+                        Description = st.Description
+                    }).ToList()
+                }).ToList(),
+                Translations = page.PageTranslations.Select(pt => new PageTranslationEditViewModel
+                {
+                    Id = pt.Id,
+                    LanguageId = pt.LanguageId,
+                    LanguageName = pt.Language.Name,
+                    LanguageCode = pt.Language.Code,
+                    Value = pt.Value
+                }).ToList(),
+                AvailableLanguages = languages
+            };
+
+            return View(model);
+        }
+
         [HttpGet]
         public IActionResult WebUrl()
         {
