@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MediatR;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using PazarAtlasi.CMS.Persistence.Context;
+using PazarAtlasi.CMS.Models.ViewModels;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -34,19 +36,131 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Main view for menu management
+        /// Pages list with pagination
         /// </summary>
-        public IActionResult Pages()
+        public async Task<IActionResult> Pages(int page = 1, int pageSize = 10)
         {
-            return View();
+            var totalCount = await _pazarAtlasiDbContext.Pages.CountAsync();
+            
+            var pages = await _pazarAtlasiDbContext.Pages
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new PageListViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Code = p.Code,
+                    PageType = p.PageType,
+                    Description = p.Description,
+                    Status = p.Status,
+                    CreatedAt = p.CreatedAt,
+                    UpdatedAt = p.UpdatedAt
+                })
+                .ToListAsync();
+
+            var model = new PageListResponse
+            {
+                Pages = pages,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+
+            return View(model);
         }
 
         /// <summary>
-        /// Main view for menu management
+        /// Page details with all related data
         /// </summary>
-        public IActionResult PageDetails()
+        public async Task<IActionResult> PageDetails(int id)
         {
-            return View();
+            var page = await _pazarAtlasiDbContext.Pages
+                .Include(p => p.PageSEOParameter)
+                .Include(p => p.Sections.OrderBy(s => s.SortOrder))
+                    .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
+                        .ThenInclude(si => si.Translations)
+                .Include(p => p.Sections)
+                    .ThenInclude(s => s.Translations)
+                .Include(p => p.PageTranslations)
+                    .ThenInclude(pt => pt.Language)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (page == null)
+            {
+                return NotFound();
+            }
+
+            var model = new PageDetailsViewModel
+            {
+                Id = page.Id,
+                Name = page.Name,
+                Code = page.Code,
+                PageType = page.PageType,
+                Description = page.Description,
+                Status = page.Status,
+                CreatedAt = page.CreatedAt,
+                UpdatedAt = page.UpdatedAt,
+                SEOParameter = page.PageSEOParameter != null ? new PageSEOParameterViewModel
+                {
+                    Id = page.PageSEOParameter.Id,
+                    MetaTitle = page.PageSEOParameter.MetaTitle,
+                    MetaDescription = page.PageSEOParameter.MetaDescription,
+                    MetaKeywords = page.PageSEOParameter.MetaKeywords,
+                    Title = page.PageSEOParameter.Title,
+                    CanonicalURL = page.PageSEOParameter.CanonicalURL,
+                    Author = page.PageSEOParameter.Author,
+                    Description = page.PageSEOParameter.Description
+                } : null,
+                Sections = page.Sections.Select(s => new SectionViewModel
+                {
+                    Id = s.Id,
+                    Code = s.Code,
+                    Type = s.Type,
+                    TemplateType = s.TemplateType,
+                    Attributes = s.Attributes,
+                    SortOrder = s.SortOrder,
+                    Configure = s.Configure,
+                    Status = s.Status,
+                    SectionItems = s.SectionItems.Select(si => new SectionItemViewModel
+                    {
+                        Id = si.Id,
+                        Code = si.Code,
+                        Type = si.Type,
+                        PictureUrl = si.PictureUrl,
+                        RedirectUrl = si.RedirectUrl,
+                        Icon = si.Icon,
+                        SortOrder = si.SortOrder,
+                        Status = si.Status,
+                        Translations = si.Translations.Select(sit => new SectionItemTranslationViewModel
+                        {
+                            Id = sit.Id,
+                            LanguageId = sit.LanguageId,
+                            Name = sit.Name,
+                            Title = sit.Title,
+                            Description = sit.Description
+                        }).ToList()
+                    }).ToList(),
+                    Translations = s.Translations.Select(st => new SectionTranslationViewModel
+                    {
+                        Id = st.Id,
+                        LanguageId = st.LanguageId,
+                        Name = st.Name,
+                        Title = st.Title,
+                        Description = st.Description
+                    }).ToList()
+                }).ToList(),
+                Translations = page.PageTranslations.Select(pt => new PageTranslationViewModel
+                {
+                    Id = pt.Id,
+                    LanguageId = pt.LanguageId,
+                    LanguageName = pt.Language.Name,
+                    LanguageCode = pt.Language.Code,
+                    Value = pt.Value
+                }).ToList()
+            };
+
+            return View(model);
         }
 
         [HttpGet]

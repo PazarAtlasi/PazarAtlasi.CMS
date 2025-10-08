@@ -1,361 +1,282 @@
+@model PazarAtlasi.CMS.Models.ViewModels.PageListResponse
 @{
-    ViewData["Title"] = "Page Designer";
+    ViewData["Title"] = "Pages Management";
 }
 
-<div class="page-designer">
+<div class="pages-management">
     <div class="flex flex-wrap items-center mb-8">
         <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
             <div class="page-title-box">
-                <h4
-                    class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
-                    Page Designer
+                <h4 class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    Pages Management
                 </h4>
-                <p class="text-slate-500 mt-3 max-w-xl">Customize the appearance and layout of your website with an easy
-                    drag-and-drop interface.</p>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    Manage your website pages, view details and monitor their status.
+                </p>
             </div>
         </div>
         <div class="w-full lg:w-1/3 text-left lg:text-right">
             <div class="inline-flex items-center space-x-2">
-                <select id="page-selector"
-                    class="bg-white border border-slate-200 text-slate-700 py-2 px-4 rounded-lg text-sm focus:outline-none focus:border-purple-300 focus:ring-2 focus:ring-purple-200 shadow-sm">
-                    <option>Home Page</option>
-                    <option>About Us</option>
-                    <option>Products</option>
-                    <option>Contact</option>
-                </select>
-                <button
-                    class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
-                    <i class="fas fa-save mr-2"></i> Save Changes
-                </button>
+                <a href="#" class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-plus mr-2"></i> Add New Page
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-        <div class="lg:col-span-1">
-            <div class="bg-white rounded-xl shadow-md mb-6 sticky top-[80px]">
-                <div class="p-5 border-b border-slate-100">
-                    <h5 class="text-lg font-semibold text-slate-800 m-0">Components</h5>
-                    <p class="text-sm text-slate-500 mt-1">Drag items to your layout</p>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <i class="fas fa-file-alt text-blue-600 text-xl"></i>
                 </div>
-                <div class="p-4">
-                    <div class="component-list space-y-3">
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-heading text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Heading</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-paragraph text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Text Block</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-image text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Image</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-play-circle text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Video</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-link text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Button</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-box text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Product Card</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-th text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Gallery</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-bars text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Navigation Menu</span>
-                            </div>
-                        </div>
-                        <div
-                            class="component-item p-3 bg-slate-50 rounded-lg cursor-move hover:bg-slate-100 transition-colors border border-slate-200 border-dashed">
-                            <div class="flex items-center">
-                                <i class="fas fa-th-large text-purple-600 mr-3"></i>
-                                <span class="font-medium text-slate-700">Hero Section</span>
-                            </div>
-                        </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Total Pages</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.TotalCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-full">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Active Pages</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.Pages.Count(p => p.Status == PazarAtlasi.CMS.Domain.Common.Status.Active)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-yellow-100 rounded-full">
+                    <i class="fas fa-edit text-yellow-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Draft Pages</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.Pages.Count(p => p.Status == PazarAtlasi.CMS.Domain.Common.Status.Draft)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Current Page</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.PageNumber/@Model.TotalPages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pages Table -->
+    <div class="bg-white rounded-xl shadow-md">
+        <div class="p-6 border-b border-slate-100">
+            <div class="flex flex-wrap items-center justify-between">
+                <h5 class="text-lg font-semibold text-slate-800 m-0">All Pages</h5>
+                <div class="flex items-center space-x-2 mt-4 md:mt-0">
+                    <div class="relative">
+                        <input type="text" placeholder="Search pages..." 
+                               class="pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                     </div>
+                    <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Draft">Draft</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Archived">Archived</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <div class="lg:col-span-3">
-            <div class="bg-white rounded-xl shadow-md mb-6">
-                <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                    <h5 class="text-lg font-semibold text-slate-800 m-0 flex items-center">
-                        <span class="mr-2">Page Layout</span>
-                        <span class="text-xs bg-purple-100 text-purple-800 rounded-full px-2 py-0.5">Preview Mode</span>
-                    </h5>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Page Info</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Created</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Updated</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-200">
+                    @if (Model.Pages.Any())
+                    {
+                        @foreach (var pageDetail in Model.Pages)
+                        {
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                                <i class="fas fa-file-alt text-purple-600"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-slate-900">@pageDetail.Name</div>
+                                            <div class="text-sm text-slate-500">/@pageDetail.Code</div>
+                                            @if (!string.IsNullOrEmpty(pageDetail.Description))
+                                            {
+                                                <div class="text-xs text-slate-400 mt-1 max-w-xs truncate">@pageDetail.Description</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        @pageDetail.PageTypeName
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @pageDetail.StatusBadgeClass">
+                                        @pageDetail.StatusName
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <div>@pageDetail.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                    <div class="text-xs">@pageDetail.CreatedAt.ToString("HH:mm")</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    @if (pageDetail.UpdatedAt.HasValue)
+                                    {
+                                        <div>@pageDetail.UpdatedAt.Value.ToString("dd/MM/yyyy")</div>
+                                        <div class="text-xs">@pageDetail.UpdatedAt.Value.ToString("HH:mm")</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-slate-400">Never</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex items-center space-x-2">
+                                        <a href="@Url.Action("PageDetails", "Content", new { id = pageDetail.Id })" 
+                                           class="text-purple-600 hover:text-purple-900 transition-colors" 
+                                           title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="#" 
+                                           class="text-blue-600 hover:text-blue-900 transition-colors" 
+                                           title="Edit Page">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="#" 
+                                           class="text-green-600 hover:text-green-900 transition-colors" 
+                                           title="Preview Page">
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                        <button class="text-red-600 hover:text-red-900 transition-colors" 
+                                                title="Delete Page"
+                                                onclick="confirmDelete(@pageDetail.Id, '@pageDetail.Name')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center">
+                                <div class="text-slate-400">
+                                    <i class="fas fa-file-alt text-4xl mb-4"></i>
+                                    <p class="text-lg font-medium">No pages found</p>
+                                    <p class="text-sm">Create your first page to get started.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="px-6 py-4 border-t border-slate-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-slate-700">
+                        Showing <span class="font-medium">@((Model.PageNumber - 1) * Model.PageSize + 1)</span> to 
+                        <span class="font-medium">@Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)</span> of 
+                        <span class="font-medium">@Model.TotalCount</span> results
+                    </div>
                     <div class="flex items-center space-x-2">
-                        <button class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700 text-sm">
-                            <i class="fas fa-desktop"></i>
-                        </button>
-                        <button class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-500 text-sm">
-                            <i class="fas fa-tablet-alt"></i>
-                        </button>
-                        <button class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-500 text-sm">
-                            <i class="fas fa-mobile-alt"></i>
-                        </button>
-                    </div>
-                </div>
-                <div
-                    class="p-6 bg-slate-50 min-h-[600px] border-2 border-dashed border-slate-200 rounded-lg mx-6 my-6 relative">
-                    <!-- Hero Section Editor -->
-                    <div class="bg-white p-4 rounded-lg shadow-md mb-6 relative group">
-                        <div
-                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1">
-                            <button class="bg-slate-200 p-1 rounded hover:bg-slate-300 text-xs">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="bg-slate-200 p-1 rounded hover:bg-slate-300 text-xs">
-                                <i class="fas fa-arrows-alt"></i>
-                            </button>
-                            <button class="bg-red-200 p-1 rounded hover:bg-red-300 text-xs text-red-700">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                        <h6 class="text-xs uppercase tracking-wider text-slate-500 mb-2">Hero Section</h6>
-                        <div class="border border-slate-200 rounded-lg p-4">
-                            <div class="flex flex-col lg:flex-row gap-4">
-                                <div class="flex-1 bg-slate-200 rounded h-[140px] flex items-center justify-center">
-                                    <i class="fas fa-image text-slate-400 text-3xl"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="h-6 bg-slate-200 rounded w-3/4 mb-3"></div>
-                                    <div class="h-4 bg-slate-200 rounded w-full mb-2"></div>
-                                    <div class="h-4 bg-slate-200 rounded w-full mb-2"></div>
-                                    <div class="h-4 bg-slate-200 rounded w-4/5 mb-4"></div>
-                                    <div class="h-8 bg-purple-200 rounded w-1/3"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        @if (Model.HasPreviousPage)
+                        {
+                            <a href="@Url.Action("Pages", "Content", new { page = Model.PageNumber - 1, pageSize = Model.PageSize })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                Previous
+                            </a>
+                        }
 
-                    <!-- Navigation Editor -->
-                    <div class="bg-white p-4 rounded-lg shadow-md mb-6 relative group">
-                        <div
-                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1">
-                            <button class="bg-slate-200 p-1 rounded hover:bg-slate-300 text-xs">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="bg-slate-200 p-1 rounded hover:bg-slate-300 text-xs">
-                                <i class="fas fa-arrows-alt"></i>
-                            </button>
-                            <button class="bg-red-200 p-1 rounded hover:bg-red-300 text-xs text-red-700">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                        <h6 class="text-xs uppercase tracking-wider text-slate-500 mb-2">Navigation Menu</h6>
-                        <div class="border border-slate-200 rounded-lg p-2">
-                            <div class="flex flex-wrap gap-2">
-                                <div
-                                    class="h-8 bg-purple-100 rounded px-4 flex items-center justify-center text-xs text-purple-800 font-medium">
-                                    Home</div>
-                                <div
-                                    class="h-8 bg-slate-100 rounded px-4 flex items-center justify-center text-xs text-slate-800 font-medium">
-                                    About</div>
-                                <div
-                                    class="h-8 bg-slate-100 rounded px-4 flex items-center justify-center text-xs text-slate-800 font-medium">
-                                    Products</div>
-                                <div
-                                    class="h-8 bg-slate-100 rounded px-4 flex items-center justify-center text-xs text-slate-800 font-medium">
-                                    Services</div>
-                                <div
-                                    class="h-8 bg-slate-100 rounded px-4 flex items-center justify-center text-xs text-slate-800 font-medium">
-                                    Contact</div>
-                                <div
-                                    class="h-8 rounded-full w-8 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400">
-                                    <i class="fas fa-plus text-xs"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                        {
+                            @if (i == Model.PageNumber)
+                            {
+                                <span class="px-3 py-2 text-sm font-medium text-white bg-purple-600 border border-purple-600 rounded-md">
+                                    @i
+                                </span>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Pages", "Content", new { page = i, pageSize = Model.PageSize })" 
+                                   class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                    @i
+                                </a>
+                            }
+                        }
 
-                    <!-- Product Cards Editor -->
-                    <div class="bg-white p-4 rounded-lg shadow-md relative group">
-                        <div
-                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1">
-                            <button class="bg-slate-200 p-1 rounded hover:bg-slate-300 text-xs">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="bg-slate-200 p-1 rounded hover:bg-slate-300 text-xs">
-                                <i class="fas fa-arrows-alt"></i>
-                            </button>
-                            <button class="bg-red-200 p-1 rounded hover:bg-red-300 text-xs text-red-700">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                        <h6 class="text-xs uppercase tracking-wider text-slate-500 mb-2">Product Cards Section</h6>
-                        <div class="border border-slate-200 rounded-lg p-4">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="border border-slate-200 rounded-lg p-2">
-                                    <div class="h-[80px] bg-slate-200 rounded mb-2"></div>
-                                    <div class="h-4 bg-slate-200 rounded w-2/3 mb-2"></div>
-                                    <div class="h-3 bg-slate-200 rounded w-1/3"></div>
-                                </div>
-                                <div class="border border-slate-200 rounded-lg p-2">
-                                    <div class="h-[80px] bg-slate-200 rounded mb-2"></div>
-                                    <div class="h-4 bg-slate-200 rounded w-2/3 mb-2"></div>
-                                    <div class="h-3 bg-slate-200 rounded w-1/3"></div>
-                                </div>
-                                <div
-                                    class="border border-dashed border-slate-300 rounded-lg p-2 flex items-center justify-center">
-                                    <div class="text-slate-400 text-center">
-                                        <i class="fas fa-plus mb-1"></i>
-                                        <div class="text-xs">Add Card</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Drop Zone Placeholder -->
-                    <div
-                        class="mt-6 border-2 border-dashed border-slate-300 rounded-lg p-6 flex items-center justify-center">
-                        <div class="text-slate-400 text-center">
-                            <i class="fas fa-plus-circle text-2xl mb-2"></i>
-                            <div>Drag and drop components here</div>
-                        </div>
+                        @if (Model.HasNextPage)
+                        {
+                            <a href="@Url.Action("Pages", "Content", new { page = Model.PageNumber + 1, pageSize = Model.PageSize })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                Next
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
-
-            <!-- Component Properties Panel -->
-            <div class="bg-white rounded-xl shadow-md mb-6">
-                <div class="p-5 border-b border-slate-100">
-                    <h5 class="text-lg font-semibold text-slate-800 m-0">Properties</h5>
-                    <p class="text-sm text-slate-500 mt-1">Edit the selected component</p>
-                </div>
-                <div class="p-5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Element Title</label>
-                            <input type="text"
-                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                                value="Hero Section" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Element Type</label>
-                            <select
-                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
-                                <option>Hero Section</option>
-                                <option>Navigation</option>
-                                <option>Product Grid</option>
-                                <option>Text Block</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Background Color</label>
-                            <div class="flex items-center">
-                                <div class="w-8 h-8 bg-white border border-slate-300 rounded mr-2"></div>
-                                <input type="text"
-                                    class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                                    value="#FFFFFF" />
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Text Color</label>
-                            <div class="flex items-center">
-                                <div class="w-8 h-8 bg-slate-800 border border-slate-300 rounded mr-2"></div>
-                                <input type="text"
-                                    class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                                    value="#1E293B" />
-                            </div>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Heading Text</label>
-                            <input type="text"
-                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                                value="Welcome to Pazar Atlasi" />
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                            <textarea
-                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 min-h-[80px]">Discover our wide range of products and exclusive deals. Shop now for amazing offers!</textarea>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Hero Image</label>
-                            <div class="border border-slate-300 border-dashed rounded-lg p-4">
-                                <div class="flex items-center justify-center flex-col">
-                                    <div
-                                        class="bg-slate-100 rounded h-[100px] w-full flex items-center justify-center mb-3">
-                                        <i class="fas fa-image text-slate-400 text-2xl"></i>
-                                    </div>
-                                    <button
-                                        class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors inline-flex items-center">
-                                        <i class="fas fa-upload mr-2"></i> Upload Image
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Button Text</label>
-                            <input type="text"
-                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                                value="Shop Now" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Button URL</label>
-                            <input type="text"
-                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                                value="/products" />
-                        </div>
-                    </div>
-
-                    <div class="border-t border-slate-200 mt-6 pt-6 flex justify-end space-x-2">
-                        <button
-                            class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors inline-flex items-center">
-                            Cancel
-                        </button>
-                        <button
-                            class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
-                            <i class="fas fa-check mr-2"></i> Apply Changes
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Toggle active state for component items
-        const componentItems = document.querySelectorAll('.component-item');
-        componentItems.forEach(item => {
-            item.addEventListener('click', function () {
-                this.classList.toggle('bg-purple-50');
-                this.classList.toggle('border-purple-300');
+    function confirmDelete(pageId, pageName) {
+        if (confirm(`Are you sure you want to delete the page "${pageName}"? This action cannot be undone.`)) {
+            // Here you would make an AJAX call to delete the page
+            console.log('Delete page with ID:', pageId);
+        }
+    }
+
+    // Search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[placeholder="Search pages..."]');
+        const statusFilter = document.querySelector('select');
+        
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusFilter = document.querySelector('select').value;
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const pageInfo = row.querySelector('td:first-child').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(3) span').textContent;
+                
+                const matchesSearch = pageInfo.includes(searchTerm);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
             });
-        });
+        }
+        
+        searchInput.addEventListener('input', filterTable);
+        statusFilter.addEventListener('change', filterTable);
     });
 </script>
