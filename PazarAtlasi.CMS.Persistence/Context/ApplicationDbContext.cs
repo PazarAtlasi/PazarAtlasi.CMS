@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PazarAtlasi.CMS.Domain.Common;
+using PazarAtlasi.CMS.Domain.Entities.Content;
 
 namespace PazarAtlasi.CMS.Persistence.Context
 {
@@ -13,21 +14,39 @@ namespace PazarAtlasi.CMS.Persistence.Context
         {
         }
 
+        public DbSet<Content> Contents { get; set; }
+
+        public DbSet<Language> Languages { get; set; }
+
+        public DbSet<Page> Pages { get; set; }
+
+        public DbSet<PageSEOParameter> PageSEOParameters { get; set; }
+
+        public DbSet<PageTranslation> PageTranslations { get; set; }
+
+        public DbSet<Section> Sections { get; set; }
+        
+        public DbSet<SectionItem> SectionItems { get; set; }
+
+        public DbSet<SectionItemTranslation> SectionItemTranslations { get; set; }
+        
+        public DbSet<SectionTranslation> SectionTranslations { get; set; }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var now = DateTime.UtcNow;
 
-            foreach (var entry in ChangeTracker.Entries<Entity>())
+            foreach (var entry in ChangeTracker.Entries<Entity<int>>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedAt = now;
-                        entry.Entity.CreatedBy = "system"; // Will be replaced with actual user
+                        entry.Entity.CreatedBy = 1; // Will be replaced with actual user
                         break;
                     case EntityState.Modified:
                         entry.Entity.UpdatedAt = now;
-                        entry.Entity.UpdatedBy = "system"; // Will be replaced with actual user
+                        entry.Entity.UpdatedBy = 1; // Will be replaced with actual user
                         break;
                 }
             }

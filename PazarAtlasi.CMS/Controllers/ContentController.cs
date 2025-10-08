@@ -4,14 +4,17 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using PazarAtlasi.CMS.Persistence.Context;
 
 namespace PazarAtlasi.CMS.Controllers
 {
     public class ContentController : Controller
     {
+        private readonly PazarAtlasiDbContext _pazarAtlasiDbContext;
 
-        public ContentController()
+        public ContentController(PazarAtlasiDbContext pazarAtlasiDbContext)
         {
+            _pazarAtlasiDbContext = pazarAtlasiDbContext;
         }
 
         /// <summary>
