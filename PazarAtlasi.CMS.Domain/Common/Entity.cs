@@ -2,13 +2,20 @@ using System;
 
 namespace PazarAtlasi.CMS.Domain.Common
 {
-    public abstract class Entity
+    public abstract class Entity<T>
     {
-        public int Id { get; set; }
+        public required T Id { get; set; }
+
         public DateTime CreatedAt { get; set; }
-        public string? CreatedBy { get; set; }
+
+        public int? CreatedBy { get; set; }
+
         public DateTime? UpdatedAt { get; set; }
-        public string? UpdatedBy { get; set; }
+
+        public int? UpdatedBy { get; set; }
+
         public bool IsDeleted { get; set; } = false;
+
+        public Status Status { get; set; } = Status.Draft;
     }
 }

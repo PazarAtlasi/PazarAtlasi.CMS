@@ -6,9 +6,9 @@ using PazarAtlasi.CMS.Domain.Common;
 
 namespace PazarAtlasi.CMS.Persistence.Context
 {
-    public class ApplicationDbContext : DbContext
+    public class PazarAtlasiDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public PazarAtlasiDbContext(DbContextOptions<PazarAtlasiDbContext> options)
             : base(options)
         {
         }
@@ -40,7 +40,7 @@ namespace PazarAtlasi.CMS.Persistence.Context
             base.OnModelCreating(modelBuilder);
 
             // Apply entity configurations
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(PazarAtlasiDbContext).Assembly);
         }
     }
 }
