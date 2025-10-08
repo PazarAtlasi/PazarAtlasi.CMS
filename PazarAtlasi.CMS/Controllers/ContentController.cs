@@ -41,6 +41,14 @@ namespace PazarAtlasi.CMS.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Main view for menu management
+        /// </summary>
+        public IActionResult PageDetails()
+        {
+            return View();
+        }
+
         [HttpGet]
         public IActionResult WebUrl()
         {
