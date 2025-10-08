@@ -1,25 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
-using PazarAtlasi.CMS.Application.Features.MenuItems.Commands.CreateMenuItem;
-using PazarAtlasi.CMS.Application.Features.MenuItems.Queries.GetAllMenuItems;
 using MediatR;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
-using PazarAtlasi.CMS.Application.Models;
 
 namespace PazarAtlasi.CMS.Controllers
 {
     public class ContentController : Controller
     {
-        private readonly IMediator _mediator;
-        private readonly IContentService _contentService;
 
-        public ContentController(IMediator mediator, IContentService contentService)
+        public ContentController()
         {
-            _mediator = mediator;
-            _contentService = contentService;
         }
 
         /// <summary>
@@ -36,39 +28,6 @@ namespace PazarAtlasi.CMS.Controllers
         public IActionResult MenuItems()
         {
             return View();
-        }
-
-        /// <summary>
-        /// Get all menu items as JSON
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetAllMenuItems()
-        {
-            var query = new GetAllMenuItemsQuery();
-            var menuItems = await _mediator.Send(query);
-            return Json(menuItems);
-        }
-
-        /// <summary>
-        /// Create a new menu item
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> CreateMenuItem(CreateMenuItemCommand command)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var result = await _mediator.Send(command);
-                return Json(new { success = true, data = result });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
         }
 
         /// <summary>
@@ -232,35 +191,6 @@ namespace PazarAtlasi.CMS.Controllers
                     }
                 }
             };
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Discovery()
-        {
-            var discoveryResponse = await _contentService.DiscoverEndpointsAsync();
-            return View(discoveryResponse);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Categories()
-        {
-            var categories = await _contentService.GetCategoriesAsync();
-            return View(categories);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> MenuItems(int pageIndex = 0, int pageSize = 10)
-        {
-            var pageRequest = new PageRequest { PageIndex = pageIndex, PageSize = pageSize };
-            var menus = await _contentService.GetListAsync<dynamic>("MenuItems", pageRequest);
-            return View(menus);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> MenuItemDetails(int id)
-        {
-            var menu = await _contentService.GetByIdAsync<dynamic>("MenuItems", id);
-            return View(menu);
         }
     }
 }

@@ -2,26 +2,22 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using PazarAtlasi.CMS.Application.Common.Interfaces;
-using PazarAtlasi.CMS.Domain.Entities;
+using PazarAtlasi.CMS.Domain.Common;
 
 namespace PazarAtlasi.CMS.Persistence.Context
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<WebUrl> WebUrls { get; set; }
-        public DbSet<Announcement> Announcements { get; set; }
-
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var now = DateTime.UtcNow;
 
-            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+            foreach (var entry in ChangeTracker.Entries<Entity>())
             {
                 switch (entry.State)
                 {

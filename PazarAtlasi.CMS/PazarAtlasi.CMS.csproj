@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\PazarAtlasi.CMS.Application\PazarAtlasi.CMS.Application.csproj" />
-    <ProjectReference Include="..\PazarAtlasi.CMS.Infrastructure\PazarAtlasi.CMS.Infrastructure.csproj" />
     <ProjectReference Include="..\PazarAtlasi.CMS.Persistence\PazarAtlasi.CMS.Persistence.csproj" />
   </ItemGroup>
 
@@ -37,10 +35,6 @@
     <Reference Include="PazarAtlasi.Core.Security">
       <HintPath>..\..\PazarAtlasi.Core\PazarAtlasi.Core.Security\bin\Debug\net8.0\PazarAtlasi.Core.Security.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Handlers\" />
   </ItemGroup>
 
 </Project>
