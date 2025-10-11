@@ -76,10 +76,13 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int Id { get; set; }
         public string? Code { get; set; }
         public SectionItemType Type { get; set; }
+        public MediaType MediaType { get; set; }
         public string? PictureUrl { get; set; }
+        public string? VideoUrl { get; set; }
         public string? RedirectUrl { get; set; }
         public string? Icon { get; set; }
         public int SortOrder { get; set; }
+        public string? MediaAttributes { get; set; }
         public Status Status { get; set; }
         
         // Section item translations
@@ -97,6 +100,16 @@ namespace PazarAtlasi.CMS.Models.ViewModels
             SectionItemType.Form => "fas fa-wpforms",
             SectionItemType.Map => "fas fa-map-marker-alt",
             _ => "fas fa-cube"
+        };
+
+        public string MediaTypeDisplay => MediaType switch
+        {
+            MediaType.Image => "Single Image",
+            MediaType.Video => "Video",
+            MediaType.ImageSlider => "Image Slider",
+            MediaType.Audio => "Audio",
+            MediaType.Document => "Document",
+            _ => "None"
         };
     }
 

@@ -119,4 +119,24 @@ namespace PazarAtlasi.CMS.Domain.Common
         SingleItem,
         MultiItem
     }
+
+    public enum MediaType
+    {
+        None,
+        Image,
+        Video,
+        ImageSlider,
+        Audio,
+        Document
+    }
+
+    public enum HeroType
+    {
+        None,
+        SingleImage,
+        Slider,
+        Video,
+        ImageWithText,
+        VideoWithText
+    }
 }

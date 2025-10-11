@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PazarAtlasi.CMS.Persistence\PazarAtlasi.CMS.Persistence.csproj" />
+    <ProjectReference Include="..\PazarAtlasi.CMS.Application\PazarAtlasi.CMS.Application.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

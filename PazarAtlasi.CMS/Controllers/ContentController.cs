@@ -2,21 +2,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using PazarAtlasi.CMS.Persistence.Context;
 using PazarAtlasi.CMS.Models.ViewModels;
+using PazarAtlasi.CMS.Domain.Entities.Content;
+using PazarAtlasi.CMS.Application.Features.SectionItems.Commands.Create;
+using PazarAtlasi.CMS.Application.Features.SectionItems.Commands.Update;
+using PazarAtlasi.CMS.Application.Features.SectionItems.Commands.Delete;
+using PazarAtlasi.CMS.Application.Features.SectionItems.Queries.GetById;
+using PazarAtlasi.CMS.Application.Features.SectionItems.Queries.GetBySectionId;
+using PazarAtlasi.CMS.Application.Services.Abstractions;
 
 namespace PazarAtlasi.CMS.Controllers
 {
     public class ContentController : Controller
     {
         private readonly PazarAtlasiDbContext _pazarAtlasiDbContext;
+        private readonly IMediator _mediator;
+        private readonly IMediaUploadService _mediaUploadService;
 
-        public ContentController(PazarAtlasiDbContext pazarAtlasiDbContext)
+        public ContentController(
+            PazarAtlasiDbContext pazarAtlasiDbContext, 
+            IMediator mediator,
+            IMediaUploadService mediaUploadService)
         {
             _pazarAtlasiDbContext = pazarAtlasiDbContext;
+            _mediator = mediator;
+            _mediaUploadService = mediaUploadService;
         }
 
         /// <summary>
@@ -164,39 +179,186 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Page edit form
+        /// Page edit form - GET
         /// </summary>
+        [HttpGet]
         public async Task<IActionResult> PageEdit(int id)
         {
-            var page = await _pazarAtlasiDbContext.Pages
-                .Include(p => p.PageSEOParameter)
-                .Include(p => p.Sections.OrderBy(s => s.SortOrder))
-                    .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
-                        .ThenInclude(si => si.Translations)
-                .Include(p => p.Sections)
-                    .ThenInclude(s => s.Translations)
-                .Include(p => p.PageTranslations)
-                    .ThenInclude(pt => pt.Language)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (page == null)
+            try
             {
-                return NotFound();
+                var page = await _pazarAtlasiDbContext.Pages
+                    .Include(p => p.PageSEOParameter)
+                    .Include(p => p.Sections.OrderBy(s => s.SortOrder))
+                        .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
+                            .ThenInclude(si => si.Translations)
+                    .Include(p => p.Sections)
+                        .ThenInclude(s => s.Translations)
+                    .Include(p => p.PageTranslations)
+                        .ThenInclude(pt => pt.Language)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (page == null)
+                {
+                    TempData["ErrorMessage"] = "Page not found.";
+                    return RedirectToAction("Pages");
+                }
+
+                // Get available languages
+                var languages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .ToListAsync();
+
+                var model = MapToPageEditViewModel(page, languages);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the page.";
+                return RedirectToAction("Pages");
+            }
+        }
+
+        /// <summary>
+        /// Page edit form - POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PageEdit(PageEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Reload languages for dropdown
+                model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                return View(model);
             }
 
-            // Get available languages
-            var languages = await _pazarAtlasiDbContext.Languages
-                .Where(l => !l.IsDeleted)
-                .Select(l => new LanguageViewModel
-                {
-                    Id = l.Id,
-                    Name = l.Name,
-                    Code = l.Code,
-                    IsDefault = l.IsDefault
-                })
-                .ToListAsync();
+            try
+            {
+                var page = await _pazarAtlasiDbContext.Pages
+                    .Include(p => p.PageSEOParameter)
+                    .Include(p => p.Sections)
+                        .ThenInclude(s => s.SectionItems)
+                            .ThenInclude(si => si.Translations)
+                    .Include(p => p.Sections)
+                        .ThenInclude(s => s.Translations)
+                    .Include(p => p.PageTranslations)
+                    .FirstOrDefaultAsync(p => p.Id == model.Id);
 
-            var model = new PageEditViewModel
+                if (page == null)
+                {
+                    TempData["ErrorMessage"] = "Page not found.";
+                    return RedirectToAction("Pages");
+                }
+
+                // Update page properties
+                page.Name = model.Name;
+                page.Code = model.Code;
+                page.PageType = model.PageType;
+                page.Description = model.Description;
+                page.Status = model.Status;
+                page.UpdatedAt = DateTime.UtcNow;
+
+                // Update SEO parameters
+                if (model.SEOParameter != null)
+                {
+                    if (page.PageSEOParameter == null)
+                    {
+                        page.PageSEOParameter = new PageSEOParameter
+                        {
+                            Id = 0, 
+                            PageId = page.Id
+                        };
+                        _pazarAtlasiDbContext.PageSEOParameters.Add(page.PageSEOParameter);
+                    }
+
+                    page.PageSEOParameter.MetaTitle = model.SEOParameter.MetaTitle;
+                    page.PageSEOParameter.MetaDescription = model.SEOParameter.MetaDescription;
+                    page.PageSEOParameter.MetaKeywords = model.SEOParameter.MetaKeywords;
+                    page.PageSEOParameter.Title = model.SEOParameter.Title;
+                    page.PageSEOParameter.CanonicalURL = model.SEOParameter.CanonicalURL;
+                    page.PageSEOParameter.Author = model.SEOParameter.Author;
+                    page.PageSEOParameter.Description = model.SEOParameter.Description;
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Page updated successfully.";
+                return RedirectToAction("PageDetails", new { id = model.Id });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while saving the page.");
+                model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                return View(model);
+            }
+        }
+
+        /// <summary>
+        /// Save page as draft
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> SaveDraft(int id, [FromBody] PageEditViewModel model)
+        {
+            try
+            {
+                var page = await _pazarAtlasiDbContext.Pages.FindAsync(id);
+                if (page == null)
+                {
+                    return Json(new { success = false, message = "Page not found." });
+                }
+
+                page.Status = Domain.Common.Status.Draft;
+                page.UpdatedAt = DateTime.UtcNow;
+                
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Page saved as draft." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while saving draft." });
+            }
+        }
+
+        /// <summary>
+        /// Publish page
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> PublishPage(int id)
+        {
+            try
+            {
+                var page = await _pazarAtlasiDbContext.Pages.FindAsync(id);
+                if (page == null)
+                {
+                    return Json(new { success = false, message = "Page not found." });
+                }
+
+                page.Status = Domain.Common.Status.Active;
+                page.UpdatedAt = DateTime.UtcNow;
+                
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Page published successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while publishing page." });
+            }
+        }
+
+        #region Helper Methods
+
+        private PageEditViewModel MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
+        {
+            return new PageEditViewModel
             {
                 Id = page.Id,
                 Name = page.Name,
@@ -214,7 +376,7 @@ namespace PazarAtlasi.CMS.Controllers
                     CanonicalURL = page.PageSEOParameter.CanonicalURL,
                     Author = page.PageSEOParameter.Author,
                     Description = page.PageSEOParameter.Description
-                } : null,
+                } : new PageSEOParameterEditViewModel(),
                 Sections = page.Sections.Select(s => new SectionEditViewModel
                 {
                     Id = s.Id,
@@ -263,9 +425,154 @@ namespace PazarAtlasi.CMS.Controllers
                 }).ToList(),
                 AvailableLanguages = languages
             };
-
-            return View(model);
         }
+
+        private async Task<List<LanguageViewModel>> GetAvailableLanguagesAsync()
+        {
+            return await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Add new section to page
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> AddSection(int pageId, string sectionCode, string sectionType, string templateType)
+        {
+            try
+            {
+                var page = await _pazarAtlasiDbContext.Pages
+                    .Include(p => p.Sections)
+                    .FirstOrDefaultAsync(p => p.Id == pageId);
+
+                if (page == null)
+                {
+                    return Json(new { success = false, message = "Page not found." });
+                }
+
+                // Get next sort order
+                var maxSortOrder = page.Sections.Any() ? page.Sections.Max(s => s.SortOrder) : 0;
+
+                var newSection = new Section
+                {
+                    Id = 0, // EF will generate
+                    PageId = pageId,
+                    Code = sectionCode ?? $"section_{maxSortOrder + 1}",
+                    Type = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.SectionType>(sectionType, out var parsedSectionType) 
+                        ? parsedSectionType 
+                        : PazarAtlasi.CMS.Domain.Common.SectionType.None,
+                    TemplateType = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.TemplateType>(templateType, out var parsedTemplateType) 
+                        ? parsedTemplateType 
+                        : PazarAtlasi.CMS.Domain.Common.TemplateType.Default,
+                    SortOrder = maxSortOrder + 1,
+                    Status = PazarAtlasi.CMS.Domain.Common.Status.Active,
+                    Configure = "{}",
+                    Attributes = "{}"
+                };
+
+                _pazarAtlasiDbContext.Sections.Add(newSection);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { 
+                    success = true, 
+                    message = "Section added successfully.",
+                    sectionId = newSection.Id,
+                    sectionHtml = await RenderSectionHtml(newSection)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while adding section." });
+            }
+        }
+
+        /// <summary>
+        /// Remove section from page
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> RemoveSection(int sectionId)
+        {
+            try
+            {
+                var section = await _pazarAtlasiDbContext.Sections
+                    .Include(s => s.SectionItems)
+                        .ThenInclude(si => si.Translations)
+                    .Include(s => s.Translations)
+                    .FirstOrDefaultAsync(s => s.Id == sectionId);
+
+                if (section == null)
+                {
+                    return Json(new { success = false, message = "Section not found." });
+                }
+
+                // Remove related data
+                _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(
+                    section.SectionItems.SelectMany(si => si.Translations));
+                _pazarAtlasiDbContext.SectionItems.RemoveRange(section.SectionItems);
+                _pazarAtlasiDbContext.SectionTranslations.RemoveRange(section.Translations);
+                _pazarAtlasiDbContext.Sections.Remove(section);
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Section removed successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while removing section." });
+            }
+        }
+
+        /// <summary>
+        /// Render section HTML for AJAX response
+        /// </summary>
+        private async Task<string> RenderSectionHtml(Section section)
+        {
+            // This is a simplified version - in a real app you'd use a proper view rendering service
+            return $@"
+                <div class='section-editor border border-slate-200 rounded-lg p-6' data-section-id='{section.Id}'>
+                    <div class='flex items-center justify-between mb-4'>
+                        <div class='flex items-center'>
+                            <div class='drag-handle cursor-move mr-3 p-2 text-slate-400 hover:text-slate-600'>
+                                <i class='fas fa-grip-vertical'></i>
+                            </div>
+                            <div>
+                                <h6 class='font-medium text-slate-800'>{section.Code}</h6>
+                                <p class='text-sm text-slate-500'>{section.Type} - {section.TemplateType}</p>
+                            </div>
+                            <span class='ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded'>0 items</span>
+                        </div>
+                        <div class='flex items-center space-x-2'>
+                            <span class='text-sm text-slate-500'>Order: {section.SortOrder}</span>
+                            <button type='button' class='text-blue-600 hover:text-blue-800 p-1' onclick='toggleSectionSettings({section.Id})' title='Settings'>
+                                <i class='fas fa-cog'></i>
+                            </button>
+                            <button type='button' class='text-green-600 hover:text-green-800 p-1' onclick='duplicateSection({section.Id})' title='Duplicate'>
+                                <i class='fas fa-copy'></i>
+                            </button>
+                            <button type='button' class='text-red-600 hover:text-red-800 p-1' onclick='removeSection({section.Id})' title='Delete'>
+                                <i class='fas fa-trash'></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class='text-center py-8 text-slate-500'>
+                        <i class='fas fa-plus-circle text-3xl mb-2'></i>
+                        <p class='text-sm'>No items in this section</p>
+                        <button type='button' class='mt-2 text-blue-600 hover:text-blue-800 text-sm' onclick='addSectionItem({section.Id})'>
+                            Add First Item
+                        </button>
+                    </div>
+                </div>";
+        }
+
+        #endregion
 
         [HttpGet]
         public IActionResult WebUrl()
@@ -507,5 +814,305 @@ namespace PazarAtlasi.CMS.Controllers
                 }
             };
         }
+
+        #region Section Item Management
+
+        /// <summary>
+        /// Get section item modal for editing
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSectionItemModal(int id, int sectionId)
+        {
+            try
+            {
+                SectionItemModalViewModel model;
+
+                if (id > 0)
+                {
+                    // Edit existing item
+                    var query = new GetSectionItemByIdQuery { Id = id };
+                    var result = await _mediator.Send(query);
+
+                    if (!result.Success || result.Data == null)
+                    {
+                        return Json(new { success = false, message = "Section item not found." });
+                    }
+
+                    var section = await _pazarAtlasiDbContext.Sections
+                        .FirstOrDefaultAsync(s => s.Id == result.Data.SectionId);
+
+                    model = new SectionItemModalViewModel
+                    {
+                        Id = result.Data.Id,
+                        SectionId = result.Data.SectionId,
+                        SectionCode = section?.Code,
+                        SectionType = section?.Type ?? Domain.Common.SectionType.None,
+                        Code = result.Data.Code,
+                        Type = result.Data.Type,
+                        MediaType = result.Data.MediaType,
+                        PictureUrl = result.Data.PictureUrl,
+                        VideoUrl = result.Data.VideoUrl,
+                        RedirectUrl = result.Data.RedirectUrl,
+                        Icon = result.Data.Icon,
+                        SortOrder = result.Data.SortOrder,
+                        MediaAttributes = result.Data.MediaAttributes,
+                        Status = result.Data.Status,
+                        Translations = result.Data.Translations.Select(t => new SectionItemTranslationModalViewModel
+                        {
+                            Id = t.Id,
+                            SectionItemId = t.SectionItemId,
+                            LanguageId = t.LanguageId,
+                            LanguageName = t.LanguageName,
+                            LanguageCode = t.LanguageCode,
+                            Name = t.Name,
+                            Title = t.Title,
+                            Description = t.Description
+                        }).ToList()
+                    };
+                }
+                else
+                {
+                    // Create new item
+                    var section = await _pazarAtlasiDbContext.Sections
+                        .FirstOrDefaultAsync(s => s.Id == sectionId);
+
+                    if (section == null)
+                    {
+                        return Json(new { success = false, message = "Section not found." });
+                    }
+
+                    var maxSortOrder = await _pazarAtlasiDbContext.SectionItems
+                        .Where(si => si.SectionId == sectionId)
+                        .MaxAsync(si => (int?)si.SortOrder) ?? 0;
+
+                    model = new SectionItemModalViewModel
+                    {
+                        Id = 0,
+                        SectionId = sectionId,
+                        SectionCode = section.Code,
+                        SectionType = section.Type,
+                        SortOrder = maxSortOrder + 1,
+                        Status = Domain.Common.Status.Active
+                    };
+                }
+
+                // Get available languages
+                model.AvailableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .ToListAsync();
+
+                return PartialView("~/Views/Shared/Content/_SectionItemModal.cshtml", model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Create or update section item
+        /// </summary>
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> SaveSectionItem([FromForm] SectionItemRequest request)
+        {
+            try
+            {
+                if (request.Id > 0)
+                {
+                    // Update existing item
+                    var command = new UpdateSectionItemCommand
+                    {
+                        Id = request.Id,
+                        Code = request.Code,
+                        Type = request.Type,
+                        MediaType = request.MediaType,
+                        PictureUrl = request.PictureUrl,
+                        VideoUrl = request.VideoUrl,
+                        RedirectUrl = request.RedirectUrl,
+                        Icon = request.Icon,
+                        SortOrder = request.SortOrder,
+                        MediaAttributes = request.MediaAttributes,
+                        Status = request.Status,
+                        Translations = request.Translations.Select(t => new UpdateSectionItemTranslationDto
+                        {
+                            Id = t.Id,
+                            LanguageId = t.LanguageId,
+                            Name = t.Name,
+                            Title = t.Title,
+                            Description = t.Description
+                        }).ToList()
+                    };
+
+                    var result = await _mediator.Send(command);
+                    return Json(new { success = result.Success, message = result.Message, data = result.Data });
+                }
+                else
+                {
+                    // Create new item
+                    var command = new CreateSectionItemCommand
+                    {
+                        SectionId = request.SectionId,
+                        Code = request.Code,
+                        Type = request.Type,
+                        MediaType = request.MediaType,
+                        PictureUrl = request.PictureUrl,
+                        VideoUrl = request.VideoUrl,
+                        RedirectUrl = request.RedirectUrl,
+                        Icon = request.Icon,
+                        SortOrder = request.SortOrder,
+                        MediaAttributes = request.MediaAttributes,
+                        Status = request.Status,
+                        Translations = request.Translations.Select(t => new CreateSectionItemTranslationDto
+                        {
+                            LanguageId = t.LanguageId,
+                            Name = t.Name,
+                            Title = t.Title,
+                            Description = t.Description
+                        }).ToList()
+                    };
+
+                    var result = await _mediator.Send(command);
+                    return Json(new { success = result.Success, message = result.Message, data = result.Data });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message, error = ex.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Delete section item
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> DeleteSectionItem(int id)
+        {
+            try
+            {
+                var command = new DeleteSectionItemCommand { Id = id };
+                var result = await _mediator.Send(command);
+
+                return Json(new { success = result.Success, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get section items by section ID
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSectionItems(int sectionId)
+        {
+            try
+            {
+                var query = new GetSectionItemsBySectionIdQuery { SectionId = sectionId };
+                var result = await _mediator.Send(query);
+
+                return Json(new { success = result.Success, message = result.Message, data = result.Data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region Media Upload
+
+        /// <summary>
+        /// Upload image file
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile file, string? folder = null)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return Json(new { success = false, message = "No file provided." });
+                }
+
+                var result = await _mediaUploadService.UploadImageAsync(file, folder);
+
+                return Json(new
+                {
+                    success = result.Success,
+                    message = result.Message,
+                    url = result.Url,
+                    fileName = result.FileName,
+                    errors = result.Errors
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Upload video file
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> UploadVideo(IFormFile file, string? folder = null)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return Json(new { success = false, message = "No file provided." });
+                }
+
+                var result = await _mediaUploadService.UploadVideoAsync(file, folder);
+
+                return Json(new
+                {
+                    success = result.Success,
+                    message = result.Message,
+                    url = result.Url,
+                    fileName = result.FileName,
+                    errors = result.Errors
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Delete media file
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> DeleteMedia(string url)
+        {
+            try
+            {
+                var result = await _mediaUploadService.DeleteMediaAsync(url);
+
+                return Json(new
+                {
+                    success = result,
+                    message = result ? "Media deleted successfully." : "Media not found or could not be deleted."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        #endregion
     }
 }

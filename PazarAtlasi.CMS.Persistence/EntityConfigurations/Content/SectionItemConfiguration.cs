@@ -15,10 +15,13 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(si => si.SectionId).HasColumnName("SectionId").IsRequired();
             builder.Property(si => si.Code).HasColumnName("Code").HasMaxLength(100);
             builder.Property(si => si.Type).HasColumnName("Type").HasDefaultValue(SectionItemType.None);
+            builder.Property(si => si.MediaType).HasColumnName("MediaType").HasDefaultValue(MediaType.None);
             builder.Property(si => si.PictureUrl).HasColumnName("PictureUrl").HasMaxLength(500);
+            builder.Property(si => si.VideoUrl).HasColumnName("VideoUrl").HasMaxLength(500);
             builder.Property(si => si.RedirectUrl).HasColumnName("RedirectUrl").HasMaxLength(500);
             builder.Property(si => si.Icon).HasColumnName("Icon").HasMaxLength(100);
             builder.Property(si => si.SortOrder).HasColumnName("SortOrder").HasDefaultValue(0);
+            builder.Property(si => si.MediaAttributes).HasColumnName("MediaAttributes").HasColumnType("nvarchar(max)");
             builder.Property(si => si.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(si => si.UpdatedAt).HasColumnName("UpdatedAt");
             builder.Property(si => si.IsDeleted).HasColumnName("IsDeleted").HasDefaultValue(false);
