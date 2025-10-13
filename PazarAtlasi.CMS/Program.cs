@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using PazarAtlasi.CMS.Persistence.Context;
-using PazarAtlasi.CMS.Application.Services.Abstractions;
-using PazarAtlasi.CMS.Application.Services.Implementations;
-using MediatR;
-using System.Reflection;
+using PazarAtlasi.CMS.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,13 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Add Persistence Layer
-builder.Services.AddPersistence(builder.Configuration);
-
-// Add MediatR
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PazarAtlasi.CMS.Application.Features.SectionItems.Commands.Create.CreateSectionItemCommand).Assembly));
-
-// Add Media Upload Service
-builder.Services.AddScoped<IMediaUploadService, MediaUploadService>();
+builder.Services.AddPersistenceServiceRegistrations(builder.Configuration);
+builder.Services.AddInfrastructureServiceRegistrations();
 
 // Add localization services
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");

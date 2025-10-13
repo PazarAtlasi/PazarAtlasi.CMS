@@ -1,8 +1,14 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using PazarAtlasi.CMS.Application.Services.Abstractions;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using PazarAtlasi.CMS.Application.Dtos;
+using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PazarAtlasi.CMS.Application.Services.Implementations
+namespace PazarAtlasi.CMS.Infrastructure.Services
 {
     public class MediaUploadService : IMediaUploadService
     {
@@ -17,9 +23,9 @@ namespace PazarAtlasi.CMS.Application.Services.Implementations
             _environment = environment;
         }
 
-        public async Task<MediaUploadResult> UploadImageAsync(IFormFile file, string? folder = null)
+        public async Task<MediaUploadResultDto> UploadImageAsync(IFormFile file, string? folder = null)
         {
-            var result = new MediaUploadResult();
+            var result = new MediaUploadResultDto();
 
             try
             {
@@ -47,8 +53,8 @@ namespace PazarAtlasi.CMS.Application.Services.Implementations
                     return result;
                 }
 
-                var uploadFolder = Path.Combine(_environment.WebRootPath, "uploads", "images", folder ?? "general");
-                
+                var uploadFolder = Path.Combine(_environment.ContentRootPath, "uploads", "images", folder ?? "general");
+
                 if (!Directory.Exists(uploadFolder))
                 {
                     Directory.CreateDirectory(uploadFolder);
@@ -80,9 +86,9 @@ namespace PazarAtlasi.CMS.Application.Services.Implementations
             }
         }
 
-        public async Task<MediaUploadResult> UploadVideoAsync(IFormFile file, string? folder = null)
+        public async Task<MediaUploadResultDto> UploadVideoAsync(IFormFile file, string? folder = null)
         {
-            var result = new MediaUploadResult();
+            var result = new MediaUploadResultDto();
 
             try
             {
@@ -110,8 +116,8 @@ namespace PazarAtlasi.CMS.Application.Services.Implementations
                     return result;
                 }
 
-                var uploadFolder = Path.Combine(_environment.WebRootPath, "uploads", "videos", folder ?? "general");
-                
+                var uploadFolder = Path.Combine(_environment.ContentRootPath, "uploads", "videos", folder ?? "general");
+
                 if (!Directory.Exists(uploadFolder))
                 {
                     Directory.CreateDirectory(uploadFolder);
@@ -150,8 +156,8 @@ namespace PazarAtlasi.CMS.Application.Services.Implementations
                 if (string.IsNullOrWhiteSpace(url))
                     return false;
 
-                var filePath = Path.Combine(_environment.WebRootPath, url.TrimStart('/').Replace("/", "\\"));
-                
+                var filePath = Path.Combine(_environment.ContentRootPath, url.TrimStart('/').Replace("/", "\\"));
+
                 if (File.Exists(filePath))
                 {
                     await Task.Run(() => File.Delete(filePath));
@@ -185,4 +191,3 @@ namespace PazarAtlasi.CMS.Application.Services.Implementations
         }
     }
 }
-

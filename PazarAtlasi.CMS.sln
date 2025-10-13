@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PazarAtlasi.CMS.Persistence
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PazarAtlasi.CMS.Application", "PazarAtlasi.CMS.Application\PazarAtlasi.CMS.Application.csproj", "{2E3014CC-D603-146D-85DE-99011157FC50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PazarAtlasi.CMS.Infrastructure", "PazarAtlasi.CMS.Infrastructure\PazarAtlasi.CMS.Infrastructure.csproj", "{E2822B99-6D7A-4E0B-BAB0-5111A794C0DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{2E3014CC-D603-146D-85DE-99011157FC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3014CC-D603-146D-85DE-99011157FC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E3014CC-D603-146D-85DE-99011157FC50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2822B99-6D7A-4E0B-BAB0-5111A794C0DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2822B99-6D7A-4E0B-BAB0-5111A794C0DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2822B99-6D7A-4E0B-BAB0-5111A794C0DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2822B99-6D7A-4E0B-BAB0-5111A794C0DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,11 +1,10 @@
-using MediatR;
-using PazarAtlasi.CMS.Application.Features.SectionItems.Dtos;
 using PazarAtlasi.CMS.Domain.Common;
 
-namespace PazarAtlasi.CMS.Application.Features.SectionItems.Commands.Create
+namespace PazarAtlasi.CMS.Models.ViewModels
 {
-    public class CreateSectionItemCommand : IRequest<CreateSectionItemCommandResponse>
+    public class SectionItemResponseDto
     {
+        public int Id { get; set; }
         public int SectionId { get; set; }
         public string? Code { get; set; }
         public SectionItemType Type { get; set; }
@@ -17,23 +16,24 @@ namespace PazarAtlasi.CMS.Application.Features.SectionItems.Commands.Create
         public int SortOrder { get; set; }
         public string? MediaAttributes { get; set; }
         public Status Status { get; set; }
-        public List<CreateSectionItemTranslationDto> Translations { get; set; } = new();
+        public List<SectionItemTranslationResponseDto> Translations { get; set; } = new();
     }
 
-    public class CreateSectionItemTranslationDto
+    public class SectionItemTranslationResponseDto
     {
+        public int Id { get; set; }
+        public int SectionItemId { get; set; }
         public int LanguageId { get; set; }
+        public string? LanguageName { get; set; }
+        public string? LanguageCode { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Title { get; set; }
         public string? Description { get; set; }
     }
 
-    public class CreateSectionItemCommandResponse
+    public class SectionItemSaveResponseDto
     {
-        public bool Success { get; set; }
+        public int Id { get; set; }
         public string Message { get; set; } = string.Empty;
-        public SectionItemDto? Data { get; set; }
-        public List<string> Errors { get; set; } = new();
     }
 }
-

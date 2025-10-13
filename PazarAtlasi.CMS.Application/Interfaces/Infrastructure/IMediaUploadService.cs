@@ -1,18 +1,19 @@
 using Microsoft.AspNetCore.Http;
+using PazarAtlasi.CMS.Application.Dtos;
 
-namespace PazarAtlasi.CMS.Application.Services.Abstractions
+namespace PazarAtlasi.CMS.Application.Interfaces.Infrastructure
 {
     public interface IMediaUploadService
     {
         /// <summary>
         /// Uploads an image file and returns the URL
         /// </summary>
-        Task<MediaUploadResult> UploadImageAsync(IFormFile file, string? folder = null);
+        Task<MediaUploadResultDto> UploadImageAsync(IFormFile file, string? folder = null);
 
         /// <summary>
         /// Uploads a video file and returns the URL
         /// </summary>
-        Task<MediaUploadResult> UploadVideoAsync(IFormFile file, string? folder = null);
+        Task<MediaUploadResultDto> UploadVideoAsync(IFormFile file, string? folder = null);
 
         /// <summary>
         /// Deletes a media file by URL
@@ -28,15 +29,6 @@ namespace PazarAtlasi.CMS.Application.Services.Abstractions
         /// Validates if file is an allowed video format
         /// </summary>
         bool IsValidVideo(IFormFile file);
-    }
-
-    public class MediaUploadResult
-    {
-        public bool Success { get; set; }
-        public string? Url { get; set; }
-        public string? FileName { get; set; }
-        public string? Message { get; set; }
-        public List<string> Errors { get; set; } = new();
     }
 }
 
