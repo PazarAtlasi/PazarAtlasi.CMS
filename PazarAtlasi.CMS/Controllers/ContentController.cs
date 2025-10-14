@@ -10,6 +10,7 @@ using PazarAtlasi.CMS.Models.ViewModels;
 using PazarAtlasi.CMS.Domain.Entities.Content;
 using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
+using PazarAtlasi.CMS.Application.Dtos;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -1510,13 +1511,13 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 var pages = await _pazarAtlasiDbContext.Pages
                     .Where(p => p.Status == Status.Active)
-                    .Select(p => new
+                    .Select(p => new AvailablePageDto
                     {
-                        id = p.Id,
-                        name = p.Name,
-                        slug = p.Slug
+                        Id = p.Id,
+                        Name = p.Name,
+                        Slug = p.Slug
                     })
-                    .OrderBy(p => p.name)
+                    .OrderBy(p => p.Name)
                     .ToListAsync();
 
                 return Json(new { success = true, pages = pages });
@@ -1532,7 +1533,7 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
-                var content = new List<object>();
+                var content = new List<ContentItemDto>();
 
                 switch (pageType)
                 {
@@ -1541,8 +1542,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // In a real implementation, you would query your blog/article entities
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Blog && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1550,8 +1550,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // Placeholder for product content
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Product && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1559,8 +1558,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // Placeholder for article content
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Article && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1568,8 +1566,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // Placeholder for category content
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Category && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1577,8 +1574,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // Placeholder for brand content
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Brand && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1586,8 +1582,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // Placeholder for tag content
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Tag && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1595,8 +1590,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // Placeholder for catalog content
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Catalog && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1604,8 +1598,7 @@ namespace PazarAtlasi.CMS.Controllers
                         // Placeholder for document content
                         content = await _pazarAtlasiDbContext.Pages
                             .Where(p => p.PageType == PageType.Document && p.Status == Status.Active)
-                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
-                            .Cast<object>()
+                            .Select(p => new ContentItemDto { Id = p.Id, Name = p.Name, Title = p.Name })
                             .ToListAsync();
                         break;
 
@@ -1615,6 +1608,632 @@ namespace PazarAtlasi.CMS.Controllers
                 }
 
                 return Json(new { success = true, content = content });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region Sections Management
+
+        /// <summary>
+        /// Sections list with pagination
+        /// </summary>
+        public async Task<IActionResult> Sections(int page = 1, int pageSize = 10)
+        {
+            var totalCount = await _pazarAtlasiDbContext.Sections.CountAsync();
+            
+            var sections = await _pazarAtlasiDbContext.Sections
+                .Include(s => s.Page)
+                .Include(s => s.SectionItems)
+                .Include(s => s.Translations)
+                .OrderByDescending(s => s.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(s => new SectionListViewModel
+                {
+                    Id = s.Id,
+                    Name = s.Translations.FirstOrDefault() != null ? s.Translations.FirstOrDefault()!.Title : $"Section {s.Id}",
+                    Type = s.Type,
+                    SectionTemplateType = s.SectionTemplateType,
+                    Status = s.Status,
+                    ItemsCount = s.SectionItems.Count,
+                    PageName = s.Page != null ? s.Page.Name : null,
+                    PageId = s.PageId,
+                    CreatedAt = s.CreatedAt,
+                    UpdatedAt = s.UpdatedAt,
+                    IsReusable = s.PageId == null // Sections without a specific page are reusable
+                })
+                .ToListAsync();
+
+            var model = new SectionListResponse
+            {
+                Sections = sections,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Section details with all related data
+        /// </summary>
+        public async Task<IActionResult> SectionDetails(int id)
+        {
+            var section = await _pazarAtlasiDbContext.Sections
+                .Include(s => s.Page)
+                .Include(s => s.SectionItems.OrderBy(si => si.SortOrder))
+                    .ThenInclude(si => si.Translations)
+                .Include(s => s.Translations)
+                    .ThenInclude(st => st.Language)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (section == null)
+            {
+                return NotFound();
+            }
+
+            // Get pages where this section is used (for reusable sections)
+            var usedInPages = new List<PageUsageViewModel>();
+            if (section.PageId == null) // Reusable section
+            {
+                // This would require a many-to-many relationship or a usage tracking system
+                // For now, we'll leave it empty and implement later
+            }
+
+            var model = new SectionDetailsViewModel
+            {
+                Id = section.Id,
+                Name = section.Translations.FirstOrDefault()?.Title ?? $"Section {section.Id}",
+                Description = section.Translations.FirstOrDefault()?.Description,
+                Type = section.Type,
+                SectionTemplateType = section.SectionTemplateType,
+                Status = section.Status,
+                SortOrder = section.SortOrder,
+                Attributes = section.Attributes,
+                Configure = section.Configure,
+                IsReusable = section.PageId == null,
+                CreatedAt = section.CreatedAt,
+                UpdatedAt = section.UpdatedAt,
+                PageName = section.Page?.Name,
+                PageId = section.PageId,
+                SectionItems = section.SectionItems.Select(si => new SectionItemDetailsViewModel
+                {
+                    Id = si.Id,
+                    Type = si.Type,
+                    MediaType = si.MediaType,
+                    PictureUrl = si.PictureUrl,
+                    VideoUrl = si.VideoUrl,
+                    RedirectUrl = si.RedirectUrl,
+                    Icon = si.Icon,
+                    SortOrder = si.SortOrder,
+                    Title = si.Translations.FirstOrDefault()?.Title,
+                    Description = si.Translations.FirstOrDefault()?.Description
+                }).ToList(),
+                Translations = section.Translations.Select(st => new SectionTranslationViewModel
+                {
+                    Id = st.Id,
+                    LanguageId = st.LanguageId,
+                    LanguageCode = st.Language?.Code,
+                    LanguageName = st.Language?.Name,
+                    Name = st.Name,
+                    Title = st.Title,
+                    Description = st.Description
+                }).ToList(),
+                UsedInPages = usedInPages
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Create a new reusable section
+        /// </summary>
+        [HttpGet]
+        public IActionResult CreateSection()
+        {
+            var model = new SectionDetailsViewModel
+            {
+                Status = Status.Draft,
+                IsReusable = true,
+                Type = SectionType.ContentBlock,
+                SectionTemplateType = SectionTemplateType.Default
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Save a new or existing section
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveSection(SectionDetailsViewModel model)
+        {
+            try
+            {
+                Domain.Entities.Content.Section section;
+
+                if (model.Id == 0)
+                {
+                    // Create new section
+                    section = new Domain.Entities.Content.Section
+                    {
+                        Type = model.Type,
+                        SectionTemplateType = model.SectionTemplateType,
+                        Status = model.Status,
+                        SortOrder = model.SortOrder,
+                        Attributes = model.Attributes ?? "{}",
+                        Configure = model.Configure ?? "{}",
+                        PageId = model.PageId.Value,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    _pazarAtlasiDbContext.Sections.Add(section);
+                }
+                else
+                {
+                    // Update existing section
+                    section = await _pazarAtlasiDbContext.Sections
+                        .FirstOrDefaultAsync(s => s.Id == model.Id);
+
+                    if (section == null)
+                    {
+                        return NotFound();
+                    }
+
+                    section.Type = model.Type;
+                    section.SectionTemplateType = model.SectionTemplateType;
+                    section.Status = model.Status;
+                    section.SortOrder = model.SortOrder;
+                    section.Attributes = model.Attributes ?? "{}";
+                    section.Configure = model.Configure ?? "{}";
+                    section.UpdatedAt = DateTime.UtcNow;
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = model.Id == 0 ? "Section created successfully!" : "Section updated successfully!";
+                return RedirectToAction(nameof(SectionDetails), new { id = section.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving the section: " + ex.Message;
+                return View("CreateSection", model);
+            }
+        }
+
+        /// <summary>
+        /// Delete a section
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSection(int id)
+        {
+            try
+            {
+                var section = await _pazarAtlasiDbContext.Sections
+                    .Include(s => s.SectionItems)
+                    .Include(s => s.Translations)
+                    .FirstOrDefaultAsync(s => s.Id == id);
+
+                if (section == null)
+                {
+                    return Json(new { success = false, message = "Section not found." });
+                }
+
+                // Remove related data
+                _pazarAtlasiDbContext.SectionItems.RemoveRange(section.SectionItems);
+                _pazarAtlasiDbContext.SectionTranslations.RemoveRange(section.Translations);
+                _pazarAtlasiDbContext.Sections.Remove(section);
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Section deleted successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get reusable sections for page creation
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetReusableSections()
+        {
+            try
+            {
+                var sections = await _pazarAtlasiDbContext.Sections
+                    .Where(s => s.PageId == null && s.Status == Status.Active) // Reusable and active sections
+                    .Include(s => s.Translations)
+                    .ToListAsync();
+
+                var sectionDtos = sections.Select(s => new
+                {
+                    s.Id,
+                    Name = s.Translations.FirstOrDefault()?.Title ?? $"Section {s.Id}",
+                    s.Type,
+                    s.SectionTemplateType,
+                    s.Status,
+                    CreatedAt = s.CreatedAt.ToString("yyyy-MM-dd"),
+                    UpdatedAt = s.UpdatedAt?.ToString("yyyy-MM-dd")
+                });
+
+                return Json(new { success = true, sections = sectionDtos });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Add a reusable section to a page
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddReusableSection(int pageId, int sectionId)
+        {
+            try
+            {
+                // Get the original reusable section
+                var originalSection = await _pazarAtlasiDbContext.Sections
+                    .Include(s => s.SectionItems)
+                        .ThenInclude(si => si.Translations)
+                    .Include(s => s.Translations)
+                    .FirstOrDefaultAsync(s => s.Id == sectionId && s.PageId == null);
+
+                if (originalSection == null)
+                {
+                    return Json(new { success = false, message = "Reusable section not found." });
+                }
+
+                // Check if page exists
+                var page = await _pazarAtlasiDbContext.Pages.FindAsync(pageId);
+                if (page == null)
+                {
+                    return Json(new { success = false, message = "Page not found." });
+                }
+
+                // Get the next sort order for this page
+                var maxSortOrder = await _pazarAtlasiDbContext.Sections
+                    .Where(s => s.PageId == pageId)
+                    .MaxAsync(s => (int?)s.SortOrder) ?? 0;
+
+                // Create a copy of the section for this page
+                var newSection = new Domain.Entities.Content.Section
+                {
+                    PageId = pageId,
+                    Type = originalSection.Type,
+                    SectionTemplateType = originalSection.SectionTemplateType,
+                    Status = originalSection.Status,
+                    SortOrder = maxSortOrder + 1,
+                    Attributes = originalSection.Attributes,
+                    Configure = originalSection.Configure,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _pazarAtlasiDbContext.Sections.Add(newSection);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                // Copy section translations
+                foreach (var translation in originalSection.Translations)
+                {
+                    var newTranslation = new Domain.Entities.Content.SectionTranslation
+                    {
+                        SectionId = newSection.Id,
+                        LanguageId = translation.LanguageId,
+                        Name = translation.Name,
+                        Title = translation.Title,
+                        Description = translation.Description
+                    };
+                    _pazarAtlasiDbContext.SectionTranslations.Add(newTranslation);
+                }
+
+                // Copy section items
+                foreach (var item in originalSection.SectionItems)
+                {
+                    var newItem = new Domain.Entities.Content.SectionItem
+                    {
+                        SectionId = newSection.Id,
+                        Type = item.Type,
+                        MediaType = item.MediaType,
+                        PictureUrl = item.PictureUrl,
+                        VideoUrl = item.VideoUrl,
+                        RedirectUrl = item.RedirectUrl,
+                        LinkedPageId = item.LinkedPageId,
+                        Icon = item.Icon,
+                        SortOrder = item.SortOrder,
+                        MediaAttributes = item.MediaAttributes,
+                        Status = item.Status
+                    };
+
+                    _pazarAtlasiDbContext.SectionItems.Add(newItem);
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                    // Copy item translations
+                    foreach (var itemTranslation in item.Translations)
+                    {
+                        var newItemTranslation = new Domain.Entities.Content.SectionItemTranslation
+                        {
+                            SectionItemId = newItem.Id,
+                            LanguageId = itemTranslation.LanguageId,
+                            Name = itemTranslation.Name,
+                            Title = itemTranslation.Title,
+                            Description = itemTranslation.Description
+                        };
+                        _pazarAtlasiDbContext.SectionItemTranslations.Add(newItemTranslation);
+                    }
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Reusable section added successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region Layout Management
+
+        /// <summary>
+        /// Layouts list with pagination
+        /// </summary>
+        public async Task<IActionResult> Layouts(int page = 1, int pageSize = 10)
+        {
+            var totalCount = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>().CountAsync();
+            
+            var layouts = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                .Include(l => l.LayoutSections)
+                .Include(l => l.Pages)
+                .OrderByDescending(l => l.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(l => new LayoutListViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Description = l.Description,
+                    Status = l.Status,
+                    IsDefault = l.IsDefault,
+                    SectionsCount = l.LayoutSections.Count,
+                    PagesUsingCount = l.Pages.Count,
+                    CreatedAt = l.CreatedAt,
+                    UpdatedAt = l.UpdatedAt
+                })
+                .ToListAsync();
+
+            var model = new LayoutListResponse
+            {
+                Layouts = layouts,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Layout details with all related data
+        /// </summary>
+        public async Task<IActionResult> LayoutDetails(int id)
+        {
+            var layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                .Include(l => l.LayoutSections.OrderBy(ls => ls.SortOrder))
+                    .ThenInclude(ls => ls.Section)
+                        .ThenInclude(s => s.Translations)
+                .Include(l => l.Pages)
+                .FirstOrDefaultAsync(l => l.Id == id);
+
+            if (layout == null)
+            {
+                return NotFound();
+            }
+
+            var model = new LayoutViewModel
+            {
+                Id = layout.Id,
+                Name = layout.Name,
+                Description = layout.Description,
+                Status = layout.Status,
+                IsDefault = layout.IsDefault,
+                CreatedAt = layout.CreatedAt,
+                UpdatedAt = layout.UpdatedAt,
+                LayoutSections = layout.LayoutSections.Select(ls => new LayoutSectionViewModel
+                {
+                    Id = ls.Id,
+                    LayoutId = ls.LayoutId,
+                    SectionId = ls.SectionId,
+                    SectionName = ls.Section.Translations.FirstOrDefault()?.Title ?? $"Section {ls.SectionId}",
+                    SectionType = ls.Section.Type,
+                    SortOrder = ls.SortOrder,
+                    IsRequired = ls.IsRequired,
+                    Position = ls.Position
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Create a new layout
+        /// </summary>
+        [HttpGet]
+        public IActionResult CreateLayout()
+        {
+            var model = new CreateLayoutViewModel
+            {
+                Status = Status.Draft,
+                IsDefault = false
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Save a new or existing layout
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveLayout(CreateLayoutViewModel model)
+        {
+            try
+            {
+                Domain.Entities.Content.Layout layout;
+
+                if (model.Id == 0)
+                {
+                    // Create new layout
+                    layout = new Domain.Entities.Content.Layout
+                    {
+                        Name = model.Name,
+                        Description = model.Description,
+                        Status = model.Status,
+                        IsDefault = model.IsDefault,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>().Add(layout);
+                }
+                else
+                {
+                    // Update existing layout
+                    layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                        .Include(l => l.LayoutSections)
+                        .FirstOrDefaultAsync(l => l.Id == model.Id);
+
+                    if (layout == null)
+                    {
+                        return NotFound();
+                    }
+
+                    layout.Name = model.Name;
+                    layout.Description = model.Description;
+                    layout.Status = model.Status;
+                    layout.IsDefault = model.IsDefault;
+                    layout.UpdatedAt = DateTime.UtcNow;
+
+                    // Remove existing layout sections
+                    _pazarAtlasiDbContext.Set<Domain.Entities.Content.LayoutSection>().RemoveRange(layout.LayoutSections);
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                // Add layout sections
+                if (model.Sections != null && model.Sections.Any())
+                {
+                    foreach (var section in model.Sections)
+                    {
+                        var layoutSection = new Domain.Entities.Content.LayoutSection
+                        {
+                            LayoutId = layout.Id,
+                            SectionId = section.SectionId,
+                            Position = section.Position,
+                            SortOrder = section.SortOrder,
+                            IsRequired = section.IsRequired
+                        };
+                        _pazarAtlasiDbContext.Set<Domain.Entities.Content.LayoutSection>().Add(layoutSection);
+                    }
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                }
+
+                // If this is set as default, remove default from others
+                if (model.IsDefault)
+                {
+                    var otherLayouts = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                        .Where(l => l.Id != layout.Id && l.IsDefault)
+                        .ToListAsync();
+                    
+                    foreach (var otherLayout in otherLayouts)
+                    {
+                        otherLayout.IsDefault = false;
+                    }
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                }
+
+                TempData["SuccessMessage"] = model.Id == 0 ? "Layout created successfully!" : "Layout updated successfully!";
+                return RedirectToAction(nameof(LayoutDetails), new { id = layout.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving the layout: " + ex.Message;
+                return View("CreateLayout", model);
+            }
+        }
+
+        /// <summary>
+        /// Delete a layout
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteLayout(int id)
+        {
+            try
+            {
+                var layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                    .Include(l => l.LayoutSections)
+                    .Include(l => l.Pages)
+                    .FirstOrDefaultAsync(l => l.Id == id);
+
+                if (layout == null)
+                {
+                    return Json(new { success = false, message = "Layout not found." });
+                }
+
+                // Check if layout is being used by pages
+                if (layout.Pages.Any())
+                {
+                    return Json(new { success = false, message = $"Cannot delete layout. It is being used by {layout.Pages.Count} page(s)." });
+                }
+
+                // Remove layout sections
+                _pazarAtlasiDbContext.Set<Domain.Entities.Content.LayoutSection>().RemoveRange(layout.LayoutSections);
+                _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>().Remove(layout);
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Layout deleted successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get available layouts for page selection
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableLayouts()
+        {
+            try
+            {
+                var layouts = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                    .Where(l => l.Status == Status.Active)
+                    .Select(l => new AvailableLayoutDto
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Description = l.Description,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderByDescending(l => l.IsDefault)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
+                return Json(new { success = true, layouts = layouts });
             }
             catch (Exception ex)
             {

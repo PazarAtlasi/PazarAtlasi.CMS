@@ -1,0 +1,300 @@
+@model PazarAtlasi.CMS.Models.ViewModels.LayoutListResponse
+@{
+    ViewData["Title"] = "Layouts Management";
+}
+
+<div class="layouts-page">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center justify-between mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <h4 class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    Layouts Management
+                </h4>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    Create and manage page layouts with pre-defined sections like navbar, content areas, and footer.
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <a href="@Url.Action("CreateLayout", "Content")" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-plus mr-2"></i> Create Layout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <i class="fas fa-th-large text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Total Layouts</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.TotalCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-full">
+                    <i class="fas fa-star text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Default Layout</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.Layouts.Count(l => l.IsDefault)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <i class="fas fa-check-circle text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Active</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.Layouts.Count(l => l.Status == PazarAtlasi.CMS.Domain.Common.Status.Active)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-orange-100 rounded-full">
+                    <i class="fas fa-file text-orange-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Pages Using</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.Layouts.Sum(l => l.PagesUsingCount)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layouts List -->
+    <div class="bg-white rounded-xl shadow-md">
+        <div class="p-6 border-b border-slate-100">
+            <div class="flex items-center justify-between">
+                <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                    <i class="fas fa-list mr-2 text-purple-600"></i>
+                    All Layouts (@Model.TotalCount)
+                </h5>
+                <div class="flex items-center space-x-2">
+                    <div class="relative">
+                        <input type="text" placeholder="Search layouts..." 
+                               class="pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm"></i>
+                    </div>
+                    <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <option value="">All Status</option>
+                        @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
+                        {
+                            <option value="@status">@status.ToString()</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            @if (Model.Layouts.Any())
+            {
+                <table class="w-full">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Layout</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sections</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Pages Using</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Created</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-200">
+                        @foreach (var layout in Model.Layouts)
+                        {
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-th-large text-purple-600"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-slate-900">
+                                                @layout.Name
+                                                @if (layout.IsDefault)
+                                                {
+                                                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                        <i class="fas fa-star mr-1"></i> Default
+                                                    </span>
+                                                }
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(layout.Description))
+                                            {
+                                                <div class="text-sm text-slate-500 truncate max-w-xs">
+                                                    @layout.Description
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @{
+                                        var statusClass = layout.Status switch
+                                        {
+                                            PazarAtlasi.CMS.Domain.Common.Status.Active => "bg-green-100 text-green-800",
+                                            PazarAtlasi.CMS.Domain.Common.Status.Draft => "bg-yellow-100 text-yellow-800",
+                                            PazarAtlasi.CMS.Domain.Common.Status.Pending => "bg-blue-100 text-blue-800",
+                                            PazarAtlasi.CMS.Domain.Common.Status.Archived => "bg-gray-100 text-gray-800",
+                                            _ => "bg-red-100 text-red-800"
+                                        };
+                                    }
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @statusClass">
+                                        @layout.Status.ToString()
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-layer-group text-slate-400 mr-2"></i>
+                                        <span class="text-sm text-slate-900">@layout.SectionsCount sections</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-file-alt text-slate-400 mr-2"></i>
+                                        <span class="text-sm text-slate-900">@layout.PagesUsingCount pages</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    @layout.CreatedAt.ToString("dd/MM/yyyy")
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center space-x-2">
+                                        <a href="@Url.Action("LayoutDetails", "Content", new { id = layout.Id })" 
+                                           class="text-purple-600 hover:text-purple-900 transition-colors" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <button onclick="editLayout(@layout.Id)" 
+                                                class="text-blue-600 hover:text-blue-900 transition-colors" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="duplicateLayout(@layout.Id)" 
+                                                class="text-green-600 hover:text-green-900 transition-colors" title="Duplicate">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        @if (layout.PagesUsingCount == 0)
+                                        {
+                                            <button onclick="deleteLayout(@layout.Id, '@layout.Name')" 
+                                                    class="text-red-600 hover:text-red-900 transition-colors" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-gray-400" title="Cannot delete - layout is being used by pages">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="text-center py-12 text-slate-500">
+                    <i class="fas fa-th-large text-4xl mb-4"></i>
+                    <h6 class="text-lg font-medium mb-2">No layouts found</h6>
+                    <p class="text-sm mb-4">Create your first layout to organize sections across pages</p>
+                    <a href="@Url.Action("CreateLayout", "Content")" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Create Layout
+                    </a>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.TotalCount > Model.PageSize)
+        {
+            <div class="px-6 py-4 border-t border-slate-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-slate-700">
+                        Showing @((Model.PageNumber - 1) * Model.PageSize + 1) to @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)) of @Model.TotalCount results
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <a href="@Url.Action("Layouts", new { page = Model.PageNumber - 1 })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                Previous
+                            </a>
+                        }
+                        
+                        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize)); i++)
+                        {
+                            @if (i == Model.PageNumber)
+                            {
+                                <span class="px-3 py-2 text-sm font-medium text-white bg-purple-600 border border-purple-600 rounded-md">@i</span>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Layouts", new { page = i })" 
+                                   class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">@i</a>
+                            }
+                        }
+                        
+                        @if (Model.HasNextPage)
+                        {
+                            <a href="@Url.Action("Layouts", new { page = Model.PageNumber + 1 })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                Next
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function editLayout(layoutId) {
+        window.location.href = `/Content/LayoutDetails/${layoutId}`;
+    }
+
+    function duplicateLayout(layoutId) {
+        if (confirm('Are you sure you want to duplicate this layout?')) {
+            // Implementation for duplicating layout
+            console.log('Duplicate layout:', layoutId);
+        }
+    }
+
+    async function deleteLayout(layoutId, layoutName) {
+        if (confirm(`Are you sure you want to delete the layout "${layoutName}"? This action cannot be undone.`)) {
+            try {
+                const response = await fetch('/Content/DeleteLayout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: new URLSearchParams({ id: layoutId })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('An error occurred while deleting the layout.');
+            }
+        }
+    }
+</script>

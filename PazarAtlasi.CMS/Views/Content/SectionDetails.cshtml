@@ -1,0 +1,383 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SectionDetailsViewModel
+@{
+    ViewData["Title"] = $"Section Details - {Model.Name}";
+}
+
+<div class="section-details">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <div class="flex items-center mb-2">
+                    <a href="@Url.Action("Sections", "Content")" class="text-purple-600 hover:text-purple-800 mr-3">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h4
+                        class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                        @Model.Name
+                        @if (Model.IsReusable)
+                        {
+                            <span
+                                class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-recycle mr-1"></i> Reusable
+                            </span>
+                        }
+                    </h4>
+                    @{
+                        var css = "";
+                        switch (Model.Status)
+                        {
+                            case PazarAtlasi.CMS.Domain.Common.Status.Active:
+                                css = "bg-green-100 text-green-800";
+                                break;
+                            case PazarAtlasi.CMS.Domain.Common.Status.Pending:
+                                css = "bg-blue-100 text-blue-800";
+                                break;
+                            case PazarAtlasi.CMS.Domain.Common.Status.Draft:
+                                css = "bg-yellow-100 text-yellow-800";
+                                break;
+                            case PazarAtlasi.CMS.Domain.Common.Status.Archived:
+                                css = "bg-gray-100 text-gray-800";
+                                break;
+                            default:
+                                css = "bg-red-100 text-red-800";
+                                break;
+                        }
+
+                        <span class="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(css)">
+                            @Model.Status.ToString()
+                        </span>
+                    }
+                </div>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        @Model.Description
+                    }
+                    else
+                    {
+                        <span>Section Type: @Model.Type.ToString() | Template: @Model.SectionTemplateType.ToString()</span>
+                    }
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <button onclick="editSection(@Model.Id)"
+                    class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-edit mr-2"></i> Edit Section
+                </button>
+                <button onclick="duplicateSection(@Model.Id)"
+                    class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-copy mr-2"></i> Duplicate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Info Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <i class="fas fa-layer-group text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Section Type</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.Type.ToString()</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <i class="fas fa-th-large text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Template</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.SectionTemplateType.ToString()</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-full">
+                    <i class="fas fa-images text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Items</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.SectionItems.Count</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-yellow-100 rounded-full">
+                    <i class="fas fa-calendar text-yellow-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Created</p>
+                    <p class="text-lg font-bold text-slate-800">@Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Sidebar -->
+        <div class="space-y-6 lg:sticky lg:top-6 lg:self-start">
+            <!-- Section Information -->
+            <div class="bg-white rounded-xl shadow-md">
+                <div class="p-6 border-b border-slate-100">
+                    <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-purple-600"></i>
+                        Section Information
+                    </h5>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Section ID</label>
+                        <p class="text-sm text-slate-600">#@Model.Id</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Sort Order</label>
+                        <p class="text-sm text-slate-600">@Model.SortOrder</p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.PageName))
+                    {
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Used in Page</label>
+                            <p class="text-sm text-slate-600">
+                                <a href="@Url.Action("PageDetails", "Content", new { id = Model.PageId })"
+                                    class="text-purple-600 hover:text-purple-800">
+                                    @Model.PageName
+                                </a>
+                            </p>
+                        </div>
+                    }
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Created At</label>
+                        <p class="text-sm text-slate-600">@Model.CreatedAt.ToString("dd MMMM yyyy, HH:mm")</p>
+                    </div>
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Last Updated</label>
+                            <p class="text-sm text-slate-600">@Model.UpdatedAt.Value.ToString("dd MMMM yyyy, HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Section Translations -->
+            @if (Model.Translations.Any())
+            {
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-language mr-2 text-purple-600"></i>
+                            Translations
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            @foreach (var translation in Model.Translations)
+                            {
+                                <div class="flex items-center p-3 bg-slate-50 rounded-lg">
+                                    <div
+                                        class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <span class="text-xs font-medium text-blue-600">@translation.LanguageCode</span>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-slate-800">@translation.LanguageName</p>
+                                        <p class="text-xs text-slate-500 truncate">@translation.Title</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-xl shadow-md">
+                <div class="p-6 border-b border-slate-100">
+                    <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-bolt mr-2 text-purple-600"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="p-6 space-y-3">
+                    <button onclick="editSection(@Model.Id)"
+                        class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-edit mr-2"></i> Edit Section
+                    </button>
+                    <button onclick="duplicateSection(@Model.Id)"
+                        class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-copy mr-2"></i> Duplicate Section
+                    </button>
+                    <button onclick="addToPage(@Model.Id)"
+                        class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i> Add to Page
+                    </button>
+                    <hr class="my-3">
+                    <button onclick="deleteSection(@Model.Id, '@Model.Name')"
+                        class="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-trash mr-2"></i> Delete Section
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Section Items -->
+            <div class="bg-white rounded-xl shadow-md">
+                <div class="p-6 border-b border-slate-100">
+                    <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-images mr-2 text-purple-600"></i>
+                        Section Items (@Model.SectionItems.Count)
+                    </h5>
+                </div>
+                <div class="p-6">
+                    @if (Model.SectionItems.Any())
+                    {
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @foreach (var item in Model.SectionItems.OrderBy(si => si.SortOrder))
+                            {
+                                <div class="border border-slate-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center">
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-600 rounded-full text-sm font-medium mr-3">
+                                                @item.SortOrder
+                                            </span>
+                                            <div>
+                                                <p class="text-sm font-medium text-slate-900">@(item.Title ?? "Untitled")</p>
+                                                <p class="text-xs text-slate-500">@item.Type.ToString()</p>
+                                            </div>
+                                        </div>
+                                        @{
+                                            var mediaIcon = item.MediaType switch
+                                            {
+                                                PazarAtlasi.CMS.Domain.Common.MediaType.Image => "fas fa-image text-green-600",
+                                                PazarAtlasi.CMS.Domain.Common.MediaType.Video => "fas fa-video text-red-600",
+                                                PazarAtlasi.CMS.Domain.Common.MediaType.Audio => "fas fa-music text-blue-600",
+                                                PazarAtlasi.CMS.Domain.Common.MediaType.Document => "fas fa-file-pdf text-orange-600",
+                                                _ => "fas fa-font text-slate-400"
+                                            };
+                                        }
+                                        <i class="@mediaIcon"></i>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(item.PictureUrl))
+                                    {
+                                        <div class="mb-3">
+                                            <img src="@item.PictureUrl" alt="@item.Title"
+                                                class="w-full h-24 object-cover rounded" />
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(item.Description))
+                                    {
+                                        <p class="text-sm text-slate-600 mb-2">@item.Description</p>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(item.RedirectUrl))
+                                    {
+                                        <div class="flex items-center text-xs text-slate-500">
+                                            <i class="fas fa-link mr-1"></i>
+                                            <span class="truncate">@item.RedirectUrl</span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-8 text-slate-400">
+                            <i class="fas fa-images text-4xl mb-4"></i>
+                            <p class="text-lg font-medium">No items found</p>
+                            <p class="text-sm">This section doesn't have any items yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Configuration -->
+            @if (!string.IsNullOrEmpty(Model.Attributes) && Model.Attributes != "{}")
+            {
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-cogs mr-2 text-purple-600"></i>
+                            Configuration
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div class="bg-slate-50 rounded-lg p-4">
+                            <h6 class="text-sm font-medium text-slate-700 mb-2">Attributes</h6>
+                            <pre class="text-xs text-slate-600 overflow-x-auto">@Model.Attributes</pre>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Configure) && Model.Configure != "{}")
+                        {
+                            <div class="bg-slate-50 rounded-lg p-4 mt-4">
+                                <h6 class="text-sm font-medium text-slate-700 mb-2">Configuration</h6>
+                                <pre class="text-xs text-slate-600 overflow-x-auto">@Model.Configure</pre>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function editSection(sectionId) {
+        // For now, redirect to section modal or edit page
+        // This would open the section modal for editing
+        console.log('Edit section:', sectionId);
+        alert('Edit functionality will be implemented with section modal.');
+    }
+
+    function duplicateSection(sectionId) {
+        if (confirm('Are you sure you want to duplicate this section?')) {
+            // Implementation for duplicating section
+            console.log('Duplicate section:', sectionId);
+            alert('Duplicate functionality will be implemented.');
+        }
+    }
+
+    function addToPage(sectionId) {
+        // Show modal to select which page to add this section to
+        console.log('Add section to page:', sectionId);
+        alert('Add to page functionality will be implemented.');
+    }
+
+    async function deleteSection(sectionId, sectionName) {
+        if (confirm(`Are you sure you want to delete the section "${sectionName}"? This action cannot be undone.`)) {
+            try {
+                const response = await fetch('/Content/DeleteSection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: new URLSearchParams({ id: sectionId })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.location.href = '/Content/Sections';
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('An error occurred while deleting the section.');
+            }
+        }
+    }
+</script>

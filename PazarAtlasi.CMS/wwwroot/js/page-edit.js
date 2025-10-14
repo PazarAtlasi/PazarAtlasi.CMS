@@ -278,6 +278,85 @@ function toggleSectionSettings(sectionId) {
 }
 
 function addNewSection() {
+  // Show section selection modal first
+  showSectionSelectionModal();
+}
+
+function showSectionSelectionModal() {
+  const modal = document.createElement("div");
+  modal.id = "sectionSelectionModal";
+  modal.className =
+    "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4";
+  modal.innerHTML = `
+    <div class="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 z-10">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-semibold text-slate-800">
+            <i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Section
+          </h3>
+          <button type="button" onclick="closeSectionSelectionModal()" class="text-slate-400 hover:text-slate-600">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <p class="text-sm text-slate-500 mt-1">Choose to create a new section or use an existing reusable section</p>
+      </div>
+      
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Create New Section -->
+          <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-purple-400 transition-colors cursor-pointer" onclick="createNewSection()">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-plus text-2xl text-purple-600"></i>
+              </div>
+              <h4 class="text-lg font-semibold text-slate-800 mb-2">Create New Section</h4>
+              <p class="text-sm text-slate-500">Build a custom section from scratch with your own content and layout</p>
+            </div>
+          </div>
+          
+          <!-- Use Reusable Section -->
+          <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-green-400 transition-colors cursor-pointer" onclick="showReusableSections()">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-recycle text-2xl text-green-600"></i>
+              </div>
+              <h4 class="text-lg font-semibold text-slate-800 mb-2">Use Reusable Section</h4>
+              <p class="text-sm text-slate-500">Choose from pre-built sections like navbar, footer, or custom components</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Reusable Sections List (Initially Hidden) -->
+        <div id="reusableSectionsList" class="hidden mt-6">
+          <div class="border-t border-slate-200 pt-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-4">Available Reusable Sections</h4>
+            <div id="reusableSectionsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="text-center py-8 text-slate-400">
+                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                <p class="text-sm">Loading sections...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  document.body.style.overflow = "hidden";
+}
+
+function closeSectionSelectionModal() {
+  const modal = document.getElementById("sectionSelectionModal");
+  if (modal) {
+    modal.remove();
+    document.body.style.overflow = "";
+  }
+}
+
+function createNewSection() {
+  closeSectionSelectionModal();
+
   // Get the page ID
   const pageId = document.querySelector('input[name="Id"]').value;
 
@@ -291,6 +370,118 @@ function addNewSection() {
       console.error("Error loading section modal:", error);
       alert("Error loading section modal. Please try again.");
     });
+}
+
+async function showReusableSections() {
+  const listDiv = document.getElementById("reusableSectionsList");
+  const container = document.getElementById(
+    "reusableSectionsContainer"
+  );
+
+  listDiv.classList.remove("hidden");
+
+  try {
+    const response = await fetch("/Content/GetReusableSections");
+    const result = await response.json();
+
+    if (
+      result.success &&
+      result.sections &&
+      result.sections.length > 0
+    ) {
+      container.innerHTML = "";
+
+      result.sections.forEach((section) => {
+        const sectionCard = document.createElement("div");
+        sectionCard.className =
+          "border border-slate-200 rounded-lg p-4 hover:border-purple-300 transition-colors cursor-pointer";
+        sectionCard.onclick = () => addReusableSection(section.Id);
+
+        sectionCard.innerHTML = `
+          <div class="flex items-center mb-3">
+            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+              <i class="fas fa-layer-group text-purple-600"></i>
+            </div>
+            <div class="flex-1">
+              <h5 class="font-medium text-slate-800">${
+                section.Name
+              }</h5>
+              <p class="text-xs text-slate-500">${section.Type} - ${
+          section.TemplateType
+        }</p>
+            </div>
+          </div>
+          ${
+            section.Description
+              ? `<p class="text-sm text-slate-600 mb-3">${section.Description}</p>`
+              : ""
+          }
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span><i class="fas fa-recycle mr-1"></i> Reusable</span>
+            <button class="text-purple-600 hover:text-purple-800">
+              <i class="fas fa-plus mr-1"></i> Add
+            </button>
+          </div>
+        `;
+
+        container.appendChild(sectionCard);
+      });
+    } else {
+      container.innerHTML = `
+        <div class="col-span-full text-center py-8 text-slate-400">
+          <i class="fas fa-layer-group text-4xl mb-4"></i>
+          <p class="text-lg font-medium">No reusable sections found</p>
+          <p class="text-sm">Create some reusable sections first to use them here</p>
+          <a href="/Content/CreateSection" class="mt-4 inline-flex items-center py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors">
+            <i class="fas fa-plus mr-2"></i> Create Section
+          </a>
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error("Error loading reusable sections:", error);
+    container.innerHTML = `
+      <div class="col-span-full text-center py-8 text-red-400">
+        <i class="fas fa-exclamation-circle text-4xl mb-4"></i>
+        <p class="text-lg font-medium">Error loading sections</p>
+        <p class="text-sm">Please try again later</p>
+      </div>
+    `;
+  }
+}
+
+async function addReusableSection(sectionId) {
+  try {
+    const pageId = document.querySelector('input[name="Id"]').value;
+
+    const response = await fetch("/Content/AddReusableSection", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        RequestVerificationToken: document.querySelector(
+          'input[name="__RequestVerificationToken"]'
+        ).value,
+      },
+      body: new URLSearchParams({
+        pageId: pageId,
+        sectionId: sectionId,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      closeSectionSelectionModal();
+
+      // Refresh the page to show the new section
+      location.reload();
+    } else {
+      alert("Error adding section: " + result.message);
+    }
+  } catch (error) {
+    console.error("Error adding reusable section:", error);
+    alert("An error occurred while adding the section.");
+  }
 }
 
 function createSectionModal() {
@@ -717,6 +908,9 @@ document.addEventListener("DOMContentLoaded", function () {
       handlePageTypeChange(pageTypeSelect.value);
     }
   }
+
+  // Initialize layout selection
+  loadAvailableLayouts();
 });
 
 // Handle page type changes
@@ -825,5 +1019,45 @@ function getPageTypeName(pageType) {
   return pageTypeNames[pageType] || "Content";
 }
 
-// Make function globally available
+// Layout handling functions
+async function loadAvailableLayouts() {
+  const layoutSelect = document.getElementById("layoutSelect");
+  if (!layoutSelect) return;
+
+  try {
+    const response = await fetch("/Content/GetAvailableLayouts");
+    const result = await response.json();
+
+    if (result.success && result.layouts) {
+      // Clear existing options except the first one
+      while (layoutSelect.children.length > 1) {
+        layoutSelect.removeChild(layoutSelect.lastChild);
+      }
+
+      result.layouts.forEach((layout) => {
+        const option = document.createElement("option");
+        option.value = layout.Id;
+        option.textContent =
+          layout.Name + (layout.IsDefault ? " (Default)" : "");
+        if (layout.Description) {
+          option.title = layout.Description;
+        }
+        layoutSelect.appendChild(option);
+      });
+    }
+  } catch (error) {
+    console.error("Error loading layouts:", error);
+  }
+}
+
+function handleLayoutChange(layoutId) {
+  if (layoutId && layoutId !== "") {
+    // Show information about the selected layout
+    console.log("Layout selected:", layoutId);
+    // You could show a preview or description of the layout here
+  }
+}
+
+// Make functions globally available
 window.handlePageTypeChange = handlePageTypeChange;
+window.handleLayoutChange = handleLayoutChange;

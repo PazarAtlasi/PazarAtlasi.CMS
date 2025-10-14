@@ -18,6 +18,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public int? PageSEOParameterId { get; set; }
 
+        public int? LayoutId { get; set; }
+
         public PageType PageType { get; set; } = PageType.None;
 
         public string? Slug { get; set; }
@@ -31,6 +33,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public virtual Content Content { get; set; }
 
         public virtual PageSEOParameter PageSEOParameter { get; set; }
+
+        public virtual Layout Layout { get; set; }
 
         public virtual ICollection<Section> Sections { get; set; }
 

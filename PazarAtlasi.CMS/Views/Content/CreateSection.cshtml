@@ -1,0 +1,301 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SectionDetailsViewModel
+@{
+    ViewData["Title"] = "Create New Section";
+}
+
+<div class="create-section">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <div class="flex items-center mb-2">
+                    <a href="@Url.Action("Sections", "Content")" class="text-purple-600 hover:text-purple-800 mr-3">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h4
+                        class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                        Create New Section
+                    </h4>
+                </div>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    Create a reusable section component that can be used across multiple pages.
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <button type="button" onclick="saveDraft()"
+                    class="py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-save mr-2"></i> Save Draft
+                </button>
+                <button type="button" onclick="saveAndPublish()"
+                    class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-check mr-2"></i> Save & Publish
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation Summary -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex">
+                <i class="fas fa-exclamation-circle text-red-400 mr-2 mt-0.5"></i>
+                <div>
+                    <h3 class="text-sm font-medium text-red-800">Please correct the following errors:</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <ul class="list-disc pl-5 space-y-1">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div class="flex">
+                <i class="fas fa-check-circle text-green-400 mr-2 mt-0.5"></i>
+                <p class="text-sm text-green-700">@TempData["SuccessMessage"]</p>
+            </div>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex">
+                <i class="fas fa-exclamation-circle text-red-400 mr-2 mt-0.5"></i>
+                <p class="text-sm text-red-700">@TempData["ErrorMessage"]</p>
+            </div>
+        </div>
+    }
+
+    <form id="sectionForm" method="post" action="@Url.Action("SaveSection", "Content")">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <input type="hidden" name="IsReusable" value="true" />
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Section Settings -->
+                <div class="bg-white rounded-xl shadow-md sticky top-4">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-cog mr-2 text-purple-600"></i>
+                            Section Settings
+                        </h5>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Section Name *</label>
+                            <input type="text" name="Name" value="@Model.Name" required
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                placeholder="Enter section name" />
+                            <span asp-validation-for="Name" class="text-red-500 text-xs"></span>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Section Type</label>
+                            <select name="Type"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                                @foreach (var sectionType in
+                                                                Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionType>())
+                                {
+                                    @if (Model.Type == sectionType)
+                                    {
+                                        <option value="@sectionType" selected>@sectionType.ToString()</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@sectionType">@sectionType.ToString()</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Template Type</label>
+                            <select name="SectionTemplateType"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                                @foreach (var templateType in
+                                                                Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionTemplateType>())
+                                {
+                                    @if (Model.SectionTemplateType == templateType)
+                                    {
+                                        <option value="@templateType" selected>@templateType.ToString()</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@templateType">@templateType.ToString()</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                            <select name="Status"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                                @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
+                                {
+                                    @if (Model.Status == status)
+                                    {
+                                        <option value="@status" selected>@status.ToString()</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@status">@status.ToString()</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Sort Order</label>
+                            <input type="number" name="SortOrder" value="@Model.SortOrder" min="0"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                placeholder="0" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                            <textarea name="Description" rows="3"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                placeholder="Brief description of the section">@Model.Description</textarea>
+                        </div>
+
+                        <!-- Save Button for Mobile -->
+                        <div class="lg:hidden pt-4 border-t border-slate-200">
+                            <button type="submit"
+                                class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                                <i class="fas fa-save mr-2"></i> Save Section
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-eye mr-2 text-purple-600"></i>
+                            Preview
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div class="bg-slate-50 rounded-lg p-4 text-center">
+                            <i class="fas fa-layer-group text-4xl text-slate-400 mb-2"></i>
+                            <p class="text-sm text-slate-600">Section preview will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- Section Items -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                                <i class="fas fa-images mr-2 text-purple-600"></i>
+                                Section Items
+                            </h5>
+                            <button type="button" onclick="addSectionItem()"
+                                class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center">
+                                <i class="fas fa-plus mr-2"></i> Add Item
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div id="sectionItemsContainer">
+                            <div class="text-center py-12 text-slate-400">
+                                <i class="fas fa-images text-4xl mb-4"></i>
+                                <p class="text-lg font-medium">No items yet</p>
+                                <p class="text-sm mb-4">Start building your section by adding items</p>
+                                <button type="button" onclick="addSectionItem()"
+                                    class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center">
+                                    <i class="fas fa-plus mr-2"></i> Add Your First Item
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Configuration -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-cogs mr-2 text-purple-600"></i>
+                            Advanced Configuration
+                        </h5>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Attributes (JSON)</label>
+                            <textarea name="Attributes" rows="4"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 font-mono"
+                                placeholder='{"key": "value"}'>@(Model.Attributes ?? "{}")</textarea>
+                            <p class="text-xs text-slate-500 mt-1">JSON configuration for section attributes</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Configuration (JSON)</label>
+                            <textarea name="Configure" rows="4"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 font-mono"
+                                placeholder='{"setting": "value"}'>@(Model.Configure ?? "{}")</textarea>
+                            <p class="text-xs text-slate-500 mt-1">JSON configuration for section behavior</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function saveDraft() {
+        // Set status to Draft and submit
+        document.querySelector('select[name="Status"]').value = '0'; // Draft
+        document.getElementById('sectionForm').submit();
+    }
+
+    function saveAndPublish() {
+        // Set status to Active and submit
+        document.querySelector('select[name="Status"]').value = '1'; // Active
+        document.getElementById('sectionForm').submit();
+    }
+
+    function addSectionItem() {
+        // This would open the section item modal
+        alert('Section item modal will be implemented to add items to this section.');
+    }
+
+    // Auto-save functionality
+    let autoSaveTimer;
+    function enableAutoSave() {
+        const form = document.getElementById('sectionForm');
+        if (form) {
+            form.addEventListener('input', function () {
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(() => {
+                    saveDraft();
+                }, 30000); // Auto-save after 30 seconds of inactivity
+            });
+        }
+    }
+
+    // Initialize auto-save
+    document.addEventListener('DOMContentLoaded', function () {
+        enableAutoSave();
+    });
+</script>

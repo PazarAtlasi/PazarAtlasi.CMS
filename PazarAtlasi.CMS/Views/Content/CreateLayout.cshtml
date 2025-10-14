@@ -1,0 +1,324 @@
+@model PazarAtlasi.CMS.Models.ViewModels.CreateLayoutViewModel
+@{
+    ViewData["Title"] = "Create New Layout";
+}
+
+<div class="create-layout">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <div class="flex items-center mb-2">
+                    <a href="@Url.Action("Layouts", "Content")" class="text-purple-600 hover:text-purple-800 mr-3">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h4
+                        class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                        Create New Layout
+                    </h4>
+                </div>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    Design a reusable layout structure with sections like navbar, content areas, and footer.
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <button type="button" onclick="saveDraft()"
+                    class="py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-save mr-2"></i> Save Draft
+                </button>
+                <button type="button" onclick="saveAndPublish()"
+                    class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-check mr-2"></i> Save & Publish
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation Summary -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex">
+                <i class="fas fa-exclamation-circle text-red-400 mr-2 mt-0.5"></i>
+                <div>
+                    <h3 class="text-sm font-medium text-red-800">Please correct the following errors:</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <ul class="list-disc pl-5 space-y-1">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div class="flex">
+                <i class="fas fa-check-circle text-green-400 mr-2 mt-0.5"></i>
+                <p class="text-sm text-green-700">@TempData["SuccessMessage"]</p>
+            </div>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex">
+                <i class="fas fa-exclamation-circle text-red-400 mr-2 mt-0.5"></i>
+                <p class="text-sm text-red-700">@TempData["ErrorMessage"]</p>
+            </div>
+        </div>
+    }
+
+    <form id="layoutForm" method="post" action="@Url.Action("SaveLayout", "Content")">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Layout Settings -->
+                <div class="bg-white rounded-xl shadow-md top-4">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-cog mr-2 text-purple-600"></i>
+                            Layout Settings
+                        </h5>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Layout Name *</label>
+                            <input type="text" name="Name" value="@Model.Name" required
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                placeholder="Enter layout name" />
+                            <span asp-validation-for="Name" class="text-red-500 text-xs"></span>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                            <select name="Status"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                                @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
+                                {
+                                    @if (Model.Status == status)
+                                    {
+                                        <option value="@status" selected>@status.ToString()</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@status">@status.ToString()</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" name="IsDefault" value="true" @(Model.IsDefault ? "checked" : "")
+                                class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-slate-300 rounded" />
+                            <input type="hidden" name="IsDefault" value="false" />
+                            <label class="ml-2 block text-sm text-slate-700">Set as default layout</label>
+                        </div>
+                        <p class="text-xs text-slate-500">Default layout will be automatically applied to new pages.</p>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                            <textarea name="Description" rows="3"
+                                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                placeholder="Brief description of the layout">@Model.Description</textarea>
+                        </div>
+
+                        <!-- Save Button for Mobile -->
+                        <div class="lg:hidden pt-4 border-t border-slate-200">
+                            <button type="submit"
+                                class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                                <i class="fas fa-save mr-2"></i> Save Layout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Sections -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-layer-group mr-2 text-purple-600"></i>
+                            Available Sections
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div id="availableSections" class="space-y-2">
+                            <div class="text-center py-4 text-slate-400">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <p class="text-sm">Loading sections...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- Layout Builder -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                                <i class="fas fa-sitemap mr-2 text-purple-600"></i>
+                                Layout Structure
+                            </h5>
+                            <button type="button" onclick="clearLayout()"
+                                class="py-1 px-3 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm transition-colors">
+                                <i class="fas fa-trash mr-1"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <!-- Layout Positions -->
+                        <div class="space-y-4">
+                            <!-- Header Position -->
+                            <div class="layout-position" data-position="header">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h6 class="text-sm font-medium text-slate-700 flex items-center">
+                                        <i class="fas fa-arrow-up mr-2 text-slate-400"></i>
+                                        Header
+                                    </h6>
+                                    <span class="text-xs text-slate-500">Top of page</span>
+                                </div>
+                                <div class="min-h-[80px] border-2 border-dashed border-slate-300 rounded-lg p-4 bg-slate-50 drop-zone"
+                                    ondrop="drop(event)" ondragover="allowDrop(event)">
+                                    <div class="sections-container space-y-2" id="header-sections">
+                                        <div class="text-center text-slate-400 empty-state">
+                                            <i class="fas fa-plus-circle text-2xl mb-2"></i>
+                                            <p class="text-sm">Drop sections here for header area</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Content Position -->
+                            <div class="layout-position" data-position="content">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h6 class="text-sm font-medium text-slate-700 flex items-center">
+                                        <i class="fas fa-align-center mr-2 text-slate-400"></i>
+                                        Content
+                                    </h6>
+                                    <span class="text-xs text-slate-500">Main content area</span>
+                                </div>
+                                <div class="min-h-[120px] border-2 border-dashed border-slate-300 rounded-lg p-4 bg-slate-50 drop-zone"
+                                    ondrop="drop(event)" ondragover="allowDrop(event)">
+                                    <div class="sections-container space-y-2" id="content-sections">
+                                        <div class="text-center text-slate-400 empty-state">
+                                            <i class="fas fa-plus-circle text-2xl mb-2"></i>
+                                            <p class="text-sm">Drop sections here for main content</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar Position -->
+                            <div class="layout-position" data-position="sidebar">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h6 class="text-sm font-medium text-slate-700 flex items-center">
+                                        <i class="fas fa-columns mr-2 text-slate-400"></i>
+                                        Sidebar
+                                    </h6>
+                                    <span class="text-xs text-slate-500">Side content area</span>
+                                </div>
+                                <div class="min-h-[80px] border-2 border-dashed border-slate-300 rounded-lg p-4 bg-slate-50 drop-zone"
+                                    ondrop="drop(event)" ondragover="allowDrop(event)">
+                                    <div class="sections-container space-y-2" id="sidebar-sections">
+                                        <div class="text-center text-slate-400 empty-state">
+                                            <i class="fas fa-plus-circle text-2xl mb-2"></i>
+                                            <p class="text-sm">Drop sections here for sidebar</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer Position -->
+                            <div class="layout-position" data-position="footer">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h6 class="text-sm font-medium text-slate-700 flex items-center">
+                                        <i class="fas fa-arrow-down mr-2 text-slate-400"></i>
+                                        Footer
+                                    </h6>
+                                    <span class="text-xs text-slate-500">Bottom of page</span>
+                                </div>
+                                <div class="min-h-[80px] border-2 border-dashed border-slate-300 rounded-lg p-4 bg-slate-50 drop-zone"
+                                    ondrop="drop(event)" ondragover="allowDrop(event)">
+                                    <div class="sections-container space-y-2" id="footer-sections">
+                                        <div class="text-center text-slate-400 empty-state">
+                                            <i class="fas fa-plus-circle text-2xl mb-2"></i>
+                                            <p class="text-sm">Drop sections here for footer area</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden input to store layout sections -->
+                        <input type="hidden" id="layoutSectionsData" name="Sections" value="" />
+                    </div>
+                </div>
+
+                <!-- Layout Preview -->
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-eye mr-2 text-purple-600"></i>
+                            Layout Preview
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div id="layoutPreview" class="bg-slate-100 rounded-lg p-4 min-h-[200px]">
+                            <div class="text-center text-slate-400 py-8">
+                                <i class="fas fa-desktop text-4xl mb-2"></i>
+                                <p class="text-sm">Layout preview will appear here as you add sections</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="~/js/layout-builder.js"></script>
+
+<script>
+    function saveDraft() {
+        // Set status to Draft and submit
+        document.querySelector('select[name="Status"]').value = '0'; // Draft
+        updateLayoutSectionsData();
+        document.getElementById('layoutForm').submit();
+    }
+
+    function saveAndPublish() {
+        // Set status to Active and submit
+        document.querySelector('select[name="Status"]').value = '1'; // Active
+        updateLayoutSectionsData();
+        document.getElementById('layoutForm').submit();
+    }
+
+    function clearLayout() {
+        if (confirm('Are you sure you want to clear all sections from the layout?')) {
+            document.querySelectorAll('.sections-container').forEach(container => {
+                container.innerHTML = '<div class="text-center text-slate-400 empty-state"><i class="fas fa-plus-circle text-2xl mb-2"></i><p class="text-sm">Drop sections here</p></div>';
+            });
+            updateLayoutPreview();
+        }
+    }
+
+    // Initialize layout builder when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+        loadAvailableSections();
+    });
+</script>
