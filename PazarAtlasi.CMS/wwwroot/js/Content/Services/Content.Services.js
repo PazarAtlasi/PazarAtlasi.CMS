@@ -211,7 +211,7 @@ const ContentServices = (function () {
    */
   function saveSection(sectionData) {
     return $.ajax({
-      url: `${config.baseUrl}/SaveSection`,
+      url: `${config.baseUrl}/SaveSectionAjax`,
       type: "POST",
       headers: buildHeaders({ "Content-Type": "application/json" }),
       data: JSON.stringify(sectionData),
