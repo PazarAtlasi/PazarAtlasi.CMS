@@ -1,0 +1,107 @@
+@model PazarAtlasi.CMS.Application.Dtos.SectionItemField
+
+<div class="field-container" data-field-name="@Model.Name">
+    <label class="block text-sm font-medium text-slate-700 mb-1">
+        @Model.Label
+        @if (Model.Required)
+        {
+            <span class="text-red-500">*</span>
+        }
+    </label>
+
+    @switch (Model.Type)
+    {
+        case "text":
+            <input type="text" name="@Model.Name"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" @(Model.Required ? "required" : "")
+                onchange="SectionModal.updateItemField(this)" />
+            break;
+
+        case "textarea":
+            <textarea name="@Model.Name" rows="@(Model.MaxLength > 200 ? "4" : "2")"
+        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" @(Model.Required ? "required" : "")
+        onchange="SectionModal.updateItemField(this)"></textarea>
+            break;
+
+        case "richtext":
+            <div class="richtext-editor border border-slate-300 rounded-lg">
+                <textarea name="@Model.Name" class="w-full px-3 py-2 text-sm" placeholder="@Model.Placeholder" @(Model.Required
+            ? "required" : "") onchange="SectionModal.updateItemField(this)"></textarea>
+            </div>
+            break;
+
+        case "url":
+            <input type="url" name="@Model.Name"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="@Model.Placeholder" @(Model.Required ? "required" : "")
+                onchange="SectionModal.updateItemField(this)" />
+            break;
+
+        case "image":
+            <div class="image-upload-container">
+                <input type="hidden" name="@Model.Name" class="image-path-input" />
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="SectionModal.openImageUpload(this)"
+                        class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
+                        <i class="fas fa-upload mr-2"></i> Upload Image
+                    </button>
+                    <div class="image-preview hidden">
+                        <img src="" alt="Preview" class="h-16 w-16 object-cover rounded border" />
+                        <button type="button" onclick="SectionModal.removeImage(this)"
+                            class="ml-2 text-red-600 hover:text-red-800 text-xs">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Placeholder))
+                {
+                    <p class="mt-1 text-xs text-slate-500">@Model.Placeholder</p>
+                }
+            </div>
+            break;
+
+        case "select":
+            <select name="@Model.Name"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                @(Model.Required ? "required" : "") onchange="SectionModal.updateItemField(this)">
+                <option value="">Select...</option>
+                @if (Model.Options != null)
+                {
+                    @foreach (var option in Model.Options)
+                    {
+                        <option value="@option">@option</option>
+                    }
+                }
+            </select>
+            break;
+
+        case "number":
+            <input type="number" name="@Model.Name"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="@Model.Placeholder" @(Model.Required ? "required" : "")
+                onchange="SectionModal.updateItemField(this)" />
+            break;
+
+        case "checkbox":
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" name="@Model.Name"
+                    class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                    onchange="SectionModal.updateItemField(this)" />
+                <span class="text-sm text-slate-600">@Model.Placeholder</span>
+            </label>
+            break;
+
+        default:
+            <input type="text" name="@Model.Name"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="@Model.Placeholder" onchange="SectionModal.updateItemField(this)" />
+            break;
+    }
+
+    @if (Model.MaxLength > 0 && (Model.Type == "text" || Model.Type == "textarea"))
+    {
+        <p class="mt-1 text-xs text-slate-500">Max @Model.MaxLength characters</p>
+    }
+</div>

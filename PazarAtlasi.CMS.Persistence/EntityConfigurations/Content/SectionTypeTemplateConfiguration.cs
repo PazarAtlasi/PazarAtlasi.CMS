@@ -73,7 +73,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             // For each SectionType (except None and Navbar), add all 14 templates
             foreach (var sectionType in allSectionTypes)
             {
-                if(sectionType == SectionType.None || sectionType == SectionType.Navbar)
+                if (sectionType == SectionType.None || sectionType == SectionType.Navbar)
                     continue;
 
                 for (int templateId = 5; templateId <= 14; templateId++)

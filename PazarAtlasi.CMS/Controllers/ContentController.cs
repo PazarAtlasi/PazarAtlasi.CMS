@@ -11,6 +11,7 @@ using PazarAtlasi.CMS.Domain.Entities.Content;
 using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
 using PazarAtlasi.CMS.Application.Dtos;
+using PazarAtlasi.CMS.Infrastructure.Services;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -18,13 +19,16 @@ namespace PazarAtlasi.CMS.Controllers
     {
         private readonly PazarAtlasiDbContext _pazarAtlasiDbContext;
         private readonly IMediaUploadService _mediaUploadService;
+        private readonly ITemplateConfigurationProvider _templateConfigurationProvider;
 
         public ContentController(
             PazarAtlasiDbContext pazarAtlasiDbContext,
-            IMediaUploadService mediaUploadService)
+            IMediaUploadService mediaUploadService,
+            ITemplateConfigurationProvider templateConfigurationProvider)
         {
             _pazarAtlasiDbContext = pazarAtlasiDbContext;
             _mediaUploadService = mediaUploadService;
+            _templateConfigurationProvider = templateConfigurationProvider;
         }
 
         /// <summary>
@@ -587,6 +591,58 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Error loading templates." });
+            }
+        }
+
+        /// <summary>
+        /// Get template configuration with section item settings
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetTemplateConfiguration(int templateId)
+        {
+            try
+            {
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    return Json(new { success = false, message = "Template not found." });
+                }
+
+                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
+
+                return Json(new { success = true, configuration });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error loading template configuration." });
+            }
+        }
+
+        /// <summary>
+        /// Get section items UI partial view based on template configuration
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSectionItemsUI(int templateId)
+        {
+            try
+            {
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    return Content("<div class='text-red-500'>Template not found</div>");
+                }
+
+                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
+
+                return PartialView("~/Views/Shared/Content/_SectionItemsUI.cshtml", configuration);
+            }
+            catch (Exception ex)
+            {
+                return Content($"<div class='text-red-500'>Error loading template UI: {ex.Message}</div>");
             }
         }
 
