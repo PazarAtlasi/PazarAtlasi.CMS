@@ -16,6 +16,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? PictureUrl { get; set; }
         public string? VideoUrl { get; set; }
         public string? RedirectUrl { get; set; }
+        public int? LinkedPageId { get; set; }
         public string? Icon { get; set; }
         public int SortOrder { get; set; }
         public string? MediaAttributes { get; set; }
@@ -64,6 +65,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? PictureUrl { get; set; }
         public string? VideoUrl { get; set; }
         public string? RedirectUrl { get; set; }
+        public int? LinkedPageId { get; set; }
         public string? Icon { get; set; }
         public int SortOrder { get; set; }
         public string? MediaAttributes { get; set; }

@@ -21,6 +21,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public string? RedirectUrl { get; set; }
 
+        public int? LinkedPageId { get; set; } // Reference to linked page
+
         public string? Icon { get; set; }
 
         public int SortOrder { get; set; } = 0;

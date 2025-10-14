@@ -1503,6 +1503,125 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAvailablePages()
+        {
+            try
+            {
+                var pages = await _pazarAtlasiDbContext.Pages
+                    .Where(p => p.Status == Status.Active)
+                    .Select(p => new
+                    {
+                        id = p.Id,
+                        name = p.Name,
+                        slug = p.Slug
+                    })
+                    .OrderBy(p => p.name)
+                    .ToListAsync();
+
+                return Json(new { success = true, pages = pages });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetContentByType(PageType pageType)
+        {
+            try
+            {
+                var content = new List<object>();
+
+                switch (pageType)
+                {
+                    case PageType.Blog:
+                        // For now, return existing pages of blog type as placeholder
+                        // In a real implementation, you would query your blog/article entities
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Blog && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    case PageType.Product:
+                        // Placeholder for product content
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Product && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    case PageType.Article:
+                        // Placeholder for article content
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Article && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    case PageType.Category:
+                        // Placeholder for category content
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Category && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    case PageType.Brand:
+                        // Placeholder for brand content
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Brand && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    case PageType.Tag:
+                        // Placeholder for tag content
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Tag && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    case PageType.Catalog:
+                        // Placeholder for catalog content
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Catalog && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    case PageType.Document:
+                        // Placeholder for document content
+                        content = await _pazarAtlasiDbContext.Pages
+                            .Where(p => p.PageType == PageType.Document && p.Status == Status.Active)
+                            .Select(p => new { id = p.Id, name = p.Name, title = p.Name })
+                            .Cast<object>()
+                            .ToListAsync();
+                        break;
+
+                    default:
+                        // For other types, return empty list
+                        break;
+                }
+
+                return Json(new { success = true, content = content });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
         #endregion
     }
 }

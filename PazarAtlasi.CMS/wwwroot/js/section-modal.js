@@ -42,6 +42,9 @@ function showSectionModal(html) {
 
   // Initialize modal
   initializeSectionModal();
+
+  // Load and update page dropdowns
+  loadAvailablePages();
 }
 
 function closeSectionModal() {
@@ -169,6 +172,9 @@ function updateItemsGrid() {
     const itemCard = createItemCard(item, i);
     itemsGrid.appendChild(itemCard);
   }
+
+  // Update page dropdowns after cards are created
+  setTimeout(() => updatePageDropdowns(), 100);
 
   // Show/hide add button for List type (allow dynamic addition)
   const addBtn = document.getElementById("addItemBtn");
@@ -400,10 +406,75 @@ function createItemCard(item, index) {
                     : ""
                 }
                 
-                <button type="button" onclick="editItemContent(${index})" 
-                        class="w-full py-1 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors">
-                    <i class="fas fa-edit mr-1"></i> Edit Content
-                </button>
+            </div>
+            
+            <!-- Direct Edit Fields -->
+            <div class="mt-3 space-y-2">
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Title</label>
+                    <input type="text" id="itemTitle${index}" 
+                           class="w-full px-2 py-1 border border-slate-300 rounded text-xs"
+                           value="${
+                             item.translations && item.translations[0]
+                               ? item.translations[0].title || ""
+                               : ""
+                           }" 
+                           placeholder="Enter title"
+                           onchange="updateItemTranslation(${index}, 'title', this.value)" />
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Description</label>
+                    <textarea id="itemDescription${index}" 
+                              class="w-full px-2 py-1 border border-slate-300 rounded text-xs" 
+                              rows="2"
+                              placeholder="Enter description"
+                              onchange="updateItemTranslation(${index}, 'description', this.value)">${
+    item.translations && item.translations[0]
+      ? item.translations[0].description || ""
+      : ""
+  }</textarea>
+                </div>
+                
+                ${
+                  item.type === 4 // Link type
+                    ? `
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Link to Page</label>
+                    <select id="itemPageLink${index}" 
+                            class="w-full px-2 py-1 border border-slate-300 rounded text-xs"
+                            onchange="updateItemPageLink(${index}, this.value)">
+                        <option value="">Select a page...</option>
+                        <!-- Pages will be loaded dynamically -->
+                    </select>
+                </div>
+                `
+                    : ""
+                }
+                
+                ${
+                  item.type === 10
+                    ? `
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Video URL</label>
+                    <input type="text" id="itemVideoUrl${index}" 
+                           class="w-full px-2 py-1 border border-slate-300 rounded text-xs"
+                           value="${item.videoUrl || ""}" 
+                           placeholder="https://youtube.com/watch?v=..."
+                           onchange="updateItemProperty(${index}, 'videoUrl', this.value)" />
+                </div>
+                `
+                    : ""
+                }
+                
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Custom Link URL</label>
+                    <input type="text" id="itemRedirectUrl${index}" 
+                           class="w-full px-2 py-1 border border-slate-300 rounded text-xs"
+                           value="${item.redirectUrl || ""}" 
+                           placeholder="https://example.com"
+                           onchange="updateItemProperty(${index}, 'redirectUrl', this.value)" />
+                </div>
             </div>
         </div>
     `;
@@ -889,7 +960,111 @@ window.saveItemContent = saveItemContent;
 window.addNewItem = addNewItem;
 window.saveSection = saveSection;
 
+function updateItemTranslation(index, field, value) {
+  const item = currentSection.items[index];
+
+  // Ensure translations array exists
+  if (!item.translations || item.translations.length === 0) {
+    item.translations = [
+      {
+        id: 0,
+        languageId: 1, // Default language
+        name: "",
+        title: "",
+        description: "",
+      },
+    ];
+  }
+
+  // Update the field
+  if (field === "title") {
+    item.translations[0].title = value;
+    item.translations[0].name = value; // Also update name
+  } else if (field === "description") {
+    item.translations[0].description = value;
+  }
+}
+
+function updateItemProperty(index, property, value) {
+  const item = currentSection.items[index];
+  item[property] = value;
+}
+
+function updateItemPageLink(index, pageId) {
+  const item = currentSection.items[index];
+
+  if (pageId && pageId !== "") {
+    // Find the selected page and set redirect URL to its slug
+    const selectedPage = availablePages.find((p) => p.id == pageId);
+    if (selectedPage) {
+      item.redirectUrl = `/${selectedPage.slug}`;
+      item.linkedPageId = parseInt(pageId);
+
+      // Update the custom URL field
+      const customUrlInput = document.getElementById(
+        `itemRedirectUrl${index}`
+      );
+      if (customUrlInput) {
+        customUrlInput.value = item.redirectUrl;
+      }
+    }
+  } else {
+    item.linkedPageId = null;
+  }
+}
+
+async function loadAvailablePages() {
+  try {
+    const response = await fetch("/Content/GetAvailablePages");
+    const result = await response.json();
+
+    if (result.success) {
+      availablePages = result.pages;
+      // Update all page dropdowns
+      updatePageDropdowns();
+    }
+  } catch (error) {
+    console.error("Error loading pages:", error);
+    availablePages = [];
+  }
+}
+
+function updatePageDropdowns() {
+  // Update all existing page dropdowns (only for link-type items)
+  document
+    .querySelectorAll('[id^="itemPageLink"]')
+    .forEach((select) => {
+      const currentValue = select.value;
+
+      // Clear existing options except the first one
+      while (select.children.length > 1) {
+        select.removeChild(select.lastChild);
+      }
+
+      // Add page options
+      availablePages.forEach((page) => {
+        const option = document.createElement("option");
+        option.value = page.id;
+        option.textContent = `${page.name} (/${page.slug})`;
+        if (page.id == currentValue) {
+          option.selected = true;
+        }
+        select.appendChild(option);
+      });
+    });
+}
+
+// Global variable to store available pages
+let availablePages = [];
+
+// Make new functions globally available
+window.updateItemTranslation = updateItemTranslation;
+window.updateItemProperty = updateItemProperty;
+window.updateItemPageLink = updateItemPageLink;
+window.loadAvailablePages = loadAvailablePages;
+
 // Initialize when page loads
 document.addEventListener("DOMContentLoaded", function () {
-  // Any initialization code here
+  // Load available pages when DOM is ready
+  loadAvailablePages();
 });

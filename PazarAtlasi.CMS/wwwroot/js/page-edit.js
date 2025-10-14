@@ -708,4 +708,122 @@ function enableAutoSave() {
 // Initialize auto-save
 document.addEventListener("DOMContentLoaded", function () {
   enableAutoSave();
+
+  // Initialize page type change handler
+  const pageTypeSelect = document.getElementById("pageTypeSelect");
+  if (pageTypeSelect) {
+    // Show content selection if page type is already selected and not None
+    if (pageTypeSelect.value && pageTypeSelect.value !== "0") {
+      handlePageTypeChange(pageTypeSelect.value);
+    }
+  }
 });
+
+// Handle page type changes
+async function handlePageTypeChange(pageType) {
+  const dynamicContentDiv = document.getElementById(
+    "dynamicContentSelection"
+  );
+  const linkedContentSelect = document.getElementById(
+    "linkedContentSelect"
+  );
+
+  if (!dynamicContentDiv || !linkedContentSelect) return;
+
+  // Hide content selection for None type
+  if (!pageType || pageType === "0") {
+    dynamicContentDiv.classList.add("hidden");
+    return;
+  }
+
+  // Show content selection for specific types
+  const contentTypes = ["3", "4", "5", "6", "7", "8", "9"]; // Article, Product, Catalog, Category, Brand, Tag, Blog
+
+  if (contentTypes.includes(pageType)) {
+    dynamicContentDiv.classList.remove("hidden");
+    await loadContentByType(pageType);
+  } else {
+    dynamicContentDiv.classList.add("hidden");
+  }
+}
+
+// Load content based on page type
+async function loadContentByType(pageType) {
+  const linkedContentSelect = document.getElementById(
+    "linkedContentSelect"
+  );
+  if (!linkedContentSelect) return;
+
+  try {
+    // Clear existing options except the first one
+    while (linkedContentSelect.children.length > 1) {
+      linkedContentSelect.removeChild(linkedContentSelect.lastChild);
+    }
+
+    // Show loading state
+    const loadingOption = document.createElement("option");
+    loadingOption.value = "";
+    loadingOption.textContent = "Loading...";
+    linkedContentSelect.appendChild(loadingOption);
+
+    const response = await fetch(
+      `/Content/GetContentByType?pageType=${pageType}`
+    );
+    const result = await response.json();
+
+    // Remove loading option
+    linkedContentSelect.removeChild(loadingOption);
+
+    if (
+      result.success &&
+      result.content &&
+      result.content.length > 0
+    ) {
+      result.content.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = item.name || item.title;
+        linkedContentSelect.appendChild(option);
+      });
+    } else {
+      const noContentOption = document.createElement("option");
+      noContentOption.value = "";
+      noContentOption.textContent = `No ${getPageTypeName(
+        pageType
+      ).toLowerCase()} content available`;
+      linkedContentSelect.appendChild(noContentOption);
+    }
+  } catch (error) {
+    console.error("Error loading content:", error);
+
+    // Remove loading option and show error
+    while (linkedContentSelect.children.length > 1) {
+      linkedContentSelect.removeChild(linkedContentSelect.lastChild);
+    }
+
+    const errorOption = document.createElement("option");
+    errorOption.value = "";
+    errorOption.textContent = "Error loading content";
+    linkedContentSelect.appendChild(errorOption);
+  }
+}
+
+// Get page type name for display
+function getPageTypeName(pageType) {
+  const pageTypeNames = {
+    1: "Home",
+    2: "Article",
+    3: "Product",
+    4: "Catalog",
+    5: "Category",
+    6: "Brand",
+    7: "Tag",
+    8: "Blog",
+    9: "Document",
+    10: "UserProfile",
+  };
+  return pageTypeNames[pageType] || "Content";
+}
+
+// Make function globally available
+window.handlePageTypeChange = handlePageTypeChange;

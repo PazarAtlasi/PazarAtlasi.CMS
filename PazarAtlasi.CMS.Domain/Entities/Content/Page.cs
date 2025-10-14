@@ -20,6 +20,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public PageType PageType { get; set; } = PageType.None;
 
+        public string? Slug { get; set; }
+
         public string? Name { get; set; }
 
         public string? Code { get; set; }
