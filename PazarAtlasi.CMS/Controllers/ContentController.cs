@@ -122,9 +122,8 @@ namespace PazarAtlasi.CMS.Controllers
                 Sections = page.Sections.Select(s => new SectionViewModel
                 {
                     Id = s.Id,
-                    Code = s.Code,
                     Type = s.Type,
-                    TemplateType = s.TemplateType,
+                    SectionTemplateType = s.SectionTemplateType,
                     Attributes = s.Attributes,
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
@@ -132,7 +131,6 @@ namespace PazarAtlasi.CMS.Controllers
                     SectionItems = s.SectionItems.Select(si => new SectionItemViewModel
                     {
                         Id = si.Id,
-                        Code = si.Code,
                         Type = si.Type,
                         PictureUrl = si.PictureUrl,
                         RedirectUrl = si.RedirectUrl,
@@ -372,9 +370,8 @@ namespace PazarAtlasi.CMS.Controllers
                 Sections = page.Sections.Select(s => new SectionEditViewModel
                 {
                     Id = s.Id,
-                    Code = s.Code,
                     Type = s.Type,
-                    TemplateType = s.TemplateType,
+                    SectionTemplateType = s.SectionTemplateType,
                     Attributes = s.Attributes,
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
@@ -382,12 +379,14 @@ namespace PazarAtlasi.CMS.Controllers
                     SectionItems = s.SectionItems.Select(si => new SectionItemEditViewModel
                     {
                         Id = si.Id,
-                        Code = si.Code,
                         Type = si.Type,
+                        MediaType = si.MediaType,
                         PictureUrl = si.PictureUrl,
+                        VideoUrl = si.VideoUrl,
                         RedirectUrl = si.RedirectUrl,
                         Icon = si.Icon,
                         SortOrder = si.SortOrder,
+                        MediaAttributes = si.MediaAttributes,
                         Status = si.Status,
                         Translations = si.Translations.Select(sit => new SectionItemTranslationEditViewModel
                         {
@@ -437,7 +436,7 @@ namespace PazarAtlasi.CMS.Controllers
         /// Add new section to page
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> AddSection(int pageId, string sectionCode, string sectionType, string templateType)
+        public async Task<IActionResult> AddSection(int pageId, string sectionType, string SectionTemplateType)
         {
             try
             {
@@ -457,13 +456,12 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     Id = 0, // EF will generate
                     PageId = pageId,
-                    Code = sectionCode ?? $"section_{maxSortOrder + 1}",
                     Type = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.SectionType>(sectionType, out var parsedSectionType) 
                         ? parsedSectionType 
                         : PazarAtlasi.CMS.Domain.Common.SectionType.None,
-                    TemplateType = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.TemplateType>(templateType, out var parsedTemplateType) 
-                        ? parsedTemplateType 
-                        : PazarAtlasi.CMS.Domain.Common.TemplateType.Default,
+                    SectionTemplateType = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.SectionTemplateType>(SectionTemplateType, out var parsedSectionTemplateType) 
+                        ? parsedSectionTemplateType 
+                        : PazarAtlasi.CMS.Domain.Common.SectionTemplateType.Default,
                     SortOrder = maxSortOrder + 1,
                     Status = PazarAtlasi.CMS.Domain.Common.Status.Active,
                     Configure = "{}",
@@ -536,8 +534,8 @@ namespace PazarAtlasi.CMS.Controllers
                                 <i class='fas fa-grip-vertical'></i>
                             </div>
                             <div>
-                                <h6 class='font-medium text-slate-800'>{section.Code}</h6>
-                                <p class='text-sm text-slate-500'>{section.Type} - {section.TemplateType}</p>
+                                <h6 class='font-medium text-slate-800'>Section #{section.Id}</h6>
+                                <p class='text-sm text-slate-500'>{section.Type} - {section.SectionTemplateType}</p>
                             </div>
                             <span class='ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded'>0 items</span>
                         </div>
@@ -837,9 +835,8 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = sectionItem.Id,
                         SectionId = sectionItem.SectionId,
-                        SectionCode = sectionItem.Section?.Code,
+                        SectionCode = $"Section #{sectionItem.Section?.Id}",
                         SectionType = sectionItem.Section?.Type ?? SectionType.None,
-                        Code = sectionItem.Code,
                         Type = sectionItem.Type,
                         MediaType = sectionItem.MediaType,
                         PictureUrl = sectionItem.PictureUrl,
@@ -881,7 +878,7 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = 0,
                         SectionId = sectionId,
-                        SectionCode = section.Code,
+                        SectionCode = $"Section #{section.Id}",
                         SectionType = section.Type,
                         SortOrder = maxSortOrder + 1,
                         Status = Domain.Common.Status.Active
@@ -930,7 +927,6 @@ namespace PazarAtlasi.CMS.Controllers
                     }
 
                     // Update section item properties
-                    sectionItem.Code = request.Code;
                     sectionItem.Type = request.Type;
                     sectionItem.MediaType = request.MediaType;
                     sectionItem.PictureUrl = request.PictureUrl;
@@ -982,7 +978,6 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = 0,
                         SectionId = request.SectionId,
-                        Code = request.Code ?? $"item_{DateTime.UtcNow.Ticks}",
                         Type = request.Type,
                         MediaType = request.MediaType,
                         PictureUrl = request.PictureUrl,
@@ -1084,7 +1079,6 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     Id = si.Id,
                     SectionId = si.SectionId,
-                    Code = si.Code,
                     Type = si.Type,
                     MediaType = si.MediaType,
                     PictureUrl = si.PictureUrl,
@@ -1194,6 +1188,314 @@ namespace PazarAtlasi.CMS.Controllers
                     success = result,
                     message = result ? "Media deleted successfully." : "Media not found or could not be deleted."
                 });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region Section Management
+
+        /// <summary>
+        /// Get section modal for editing/creating with items
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSectionModal(int id, int pageId)
+        {
+            try
+            {
+                SectionModalViewModel model;
+
+                if (id > 0)
+                {
+                    // Edit existing section
+                    var section = await _pazarAtlasiDbContext.Sections
+                        .Include(s => s.SectionItems)
+                            .ThenInclude(si => si.Translations)
+                        .Include(s => s.Translations).ThenInclude(t => t.Language)
+                        .FirstOrDefaultAsync(s => s.Id == id);
+
+                    if (section == null)
+                    {
+                        return Json(new { success = false, message = "Section not found." });
+                    }
+
+                    model = new SectionModalViewModel
+                    {
+                        Id = section.Id,
+                        PageId = section.PageId,
+                        Type = section.Type,
+                        SectionTemplateType = section.SectionTemplateType,
+                        Attributes = section.Attributes,
+                        SortOrder = section.SortOrder,
+                        Configure = section.Configure,
+                        Status = section.Status,
+                        SectionItems = section.SectionItems.Select(si => new SectionItemModalViewModel
+                        {
+                            Id = si.Id,
+                            SectionId = si.SectionId,
+                            Type = si.Type,
+                            MediaType = si.MediaType,
+                            PictureUrl = si.PictureUrl,
+                            VideoUrl = si.VideoUrl,
+                            RedirectUrl = si.RedirectUrl,
+                            Icon = si.Icon,
+                            SortOrder = si.SortOrder,
+                            MediaAttributes = si.MediaAttributes,
+                            Status = si.Status,
+                            Translations = si.Translations.Select(t => new SectionItemTranslationModalViewModel
+                            {
+                                Id = t.Id,
+                                SectionItemId = t.SectionItemId,
+                                LanguageId = t.LanguageId,
+                                LanguageName = t.Language?.Name,
+                                LanguageCode = t.Language?.Code,
+                                Name = t.Name,
+                                Title = t.Title,
+                                Description = t.Description
+                            }).ToList()
+                        }).ToList(),
+                        Translations = section.Translations.Select(st => new SectionTranslationModalViewModel
+                        {
+                            Id = st.Id,
+                            SectionId = st.SectionId,
+                            LanguageId = st.LanguageId,
+                            LanguageName = st.Language.Name,
+                            LanguageCode = st.Language.Code,
+                            Name = st.Name,
+                            Title = st.Title,
+                            Description = st.Description
+                        }).ToList()
+                    };
+                }
+                else
+                {
+                    // Create new section
+                    var maxSortOrder = await _pazarAtlasiDbContext.Sections
+                        .Where(s => s.PageId == pageId)
+                        .MaxAsync(s => (int?)s.SortOrder) ?? 0;
+
+                    model = new SectionModalViewModel
+                    {
+                        Id = 0,
+                        PageId = pageId,
+                        Type = SectionType.MainContent,
+                        SectionTemplateType = SectionTemplateType.Default,
+                        SortOrder = maxSortOrder + 1,
+                        Status = Domain.Common.Status.Active
+                    };
+                }
+
+                // Get available languages
+                model.AvailableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .ToListAsync();
+
+                return PartialView("~/Views/Shared/Content/_SectionModal.cshtml", model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Save section with items
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> SaveSection([FromBody] SectionRequest request)
+        {
+            try
+            {
+                if (request.Id > 0)
+                {
+                    // Update existing section
+                    var section = await _pazarAtlasiDbContext.Sections
+                        .Include(s => s.SectionItems)
+                            .ThenInclude(si => si.Translations)
+                        .Include(s => s.Translations)
+                        .FirstOrDefaultAsync(s => s.Id == request.Id);
+
+                    if (section == null)
+                    {
+                        return Json(new { success = false, message = "Section not found." });
+                    }
+
+                    // Update section properties
+                    section.Type = request.Type;
+                    section.SectionTemplateType = request.SectionTemplateType;
+                    section.Attributes = request.Attributes;
+                    section.Configure = request.Configure;
+                    section.Status = request.Status;
+                    section.UpdatedAt = DateTime.UtcNow;
+
+                    // Update section items
+                    if (request.SectionItems != null)
+                    {
+                        // Remove existing items
+                        _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(
+                            section.SectionItems.SelectMany(si => si.Translations));
+                        _pazarAtlasiDbContext.SectionItems.RemoveRange(section.SectionItems);
+
+                        // Add new items
+                        foreach (var itemRequest in request.SectionItems)
+                        {
+                            var newItem = new SectionItem
+                            {
+                                SectionId = section.Id,
+                                Type = itemRequest.Type,
+                                MediaType = itemRequest.MediaType,
+                                PictureUrl = itemRequest.PictureUrl,
+                                VideoUrl = itemRequest.VideoUrl,
+                                RedirectUrl = itemRequest.RedirectUrl,
+                                Icon = itemRequest.Icon,
+                                SortOrder = itemRequest.SortOrder,
+                                MediaAttributes = itemRequest.MediaAttributes,
+                                Status = itemRequest.Status,
+                                CreatedAt = DateTime.UtcNow,
+                                IsDeleted = false
+                            };
+
+                            _pazarAtlasiDbContext.SectionItems.Add(newItem);
+                            await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
+
+                            // Add item translations
+                            if (itemRequest.Translations != null)
+                            {
+                                var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
+                                {
+                                    SectionItemId = newItem.Id,
+                                    LanguageId = t.LanguageId,
+                                    Name = t.Name,
+                                    Title = t.Title,
+                                    Description = t.Description,
+                                    CreatedAt = DateTime.UtcNow,
+                                    IsDeleted = false
+                                }).ToList();
+
+                                _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
+                            }
+                        }
+                    }
+
+                    // Update section translations
+                    if (request.Translations != null)
+                    {
+                        // Remove existing translations
+                        _pazarAtlasiDbContext.SectionTranslations.RemoveRange(section.Translations);
+
+                        // Add new translations
+                        var newTranslations = request.Translations.Select(t => new SectionTranslation
+                        {
+                            SectionId = section.Id,
+                            LanguageId = t.LanguageId,
+                            Name = t.Name,
+                            Title = t.Title,
+                            Description = t.Description,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        }).ToList();
+
+                        _pazarAtlasiDbContext.SectionTranslations.AddRange(newTranslations);
+                    }
+
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "Section updated successfully.", sectionId = section.Id });
+                }
+                else
+                {
+                    // Create new section
+                    var newSection = new Section
+                    {
+                        PageId = request.PageId,
+                        Type = request.Type,
+                        SectionTemplateType = request.SectionTemplateType,
+                        Attributes = request.Attributes ?? "{}",
+                        SortOrder = request.SortOrder,
+                        Configure = request.Configure ?? "{}",
+                        Status = request.Status,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+
+                    _pazarAtlasiDbContext.Sections.Add(newSection);
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                    // Add section items
+                    if (request.SectionItems != null)
+                    {
+                        foreach (var itemRequest in request.SectionItems)
+                        {
+                            var newItem = new SectionItem
+                            {
+                                SectionId = newSection.Id,
+                                Type = itemRequest.Type,
+                                MediaType = itemRequest.MediaType,
+                                PictureUrl = itemRequest.PictureUrl,
+                                VideoUrl = itemRequest.VideoUrl,
+                                RedirectUrl = itemRequest.RedirectUrl,
+                                Icon = itemRequest.Icon,
+                                SortOrder = itemRequest.SortOrder,
+                                MediaAttributes = itemRequest.MediaAttributes,
+                                Status = itemRequest.Status,
+                                CreatedAt = DateTime.UtcNow,
+                                IsDeleted = false
+                            };
+
+                            _pazarAtlasiDbContext.SectionItems.Add(newItem);
+                            await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
+
+                            // Add item translations
+                            if (itemRequest.Translations != null)
+                            {
+                                var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
+                                {
+                                    SectionItemId = newItem.Id,
+                                    LanguageId = t.LanguageId,
+                                    Name = t.Name,
+                                    Title = t.Title,
+                                    Description = t.Description,
+                                    CreatedAt = DateTime.UtcNow,
+                                    IsDeleted = false
+                                }).ToList();
+
+                                _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
+                            }
+                        }
+                    }
+
+                    // Add section translations
+                    if (request.Translations != null)
+                    {
+                        var newTranslations = request.Translations.Select(t => new SectionTranslation
+                        {
+                            SectionId = newSection.Id,
+                            LanguageId = t.LanguageId,
+                            Name = t.Name,
+                            Title = t.Title,
+                            Description = t.Description,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        }).ToList();
+
+                        _pazarAtlasiDbContext.SectionTranslations.AddRange(newTranslations);
+                    }
+
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "Section created successfully.", sectionId = newSection.Id });
+                }
             }
             catch (Exception ex)
             {

@@ -11,7 +11,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int SectionId { get; set; }
         public string? SectionCode { get; set; }
         public SectionType SectionType { get; set; }
-        public string? Code { get; set; }
         public SectionItemType Type { get; set; }
         public MediaType MediaType { get; set; }
         public string? PictureUrl { get; set; }
@@ -60,7 +59,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     {
         public int Id { get; set; }
         public int SectionId { get; set; }
-        public string? Code { get; set; }
         public SectionItemType Type { get; set; }
         public MediaType MediaType { get; set; }
         public string? PictureUrl { get; set; }

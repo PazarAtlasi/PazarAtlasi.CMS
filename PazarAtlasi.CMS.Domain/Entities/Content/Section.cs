@@ -11,11 +11,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     {
         public int PageId { get; set; }
 
-        public string? Code { get; set; }
-
         public SectionType Type { get; set; } = SectionType.None;
 
-        public TemplateType TemplateType { get; set; }
+        public SectionTemplateType SectionTemplateType { get; set; }
 
         public string? Attributes { get; set; }
 

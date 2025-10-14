@@ -28,8 +28,8 @@
                                     <i class="fas fa-grip-vertical"></i>
                                 </div>
                                 <div>
-                                    <h6 class="font-medium text-slate-800">@(currentSection.Code ?? "Untitled Section")</h6>
-                                    <p class="text-sm text-slate-500">@currentSection.Type.ToString() - @currentSection.TemplateType.ToString()</p>
+                                    <h6 class="font-medium text-slate-800">Section #@currentSection.Id</h6>
+                                    <p class="text-sm text-slate-500">@currentSection.Type.ToString() - @currentSection.SectionTemplateType.ToString()</p>
                                 </div>
                                 <span class="ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded">
                                     @(currentSection.SectionItems?.Count ?? 0) items
@@ -51,12 +51,7 @@
 
                         <!-- Section Settings (Hidden by default) -->
                         <div id="sectionSettings_@currentSection.Id" class="section-settings mb-4 p-4 bg-slate-50 rounded-lg" style="display: none;">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Code</label>
-                                    <input type="text" name="Sections[@i].Code" value="@currentSection.Code"
-                                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
-                                </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Section Type</label>
                                     <select name="Sections[@i].Type" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
@@ -75,16 +70,16 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Template Type</label>
-                                    <select name="Sections[@i].TemplateType" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" onchange="updateSectionTemplate(@currentSection.Id, this.value)">
-                                        @foreach (var templateType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.TemplateType>())
+                                    <select name="Sections[@i].SectionTemplateType" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" onchange="updateSectionTemplate(@currentSection.Id, this.value)">
+                                        @foreach (var SectionTemplateType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionTemplateType>())
                                         {
-                                            @if (currentSection.TemplateType == templateType)
+                                            @if (currentSection.SectionTemplateType == SectionTemplateType)
                                             {
-                                                <option value="@templateType" selected>@templateType.ToString()</option>
+                                                <option value="@SectionTemplateType" selected>@SectionTemplateType.ToString()</option>
                                             }
                                             else
                                             {
-                                                <option value="@templateType">@templateType.ToString()</option>
+                                                <option value="@SectionTemplateType">@SectionTemplateType.ToString()</option>
                                             }
                                         }
                                     </select>

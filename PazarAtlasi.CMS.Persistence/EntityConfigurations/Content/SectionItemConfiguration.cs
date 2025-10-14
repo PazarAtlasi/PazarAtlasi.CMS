@@ -13,7 +13,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             builder.Property(si => si.Id).HasColumnName("Id").IsRequired();
             builder.Property(si => si.SectionId).HasColumnName("SectionId").IsRequired();
-            builder.Property(si => si.Code).HasColumnName("Code").HasMaxLength(100);
             builder.Property(si => si.Type).HasColumnName("Type").HasDefaultValue(SectionItemType.None);
             builder.Property(si => si.MediaType).HasColumnName("MediaType").HasDefaultValue(MediaType.None);
             builder.Property(si => si.PictureUrl).HasColumnName("PictureUrl").HasMaxLength(500);
@@ -42,7 +41,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             // Indexes
             builder.HasIndex(si => new { si.SectionId, si.SortOrder }).HasDatabaseName("IX_SectionItems_SectionId_SortOrder");
-            builder.HasIndex(si => si.Code).HasDatabaseName("IX_SectionItems_Code");
             builder.HasIndex(si => si.Type).HasDatabaseName("IX_SectionItems_Type");
 
             // Query Filter
@@ -55,7 +53,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 1,
                     SectionId = 1, // hero-section
-                    Code = "hero-title",
                     Type = SectionItemType.Text,
                     SortOrder = 1,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -66,7 +63,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 2,
                     SectionId = 1, // hero-section
-                    Code = "hero-subtitle",
                     Type = SectionItemType.Paragraph,
                     SortOrder = 2,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -77,7 +73,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 3,
                     SectionId = 1, // hero-section
-                    Code = "hero-cta-button",
                     Type = SectionItemType.Button,
                     RedirectUrl = "/products",
                     SortOrder = 3,
@@ -90,7 +85,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 4,
                     SectionId = 2, // featured-products
-                    Code = "featured-product-1",
                     Type = SectionItemType.Picture,
                     PictureUrl = "/images/products/product1.jpg",
                     RedirectUrl = "/products/1",
@@ -103,7 +97,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 5,
                     SectionId = 2, // featured-products
-                    Code = "featured-product-2",
                     Type = SectionItemType.Picture,
                     PictureUrl = "/images/products/product2.jpg",
                     RedirectUrl = "/products/2",
@@ -116,7 +109,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 6,
                     SectionId = 2, // featured-products
-                    Code = "featured-product-3",
                     Type = SectionItemType.Picture,
                     PictureUrl = "/images/products/product3.jpg",
                     RedirectUrl = "/products/3",
@@ -130,7 +122,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 7,
                     SectionId = 3, // newsletter
-                    Code = "newsletter-title",
                     Type = SectionItemType.Text,
                     SortOrder = 1,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -141,7 +132,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 8,
                     SectionId = 3, // newsletter
-                    Code = "newsletter-form",
                     Type = SectionItemType.Form,
                     SortOrder = 2,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -153,7 +143,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 9,
                     SectionId = 4, // blog-header
-                    Code = "blog-title",
                     Type = SectionItemType.Text,
                     SortOrder = 1,
                     CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0),
@@ -164,7 +153,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 10,
                     SectionId = 4, // blog-header
-                    Code = "blog-search",
                     Type = SectionItemType.Search,
                     SortOrder = 2,
                     CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0),

@@ -1,0 +1,198 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SectionModalViewModel
+
+<div class="section-modal bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto"
+    style="max-height: 90vh; overflow-y: auto;">
+    <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 z-10">
+        <div class="flex items-center justify-between">
+            <h3 class="text-xl font-semibold text-slate-800">
+                @if (Model.IsNew)
+                {
+                    <span><i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Page Section</span>
+                }
+                else
+                {
+                    <span><i class="fas fa-edit mr-2 text-purple-600"></i> Edit Page Section</span>
+                }
+            </h3>
+            <button type="button" onclick="closeSectionModal()" class="text-slate-400 hover:text-slate-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <p class="text-sm text-slate-500 mt-1">Configure section and add content items</p>
+    </div>
+
+    <form id="sectionForm" class="p-6 space-y-6">
+        <input type="hidden" id="sectionId" value="@Model.Id" />
+        <input type="hidden" id="pageId" value="@Model.PageId" />
+
+        <!-- Section Settings -->
+        <div class="bg-slate-50 rounded-lg p-4">
+            <h4 class="font-medium text-slate-800 mb-4 flex items-center">
+                <i class="fas fa-cog mr-2 text-purple-600"></i> Section Settings
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Type</label>
+                    <select id="sectionType"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        @foreach (var sectionType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionType>())
+                        {
+                            @if (Model.Type == sectionType)
+                            {
+                                <option value="@sectionType" selected>@sectionType.ToString()</option>
+                            }
+                            else
+                            {
+                                <option value="@sectionType">@sectionType.ToString()</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Template Type</label>
+                    <select id="sectionTemplateType"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                        onchange="handleTemplateTypeChange(this.value)">
+                        @foreach (var templateType in
+                                                Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionTemplateType>())
+                        {
+                            @if (Model.SectionTemplateType == templateType)
+                            {
+                                <option value="@templateType" selected>@templateType.ToString()</option>
+                            }
+                            else
+                            {
+                                <option value="@templateType">@templateType.ToString()</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                    <select id="sectionStatus"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
+                        {
+                            @if (Model.Status == status)
+                            {
+                                <option value="@status" selected>@status.ToString()</option>
+                            }
+                            else
+                            {
+                                <option value="@status">@status.ToString()</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Items -->
+        <div id="sectionItemsContainer" class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <h4 class="font-medium text-slate-800 mb-4 flex items-center">
+                <i class="fas fa-images mr-2 text-blue-600"></i> Section Content
+                <span id="itemsCountBadge" class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
+                    @(Model.SectionItems?.Count ?? 0) items
+                </span>
+            </h4>
+
+            <div id="itemsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Items will be dynamically generated here -->
+            </div>
+
+            <div class="mt-4 text-center">
+                <button type="button" id="addItemBtn" onclick="addNewItem()"
+                    class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
+                    <i class="fas fa-plus mr-2"></i> Add Item
+                </button>
+            </div>
+        </div>
+
+        <!-- Section Translations -->
+        <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+            <h4 class="font-medium text-slate-800 mb-4 flex items-center">
+                <i class="fas fa-language mr-2 text-green-600"></i> Section Translations
+            </h4>
+
+            <div class="space-y-4" id="sectionTranslationsContainer">
+                @foreach (var lang in Model.AvailableLanguages)
+                {
+                    var translation = Model.Translations.FirstOrDefault(t => t.LanguageId == lang.Id);
+                    <div class="translation-item border border-slate-200 rounded-lg p-4 bg-white"
+                        data-language-id="@lang.Id">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-medium text-slate-700 flex items-center">
+                                <i class="fas fa-flag mr-2 text-green-600"></i> @lang.Name (@lang.Code)
+                                @if (lang.IsDefault)
+                                {
+                                    <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded">Default</span>
+                                }
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Section Title</label>
+                                <input type="text"
+                                    class="section-translation-title w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                    value="@(translation?.Title ?? "")" placeholder="Enter section title" />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Section Description</label>
+                                <textarea
+                                class="section-translation-description w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                rows="2"
+                                placeholder="Enter section description">@(translation?.Description ?? "")</textarea>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200">
+            <button type="button" onclick="closeSectionModal()"
+                class="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm transition-colors">
+                <i class="fas fa-times mr-2"></i> Cancel
+            </button>
+            <button type="button" onclick="saveSection()"
+                class="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                <i class="fas fa-save mr-2"></i> Save Section
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<style>
+    .item-card {
+        border: 2px dashed #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+        transition: border-color 0.2s;
+        background: white;
+    }
+
+    .item-card:hover {
+        border-color: #a855f7;
+    }
+
+    .item-card.filled {
+        border-style: solid;
+        border-color: #10b981;
+        background: #f0fdf4;
+    }
+
+    .item-preview img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 0.375rem;
+    }
+</style>

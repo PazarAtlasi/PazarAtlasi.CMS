@@ -20,5 +20,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public string? Description { get; set; }
 
         public virtual Section Section { get; set; }
+
+        public virtual Language Language { get; set; }
     }
 }

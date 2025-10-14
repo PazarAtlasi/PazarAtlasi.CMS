@@ -15,13 +15,15 @@
             <div class="page-title-box">
                 <div class="flex items-center mb-2">
                     <a href="@Url.Action("PageDetails", "Content", new { id = Model.Id })"
-                       class="text-purple-600 hover:text-purple-800 mr-3">
+                        class="text-purple-600 hover:text-purple-800 mr-3">
                         <i class="fas fa-arrow-left"></i>
                     </a>
-                    <h4 class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    <h4
+                        class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
                         Edit: @Model.Name
                     </h4>
-                    <span class="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium status-badge @Html.Raw(GetStatusCssClass(Model.Status))">
+                    <span
+                        class="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium status-badge @Html.Raw(GetStatusCssClass(Model.Status))">
                         @Model.Status.ToString()
                     </span>
                 </div>
@@ -32,13 +34,16 @@
         </div>
         <div class="w-full lg:w-1/3 text-left lg:text-right">
             <div class="inline-flex items-center space-x-2">
-                <button type="button" data-action="save-draft" class="py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                <button type="button" data-action="save-draft"
+                    class="py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
                     <i class="fas fa-save mr-2"></i> Save Draft
                 </button>
-                <button type="button" data-action="publish" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                <button type="button" data-action="publish"
+                    class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
                     <i class="fas fa-check mr-2"></i> Publish
                 </button>
-                <button type="button" data-action="preview" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                <button type="button" data-action="preview"
+                    class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
                     <i class="fas fa-eye mr-2"></i> Preview
                 </button>
             </div>
@@ -111,6 +116,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="~/js/page-edit.js"></script>
     <script src="~/js/section-item-modal.js"></script>
+    <script src="~/js/section-modal.js"></script>
 }
 
 @functions {

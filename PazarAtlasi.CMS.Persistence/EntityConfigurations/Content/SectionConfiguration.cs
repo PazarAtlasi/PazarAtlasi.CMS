@@ -13,9 +13,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             builder.Property(s => s.Id).HasColumnName("Id").IsRequired();
             builder.Property(s => s.PageId).HasColumnName("PageId").IsRequired();
-            builder.Property(s => s.Code).HasColumnName("Code").HasMaxLength(100);
             builder.Property(s => s.Type).HasColumnName("Type").HasDefaultValue(SectionType.None);
-            builder.Property(s => s.TemplateType).HasColumnName("TemplateType").HasDefaultValue(TemplateType.None);
+            builder.Property(s => s.SectionTemplateType).HasColumnName("SectionTemplateType").HasDefaultValue(SectionTemplateType.None);
             builder.Property(s => s.Attributes).HasColumnName("Attributes").HasColumnType("nvarchar(max)");
             builder.Property(s => s.SortOrder).HasColumnName("SortOrder").HasDefaultValue(0);
             builder.Property(s => s.Configure).HasColumnName("Configure").HasColumnType("nvarchar(max)");
@@ -44,7 +43,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             // Indexes
             builder.HasIndex(s => new { s.PageId, s.SortOrder }).HasDatabaseName("IX_Sections_PageId_SortOrder");
-            builder.HasIndex(s => s.Code).HasDatabaseName("IX_Sections_Code");
             builder.HasIndex(s => s.Type).HasDatabaseName("IX_Sections_Type");
 
             // Query Filter
@@ -57,9 +55,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 1,
                     PageId = 1,
-                    Code = "hero-section",
                     Type = SectionType.Hero,
-                    TemplateType = TemplateType.Default,
+                    SectionTemplateType = SectionTemplateType.Default,
                     SortOrder = 1,
                     Attributes = "{\"backgroundImage\": \"hero-bg.jpg\", \"height\": \"500px\"}",
                     Configure = "{\"showButton\": true, \"buttonText\": \"Keşfet\"}",
@@ -71,9 +68,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 2,
                     PageId = 1,
-                    Code = "featured-products",
                     Type = SectionType.Featured,
-                    TemplateType = TemplateType.Grid,
+                    SectionTemplateType = SectionTemplateType.Grid,
                     SortOrder = 2,
                     Attributes = "{\"columns\": 3}",
                     Configure = "{\"maxItems\": 6, \"showMore\": true, \"showPrices\": true}",
@@ -85,9 +81,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 3,
                     PageId = 1,
-                    Code = "newsletter",
                     Type = SectionType.Newsletter,
-                    TemplateType = TemplateType.Default,
+                    SectionTemplateType = SectionTemplateType.Default,
                     SortOrder = 3,
                     Attributes = "{\"backgroundColor\": \"#f8f9fa\"}",
                     Configure = "{\"showPrivacyText\": true}",
@@ -100,9 +95,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 4,
                     PageId = 2,
-                    Code = "blog-header",
                     Type = SectionType.Header,
-                    TemplateType = TemplateType.Default,
+                    SectionTemplateType = SectionTemplateType.Default,
                     SortOrder = 1,
                     Attributes = "{}",
                     Configure = "{\"showSearchBox\": true,\"showBreadcrumbs\": true}",
@@ -114,9 +108,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 5,
                     PageId = 2,
-                    Code = "blog-content",
                     Type = SectionType.MainContent,
-                    TemplateType = TemplateType.List,
+                    SectionTemplateType = SectionTemplateType.List,
                     SortOrder = 2,
                     Attributes = "{}",
                     Configure = "{\"showExcerpt\": true, \"showAuthor\": true, \"showDate\": true,\"postsPerPage\": 10}",
@@ -129,9 +122,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 6,
                     PageId = 3,
-                    Code = "product-catalog",
                     Type = SectionType.Catalog,
-                    TemplateType = TemplateType.Grid,
+                    SectionTemplateType = SectionTemplateType.Grid,
                     SortOrder = 1,
                     Attributes = "{\"columns\": 4}",
                     Configure = "{\"productsPerPage\": 20, \"showSorting\": true, \"showFilters\": true}",

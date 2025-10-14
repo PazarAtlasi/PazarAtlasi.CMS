@@ -644,11 +644,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Attributes");
 
-                    b.Property<string>("Code")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Code");
-
                     b.Property<string>("Configure")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Configure");
@@ -671,6 +666,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("PageId");
 
+                    b.Property<int>("SectionTemplateType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("SectionTemplateType");
+
                     b.Property<int>("SortOrder")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -682,12 +683,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0)
                         .HasColumnName("Status");
-
-                    b.Property<int>("TemplateType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("TemplateType");
 
                     b.Property<int>("Type")
                         .ValueGeneratedOnAdd()
@@ -705,9 +700,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .HasDatabaseName("IX_Sections_Code");
-
                     b.HasIndex("Type")
                         .HasDatabaseName("IX_Sections_Type");
 
@@ -721,84 +713,78 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 1,
                             Attributes = "{\"backgroundImage\": \"hero-bg.jpg\", \"height\": \"500px\"}",
-                            Code = "hero-section",
                             Configure = "{\"showButton\": true, \"buttonText\": \"Keşfet\"}",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
+                            SectionTemplateType = 1,
                             SortOrder = 1,
                             Status = 1,
-                            TemplateType = 1,
                             Type = 3
                         },
                         new
                         {
                             Id = 2,
                             Attributes = "{\"columns\": 3}",
-                            Code = "featured-products",
                             Configure = "{\"maxItems\": 6, \"showMore\": true, \"showPrices\": true}",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
+                            SectionTemplateType = 3,
                             SortOrder = 2,
                             Status = 1,
-                            TemplateType = 3,
                             Type = 6
                         },
                         new
                         {
                             Id = 3,
                             Attributes = "{\"backgroundColor\": \"#f8f9fa\"}",
-                            Code = "newsletter",
                             Configure = "{\"showPrivacyText\": true}",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
+                            SectionTemplateType = 1,
                             SortOrder = 3,
                             Status = 1,
-                            TemplateType = 1,
                             Type = 7
                         },
                         new
                         {
                             Id = 4,
                             Attributes = "{}",
-                            Code = "blog-header",
                             Configure = "{\"showSearchBox\": true,\"showBreadcrumbs\": true}",
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 2,
+                            SectionTemplateType = 1,
                             SortOrder = 1,
                             Status = 1,
-                            TemplateType = 1,
                             Type = 2
                         },
                         new
                         {
                             Id = 5,
                             Attributes = "{}",
-                            Code = "blog-content",
                             Configure = "{\"showExcerpt\": true, \"showAuthor\": true, \"showDate\": true,\"postsPerPage\": 10}",
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 2,
+                            SectionTemplateType = 6,
                             SortOrder = 2,
                             Status = 1,
-                            TemplateType = 6,
                             Type = 12
                         },
                         new
                         {
                             Id = 6,
                             Attributes = "{\"columns\": 4}",
-                            Code = "product-catalog",
                             Configure = "{\"productsPerPage\": 20, \"showSorting\": true, \"showFilters\": true}",
                             CreatedAt = new DateTime(2024, 1, 3, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 3,
+                            SectionTemplateType = 3,
                             SortOrder = 1,
                             Status = 1,
-                            TemplateType = 3,
                             Type = 4
                         });
                 });
@@ -811,11 +797,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Code");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -893,9 +874,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .HasDatabaseName("IX_SectionItems_Code");
-
                     b.HasIndex("Type")
                         .HasDatabaseName("IX_SectionItems_Type");
 
@@ -908,7 +886,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            Code = "hero-title",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -920,7 +897,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 2,
-                            Code = "hero-subtitle",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -932,7 +908,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 3,
-                            Code = "hero-cta-button",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -945,7 +920,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 4,
-                            Code = "featured-product-1",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -959,7 +933,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 5,
-                            Code = "featured-product-2",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -973,7 +946,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 6,
-                            Code = "featured-product-3",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -987,7 +959,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 7,
-                            Code = "newsletter-title",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -999,7 +970,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 8,
-                            Code = "newsletter-form",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -1011,7 +981,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 9,
-                            Code = "blog-title",
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
@@ -1023,14 +992,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         new
                         {
                             Id = 10,
-                            Code = "blog-search",
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 4,
                             SortOrder = 2,
                             Status = 1,
-                            Type = 22
+                            Type = 18
                         });
                 });
 
@@ -1315,6 +1283,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LanguageId");
+
                     b.HasIndex("SectionId", "LanguageId")
                         .IsUnique()
                         .HasDatabaseName("IX_SectionTranslations_SectionId_LanguageId");
@@ -1551,11 +1521,19 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTranslation", b =>
                 {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Section", "Section")
                         .WithMany("Translations")
                         .HasForeignKey("SectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Language");
 
                     b.Navigation("Section");
                 });

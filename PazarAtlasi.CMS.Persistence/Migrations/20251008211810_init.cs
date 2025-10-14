@@ -160,7 +160,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     PageId = table.Column<int>(type: "int", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    TemplateType = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    SectionTemplateType = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     Attributes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     Configure = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -348,7 +348,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Sections",
-                columns: new[] { "Id", "Attributes", "Code", "Configure", "CreatedAt", "CreatedBy", "PageId", "SortOrder", "Status", "TemplateType", "Type", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "Attributes", "Code", "Configure", "CreatedAt", "CreatedBy", "PageId", "SortOrder", "Status", "SectionTemplateType", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
                     { 1, "{\"backgroundImage\": \"hero-bg.jpg\", \"height\": \"500px\"}", "hero-section", "{\"showButton\": true, \"buttonText\": \"Keşfet\"}", new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 1, 1, 1, 1, 3, null, null },

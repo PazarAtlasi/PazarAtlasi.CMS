@@ -39,9 +39,8 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class SectionEditViewModel
     {
         public int Id { get; set; }
-        public string? Code { get; set; }
         public SectionType Type { get; set; }
-        public TemplateType TemplateType { get; set; }
+        public SectionTemplateType SectionTemplateType { get; set; }
         public string? Attributes { get; set; }
         public int SortOrder { get; set; }
         public string? Configure { get; set; }
@@ -54,19 +53,19 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public List<SectionTranslationEditViewModel> Translations { get; set; } = new();
         
         // Helper properties for rendering
-        public bool IsCarousel => TemplateType == TemplateType.Carousel;
-        public bool IsSingleItem => TemplateType == TemplateType.SingleItem;
-        public bool IsGrid => TemplateType == TemplateType.Grid;
-        public bool IsList => TemplateType == TemplateType.List;
-        public bool IsMasonry => TemplateType == TemplateType.Masonry;
+        public bool IsCarousel => SectionTemplateType == SectionTemplateType.Carousel;
+        public bool IsSingleItem => SectionTemplateType == SectionTemplateType.SingleItem;
+        public bool IsGrid => SectionTemplateType == SectionTemplateType.Grid;
+        public bool IsList => SectionTemplateType == SectionTemplateType.List;
+        public bool IsMasonry => SectionTemplateType == SectionTemplateType.Masonry;
         
-        public string TemplateClass => TemplateType switch
+        public string TemplateClass => SectionTemplateType switch
         {
-            TemplateType.Carousel => "carousel-section",
-            TemplateType.Grid => "grid-section",
-            TemplateType.List => "list-section",
-            TemplateType.Masonry => "masonry-section",
-            TemplateType.SingleItem => "single-item-section",
+            SectionTemplateType.Carousel => "carousel-section",
+            SectionTemplateType.Grid => "grid-section",
+            SectionTemplateType.List => "list-section",
+            SectionTemplateType.Masonry => "masonry-section",
+            SectionTemplateType.SingleItem => "single-item-section",
             _ => "default-section"
         };
     }
@@ -74,7 +73,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class SectionItemEditViewModel
     {
         public int Id { get; set; }
-        public string? Code { get; set; }
         public SectionItemType Type { get; set; }
         public MediaType MediaType { get; set; }
         public string? PictureUrl { get; set; }

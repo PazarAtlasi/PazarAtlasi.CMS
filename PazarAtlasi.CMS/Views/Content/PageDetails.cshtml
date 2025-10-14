@@ -277,8 +277,7 @@
                                                 @sectionDetail.SortOrder
                                             </span>
                                             <div>
-                                                <h6 class="font-medium text-slate-800">@sectionDetail.Code</h6>
-                                                <p class="text-sm text-slate-500">@sectionDetail.Type.ToString() - @sectionDetail.TemplateType.ToString()</p>
+                                                <p class="text-sm text-slate-500">@sectionDetail.Type.ToString() - @sectionDetail.SectionTemplateType.ToString()</p>
                                             </div>
                                         </div>
                                         @{
@@ -320,7 +319,6 @@
                                                             @item.SortOrder
                                                         </span>
                                                         <div class="flex-1">
-                                                            <span class="font-medium">@item.Code</span>
                                                             <span class="text-slate-500 ml-2">(@item.Type.ToString())</span>
                                                         </div>
                                                     </div>

@@ -93,10 +93,6 @@ namespace PazarAtlasi.CMS.Domain.Common
         Form,
         List,
         Grid,
-        Carousel,
-        Accordion,
-        Tabs,
-        MegaMenu,
         Sidebar,
         Advertisement,
         Search,
@@ -107,7 +103,7 @@ namespace PazarAtlasi.CMS.Domain.Common
         Breadcrumbs,
         Pagination
     }
-    public enum TemplateType
+    public enum SectionTemplateType
     {
         None,
         Default,
@@ -117,7 +113,10 @@ namespace PazarAtlasi.CMS.Domain.Common
         Carousel,
         List,
         SingleItem,
-        MultiItem
+        MultiItem,
+        Accordion,
+        Tabs,
+        MegaMenu
     }
 
     public enum MediaType
