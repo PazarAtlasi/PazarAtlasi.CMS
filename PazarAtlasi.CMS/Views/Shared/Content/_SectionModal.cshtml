@@ -5,14 +5,7 @@
     <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 z-10">
         <div class="flex items-center justify-between">
             <h3 class="text-xl font-semibold text-slate-800">
-                @if (Model.IsNew)
-                {
-                    <span><i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Page Section</span>
-                }
-                else
-                {
-                    <span><i class="fas fa-edit mr-2 text-purple-600"></i> Edit Page Section</span>
-                }
+                <span><i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Page Section</span>
             </h3>
             <button type="button" onclick="closeSectionModal()" class="text-slate-400 hover:text-slate-600">
                 <i class="fas fa-times text-xl"></i>
@@ -70,6 +63,17 @@
                     </select>
                 </div>
 
+                <!-- Grid Configuration (shown only when Grid is selected) -->
+                <div id="gridConfiguration" class="hidden">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Grid Layout</label>
+                    <select id="gridLayout"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                        onchange="handleGridLayoutChange(this.value)">
+                        <option value="3">3 Items (Vertical)</option>
+                        <option value="6">6 Items (3x2 Grid)</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
                     <select id="sectionStatus"
@@ -93,7 +97,7 @@
         <!-- Section Items -->
         <div id="sectionItemsContainer" class="bg-blue-50 rounded-lg p-4 border border-blue-200">
             <h4 class="font-medium text-slate-800 mb-4 flex items-center">
-                <i class="fas fa-images mr-2 text-blue-600"></i> Section Content
+                <i class="fas fa-images mr-2 text-blue-600"></i> Section Items
                 <span id="itemsCountBadge" class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
                     @(Model.SectionItems?.Count ?? 0) items
                 </span>
@@ -117,36 +121,53 @@
                 <i class="fas fa-language mr-2 text-green-600"></i> Section Translations
             </h4>
 
-            <div class="space-y-4" id="sectionTranslationsContainer">
+            <!-- Language Tabs -->
+            <div class="flex space-x-1 mb-4 bg-white rounded-lg p-1 border border-slate-200">
+                @foreach (var lang in Model.AvailableLanguages)
+                {
+                    <button type="button"
+                        class="language-tab flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors @(lang.IsDefault ? "bg-green-100 text-green-800" : "text-slate-600 hover:text-slate-800 hover:bg-slate-50")"
+                        data-language-id="@lang.Id" onclick="switchLanguageTab(@lang.Id)">
+                        @lang.Code.ToUpper()
+                        @if (lang.IsDefault)
+                        {
+                            <span class="ml-1 text-xs">●</span>
+                        }
+                    </button>
+                }
+            </div>
+
+            <!-- Translation Content -->
+            <div id="sectionTranslationsContainer">
                 @foreach (var lang in Model.AvailableLanguages)
                 {
                     var translation = Model.Translations.FirstOrDefault(t => t.LanguageId == lang.Id);
-                    <div class="translation-item border border-slate-200 rounded-lg p-4 bg-white"
-                        data-language-id="@lang.Id">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="font-medium text-slate-700 flex items-center">
-                                <i class="fas fa-flag mr-2 text-green-600"></i> @lang.Name (@lang.Code)
+                    <div class="translation-content @(lang.IsDefault ? "" : "hidden")" data-language-id="@lang.Id">
+                        <div class="bg-white rounded-lg p-4 border border-slate-200">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-flag mr-2 text-green-600"></i>
+                                <span class="font-medium text-slate-700">@lang.Name (@lang.Code)</span>
                                 @if (lang.IsDefault)
                                 {
                                     <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded">Default</span>
                                 }
-                            </span>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Section Title</label>
-                                <input type="text"
-                                    class="section-translation-title w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                                    value="@(translation?.Title ?? "")" placeholder="Enter section title" />
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Section Description</label>
-                                <textarea
-                                class="section-translation-description w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
-                                rows="2"
-                                placeholder="Enter section description">@(translation?.Description ?? "")</textarea>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Title</label>
+                                    <input type="text"
+                                        class="section-translation-title w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
+                                        value="@(translation?.Title ?? "")" placeholder="Enter section title" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Description</label>
+                                    <textarea
+                                    class="section-translation-description w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
+                                    rows="2"
+                                    placeholder="Enter section description">@(translation?.Description ?? "")</textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -175,12 +196,17 @@
         border-radius: 0.5rem;
         padding: 1rem;
         text-align: center;
-        transition: border-color 0.2s;
+        transition: all 0.2s;
         background: white;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .item-card:hover {
         border-color: #a855f7;
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
     }
 
     .item-card.filled {
@@ -194,5 +220,33 @@
         height: 120px;
         object-fit: cover;
         border-radius: 0.375rem;
+    }
+
+    .item-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80px;
+    }
+
+    .video-preview,
+    .text-preview {
+        width: 100%;
+        height: 80px;
+        border-radius: 0.375rem;
+    }
+
+    .language-tab.active {
+        background-color: #dcfce7 !important;
+        color: #166534 !important;
+    }
+
+    .translation-content {
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .translation-content.hidden {
+        display: none;
     }
 </style>
