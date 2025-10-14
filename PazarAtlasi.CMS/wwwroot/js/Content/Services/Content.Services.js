@@ -371,18 +371,6 @@ const ContentServices = (function () {
     // ==================== MENU SERVICES ====================
 
     /**
-     * Get sample menu structure
-     */
-    function getSampleMenuStructure() {
-        return $.ajax({
-            url: `${config.baseUrl}/GetSampleMenuStructure`,
-            type: "GET",
-            headers: buildHeaders(),
-            dataType: "json",
-        });
-    }
-
-    /**
      * Save menu content
      */
     function saveMenuContent(payload) {
@@ -432,8 +420,6 @@ const ContentServices = (function () {
         uploadVideo,
         uploadDocument,
 
-        // Menu services
-        getSampleMenuStructure,
         saveMenuContent,
 
         // Utility
