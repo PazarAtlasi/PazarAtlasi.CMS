@@ -58,18 +58,10 @@ class PageEditor {
     const formData = this.getFormData();
 
     try {
-      const response = await fetch(`/Content/SaveDraft/${pageId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          RequestVerificationToken: document.querySelector(
-            'input[name="__RequestVerificationToken"]'
-          ).value,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
+      const result = await ContentServices.saveDraft(
+        pageId,
+        formData
+      );
       this.showNotification(
         result.message,
         result.success ? "success" : "error"
@@ -90,16 +82,7 @@ class PageEditor {
     }
 
     try {
-      const response = await fetch(`/Content/PublishPage/${pageId}`, {
-        method: "POST",
-        headers: {
-          RequestVerificationToken: document.querySelector(
-            'input[name="__RequestVerificationToken"]'
-          ).value,
-        },
-      });
-
-      const result = await response.json();
+      const result = await ContentServices.publishPage(pageId);
       this.showNotification(
         result.message,
         result.success ? "success" : "error"
@@ -354,22 +337,19 @@ function closeSectionSelectionModal() {
   }
 }
 
-function createNewSection() {
+async function createNewSection() {
   closeSectionSelectionModal();
 
   // Get the page ID
   const pageId = document.querySelector('input[name="Id"]').value;
 
-  // Load the new section modal
-  fetch(`/Content/GetSectionModal?id=0&pageId=${pageId}`)
-    .then((response) => response.text())
-    .then((html) => {
-      showSectionModal(html);
-    })
-    .catch((error) => {
-      console.error("Error loading section modal:", error);
-      alert("Error loading section modal. Please try again.");
-    });
+  try {
+    const html = await ContentServices.getSectionModal(0, pageId);
+    showSectionModal(html);
+  } catch (error) {
+    console.error("Error loading section modal:", error);
+    alert("Error loading section modal. Please try again.");
+  }
 }
 
 async function showReusableSections() {
@@ -381,8 +361,7 @@ async function showReusableSections() {
   listDiv.classList.remove("hidden");
 
   try {
-    const response = await fetch("/Content/GetReusableSections");
-    const result = await response.json();
+    const result = await ContentServices.getReusableSections();
 
     if (
       result.success &&
@@ -454,21 +433,10 @@ async function addReusableSection(sectionId) {
   try {
     const pageId = document.querySelector('input[name="Id"]').value;
 
-    const response = await fetch("/Content/AddReusableSection", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        RequestVerificationToken: document.querySelector(
-          'input[name="__RequestVerificationToken"]'
-        ).value,
-      },
-      body: new URLSearchParams({
-        pageId: pageId,
-        sectionId: sectionId,
-      }),
+    const result = await ContentServices.addReusableSection({
+      pageId: pageId,
+      sectionId: sectionId,
     });
-
-    const result = await response.json();
 
     if (result.success) {
       closeSectionSelectionModal();
@@ -567,18 +535,7 @@ async function handleAddSection(e) {
   };
 
   try {
-    const response = await fetch("/Content/AddSection", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        RequestVerificationToken: document.querySelector(
-          'input[name="__RequestVerificationToken"]'
-        ).value,
-      },
-      body: new URLSearchParams(data),
-    });
-
-    const result = await response.json();
+    const result = await ContentServices.addSection(data);
 
     if (result.success) {
       // Add new section to the page
@@ -627,18 +584,7 @@ async function removeSection(sectionId) {
   }
 
   try {
-    const response = await fetch("/Content/RemoveSection", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        RequestVerificationToken: document.querySelector(
-          'input[name="__RequestVerificationToken"]'
-        ).value,
-      },
-      body: new URLSearchParams({ sectionId: sectionId }),
-    });
-
-    const result = await response.json();
+    const result = await ContentServices.removeSection(sectionId);
 
     if (result.success) {
       // Remove section from DOM
@@ -747,32 +693,25 @@ function duplicatePage() {
   }
 }
 
-function deletePage() {
+async function deletePage() {
   if (
     confirm(
       "Are you sure you want to delete this page? This action cannot be undone."
     )
   ) {
     const pageId = document.querySelector('input[name="Id"]').value;
-    fetch(`/Content/DeletePage/${pageId}`, {
-      method: "DELETE",
-      headers: {
-        RequestVerificationToken: document.querySelector(
-          'input[name="__RequestVerificationToken"]'
-        ).value,
-      },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.success) {
-          window.location.href = "/Content/Pages";
-        } else {
-          alert(result.message);
-        }
-      })
-      .catch((error) => {
-        alert("An error occurred while deleting the page.");
-      });
+
+    try {
+      const result = await ContentServices.deletePage(pageId);
+
+      if (result.success) {
+        window.location.href = "/Content/Pages";
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      alert("An error occurred while deleting the page.");
+    }
   }
 }
 
@@ -788,16 +727,11 @@ function editSectionItems(sectionId) {
 
 async function addSectionItem(sectionId) {
   try {
-    const response = await fetch(
-      `/Content/GetSectionItemModal?id=0&sectionId=${sectionId}`
+    const html = await ContentServices.getSectionItemModal(
+      0,
+      sectionId
     );
-
-    if (response.ok) {
-      const html = await response.text();
-      showSectionItemModal(html);
-    } else {
-      alert("Failed to load section item form");
-    }
+    showSectionItemModal(html);
   } catch (error) {
     console.error("Error loading section item form:", error);
     alert("An error occurred while loading the form");
@@ -806,16 +740,8 @@ async function addSectionItem(sectionId) {
 
 async function editSectionItem(itemId) {
   try {
-    const response = await fetch(
-      `/Content/GetSectionItemModal?id=${itemId}&sectionId=0`
-    );
-
-    if (response.ok) {
-      const html = await response.text();
-      showSectionItemModal(html);
-    } else {
-      alert("Failed to load section item form");
-    }
+    const html = await ContentServices.getSectionItemModal(itemId, 0);
+    showSectionItemModal(html);
   } catch (error) {
     console.error("Error loading section item form:", error);
     alert("An error occurred while loading the form");
@@ -955,10 +881,7 @@ async function loadContentByType(pageType) {
     loadingOption.textContent = "Loading...";
     linkedContentSelect.appendChild(loadingOption);
 
-    const response = await fetch(
-      `/Content/GetContentByType?pageType=${pageType}`
-    );
-    const result = await response.json();
+    const result = await ContentServices.getContentByType(pageType);
 
     // Remove loading option
     linkedContentSelect.removeChild(loadingOption);
@@ -1020,8 +943,7 @@ async function loadAvailableLayouts() {
   if (!layoutSelect) return;
 
   try {
-    const response = await fetch("/Content/GetAvailableLayouts");
-    const result = await response.json();
+    const result = await ContentServices.getAvailableLayouts();
 
     if (result.success && result.layouts) {
       // Clear existing options except the first one

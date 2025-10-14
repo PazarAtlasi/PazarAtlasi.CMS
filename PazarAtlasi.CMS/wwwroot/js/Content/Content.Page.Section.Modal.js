@@ -63,9 +63,8 @@ function initializeSectionModal() {
     document.getElementById("pageId").value
   );
   currentSection.type = document.getElementById("sectionType").value;
-  currentSection.templateType = document.getElementById(
-    "TemplateType"
-  ).value;
+  currentSection.templateType =
+    document.getElementById("TemplateType").value;
   currentSection.status = parseInt(
     document.getElementById("sectionStatus").value
   );
@@ -497,17 +496,10 @@ async function handleItemImageUpload(input, index) {
     }
 
     try {
-      // Upload image
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", "sections");
-
-      const response = await fetch("/Content/UploadImage", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
+      const result = await ContentServices.uploadImage(
+        file,
+        "sections"
+      );
 
       if (result.success) {
         // Update item data
@@ -619,17 +611,10 @@ async function handleDocumentUpload(input, index) {
     }
 
     try {
-      // Upload document (using same endpoint as images for now)
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", "documents");
-
-      const response = await fetch("/Content/UploadImage", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
+      const result = await ContentServices.uploadDocument(
+        file,
+        "documents"
+      );
 
       if (result.success) {
         // Update item data
@@ -841,18 +826,7 @@ async function saveSection() {
 
     console.log("Saving section:", sectionData);
 
-    const response = await fetch("/Content/SaveSection", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        RequestVerificationToken: document.querySelector(
-          'input[name="__RequestVerificationToken"]'
-        ).value,
-      },
-      body: JSON.stringify(sectionData),
-    });
-
-    const result = await response.json();
+    const result = await ContentServices.saveSection(sectionData);
 
     if (result.success) {
       closeSectionModal();
@@ -1015,8 +989,7 @@ function updateItemPageLink(index, pageId) {
 
 async function loadAvailablePages() {
   try {
-    const response = await fetch("/Content/GetAvailablePages");
-    const result = await response.json();
+    const result = await ContentServices.getAvailablePages();
 
     if (result.success) {
       availablePages = result.pages;

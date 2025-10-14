@@ -307,16 +307,7 @@
     async function deleteLayout(layoutId, layoutName) {
         if (confirm(`Are you sure you want to delete the layout "${layoutName}"? This action cannot be undone.`)) {
             try {
-                const response = await fetch('/Content/DeleteLayout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: new URLSearchParams({ id: layoutId })
-                });
-
-                const result = await response.json();
+                const result = await ContentServices.deleteLayout(layoutId);
 
                 if (result.success) {
                     window.location.href = '/Content/Layouts';

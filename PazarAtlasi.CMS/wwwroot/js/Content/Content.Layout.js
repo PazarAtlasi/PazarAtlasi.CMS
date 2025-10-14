@@ -5,8 +5,7 @@ let layoutSections = [];
 // Load available sections
 async function loadAvailableSections() {
   try {
-    const response = await fetch("/Content/GetReusableSections");
-    const result = await response.json();
+    const result = await ContentServices.getReusableSections();
 
     if (result.success && result.sections) {
       availableSections = result.sections;

@@ -169,12 +169,7 @@ async function handleSingleImageUpload(input) {
   try {
     showUploadProgress("Uploading image...");
 
-    const response = await fetch("/Content/UploadImage", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await response.json();
+    const result = await ContentServices.uploadImage(file, "hero");
 
     if (result.success) {
       document.getElementById("pictureUrl").value = result.url;
@@ -234,12 +229,10 @@ async function handleSliderImageUpload(input, slotIndex) {
   try {
     showUploadProgress("Uploading image...");
 
-    const response = await fetch("/Content/UploadImage", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await response.json();
+    const result = await ContentServices.uploadImage(
+      file,
+      "hero-slider"
+    );
 
     if (result.success) {
       sliderImages[slotIndex] = result.url;
@@ -323,12 +316,10 @@ async function handleVideoUpload(input) {
   try {
     showUploadProgress("Uploading video... This may take a while.");
 
-    const response = await fetch("/Content/UploadVideo", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await response.json();
+    const result = await ContentServices.uploadVideo(
+      file,
+      "hero-video"
+    );
 
     if (result.success) {
       document.getElementById("videoUrl").value = result.url;
@@ -456,16 +447,7 @@ async function saveSectionItem() {
     console.log("JSON string:", JSON.stringify(request, null, 2));
     console.log("======================");
 
-    const response = await fetch("/Content/SaveSectionItem", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(request),
-    });
-
-    const result = await response.json();
+    const result = await ContentServices.saveSectionItem(request);
     console.log("Response:", result); // Debug log
 
     if (result.success) {
