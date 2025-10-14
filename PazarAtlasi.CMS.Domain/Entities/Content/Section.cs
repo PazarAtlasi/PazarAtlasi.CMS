@@ -9,11 +9,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 {
     public class Section : Entity<int>
     {
-        public int PageId { get; set; }
+        public int? PageId { get; set; } // Nullable for reusable sections
 
         public SectionType Type { get; set; } = SectionType.None;
-
-        public SectionTemplateType SectionTemplateType { get; set; }
 
         public string? Attributes { get; set; }
 
@@ -21,10 +19,10 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public string? Configure { get; set; }
 
-        public virtual Page Page { get; set; }
-
-        public virtual ICollection<SectionItem> SectionItems { get; set; }
-
-        public virtual ICollection<SectionTranslation> Translations { get; set; }   
+        // Navigation properties
+        public virtual Page? Page { get; set; }
+        public virtual ICollection<SectionItem> SectionItems { get; set; } = new List<SectionItem>();
+        public virtual ICollection<SectionTranslation> Translations { get; set; } = new List<SectionTranslation>();
+        public virtual ICollection<SectionTemplate> SectionTemplates { get; set; } = new List<SectionTemplate>();
     }
 }

@@ -29,7 +29,7 @@
                                 </div>
                                 <div>
                                     <h6 class="font-medium text-slate-800">Section #@currentSection.Id</h6>
-                                    <p class="text-sm text-slate-500">@currentSection.Type.ToString() - @currentSection.SectionTemplateType.ToString()</p>
+                                    <p class="text-sm text-slate-500">@currentSection.Type.ToString() - Template System</p>
                                 </div>
                                 <span class="ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded">
                                     @(currentSection.SectionItems?.Count ?? 0) items
@@ -69,20 +69,12 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Template Type</label>
-                                    <select name="Sections[@i].SectionTemplateType" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" onchange="updateSectionTemplate(@currentSection.Id, this.value)">
-                                        @foreach (var SectionTemplateType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionTemplateType>())
-                                        {
-                                            @if (currentSection.SectionTemplateType == SectionTemplateType)
-                                            {
-                                                <option value="@SectionTemplateType" selected>@SectionTemplateType.ToString()</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@SectionTemplateType">@SectionTemplateType.ToString()</option>
-                                            }
-                                        }
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Template</label>
+                                    <select name="Sections[@i].TemplateId" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" onchange="updateSectionTemplate(@currentSection.Id, this.value)">
+                                        <option value="">Select Template</option>
+                                        <!-- Templates will be loaded dynamically based on section type -->
                                     </select>
+                                    <p class="text-xs text-slate-500 mt-1">Templates will be available based on section type</p>
                                 </div>
                             </div>
                         </div>

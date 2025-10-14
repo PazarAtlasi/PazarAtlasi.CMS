@@ -6,6 +6,22 @@ using System.Threading.Tasks;
 
 namespace PazarAtlasi.CMS.Domain.Common
 {
+    public enum TemplateType
+    {
+        None,
+        Default,
+        Sequential,
+        Grid,
+        Masonry,
+        Carousel,
+        List,
+        SingleItem,
+        MultiItem,
+        Accordion,
+        Tabs,
+        MegaMenu
+    }
+
     public enum Status
     {
         Draft = 0,
@@ -103,21 +119,6 @@ namespace PazarAtlasi.CMS.Domain.Common
         Breadcrumbs,
         Pagination
     }
-    public enum SectionTemplateType
-    {
-        None,
-        Default,
-        Sequential,
-        Grid,
-        Masonry,
-        Carousel,
-        List,
-        SingleItem,
-        MultiItem,
-        Accordion,
-        Tabs,
-        MegaMenu
-    }
 
     public enum MediaType
     {
@@ -127,15 +128,5 @@ namespace PazarAtlasi.CMS.Domain.Common
         ImageSlider,
         Audio,
         Document
-    }
-
-    public enum HeroType
-    {
-        None,
-        SingleImage,
-        Slider,
-        Video,
-        ImageWithText,
-        VideoWithText
     }
 }

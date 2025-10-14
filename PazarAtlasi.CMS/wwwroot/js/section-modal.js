@@ -64,7 +64,7 @@ function initializeSectionModal() {
   );
   currentSection.type = document.getElementById("sectionType").value;
   currentSection.templateType = document.getElementById(
-    "sectionTemplateType"
+    "TemplateType"
   ).value;
   currentSection.status = parseInt(
     document.getElementById("sectionStatus").value
@@ -824,8 +824,8 @@ async function saveSection() {
       Id: currentSection.id,
       PageId: currentSection.pageId,
       Type: parseInt(document.getElementById("sectionType").value),
-      SectionTemplateType: parseInt(
-        document.getElementById("sectionTemplateType").value
+      TemplateType: parseInt(
+        document.getElementById("TemplateType").value
       ),
       Status: parseInt(
         document.getElementById("sectionStatus").value

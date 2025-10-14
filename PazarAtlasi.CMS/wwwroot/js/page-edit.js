@@ -512,7 +512,7 @@ function createSectionModal() {
                 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Template Type</label>
-                    <select id="SectionTemplateType" name="SectionTemplateType" 
+                    <select id="TemplateType" name="TemplateType" 
                             class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                         <option value="Default">Default</option>
                         <option value="Carousel">Carousel</option>
@@ -563,7 +563,7 @@ async function handleAddSection(e) {
   const data = {
     pageId: parseInt(pageId),
     sectionType: formData.get("sectionType"),
-    SectionTemplateType: formData.get("SectionTemplateType"),
+    TemplateType: formData.get("TemplateType"),
   };
 
   try {
@@ -702,20 +702,15 @@ function removeItem(itemId) {
   }
 }
 
-function updateSectionTemplate(sectionId, SectionTemplateType) {
+function updateSectionTemplate(sectionId, TemplateType) {
   console.log(
-    `Update section ${sectionId} template to ${SectionTemplateType}`
+    `Update section ${sectionId} template to ${TemplateType}`
   );
 }
 
 function uploadSlideMedia(itemId, mediaType) {
   console.log(`Upload ${mediaType} for item ${itemId}`);
   // Implementation for media upload
-}
-
-function selectHeroType(itemId, heroType) {
-  console.log(`Select hero type ${heroType} for item ${itemId}`);
-  // Implementation for hero type selection
 }
 
 function uploadHeroVideo(itemId) {

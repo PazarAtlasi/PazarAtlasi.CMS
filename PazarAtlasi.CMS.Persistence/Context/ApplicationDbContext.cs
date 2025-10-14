@@ -32,6 +32,14 @@ namespace PazarAtlasi.CMS.Persistence.Context
         
         public DbSet<SectionTranslation> SectionTranslations { get; set; }
 
+        public DbSet<Template> Templates { get; set; }
+
+        public DbSet<SectionTemplate> SectionTemplates { get; set; }
+
+        public DbSet<Layout> Layouts { get; set; }
+
+        public DbSet<LayoutSection> LayoutSections { get; set; }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var now = DateTime.UtcNow;

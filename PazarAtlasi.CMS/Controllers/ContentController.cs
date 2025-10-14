@@ -124,7 +124,6 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     Id = s.Id,
                     Type = s.Type,
-                    SectionTemplateType = s.SectionTemplateType,
                     Attributes = s.Attributes,
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
@@ -372,7 +371,6 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     Id = s.Id,
                     Type = s.Type,
-                    SectionTemplateType = s.SectionTemplateType,
                     Attributes = s.Attributes,
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
@@ -437,7 +435,7 @@ namespace PazarAtlasi.CMS.Controllers
         /// Add new section to page
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> AddSection(int pageId, string sectionType, string SectionTemplateType)
+        public async Task<IActionResult> AddSection(int pageId, string sectionType, string TemplateType)
         {
             try
             {
@@ -460,9 +458,6 @@ namespace PazarAtlasi.CMS.Controllers
                     Type = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.SectionType>(sectionType, out var parsedSectionType) 
                         ? parsedSectionType 
                         : PazarAtlasi.CMS.Domain.Common.SectionType.None,
-                    SectionTemplateType = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.SectionTemplateType>(SectionTemplateType, out var parsedSectionTemplateType) 
-                        ? parsedSectionTemplateType 
-                        : PazarAtlasi.CMS.Domain.Common.SectionTemplateType.Default,
                     SortOrder = maxSortOrder + 1,
                     Status = PazarAtlasi.CMS.Domain.Common.Status.Active,
                     Configure = "{}",
@@ -536,7 +531,7 @@ namespace PazarAtlasi.CMS.Controllers
                             </div>
                             <div>
                                 <h6 class='font-medium text-slate-800'>Section #{section.Id}</h6>
-                                <p class='text-sm text-slate-500'>{section.Type} - {section.SectionTemplateType}</p>
+                                <p class='text-sm text-slate-500'>{section.Type} - Template System</p>
                             </div>
                             <span class='ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded'>0 items</span>
                         </div>
@@ -1227,9 +1222,8 @@ namespace PazarAtlasi.CMS.Controllers
                     model = new SectionModalViewModel
                     {
                         Id = section.Id,
-                        PageId = section.PageId,
+                        PageId = section.PageId ?? 0,
                         Type = section.Type,
-                        SectionTemplateType = section.SectionTemplateType,
                         Attributes = section.Attributes,
                         SortOrder = section.SortOrder,
                         Configure = section.Configure,
@@ -1284,7 +1278,6 @@ namespace PazarAtlasi.CMS.Controllers
                         Id = 0,
                         PageId = pageId,
                         Type = SectionType.MainContent,
-                        SectionTemplateType = SectionTemplateType.Default,
                         SortOrder = maxSortOrder + 1,
                         Status = Domain.Common.Status.Active
                     };
@@ -1334,7 +1327,6 @@ namespace PazarAtlasi.CMS.Controllers
 
                     // Update section properties
                     section.Type = request.Type;
-                    section.SectionTemplateType = request.SectionTemplateType;
                     section.Attributes = request.Attributes;
                     section.Configure = request.Configure;
                     section.Status = request.Status;
@@ -1421,7 +1413,6 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         PageId = request.PageId,
                         Type = request.Type,
-                        SectionTemplateType = request.SectionTemplateType,
                         Attributes = request.Attributes ?? "{}",
                         SortOrder = request.SortOrder,
                         Configure = request.Configure ?? "{}",
@@ -1638,7 +1629,6 @@ namespace PazarAtlasi.CMS.Controllers
                     Id = s.Id,
                     Name = s.Translations.FirstOrDefault() != null ? s.Translations.FirstOrDefault()!.Title : $"Section {s.Id}",
                     Type = s.Type,
-                    SectionTemplateType = s.SectionTemplateType,
                     Status = s.Status,
                     ItemsCount = s.SectionItems.Count,
                     PageName = s.Page != null ? s.Page.Name : null,
@@ -1692,7 +1682,6 @@ namespace PazarAtlasi.CMS.Controllers
                 Name = section.Translations.FirstOrDefault()?.Title ?? $"Section {section.Id}",
                 Description = section.Translations.FirstOrDefault()?.Description,
                 Type = section.Type,
-                SectionTemplateType = section.SectionTemplateType,
                 Status = section.Status,
                 SortOrder = section.SortOrder,
                 Attributes = section.Attributes,
@@ -1742,7 +1731,6 @@ namespace PazarAtlasi.CMS.Controllers
                 Status = Status.Draft,
                 IsReusable = true,
                 Type = SectionType.ContentBlock,
-                SectionTemplateType = SectionTemplateType.Default
             };
 
             return View(model);
@@ -1765,12 +1753,11 @@ namespace PazarAtlasi.CMS.Controllers
                     section = new Domain.Entities.Content.Section
                     {
                         Type = model.Type,
-                        SectionTemplateType = model.SectionTemplateType,
                         Status = model.Status,
                         SortOrder = model.SortOrder,
                         Attributes = model.Attributes ?? "{}",
                         Configure = model.Configure ?? "{}",
-                        PageId = model.PageId.Value,
+                        PageId = model.PageId,
                         CreatedAt = DateTime.UtcNow
                     };
 
@@ -1788,7 +1775,6 @@ namespace PazarAtlasi.CMS.Controllers
                     }
 
                     section.Type = model.Type;
-                    section.SectionTemplateType = model.SectionTemplateType;
                     section.Status = model.Status;
                     section.SortOrder = model.SortOrder;
                     section.Attributes = model.Attributes ?? "{}";
@@ -1853,20 +1839,20 @@ namespace PazarAtlasi.CMS.Controllers
                 var sections = await _pazarAtlasiDbContext.Sections
                     .Where(s => s.PageId == null && s.Status == Status.Active) // Reusable and active sections
                     .Include(s => s.Translations)
+                    .Include(s => s.SectionTemplates)
+                        .ThenInclude(st => st.Template)
+                    .Select(s => new ReusableSectionDto
+                    {
+                        Id = s.Id,
+                        Name = s.Translations.FirstOrDefault() != null ? s.Translations.FirstOrDefault()!.Title : $"Section {s.Id}",
+                        Type = s.Type.ToString(),
+                        TemplateType = s.SectionTemplates.FirstOrDefault() != null ? s.SectionTemplates.FirstOrDefault()!.Template.TemplateType.ToString() : "Default",
+                        Description = s.Translations.FirstOrDefault() != null ? s.Translations.FirstOrDefault()!.Description : ""
+                    })
+                    .OrderBy(s => s.Name)
                     .ToListAsync();
 
-                var sectionDtos = sections.Select(s => new
-                {
-                    s.Id,
-                    Name = s.Translations.FirstOrDefault()?.Title ?? $"Section {s.Id}",
-                    s.Type,
-                    s.SectionTemplateType,
-                    s.Status,
-                    CreatedAt = s.CreatedAt.ToString("yyyy-MM-dd"),
-                    UpdatedAt = s.UpdatedAt?.ToString("yyyy-MM-dd")
-                });
-
-                return Json(new { success = true, sections = sectionDtos });
+                return Json(new { success = true, sections = sections });
             }
             catch (Exception ex)
             {
@@ -1912,7 +1898,6 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     PageId = pageId,
                     Type = originalSection.Type,
-                    SectionTemplateType = originalSection.SectionTemplateType,
                     Status = originalSection.Status,
                     SortOrder = maxSortOrder + 1,
                     Attributes = originalSection.Attributes,

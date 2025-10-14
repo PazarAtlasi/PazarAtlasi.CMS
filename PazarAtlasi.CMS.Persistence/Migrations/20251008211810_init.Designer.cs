@@ -686,11 +686,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDefaultValue(0)
                         .HasColumnName("Status");
 
-                    b.Property<int>("SectionTemplateType")
+                    b.Property<int>("TemplateType")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0)
-                        .HasColumnName("SectionTemplateType");
+                        .HasColumnName("TemplateType");
 
                     b.Property<int>("Type")
                         .ValueGeneratedOnAdd()
@@ -731,7 +731,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             PageId = 1,
                             SortOrder = 1,
                             Status = 1,
-                            SectionTemplateType = 1,
+                            TemplateType = 1,
                             Type = 3
                         },
                         new
@@ -745,7 +745,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             PageId = 1,
                             SortOrder = 2,
                             Status = 1,
-                            SectionTemplateType = 3,
+                            TemplateType = 3,
                             Type = 6
                         },
                         new
@@ -759,7 +759,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             PageId = 1,
                             SortOrder = 3,
                             Status = 1,
-                            SectionTemplateType = 1,
+                            TemplateType = 1,
                             Type = 7
                         },
                         new
@@ -773,7 +773,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             PageId = 2,
                             SortOrder = 1,
                             Status = 1,
-                            SectionTemplateType = 1,
+                            TemplateType = 1,
                             Type = 2
                         },
                         new
@@ -787,7 +787,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             PageId = 2,
                             SortOrder = 2,
                             Status = 1,
-                            SectionTemplateType = 6,
+                            TemplateType = 6,
                             Type = 12
                         },
                         new
@@ -801,7 +801,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             PageId = 3,
                             SortOrder = 1,
                             Status = 1,
-                            SectionTemplateType = 3,
+                            TemplateType = 3,
                             Type = 4
                         });
                 });

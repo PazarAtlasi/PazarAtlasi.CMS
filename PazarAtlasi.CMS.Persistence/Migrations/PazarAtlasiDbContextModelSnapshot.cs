@@ -225,17 +225,23 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -248,7 +254,55 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Layout");
+                    b.HasIndex("IsDefault");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("Status", "IsDeleted");
+
+                    b.ToTable("Layouts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Standard layout with header, main content, and footer",
+                            IsDefault = true,
+                            IsDeleted = false,
+                            Name = "Default Layout",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Hero-focused layout for landing pages",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Landing Page Layout",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Content-focused layout with sidebar for blog posts",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Blog Layout",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Clean minimal layout with just content area",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Minimal Layout",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.LayoutSection", b =>
@@ -266,23 +320,30 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsRequired")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("LayoutId")
                         .HasColumnType("int");
 
                     b.Property<string>("Position")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("SectionId")
                         .HasColumnType("int");
 
                     b.Property<int>("SortOrder")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -295,11 +356,102 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LayoutId");
-
                     b.HasIndex("SectionId");
 
-                    b.ToTable("LayoutSection");
+                    b.HasIndex("LayoutId", "SectionId")
+                        .IsUnique();
+
+                    b.HasIndex("Status", "IsDeleted");
+
+                    b.HasIndex("LayoutId", "Position", "SortOrder");
+
+                    b.ToTable("LayoutSections");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsRequired = true,
+                            LayoutId = 1,
+                            Position = "header",
+                            SectionId = 1,
+                            SortOrder = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsRequired = true,
+                            LayoutId = 1,
+                            Position = "content",
+                            SectionId = 2,
+                            SortOrder = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsRequired = true,
+                            LayoutId = 1,
+                            Position = "footer",
+                            SectionId = 3,
+                            SortOrder = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsRequired = true,
+                            LayoutId = 2,
+                            Position = "header",
+                            SectionId = 1,
+                            SortOrder = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsRequired = true,
+                            LayoutId = 2,
+                            Position = "content",
+                            SectionId = 4,
+                            SortOrder = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsRequired = false,
+                            LayoutId = 2,
+                            Position = "content",
+                            SectionId = 2,
+                            SortOrder = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            IsRequired = true,
+                            LayoutId = 2,
+                            Position = "footer",
+                            SectionId = 3,
+                            SortOrder = 1,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Page", b =>
@@ -763,15 +915,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-                    b.Property<int>("PageId")
+                    b.Property<int?>("PageId")
                         .HasColumnType("int")
                         .HasColumnName("PageId");
-
-                    b.Property<int>("SectionTemplateType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("SectionTemplateType");
 
                     b.Property<int>("SortOrder")
                         .ValueGeneratedOnAdd()
@@ -818,7 +964,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
-                            SectionTemplateType = 1,
                             SortOrder = 1,
                             Status = 1,
                             Type = 3
@@ -831,7 +976,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
-                            SectionTemplateType = 3,
                             SortOrder = 2,
                             Status = 1,
                             Type = 6
@@ -844,7 +988,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
-                            SectionTemplateType = 1,
                             SortOrder = 3,
                             Status = 1,
                             Type = 7
@@ -857,7 +1000,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 2,
-                            SectionTemplateType = 1,
                             SortOrder = 1,
                             Status = 1,
                             Type = 2
@@ -870,7 +1012,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 2,
-                            SectionTemplateType = 6,
                             SortOrder = 2,
                             Status = 1,
                             Type = 12
@@ -883,7 +1024,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 3, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 3,
-                            SectionTemplateType = 3,
                             SortOrder = 1,
                             Status = 1,
                             Type = 4
@@ -1324,6 +1464,89 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomConfiguration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SectionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.HasIndex("SectionId", "TemplateId")
+                        .IsUnique();
+
+                    b.ToTable("SectionTemplates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SectionId = 1,
+                            Status = 1,
+                            TemplateId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SectionId = 1,
+                            Status = 1,
+                            TemplateId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SectionId = 1,
+                            Status = 1,
+                            TemplateId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SectionId = 1,
+                            Status = 1,
+                            TemplateId = 4
+                        });
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTranslation", b =>
                 {
                     b.Property<int>("Id")
@@ -1542,6 +1765,288 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConfigurationSchema")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PreviewImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TemplateKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TemplateType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateKey")
+                        .IsUnique();
+
+                    b.HasIndex("TemplateType", "IsActive");
+
+                    b.ToTable("Templates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "A simple horizontal navigation bar with basic menu items",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Simple Navbar",
+                            PreviewImageUrl = "/images/templates/navbar-simple.png",
+                            SortOrder = 1,
+                            Status = 0,
+                            TemplateKey = "navbar-simple",
+                            TemplateType = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#1a1a1a\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"megaMenuColumns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":4,\"default\":3},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"showImages\":{\"type\":\"boolean\",\"default\":true}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Advanced navbar with dropdown mega menus and rich content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Mega Menu Navbar",
+                            PreviewImageUrl = "/images/templates/navbar-megamenu.png",
+                            SortOrder = 2,
+                            Status = 0,
+                            TemplateKey = "navbar-megamenu",
+                            TemplateType = 11
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#2d3748\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"pills\"},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Navbar with tabbed service navigation and interactive content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Service Tabs Navbar",
+                            PreviewImageUrl = "/images/templates/navbar-servicetabs.png",
+                            SortOrder = 3,
+                            Status = 0,
+                            TemplateKey = "navbar-servicetabs",
+                            TemplateType = 10
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#4a5568\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"categoryStyle\":{\"type\":\"string\",\"enum\":[\"sidebar\",\"dropdown\",\"tabs\"],\"default\":\"sidebar\"},\"showCategoryIcons\":{\"type\":\"boolean\",\"default\":true},\"itemsPerCategory\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":8,\"default\":4}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Navbar with categorized menu items and filtered content display",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Categorized Navbar",
+                            PreviewImageUrl = "/images/templates/navbar-categorized.png",
+                            SortOrder = 4,
+                            Status = 0,
+                            TemplateKey = "navbar-categorized",
+                            TemplateType = 6
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"padding\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Standard template for any section type",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Default Template",
+                            PreviewImageUrl = "/images/templates/default.png",
+                            SortOrder = 5,
+                            Status = 0,
+                            TemplateKey = "default",
+                            TemplateType = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"direction\":{\"type\":\"string\",\"enum\":[\"horizontal\",\"vertical\"],\"default\":\"vertical\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showNumbers\":{\"type\":\"boolean\",\"default\":false}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Items displayed in sequential order",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Sequential Layout",
+                            PreviewImageUrl = "/images/templates/sequential.png",
+                            SortOrder = 6,
+                            Status = 0,
+                            TemplateKey = "sequential",
+                            TemplateType = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":6,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"showExcerpts\":{\"type\":\"boolean\",\"default\":true}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Content displayed in a responsive grid layout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Grid Layout",
+                            PreviewImageUrl = "/images/templates/grid.png",
+                            SortOrder = 7,
+                            Status = 0,
+                            TemplateKey = "grid",
+                            TemplateType = 3
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":5,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"imageAspectRatio\":{\"type\":\"string\",\"enum\":[\"auto\",\"square\",\"landscape\",\"portrait\"],\"default\":\"auto\"}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Pinterest-style masonry layout for varied content sizes",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Masonry Layout",
+                            PreviewImageUrl = "/images/templates/masonry.png",
+                            SortOrder = 8,
+                            Status = 0,
+                            TemplateKey = "masonry",
+                            TemplateType = 4
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"autoPlay\":{\"type\":\"boolean\",\"default\":true},\"interval\":{\"type\":\"integer\",\"minimum\":2000,\"maximum\":10000,\"default\":5000},\"showIndicators\":{\"type\":\"boolean\",\"default\":true},\"showArrows\":{\"type\":\"boolean\",\"default\":true},\"transitionEffect\":{\"type\":\"string\",\"enum\":[\"fade\",\"slide\",\"zoom\"],\"default\":\"slide\"}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sliding carousel with navigation controls",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Carousel",
+                            PreviewImageUrl = "/images/templates/carousel.png",
+                            SortOrder = 9,
+                            Status = 0,
+                            TemplateKey = "carousel",
+                            TemplateType = 5
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"iconPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"right\"],\"default\":\"left\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"compact\",\"comfortable\",\"spacious\"],\"default\":\"comfortable\"},\"showDividers\":{\"type\":\"boolean\",\"default\":false}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Simple list layout with optional icons",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "List Layout",
+                            PreviewImageUrl = "/images/templates/list.png",
+                            SortOrder = 10,
+                            Status = 0,
+                            TemplateKey = "list",
+                            TemplateType = 6
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"alignment\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"center\"},\"showImage\":{\"type\":\"boolean\",\"default\":true},\"imageSize\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showDescription\":{\"type\":\"boolean\",\"default\":true}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Display single item with focus",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Single Item",
+                            PreviewImageUrl = "/images/templates/single-item.png",
+                            SortOrder = 11,
+                            Status = 0,
+                            TemplateKey = "single-item",
+                            TemplateType = 7
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"itemsPerRow\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":6,\"default\":3},\"showTitles\":{\"type\":\"boolean\",\"default\":true},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"equalHeight\":{\"type\":\"boolean\",\"default\":true}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Display multiple items in organized layout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Multi Item",
+                            PreviewImageUrl = "/images/templates/multi-item.png",
+                            SortOrder = 12,
+                            Status = 0,
+                            TemplateKey = "multi-item",
+                            TemplateType = 8
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"allowMultiple\":{\"type\":\"boolean\",\"default\":false},\"defaultOpen\":{\"type\":\"integer\",\"minimum\":0,\"default\":0},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Collapsible accordion layout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Accordion",
+                            PreviewImageUrl = "/images/templates/accordion.png",
+                            SortOrder = 13,
+                            Status = 0,
+                            TemplateKey = "accordion",
+                            TemplateType = 9
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ConfigurationSchema = "{\"type\":\"object\",\"properties\":{\"tabPosition\":{\"type\":\"string\",\"enum\":[\"top\",\"bottom\",\"left\",\"right\"],\"default\":\"top\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"underline\"},\"showIcons\":{\"type\":\"boolean\",\"default\":false},\"defaultTab\":{\"type\":\"integer\",\"minimum\":0,\"default\":0}}}",
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tabbed content layout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Tabs",
+                            PreviewImageUrl = "/images/templates/tabs.png",
+                            SortOrder = 14,
+                            Status = 0,
+                            TemplateKey = "tabs",
+                            TemplateType = 10
+                        });
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.LayoutSection", b =>
                 {
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Layout", "Layout")
@@ -1570,7 +2075,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Layout", "Layout")
                         .WithMany("Pages")
-                        .HasForeignKey("LayoutId");
+                        .HasForeignKey("LayoutId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Content");
 
@@ -1612,8 +2118,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Page", "Page")
                         .WithMany("Sections")
                         .HasForeignKey("PageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Page");
                 });
@@ -1646,6 +2151,25 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("Language");
 
                     b.Navigation("SectionItem");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTemplate", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Section", "Section")
+                        .WithMany("SectionTemplates")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
+                        .WithMany("SectionTemplates")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Section");
+
+                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTranslation", b =>
@@ -1693,12 +2217,19 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 {
                     b.Navigation("SectionItems");
 
+                    b.Navigation("SectionTemplates");
+
                     b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItem", b =>
                 {
                     b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Template", b =>
+                {
+                    b.Navigation("SectionTemplates");
                 });
 #pragma warning restore 612, 618
         }

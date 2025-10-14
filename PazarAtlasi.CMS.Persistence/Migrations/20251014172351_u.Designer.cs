@@ -672,11 +672,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("PageId");
 
-                    b.Property<int>("SectionTemplateType")
+                    b.Property<int>("TemplateType")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0)
-                        .HasColumnName("SectionTemplateType");
+                        .HasColumnName("TemplateType");
 
                     b.Property<int>("SortOrder")
                         .ValueGeneratedOnAdd()
@@ -723,7 +723,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
-                            SectionTemplateType = 1,
+                            TemplateType = 1,
                             SortOrder = 1,
                             Status = 1,
                             Type = 3
@@ -736,7 +736,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
-                            SectionTemplateType = 3,
+                            TemplateType = 3,
                             SortOrder = 2,
                             Status = 1,
                             Type = 6
@@ -749,7 +749,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 1,
-                            SectionTemplateType = 1,
+                            TemplateType = 1,
                             SortOrder = 3,
                             Status = 1,
                             Type = 7
@@ -762,7 +762,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 2,
-                            SectionTemplateType = 1,
+                            TemplateType = 1,
                             SortOrder = 1,
                             Status = 1,
                             Type = 2
@@ -775,7 +775,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 2,
-                            SectionTemplateType = 6,
+                            TemplateType = 6,
                             SortOrder = 2,
                             Status = 1,
                             Type = 12
@@ -788,7 +788,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 1, 3, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PageId = 3,
-                            SectionTemplateType = 3,
+                            TemplateType = 3,
                             SortOrder = 1,
                             Status = 1,
                             Type = 4
