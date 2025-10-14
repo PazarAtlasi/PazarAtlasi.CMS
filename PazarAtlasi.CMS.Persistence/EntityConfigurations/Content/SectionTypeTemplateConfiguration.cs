@@ -5,9 +5,9 @@ using PazarAtlasi.CMS.Domain.Common;
 
 namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 {
-    public class SectionTemplateConfiguration : IEntityTypeConfiguration<SectionTemplate>
+    public class SectionTypeTemplateConfiguration : IEntityTypeConfiguration<SectionTypeTemplate>
     {
-        public void Configure(EntityTypeBuilder<SectionTemplate> builder)
+        public void Configure(EntityTypeBuilder<SectionTypeTemplate> builder)
         {
             builder.HasKey(st => st.Id);
 
@@ -15,13 +15,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 .HasColumnType("nvarchar(max)");
 
             // Composite index for performance
-            builder.HasIndex(st => new { st.SectionId, st.TemplateId }).IsUnique();
-
-            // Relationships
-            builder.HasOne(st => st.Section)
-                .WithMany(s => s.SectionTemplates)
-                .HasForeignKey(st => st.SectionId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasIndex(st => new { st.SectionType, st.TemplateId }).IsUnique();
 
             builder.HasOne(st => st.Template)
                 .WithMany(t => t.SectionTemplates)
@@ -34,37 +28,37 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 // These will be created when a navbar section is created
                 
                 // Example: If we have a navbar section with Id=1, it can use these templates:
-                new SectionTemplate
+                new SectionTypeTemplate
                 {
                     Id = 1,
-                    SectionId = 1, // Assuming navbar section exists
+                    SectionType = SectionType.Navbar, // Assuming navbar section exists
                     TemplateId = 1, // Simple Navbar
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),
                     IsDeleted = false
                 },
-                new SectionTemplate
+                new SectionTypeTemplate
                 {
                     Id = 2,
-                    SectionId = 1, // Same navbar section
+                    SectionType = SectionType.Navbar,
                     TemplateId = 2, // Mega Menu Navbar
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),
                     IsDeleted = false
                 },
-                new SectionTemplate
+                new SectionTypeTemplate
                 {
                     Id = 3,
-                    SectionId = 1, // Same navbar section
+                    SectionType = SectionType.Navbar,
                     TemplateId = 3, // Service Tabs Navbar
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),
                     IsDeleted = false
                 },
-                new SectionTemplate
+                new SectionTypeTemplate
                 {
                     Id = 4,
-                    SectionId = 1, // Same navbar section
+                    SectionType = SectionType.Navbar,   
                     TemplateId = 4, // Categorized Navbar
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),

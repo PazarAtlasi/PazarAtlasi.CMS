@@ -676,6 +676,46 @@ function uploadSliderImage(itemId, slotNumber) {
   // Implementation for slider image upload
 }
 
+/**
+ * Switch language tab in section modal
+ */
+function switchLanguageTab(languageId) {
+  // Remove active class from all tabs
+  document.querySelectorAll(".language-tab").forEach((tab) => {
+    tab.classList.remove("active");
+    tab.classList.remove("bg-green-100", "text-green-800");
+    tab.classList.add("text-slate-600");
+  });
+
+  // Add active class to selected tab
+  const selectedTab = document.querySelector(
+    `.language-tab[data-language-id="${languageId}"]`
+  );
+  if (selectedTab) {
+    selectedTab.classList.add(
+      "active",
+      "bg-green-100",
+      "text-green-800"
+    );
+    selectedTab.classList.remove("text-slate-600");
+  }
+
+  // Hide all translation contents
+  document
+    .querySelectorAll(".translation-content")
+    .forEach((content) => {
+      content.classList.add("hidden");
+    });
+
+  // Show selected language content
+  const selectedContent = document.querySelector(
+    `.translation-content[data-language-id="${languageId}"]`
+  );
+  if (selectedContent) {
+    selectedContent.classList.remove("hidden");
+  }
+}
+
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   new PageEditor();

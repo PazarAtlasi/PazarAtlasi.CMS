@@ -40,12 +40,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                    .WithOne(st => st.Section)
                    .HasForeignKey(st => st.SectionId)
                    .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(s => s.SectionTemplates)
-                   .WithOne(st => st.Section)
-                   .HasForeignKey(st => st.SectionId)
-                   .OnDelete(DeleteBehavior.Cascade);
-
             // Indexes
             builder.HasIndex(s => new { s.PageId, s.SortOrder }).HasDatabaseName("IX_Sections_PageId_SortOrder");
             builder.HasIndex(s => s.Type).HasDatabaseName("IX_Sections_Type");

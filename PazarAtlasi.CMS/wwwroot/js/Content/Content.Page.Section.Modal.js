@@ -54,16 +54,20 @@ const SectionModal = (function () {
       document.body.appendChild(modalOverlay);
       document.body.style.overflow = "hidden";
 
-      // Load available pages and populate dropdown
-      await loadAvailablePages();
-      populatePageDropdown();
+      // Initialize current section from hidden fields
+      const sectionIdInput = document.getElementById("sectionId");
+      const pageIdInput = document.getElementById("pageId");
+      const sectionTypeSelect =
+        document.getElementById("sectionType");
 
-      // Set page value if provided
-      if (pageId > 0) {
-        const pageSelect = document.getElementById("modalPageId");
-        if (pageSelect) {
-          pageSelect.value = pageId;
-        }
+      if (sectionIdInput) {
+        currentSection.id = parseInt(sectionIdInput.value) || 0;
+      }
+      if (pageIdInput) {
+        currentSection.pageId = parseInt(pageIdInput.value) || 0;
+      }
+      if (sectionTypeSelect) {
+        currentSection.type = parseInt(sectionTypeSelect.value) || 0;
       }
     } catch (error) {
       console.error("Error loading section modal:", error);
@@ -95,42 +99,57 @@ const SectionModal = (function () {
   async function handleSectionTypeChange(sectionType) {
     currentSection.type = parseInt(sectionType);
 
-    const templateContainer = document.getElementById(
-      "templateSelectionContainer"
-    );
-    const templateGrid = document.getElementById("templateGrid");
+    const templateSelect = document.getElementById("sectionTemplate");
+
+    if (!templateSelect) {
+      console.warn("Template select element not found");
+      return;
+    }
+
+    // Clear existing options except the first one
+    templateSelect.innerHTML =
+      '<option value="">Select a template...</option>';
 
     if (sectionType === "0" || !sectionType) {
-      templateContainer.classList.add("hidden");
-      document
-        .getElementById("templateConfigContainer")
-        .classList.add("hidden");
+      templateSelect.disabled = true;
       return;
     }
 
     // Show loading state
-    templateGrid.innerHTML = `
-      <div class="col-span-full text-center py-8">
-        <i class="fas fa-spinner fa-spin text-2xl text-purple-600 mb-2"></i>
-        <p class="text-sm text-slate-600">Loading templates...</p>
-      </div>
-    `;
-    templateContainer.classList.remove("hidden");
+    templateSelect.disabled = true;
+    templateSelect.innerHTML =
+      '<option value="">Loading templates...</option>';
 
     try {
-      // Load templates HTML from backend
-      const html = await ContentServices.getTemplatesPartial(
+      // Load templates list from backend
+      const result = await ContentServices.getTemplatesBySectionType(
         sectionType
       );
-      templateGrid.innerHTML = html;
+
+      if (
+        result.success &&
+        result.templates &&
+        result.templates.length > 0
+      ) {
+        templateSelect.innerHTML =
+          '<option value="">Select a template...</option>';
+
+        result.templates.forEach((template) => {
+          const option = document.createElement("option");
+          option.value = template.id;
+          option.textContent = template.name;
+          templateSelect.appendChild(option);
+        });
+
+        templateSelect.disabled = false;
+      } else {
+        templateSelect.innerHTML =
+          '<option value="">No templates available</option>';
+      }
     } catch (error) {
       console.error("Error loading templates:", error);
-      templateGrid.innerHTML = `
-        <div class="col-span-full text-center py-8 text-red-500">
-          <i class="fas fa-exclamation-circle text-3xl mb-2"></i>
-          <p class="text-sm">Error loading templates</p>
-        </div>
-      `;
+      templateSelect.innerHTML =
+        '<option value="">Error loading templates</option>';
     }
   }
 
@@ -138,70 +157,7 @@ const SectionModal = (function () {
    * Select template
    */
   function selectTemplate(templateId) {
-    currentSection.templateId = templateId;
-
-    // Update UI - highlight selected template
-    document.querySelectorAll(".template-card").forEach((card) => {
-      if (parseInt(card.dataset.templateId) === templateId) {
-        card.classList.remove("border-slate-200");
-        card.classList.add("border-purple-600", "bg-purple-50");
-      } else {
-        card.classList.remove("border-purple-600", "bg-purple-50");
-        card.classList.add("border-slate-200");
-      }
-    });
-
-    // Load template configuration if needed
-    loadTemplateConfig(templateId);
-  }
-
-  /**
-   * Load template configuration
-   */
-  async function loadTemplateConfig(templateId) {
-    try {
-      const result = await ContentServices.getTemplatesBySectionType(
-        currentSection.type
-      );
-
-      if (result.success && result.templates) {
-        const template = result.templates.find(
-          (t) => t.id === templateId
-        );
-
-        if (template && template.configurationSchema) {
-          const configContainer = document.getElementById(
-            "templateConfigContainer"
-          );
-          const configFields = document.getElementById(
-            "templateConfigFields"
-          );
-
-          try {
-            const schema = JSON.parse(template.configurationSchema);
-            configFields.innerHTML = `
-              <div class="space-y-4">
-                <p class="text-sm text-slate-600">Template-specific configuration</p>
-                <pre class="bg-slate-100 p-3 rounded text-xs overflow-auto">${JSON.stringify(
-                  schema,
-                  null,
-                  2
-                )}</pre>
-              </div>
-            `;
-            configContainer.classList.remove("hidden");
-          } catch (error) {
-            configContainer.classList.add("hidden");
-          }
-        } else {
-          document
-            .getElementById("templateConfigContainer")
-            .classList.add("hidden");
-        }
-      }
-    } catch (error) {
-      console.error("Error loading template config:", error);
-    }
+    currentSection.templateId = parseInt(templateId) || null;
   }
 
   /**
@@ -224,6 +180,7 @@ const SectionModal = (function () {
         Id: currentSection.id,
         PageId: currentSection.pageId,
         Type: currentSection.type,
+        TemplateId: currentSection.templateId,
         Status: parseInt(
           document.getElementById("modalSectionStatus").value
         ),

@@ -34,7 +34,7 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<Template> Templates { get; set; }
 
-        public DbSet<SectionTemplate> SectionTemplates { get; set; }
+        public DbSet<SectionTypeTemplate> SectionTemplates { get; set; }
 
         public DbSet<Layout> Layouts { get; set; }
 

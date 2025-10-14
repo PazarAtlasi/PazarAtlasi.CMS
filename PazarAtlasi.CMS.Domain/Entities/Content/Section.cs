@@ -23,6 +23,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public virtual Page? Page { get; set; }
         public virtual ICollection<SectionItem> SectionItems { get; set; } = new List<SectionItem>();
         public virtual ICollection<SectionTranslation> Translations { get; set; } = new List<SectionTranslation>();
-        public virtual ICollection<SectionTemplate> SectionTemplates { get; set; } = new List<SectionTemplate>();
+        public virtual ICollection<SectionTypeTemplate> SectionTemplates { get; set; } = new List<SectionTypeTemplate>();
     }
 }

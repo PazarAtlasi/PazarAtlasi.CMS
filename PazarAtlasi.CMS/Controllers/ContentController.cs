@@ -571,18 +571,16 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
-                var templates = await _pazarAtlasiDbContext.Templates
-                    .Where(t => t.IsActive && !t.IsDeleted)
-                    .OrderBy(t => t.SortOrder)
-                    .Select(t => new TemplateDto
+                // Get templates - for now returning all active templates
+                // TODO: Add section type filtering when Template-SectionType relationship is established
+                var templates = await _pazarAtlasiDbContext.SectionTemplates
+                    .Where(t => (int)t.SectionType == sectionType && !t.IsDeleted)
+                    .Include(t => t.Template)
+                    .OrderBy(t => t.Template.SortOrder)
+                    .Select(t => new
                     {
-                        Id = t.Id,
-                        Name = t.Name,
-                        Description = t.Description,
-                        TemplateType = t.TemplateType.ToString(),
-                        TemplateKey = t.TemplateKey,
-                        PreviewImageUrl = t.PreviewImageUrl,
-                        ConfigurationSchema = t.ConfigurationSchema
+                        id = t.Id,
+                        name = t.Template.Name
                     })
                     .ToListAsync();
 
@@ -1329,7 +1327,7 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = 0,
                         PageId = pageId,
-                        Type = SectionType.MainContent,
+                        Type = SectionType.None,
                         SortOrder = maxSortOrder + 1,
                         Status = Domain.Common.Status.Active
                     };

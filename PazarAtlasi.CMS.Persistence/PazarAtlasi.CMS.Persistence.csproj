@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EntityConfigurations\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PazarAtlasi.CMS.Domain\PazarAtlasi.CMS.Domain.csproj" />
   </ItemGroup>
 
