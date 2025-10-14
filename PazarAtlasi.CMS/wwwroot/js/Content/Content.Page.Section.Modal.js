@@ -63,14 +63,9 @@ function initializeSectionModal() {
     document.getElementById("pageId").value
   );
   currentSection.type = document.getElementById("sectionType").value;
-  currentSection.templateType =
-    document.getElementById("TemplateType").value;
-  currentSection.status = parseInt(
-    document.getElementById("sectionStatus").value
-  );
 
   // Initialize items based on template type
-  handleTemplateTypeChange(currentSection.templateType);
+    handleTemplateTypeChange("None");
 }
 
 function handleTemplateTypeChange(templateType) {

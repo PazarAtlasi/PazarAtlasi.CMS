@@ -33,11 +33,11 @@
                         {
                             @if (Model.Type == sectionType)
                             {
-                                <option value="@sectionType" selected>@sectionType.ToString()</option>
+                                <option value="@((int)sectionType)" selected>@sectionType.ToString()</option>
                             }
                             else
                             {
-                                <option value="@sectionType">@sectionType.ToString()</option>
+                                <option value="@((int)sectionType)">@sectionType.ToString()</option>
                             }
                         }
                     </select>
@@ -48,8 +48,10 @@
                     <select id="sectionTemplate"
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
                         onchange="handleTemplateChange(this.value)">
-                        <option value="">Select Template</option>
-                        <!-- Templates will be loaded dynamically based on section type -->
+                        @foreach (var templateType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.TemplateType>())
+                        {
+                            <option value="@((int)templateType)">@templateType.ToString()</option>
+                        }
                     </select>
                     <p class="text-xs text-slate-500 mt-1">Choose a template for this section type</p>
                 </div>
@@ -73,11 +75,11 @@
                         {
                             @if (Model.Status == status)
                             {
-                                <option value="@status" selected>@status.ToString()</option>
+                                <option value="@((int)status)" selected>@status.ToString()</option>
                             }
                             else
                             {
-                                <option value="@status">@status.ToString()</option>
+                                <option value="@((int)status)">@status.ToString()</option>
                             }
                         }
                     </select>
