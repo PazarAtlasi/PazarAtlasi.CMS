@@ -156,6 +156,32 @@ const ContentServices = (function () {
   }
 
   /**
+   * Get available templates by section type
+   */
+  function getTemplatesBySectionType(sectionType) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetTemplatesBySectionType`,
+      type: "GET",
+      data: { sectionType },
+      headers: buildHeaders(),
+      dataType: "json",
+    });
+  }
+
+  /**
+   * Get templates partial view HTML
+   */
+  function getTemplatesPartial(sectionType) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetTemplatesPartial`,
+      type: "GET",
+      data: { sectionType },
+      headers: buildHeaders(),
+      dataType: "html",
+    });
+  }
+
+  /**
    * Get reusable sections
    */
   function getReusableSections() {
@@ -384,6 +410,8 @@ const ContentServices = (function () {
 
     // Section services
     getSectionModal,
+    getTemplatesBySectionType,
+    getTemplatesPartial,
     getReusableSections,
     addSection,
     addReusableSection,

@@ -561,6 +561,60 @@ namespace PazarAtlasi.CMS.Controllers
 
         #endregion
 
+
+
+        /// <summary>
+        /// Get available templates by section type
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetTemplatesBySectionType(int sectionType)
+        {
+            try
+            {
+                var templates = await _pazarAtlasiDbContext.Templates
+                    .Where(t => t.IsActive && !t.IsDeleted)
+                    .OrderBy(t => t.SortOrder)
+                    .Select(t => new TemplateDto
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Description = t.Description,
+                        TemplateType = t.TemplateType.ToString(),
+                        TemplateKey = t.TemplateKey,
+                        PreviewImageUrl = t.PreviewImageUrl,
+                        ConfigurationSchema = t.ConfigurationSchema
+                    })
+                    .ToListAsync();
+
+                return Json(new { success = true, templates });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error loading templates." });
+            }
+        }
+
+        /// <summary>
+        /// Get templates partial view
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetTemplatesPartial(int sectionType)
+        {
+            try
+            {
+                var templates = await _pazarAtlasiDbContext.Templates
+                    .Where(t => t.IsActive && !t.IsDeleted)
+                    .OrderBy(t => t.SortOrder)
+                    .ToListAsync();
+
+                return PartialView("~/Views/Shared/Content/_TemplatesGridPartial.cshtml", templates);
+            }
+            catch (Exception ex)
+            {
+                return Content("<div class='text-red-500'>Error loading templates</div>");
+            }
+        }
+
         [HttpGet]
         public IActionResult WebUrl()
         {
@@ -812,7 +866,7 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
-                SectionItemModalViewModel model;
+                SectionItemViewModel model;
 
                 if (id > 0)
                 {
@@ -828,7 +882,7 @@ namespace PazarAtlasi.CMS.Controllers
                         return Json(new { success = false, message = "Section item not found." });
                     }
 
-                    model = new SectionItemModalViewModel
+                    model = new SectionItemViewModel
                     {
                         Id = sectionItem.Id,
                         SectionId = sectionItem.SectionId,
@@ -843,10 +897,9 @@ namespace PazarAtlasi.CMS.Controllers
                         SortOrder = sectionItem.SortOrder,
                         MediaAttributes = sectionItem.MediaAttributes,
                         Status = sectionItem.Status,
-                        Translations = sectionItem.Translations.Select(t => new SectionItemTranslationModalViewModel
+                        Translations = sectionItem.Translations.Select(t => new SectionItemTranslationViewModel
                         {
                             Id = t.Id,
-                            SectionItemId = t.SectionItemId,
                             LanguageId = t.LanguageId,
                             LanguageName = t.Language?.Name,
                             LanguageCode = t.Language?.Code,
@@ -871,7 +924,7 @@ namespace PazarAtlasi.CMS.Controllers
                         .Where(si => si.SectionId == sectionId)
                         .MaxAsync(si => (int?)si.SortOrder) ?? 0;
 
-                    model = new SectionItemModalViewModel
+                    model = new SectionItemViewModel
                     {
                         Id = 0,
                         SectionId = sectionId,
@@ -1204,7 +1257,7 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
-                SectionModalViewModel model;
+                SectionViewModel model;
 
                 if (id > 0)
                 {
@@ -1220,7 +1273,7 @@ namespace PazarAtlasi.CMS.Controllers
                         return Json(new { success = false, message = "Section not found." });
                     }
 
-                    model = new SectionModalViewModel
+                    model = new SectionViewModel
                     {
                         Id = section.Id,
                         PageId = section.PageId ?? 0,
@@ -1229,7 +1282,7 @@ namespace PazarAtlasi.CMS.Controllers
                         SortOrder = section.SortOrder,
                         Configure = section.Configure,
                         Status = section.Status,
-                        SectionItems = section.SectionItems.Select(si => new SectionItemModalViewModel
+                        SectionItems = section.SectionItems.Select(si => new SectionItemViewModel
                         {
                             Id = si.Id,
                             SectionId = si.SectionId,
@@ -1242,10 +1295,9 @@ namespace PazarAtlasi.CMS.Controllers
                             SortOrder = si.SortOrder,
                             MediaAttributes = si.MediaAttributes,
                             Status = si.Status,
-                            Translations = si.Translations.Select(t => new SectionItemTranslationModalViewModel
+                            Translations = si.Translations.Select(t => new SectionItemTranslationViewModel
                             {
                                 Id = t.Id,
-                                SectionItemId = t.SectionItemId,
                                 LanguageId = t.LanguageId,
                                 LanguageName = t.Language?.Name,
                                 LanguageCode = t.Language?.Code,
@@ -1254,10 +1306,9 @@ namespace PazarAtlasi.CMS.Controllers
                                 Description = t.Description
                             }).ToList()
                         }).ToList(),
-                        Translations = section.Translations.Select(st => new SectionTranslationModalViewModel
+                        Translations = section.Translations.Select(st => new SectionTranslationViewModel
                         {
                             Id = st.Id,
-                            SectionId = st.SectionId,
                             LanguageId = st.LanguageId,
                             LanguageName = st.Language.Name,
                             LanguageCode = st.Language.Code,
@@ -1274,7 +1325,7 @@ namespace PazarAtlasi.CMS.Controllers
                         .Where(s => s.PageId == pageId)
                         .MaxAsync(s => (int?)s.SortOrder) ?? 0;
 
-                    model = new SectionModalViewModel
+                    model = new SectionViewModel
                     {
                         Id = 0,
                         PageId = pageId,

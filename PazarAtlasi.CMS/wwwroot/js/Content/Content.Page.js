@@ -343,13 +343,8 @@ async function createNewSection() {
   // Get the page ID
   const pageId = document.querySelector('input[name="Id"]').value;
 
-  try {
-    const html = await ContentServices.getSectionModal(0, pageId);
-    showSectionModal(html);
-  } catch (error) {
-    console.error("Error loading section modal:", error);
-    alert("Error loading section modal. Please try again.");
-  }
+  // Use new SectionModal
+  SectionModal.show(0, parseInt(pageId));
 }
 
 async function showReusableSections() {
