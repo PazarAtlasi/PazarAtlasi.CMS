@@ -1,3 +1,4 @@
+@using System.Text.Json
 @model PazarAtlasi.CMS.Models.ViewModels.SectionItemsListViewModel
 
 @{
@@ -126,7 +127,11 @@
 
     <!-- Store template configuration for JavaScript -->
     <script type="application/json" id="templateConfiguration">
-        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(config))
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(config, new JsonSerializerOptions 
+        { 
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        }))
     </script>
 }
 else

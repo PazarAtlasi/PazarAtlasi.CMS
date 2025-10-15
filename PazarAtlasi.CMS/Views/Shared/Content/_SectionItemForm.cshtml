@@ -1,0 +1,60 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SectionItemFormViewModel
+
+@{
+    var config = Model.Configuration;
+    List<PazarAtlasi.CMS.Application.Dtos.SectionItemField> fields;
+    
+    if (Model.IsNested && config?.ItemConfiguration?.NestedItems != null)
+    {
+        fields = config.ItemConfiguration.NestedItems.Fields ?? new List<PazarAtlasi.CMS.Application.Dtos.SectionItemField>();
+    }
+    else if (config?.ItemConfiguration != null)
+    {
+        fields = config.ItemConfiguration.Fields ?? new List<PazarAtlasi.CMS.Application.Dtos.SectionItemField>();
+    }
+    else
+    {
+        fields = new List<PazarAtlasi.CMS.Application.Dtos.SectionItemField>();
+    }
+}
+
+@if (fields.Any())
+{
+    @foreach (var field in fields)
+    {
+        if (Model.IsNested)
+        {
+            // Nested item field
+            ViewBag.Field = field;
+            ViewBag.NestedItem = Model.Item ?? new PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel 
+            { 
+                TempId = $"new_{DateTime.Now.Ticks}",
+                Data = new Dictionary<string, object>()
+            };
+            ViewBag.ParentTempId = Model.ParentItemId.ToString();
+            ViewBag.Value = field.DefaultValue ?? "";
+
+            @await Html.PartialAsync("~/Views/Shared/Content/_SectionItemNestedField.cshtml", field)
+        }
+        else
+        {
+            // Regular item field
+            ViewBag.Field = field;
+            ViewBag.Item = Model.Item ?? new PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel 
+            { 
+                TempId = $"new_{DateTime.Now.Ticks}",
+                Data = new Dictionary<string, object>()
+            };
+            ViewBag.Value = field.DefaultValue ?? "";
+
+            @await Html.PartialAsync("~/Views/Shared/Content/_SectionItemField.cshtml", field)
+        }
+    }
+}
+else
+{
+    <div class="text-center py-4 text-slate-500 text-sm">
+        <i class="fas fa-info-circle mr-1"></i>
+        No fields configured for this template
+    </div>
+}

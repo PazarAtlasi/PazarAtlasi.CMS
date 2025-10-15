@@ -169,46 +169,84 @@ const SectionModal = (function () {
     }
 
     try {
+      console.log("Making request to getSectionItemsList...");
+      
       // Load section items list as HTML from backend (partial view)
       const html = await ContentServices.getSectionItemsList(
         templateId,
         currentSection.id
       );
 
+      console.log("Received HTML from backend, length:", html ? html.length : 0);
+      console.log("HTML content preview:", html ? html.substring(0, 200) + "..." : "null");
+
       // Insert HTML into container
       const container = document.getElementById(
         "sectionItemsContainer"
       );
       
+      console.log("Container found:", !!container);
       
       if (container) {
+        console.log("Setting container innerHTML...");
         container.innerHTML = html;
 
-        // Parse and store template configuration from script tag
-        const configScript = document.getElementById(
-          "templateConfiguration"
-        );
-        
-        if (configScript) {
-          try {
-            currentSection.templateConfiguration = JSON.parse(
-              configScript.textContent
-            );
-            console.log("Template configuration loaded:", currentSection.templateConfiguration);
-          } catch (parseError) {
-            console.error("Error parsing template configuration:", parseError);
+        // Give a small delay for DOM to update
+        setTimeout(() => {
+          // Parse and store template configuration from script tag
+          const configScript = document.getElementById(
+            "templateConfiguration"
+          );
+          
+          console.log("Looking for templateConfiguration script tag...");
+          console.log("Config script found:", !!configScript);
+          
+          if (configScript) {
+            console.log("Script content:", configScript.textContent);
+            try {
+              currentSection.templateConfiguration = JSON.parse(
+                configScript.textContent
+              );
+              console.log("✅ Template configuration loaded successfully:", currentSection.templateConfiguration);
+              
+            // Debug the configuration structure
+            if (currentSection.templateConfiguration?.itemConfiguration) {
+              const itemConfig = currentSection.templateConfiguration.itemConfiguration;
+              console.log("✅ ItemConfiguration details:", {
+                allowDynamicItems: itemConfig.allowDynamicItems,
+                minItems: itemConfig.minItems,
+                maxItems: itemConfig.maxItems,
+                uiConfiguration: itemConfig.uiConfiguration
+              });
+            } else {
+              console.warn("❌ No itemConfiguration found in template configuration");
+            }
+            } catch (parseError) {
+              console.error("❌ Error parsing template configuration:", parseError);
+              console.error("Script content that failed to parse:", configScript.textContent);
+            }
+          } else {
+            console.error("❌ templateConfiguration script tag not found");
+            // Let's check what scripts are available
+            const allScripts = document.querySelectorAll('script');
+            console.log("All script tags found:", allScripts.length);
+            allScripts.forEach((script, index) => {
+              console.log(`Script ${index}:`, script.id, script.type);
+            });
           }
-        }
 
-        // Initialize plugins (SortableJS, etc.)
-        initializePlugins();
+          // Initialize plugins (SortableJS, etc.)
+          initializePlugins();
 
-        // Update UI counters
-        updateItemsCountBadge();
+          // Update UI counters
+          updateItemsCountBadge();
+        }, 100); // Small delay to ensure DOM is updated
         
       } else {
+        console.error("❌ sectionItemsContainer not found");
       }
     } catch (error) {
+      console.error("❌ Error in handleTemplateChange:", error);
       clearSectionItemsUI();
     }
   }
@@ -344,27 +382,53 @@ const SectionModal = (function () {
    * Add new section item - Load from backend as partial view
    */
   async function addSectionItem() {
+    console.log("addSectionItem called");
+    console.log("Current section state:", currentSection);
+    
     if (!currentSection.templateId) {
-      console.warn("No template selected");
+      console.warn("❌ No template selected");
+      alert("Please select a template first");
       return;
+    }
+
+    // Wait a bit and retry if configuration is not loaded yet
+    let retryCount = 0;
+    const maxRetries = 5;
+    
+    while (retryCount < maxRetries) {
+      if (currentSection.templateConfiguration?.itemConfiguration) {
+        break;
+      }
+      
+      console.log(`Waiting for template configuration... retry ${retryCount + 1}`);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      retryCount++;
     }
 
     try {
       // Get current configuration
       const config = currentSection.templateConfiguration;
       if (!config || !config.itemConfiguration) {
-        console.warn("No item configuration found");
+        console.error("❌ No item configuration found after retries");
+        console.log("Current template configuration:", currentSection.templateConfiguration);
+        alert("Template configuration not loaded. Please try again or refresh the page.");
         return;
       }
 
       const itemConfig = config.itemConfiguration;
+      console.log("✅ Item configuration found:", itemConfig);
 
-      // Check max items limit
+      // Check max items limit - now using camelCase
       const currentItemsCount = document.querySelectorAll(
         ".section-item-card"
       ).length;
-      if (itemConfig.maxItems && currentItemsCount >= itemConfig.maxItems) {
-        alert(`Maximum ${itemConfig.maxItems} items allowed`);
+      
+      const maxItems = itemConfig.maxItems;
+      console.log("Current items count:", currentItemsCount);
+      console.log("Max items allowed:", maxItems);
+      
+      if (maxItems && currentItemsCount >= maxItems) {
+        alert(`Maximum ${maxItems} items allowed`);
         return;
       }
 
@@ -376,21 +440,28 @@ const SectionModal = (function () {
       // Create a new item card and insert the form
       const itemsGrid = document.getElementById("itemsGrid");
       if (!itemsGrid) {
-        console.error("Items grid not found");
+        console.error("❌ Items grid not found");
         return;
       }
 
-      const itemId = Date.now(); // Temporary ID
+      const itemId = `temp_${Date.now()}_js`; // Ensure consistent format with backend
       const itemCard = document.createElement("div");
       itemCard.className =
         "section-item-card border border-slate-200 rounded-lg p-4 bg-white";
       itemCard.dataset.itemId = itemId;
 
+      // Now using camelCase for UI configuration
+      const uiConfig = itemConfig.uiConfiguration;
+      const allowDynamicItems = itemConfig.allowDynamicItems;
+      
+      console.log("UI Config:", uiConfig);
+      console.log("Allow dynamic items:", allowDynamicItems);
+
       itemCard.innerHTML = `
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center">
             ${
-              itemConfig.uiConfiguration?.showReorder
+              uiConfig?.showReorder
                 ? `
               <div class="drag-handle cursor-move mr-2 p-2 text-slate-400 hover:text-slate-600">
                 <i class="fas fa-grip-vertical"></i>
@@ -403,7 +474,7 @@ const SectionModal = (function () {
             }</span>
           </div>
           ${
-            itemConfig.allowDynamicItems
+            allowDynamicItems
               ? `
             <button type="button" onclick="SectionModal.removeSectionItem('${itemId}')" 
               class="text-red-600 hover:text-red-800 text-sm">
@@ -419,6 +490,7 @@ const SectionModal = (function () {
       `;
 
       itemsGrid.appendChild(itemCard);
+      console.log("✅ New item card added with ID:", itemId);
 
       // Update UI
       updateItemNumbers();
@@ -426,11 +498,12 @@ const SectionModal = (function () {
       updateAddButtonVisibility();
 
       // Initialize sortable if needed
-      if (itemConfig.uiConfiguration?.showReorder && !itemsGrid.sortableInitialized) {
+      const showReorder = uiConfig?.showReorder;
+      if (showReorder && !itemsGrid.sortableInitialized) {
         initializeSortable(itemsGrid);
       }
     } catch (error) {
-      console.error("Error adding section item:", error);
+      console.error("❌ Error adding section item:", error);
       alert("Error adding item. Please try again.");
     }
   }
@@ -495,17 +568,32 @@ const SectionModal = (function () {
    * Remove a section item
    */
   function removeSectionItem(itemId) {
+    console.log("removeSectionItem called with itemId:", itemId);
+    console.log("Current section state:", currentSection);
+    
     const config = currentSection.templateConfiguration;
-    if (!config || !config.itemConfiguration) return;
+    if (!config || !config.itemConfiguration) {
+      console.error("❌ No template configuration found");
+      console.log("Available configuration:", currentSection.templateConfiguration);
+      alert("Template configuration not loaded. Please refresh and try again.");
+      return;
+    }
 
     const itemConfig = config.itemConfiguration;
+    console.log("✅ Item configuration found:", itemConfig);
 
-    // Check min items limit
+    // Check min items limit - now using camelCase
     const currentItemsCount = document.querySelectorAll(
       ".section-item-card"
     ).length;
-    if (itemConfig.minItems && currentItemsCount <= itemConfig.minItems) {
-      alert(`Minimum ${itemConfig.minItems} items required`);
+    
+    console.log("Current items count:", currentItemsCount);
+    
+    const minItems = itemConfig.minItems || 0;
+    console.log("Min items required:", minItems);
+    
+    if (minItems && currentItemsCount <= minItems) {
+      alert(`Minimum ${minItems} items required`);
       return;
     }
 
@@ -513,8 +601,27 @@ const SectionModal = (function () {
     const card = document.querySelector(
       `[data-item-id="${itemId}"]`
     );
+    
+    console.log("Card found:", !!card);
+    console.log("Card element:", card);
+    
     if (card) {
       card.remove();
+      console.log("✅ Card removed successfully");
+    } else {
+      console.error("❌ Card not found with itemId:", itemId);
+      // Debug: Log all existing cards
+      const allCards = document.querySelectorAll(".section-item-card");
+      console.log("All existing cards:", allCards.length);
+      allCards.forEach((c, index) => {
+        console.log(`Card ${index}:`, c.dataset.itemId);
+      });
+    }
+
+    // Remove from stored data
+    if (window.sectionItemsData && window.sectionItemsData[itemId]) {
+      delete window.sectionItemsData[itemId];
+      console.log("✅ Removed from sectionItemsData");
     }
 
     // Update UI
@@ -761,18 +868,39 @@ const SectionModal = (function () {
    */
   function updateAddButtonVisibility() {
     const addButton = document.getElementById("addItemButton");
-    if (!addButton) return;
+    if (!addButton) {
+      console.log("Add button not found");
+      return;
+    }
 
     const config = currentSection.templateConfiguration;
-    if (!config || !config.itemConfiguration) return;
+    if (!config || !config.itemConfiguration) {
+      console.log("No item configuration, showing add button");
+      addButton.style.display = "block";
+      return;
+    }
 
     const itemConfig = config.itemConfiguration;
     const currentCount = document.querySelectorAll(".section-item-card").length;
 
-    if (itemConfig.MaxItems && currentCount >= itemConfig.MaxItems) {
+    // Now using camelCase
+    const maxItems = itemConfig.maxItems;
+    const allowDynamicItems = itemConfig.allowDynamicItems;
+    
+    console.log("updateAddButtonVisibility - Current count:", currentCount);
+    console.log("updateAddButtonVisibility - Max items:", maxItems);
+    console.log("updateAddButtonVisibility - Allow dynamic items:", allowDynamicItems);
+
+    // Hide button if dynamic items not allowed or max limit reached
+    if (!allowDynamicItems) {
       addButton.style.display = "none";
+      console.log("Add button hidden - dynamic items not allowed");
+    } else if (maxItems && currentCount >= maxItems) {
+      addButton.style.display = "none";
+      console.log("Add button hidden - max items reached");
     } else {
       addButton.style.display = "block";
+      console.log("Add button shown");
     }
   }
 
