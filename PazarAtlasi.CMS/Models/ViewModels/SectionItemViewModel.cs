@@ -22,6 +22,12 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? MediaAttributes { get; set; }
         public Status Status { get; set; }
 
+        // For dynamic templates
+        public string? TempId { get; set; }
+        public string? ParentTempId { get; set; }
+        public Dictionary<string, object>? Data { get; set; } = new();
+        public List<SectionItemViewModel> NestedItems { get; set; } = new();
+
         // For slider - multiple images
         public List<string> SliderImages { get; set; } = new();
 
@@ -37,5 +43,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public bool HasImage => !string.IsNullOrEmpty(PictureUrl);
         public bool HasVideo => !string.IsNullOrEmpty(VideoUrl);
         public bool IsSlider => MediaType == MediaType.ImageSlider;
+        public bool IsNested => !string.IsNullOrEmpty(ParentTempId);
     }
 }

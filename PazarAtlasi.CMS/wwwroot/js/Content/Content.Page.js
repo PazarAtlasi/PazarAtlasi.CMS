@@ -337,14 +337,41 @@ function closeSectionSelectionModal() {
   }
 }
 
+// Utility function to safely call SectionModal
+function safeSectionModalCall(callback) {
+  if (typeof window.SectionModal !== 'undefined') {
+    callback();
+  } else {
+    console.warn('SectionModal not yet loaded, waiting...');
+    
+    let attempts = 0;
+    const maxAttempts = 50; // 5 seconds max wait
+    
+    const waitForSectionModal = setInterval(() => {
+      attempts++;
+      
+      if (typeof window.SectionModal !== 'undefined') {
+        clearInterval(waitForSectionModal);
+        callback();
+      } else if (attempts >= maxAttempts) {
+        clearInterval(waitForSectionModal);
+        console.error('SectionModal failed to load, falling back to alert');
+        alert('Section modal is not available. Please refresh the page and try again.');
+      }
+    }, 100);
+  }
+}
+
 async function createNewSection() {
   closeSectionSelectionModal();
 
   // Get the page ID
   const pageId = document.querySelector('input[name="Id"]').value;
 
-  // Use new SectionModal
-  SectionModal.show(0, parseInt(pageId));
+  // Use safe call to SectionModal
+  safeSectionModalCall(() => {
+    window.SectionModal.show(0, parseInt(pageId));
+  });
 }
 
 async function showReusableSections() {
@@ -761,26 +788,21 @@ function editSectionItems(sectionId) {
 }
 
 async function addSectionItem(sectionId) {
-  try {
-    const html = await ContentServices.getSectionItemModal(
-      0,
-      sectionId
-    );
-    showSectionItemModal(html);
-  } catch (error) {
-    console.error("Error loading section item form:", error);
-    alert("An error occurred while loading the form");
-  }
+  safeSectionModalCall(() => {
+    // For editing an existing section to add items to it
+    window.SectionModal.show(sectionId, 0);
+  });
 }
 
 async function editSectionItem(itemId) {
-  try {
-    const html = await ContentServices.getSectionItemModal(itemId, 0);
-    showSectionItemModal(html);
-  } catch (error) {
-    console.error("Error loading section item form:", error);
-    alert("An error occurred while loading the form");
-  }
+  safeSectionModalCall(() => {
+    // Implementation will depend on your SectionModal API
+    if (typeof window.SectionModal.showItemModal === 'function') {
+      window.SectionModal.showItemModal(itemId, 0);
+    } else {
+      console.warn('SectionModal.showItemModal not available');
+    }
+  });
 }
 
 // SEO Preview Updates

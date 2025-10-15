@@ -1,5 +1,11 @@
 @model PazarAtlasi.CMS.Application.Dtos.SectionItemField
 
+@{
+    var item = ViewBag.Item as PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel;
+    var value = ViewBag.Value?.ToString() ?? Model.DefaultValue ?? "";
+    var fieldName = $"item_{item?.TempId}_{Model.Name}";
+}
+
 <div class="field-container" data-field-name="@Model.Name">
     <label class="block text-sm font-medium text-slate-700 mb-1">
         @Model.Label
@@ -12,49 +18,54 @@
     @switch (Model.Type)
     {
         case "text":
-            <input type="text" name="@Model.Name"
+            <input type="text" id="@fieldName" name="@fieldName"
                 class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" @(Model.Required ? "required" : "")
-                onchange="SectionModal.updateItemField(this)" />
+                placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
+                value="@value"
+                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
             break;
 
         case "textarea":
-            <textarea name="@Model.Name" rows="@(Model.MaxLength > 200 ? "4" : "2")"
-        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" @(Model.Required ? "required" : "")
-        onchange="SectionModal.updateItemField(this)"></textarea>
+            <textarea id="@fieldName" name="@fieldName" rows="@(Model.MaxLength > 200 ? 4 : 2)"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
+                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">@value</textarea>
             break;
 
         case "richtext":
             <div class="richtext-editor border border-slate-300 rounded-lg">
-                <textarea name="@Model.Name" class="w-full px-3 py-2 text-sm" placeholder="@Model.Placeholder" @(Model.Required
-            ? "required" : "") onchange="SectionModal.updateItemField(this)"></textarea>
+                <textarea id="@fieldName" name="@fieldName" class="w-full px-3 py-2 text-sm" 
+                    placeholder="@Model.Placeholder" required="@Model.Required"
+                    onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">@value</textarea>
             </div>
             break;
 
         case "url":
-            <input type="url" name="@Model.Name"
+            <input type="url" id="@fieldName" name="@fieldName"
                 class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" @(Model.Required ? "required" : "")
-                onchange="SectionModal.updateItemField(this)" />
+                placeholder="@Model.Placeholder" required="@Model.Required" value="@value"
+                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
             break;
 
         case "image":
             <div class="image-upload-container">
-                <input type="hidden" name="@Model.Name" class="image-path-input" />
+                <input type="hidden" id="@fieldName" name="@fieldName" class="image-path-input" value="@value" />
                 <div class="flex items-center space-x-2">
-                    <button type="button" onclick="SectionModal.openImageUpload(this)"
+                    <input type="file" id="@(fieldName)_file" class="hidden" accept="image/*"
+                        onchange="SectionModal.handleImageUpload('@item.TempId', '@Model.Name', this)" />
+                    <button type="button" onclick="document.getElementById('@(fieldName)_file').click()"
                         class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
                         <i class="fas fa-upload mr-2"></i> Upload Image
                     </button>
-                    <div class="image-preview hidden">
-                        <img src="" alt="Preview" class="h-16 w-16 object-cover rounded border" />
-                        <button type="button" onclick="SectionModal.removeImage(this)"
-                            class="ml-2 text-red-600 hover:text-red-800 text-xs">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
+                    @if (!string.IsNullOrEmpty(value))
+                    {
+                        <span class="text-xs text-green-600"><i class="fas fa-check mr-1"></i> Uploaded</span>
+                    }
                 </div>
+                @if (!string.IsNullOrEmpty(value))
+                {
+                    <img src="@value" class="mt-2 max-h-20 rounded" alt="Preview" />
+                }
                 @if (!string.IsNullOrEmpty(Model.Placeholder))
                 {
                     <p class="mt-1 text-xs text-slate-500">@Model.Placeholder</p>
@@ -63,40 +74,42 @@
             break;
 
         case "select":
-            <select name="@Model.Name"
+            <select id="@fieldName" name="@fieldName"
                 class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                @(Model.Required ? "required" : "") onchange="SectionModal.updateItemField(this)">
+                required="@Model.Required" onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">
                 <option value="">Select...</option>
                 @if (Model.Options != null)
                 {
                     @foreach (var option in Model.Options)
                     {
-                        <option value="@option">@option</option>
+                        <option value="@option" selected="@(value == option)">@option</option>
                     }
                 }
             </select>
             break;
 
         case "number":
-            <input type="number" name="@Model.Name"
+            <input type="number" id="@fieldName" name="@fieldName"
                 class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" @(Model.Required ? "required" : "")
-                onchange="SectionModal.updateItemField(this)" />
+                placeholder="@Model.Placeholder" required="@Model.Required" value="@value"
+                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
             break;
 
         case "checkbox":
             <label class="flex items-center space-x-2">
-                <input type="checkbox" name="@Model.Name"
+                <input type="checkbox" id="@fieldName" name="@fieldName"
                     class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                    onchange="SectionModal.updateItemField(this)" />
+                    checked="@(value == "true" || value == "True")"
+                    onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.checked)" />
                 <span class="text-sm text-slate-600">@Model.Placeholder</span>
             </label>
             break;
 
         default:
-            <input type="text" name="@Model.Name"
+            <input type="text" id="@fieldName" name="@fieldName"
                 class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" onchange="SectionModal.updateItemField(this)" />
+                placeholder="@Model.Placeholder" value="@value"
+                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
             break;
     }
 

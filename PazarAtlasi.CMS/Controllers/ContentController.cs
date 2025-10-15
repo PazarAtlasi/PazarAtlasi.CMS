@@ -556,7 +556,7 @@ namespace PazarAtlasi.CMS.Controllers
                     <div class='text-center py-8 text-slate-500'>
                         <i class='fas fa-plus-circle text-3xl mb-2'></i>
                         <p class='text-sm'>No items in this section</p>
-                        <button type='button' class='mt-2 text-blue-600 hover:text-blue-800 text-sm' onclick='addSectionItem({section.Id})'>
+                        <button type='button' class='mt-2 text-blue-600 hover:text-blue-800 text-sm' onclick='safeSectionModalCall(() => window.SectionModal.show({section.Id}, 0))'>
                             Add First Item
                         </button>
                     </div>
@@ -643,6 +643,158 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 return Content($"<div class='text-red-500'>Error loading template UI: {ex.Message}</div>");
+            }
+        }
+
+        /// <summary>
+        /// Get section items list as partial view with example data
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSectionItemsList(int templateId, int sectionId = 0)
+        {
+            try
+            {
+                // First check if template exists
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    // Return empty HTML instead of JSON for consistency
+                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found or inactive.</p></div>", "text/html");
+                }
+
+                // Get template configuration
+                var configuration = _templateConfigurationProvider?.GetConfiguration(template.Id, template.TemplateKey);
+                if (configuration == null)
+                {
+                    // Return empty HTML instead of JSON for consistency
+                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
+                }
+
+                // Create example section items based on template configuration
+                var model = new SectionItemsListViewModel
+                {
+                    TemplateId = templateId,
+                    SectionId = sectionId,
+                    Configuration = configuration,
+                    SectionItems = new List<SectionItemViewModel>()
+                };
+
+                // Create default items based on configuration
+                if (configuration.ItemConfiguration != null)
+                {
+                    var defaultItemsCount = Math.Max(0, configuration.ItemConfiguration.DefaultItems);
+                    
+                    for (int i = 0; i < defaultItemsCount; i++)
+                    {
+                        var item = new SectionItemViewModel
+                        {
+                            Id = 0,
+                            SectionId = sectionId,
+                            TempId = $"temp_{DateTime.Now.Ticks}_{i}",
+                            SortOrder = i + 1,
+                            Type = SectionItemType.Text, // Default type
+                            Status = Status.Active,
+                            Data = new Dictionary<string, object>()
+                        };
+
+                        // Add default field values
+                        if (configuration.ItemConfiguration.Fields != null)
+                        {
+                            foreach (var field in configuration.ItemConfiguration.Fields)
+                            {
+                                if (!string.IsNullOrEmpty(field.DefaultValue))
+                                {
+                                    item.Data[field.Name] = field.DefaultValue;
+                                }
+                            }
+                        }
+
+                        // Create default nested items if configured
+                        if (configuration.ItemConfiguration.NestedItems != null)
+                        {
+                            item.NestedItems = new List<SectionItemViewModel>();
+                            var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItems);
+                            
+                            for (int j = 0; j < nestedDefaultCount; j++)
+                            {
+                                var nestedItem = new SectionItemViewModel
+                                {
+                                    Id = 0,
+                                    TempId = $"nested_{DateTime.Now.Ticks}_{i}_{j}",
+                                    ParentTempId = item.TempId,
+                                    SortOrder = j + 1,
+                                    Type = SectionItemType.Text, // Default type
+                                    Status = Status.Active,
+                                    Data = new Dictionary<string, object>()
+                                };
+
+                                // Add default nested field values
+                                if (configuration.ItemConfiguration.NestedItems.Fields != null)
+                                {
+                                    foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
+                                    {
+                                        if (!string.IsNullOrEmpty(field.DefaultValue))
+                                        {
+                                            nestedItem.Data[field.Name] = field.DefaultValue;
+                                        }
+                                    }
+                                }
+
+                                item.NestedItems.Add(nestedItem);
+                            }
+                        }
+
+                        model.SectionItems.Add(item);
+                    }
+                }
+
+                return PartialView("~/Views/Shared/Content/_SectionItemsList.cshtml", model);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details for debugging
+                System.Diagnostics.Debug.WriteLine($"Error in GetSectionItemsList: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                // Return error HTML instead of JSON for consistency
+                return Content($"<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Error loading section items: {ex.Message}</p></div>", "text/html");
+            }
+        }
+
+        /// <summary>
+        /// Get section item form as partial view
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSectionItemForm(int templateId, int itemId = 0, int parentItemId = 0)
+        {
+            try
+            {
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    return Content("<div class='text-red-500'>Template not found</div>");
+                }
+
+                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
+
+                var model = new SectionItemFormViewModel
+                {
+                    TemplateId = templateId,
+                    ItemId = itemId,
+                    ParentItemId = parentItemId,
+                    Configuration = configuration,
+                    IsNested = parentItemId > 0
+                };
+
+                return PartialView("~/Views/Shared/Content/_SectionItemForm.cshtml", model);
+            }
+            catch (Exception ex)
+            {
+                return Content($"<div class='text-red-500'>Error loading item form: {ex.Message}</div>");
             }
         }
 

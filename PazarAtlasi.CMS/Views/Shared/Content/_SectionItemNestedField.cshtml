@@ -1,0 +1,91 @@
+@{
+    var field = ViewBag.Field as PazarAtlasi.CMS.Application.Dtos.SectionItemField;
+    var nestedItem = ViewBag.NestedItem as PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel;
+    var parentTempId = ViewBag.ParentTempId?.ToString();
+    var value = ViewBag.Value?.ToString() ?? "";
+    var fieldId = $"nested_{parentTempId}_{nestedItem?.TempId}_{field?.Name}";
+}
+
+@if (field != null && nestedItem != null)
+{
+    switch (field.Type?.ToLower())
+    {
+        case "text":
+        case "url":
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">
+                    @field.Label
+                    @if (field.Required) { <span class="text-red-500">*</span> }
+                </label>
+                <input type="@field.Type"
+                       id="@fieldId"
+                       class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                       placeholder="@field.Placeholder"
+                       maxlength="@(field.MaxLength > 0 ? field.MaxLength : 255)"
+                       required="@field.Required"
+                       value="@value"
+                       onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">
+            </div>
+            break;
+
+        case "textarea":
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">
+                    @field.Label
+                    @if (field.Required) { <span class="text-red-500">*</span> }
+                </label>
+                <textarea id="@fieldId"
+                          class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                          placeholder="@field.Placeholder"
+                          maxlength="@(field.MaxLength > 0 ? field.MaxLength : 500)"
+                          required="@field.Required"
+                          rows="2"
+                          onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">@value</textarea>
+            </div>
+            break;
+
+        case "checkbox":
+            <div class="flex items-center">
+                <input type="checkbox"
+                       id="@fieldId"
+                       class="mr-2"
+                       checked="@(value == "true" || value == "True")"
+                       onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.checked)">
+                <label class="text-xs font-medium text-slate-600">@field.Label</label>
+            </div>
+            break;
+
+        case "select":
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">
+                    @field.Label
+                    @if (field.Required) { <span class="text-red-500">*</span> }
+                </label>
+                <select id="@fieldId"
+                        class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                        required="@field.Required"
+                        onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">
+                    <option value="">Select...</option>
+                    @if (field.Options != null)
+                    {
+                        foreach (var option in field.Options)
+                        {
+                            <option value="@option" selected="@(value == option)">@option</option>
+                        }
+                    }
+                </select>
+            </div>
+            break;
+
+        default:
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">@field.Label</label>
+                <input type="text"
+                       id="@fieldId"
+                       class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                       value="@value"
+                       onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">
+            </div>
+            break;
+    }
+}

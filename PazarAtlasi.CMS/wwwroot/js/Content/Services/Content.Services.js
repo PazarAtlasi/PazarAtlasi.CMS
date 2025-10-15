@@ -195,6 +195,39 @@ const ContentServices = (function () {
   }
 
   /**
+   * Get section items list as partial view HTML with example data
+   */
+  function getSectionItemsList(templateId, sectionId = 0) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetSectionItemsList`,
+      type: "GET",
+      data: { templateId, sectionId },
+      headers: buildHeaders(),
+      dataType: "html",
+    }).fail(function(xhr, status, error) {
+      console.error("getSectionItemsList failed:", {
+        status: xhr.status,
+        statusText: xhr.statusText,
+        responseText: xhr.responseText,
+        error: error
+      });
+    });
+  }
+
+  /**
+   * Get section item form as partial view HTML
+   */
+  function getSectionItemForm(templateId, itemId = 0, parentItemId = 0) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetSectionItemForm`,
+      type: "GET",
+      data: { templateId, itemId, parentItemId },
+      headers: buildHeaders(),
+      dataType: "html",
+    });
+  }
+
+  /**
    * Get templates partial view HTML
    */
   function getTemplatesPartial(sectionType) {
@@ -440,6 +473,8 @@ const ContentServices = (function () {
     getTemplatesBySectionType,
     getTemplateConfiguration,
     getSectionItemsUI,
+    getSectionItemsList,
+    getSectionItemForm,
     getTemplatesPartial,
     getReusableSections,
     addSection,
