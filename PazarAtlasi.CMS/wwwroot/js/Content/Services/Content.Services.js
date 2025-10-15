@@ -228,6 +228,32 @@ const ContentServices = (function () {
   }
 
   /**
+   * Get new section item card as partial view HTML
+   */
+  function getNewSectionItemCard(templateId, sectionId = 0, itemIndex = 0) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetNewSectionItemCard`,
+      type: "GET",
+      data: { templateId, sectionId, itemIndex },
+      headers: buildHeaders(),
+      dataType: "html",
+    });
+  }
+
+  /**
+   * Get new nested item card as partial view HTML
+   */
+  function getNewNestedItemCard(templateId, parentTempId, nestedIndex = 0) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetNewNestedItemCard`,
+      type: "GET",
+      data: { templateId, parentTempId, nestedIndex },
+      headers: buildHeaders(),
+      dataType: "html",
+    });
+  }
+
+  /**
    * Get templates partial view HTML
    */
   function getTemplatesPartial(sectionType) {
@@ -475,6 +501,8 @@ const ContentServices = (function () {
     getSectionItemsUI,
     getSectionItemsList,
     getSectionItemForm,
+    getNewSectionItemCard,
+    getNewNestedItemCard,
     getTemplatesPartial,
     getReusableSections,
     addSection,

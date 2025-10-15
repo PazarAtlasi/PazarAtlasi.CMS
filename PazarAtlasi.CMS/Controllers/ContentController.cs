@@ -799,6 +799,157 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
+        /// Get new section item card as partial view
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetNewSectionItemCard(int templateId, int sectionId = 0, int itemIndex = 0)
+        {
+            try
+            {
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    return Content("<div class='text-red-500'>Template not found</div>");
+                }
+
+                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
+                if (configuration?.ItemConfiguration == null)
+                {
+                    return Content("<div class='text-red-500'>Template configuration not found</div>");
+                }
+
+                // Create new item data structure
+                var newItem = new SectionItemViewModel
+                {
+                    Id = 0,
+                    SectionId = sectionId,
+                    TempId = $"temp_{DateTime.Now.Ticks}_js",
+                    SortOrder = itemIndex + 1,
+                    Type = SectionItemType.Text,
+                    Status = Status.Active,
+                    Data = new Dictionary<string, object>(),
+                    NestedItems = new List<SectionItemViewModel>()
+                };
+
+                // Add default field values
+                if (configuration.ItemConfiguration.Fields != null)
+                {
+                    foreach (var field in configuration.ItemConfiguration.Fields)
+                    {
+                        if (!string.IsNullOrEmpty(field.DefaultValue))
+                        {
+                            newItem.Data[field.Name] = field.DefaultValue;
+                        }
+                    }
+                }
+
+                // Create default nested items if configured
+                if (configuration.ItemConfiguration.NestedItems != null)
+                {
+                    var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItems);
+                    
+                    for (int j = 0; j < nestedDefaultCount; j++)
+                    {
+                        var nestedItem = new SectionItemViewModel
+                        {
+                            Id = 0,
+                            TempId = $"nested_{DateTime.Now.Ticks}_{j}",
+                            ParentTempId = newItem.TempId,
+                            SortOrder = j + 1,
+                            Type = SectionItemType.Text,
+                            Status = Status.Active,
+                            Data = new Dictionary<string, object>()
+                        };
+
+                        // Add default nested field values
+                        if (configuration.ItemConfiguration.NestedItems.Fields != null)
+                        {
+                            foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
+                            {
+                                if (!string.IsNullOrEmpty(field.DefaultValue))
+                                {
+                                    nestedItem.Data[field.Name] = field.DefaultValue;
+                                }
+                            }
+                        }
+
+                        newItem.NestedItems.Add(nestedItem);
+                    }
+                }
+
+                ViewBag.Configuration = configuration;
+                ViewBag.IsNewItem = true;
+                ViewBag.ItemIndex = itemIndex;
+
+                return PartialView("~/Views/Shared/Content/_SectionItemCard.cshtml", newItem);
+            }
+            catch (Exception ex)
+            {
+                return Content($"<div class='text-red-500'>Error creating new item: {ex.Message}</div>");
+            }
+        }
+
+        /// <summary>
+        /// Get new nested item card as partial view
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetNewNestedItemCard(int templateId, string parentTempId, int nestedIndex = 0)
+        {
+            try
+            {
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    return Content("<div class='text-red-500'>Template not found</div>");
+                }
+
+                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
+                if (configuration?.ItemConfiguration?.NestedItems == null)
+                {
+                    return Content("<div class='text-red-500'>Nested items configuration not found</div>");
+                }
+
+                // Create new nested item data structure
+                var nestedItem = new SectionItemViewModel
+                {
+                    Id = 0,
+                    TempId = $"nested_{DateTime.Now.Ticks}",
+                    ParentTempId = parentTempId,
+                    SortOrder = nestedIndex + 1,
+                    Type = SectionItemType.Text,
+                    Status = Status.Active,
+                    Data = new Dictionary<string, object>()
+                };
+
+                // Add default nested field values
+                if (configuration.ItemConfiguration.NestedItems.Fields != null)
+                {
+                    foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
+                    {
+                        if (!string.IsNullOrEmpty(field.DefaultValue))
+                        {
+                            nestedItem.Data[field.Name] = field.DefaultValue;
+                        }
+                    }
+                }
+
+                ViewBag.NestedConfig = configuration.ItemConfiguration.NestedItems;
+                ViewBag.ParentTempId = parentTempId;
+                ViewBag.NestedIndex = nestedIndex;
+
+                return PartialView("~/Views/Shared/Content/_NestedItemCard.cshtml", nestedItem);
+            }
+            catch (Exception ex)
+            {
+                return Content($"<div class='text-red-500'>Error creating nested item: {ex.Message}</div>");
+            }
+        }
+
+        /// <summary>
         /// Get templates partial view
         /// </summary>
         [HttpGet]
