@@ -216,8 +216,23 @@ const SectionModal = (function () {
                 allowDynamicItems: itemConfig.allowDynamicItems,
                 minItems: itemConfig.minItems,
                 maxItems: itemConfig.maxItems,
-                uiConfiguration: itemConfig.uiConfiguration
+                uiConfiguration: itemConfig.uiConfiguration,
+                fields: itemConfig.fields,
+                nestedItems: itemConfig.nestedItems
               });
+              
+              // Debug nested fields specifically
+              if (itemConfig.nestedItems?.fields) {
+                console.log("🔄 Nested fields with translation info:");
+                itemConfig.nestedItems.fields.forEach((field, index) => {
+                  console.log(`  Field ${index + 1}:`, {
+                    name: field.name,
+                    label: field.label,
+                    type: field.type,
+                    isTranslatable: field.isTranslatable
+                  });
+                });
+              }
             } else {
               console.warn("❌ No itemConfiguration found in template configuration");
             }
@@ -282,6 +297,8 @@ const SectionModal = (function () {
    * Save section
    */
   async function save() {
+    console.log("Starting section save...");
+    
     // Validate
     if (!currentSection.pageId) {
       alert("Please select a page");
@@ -306,6 +323,12 @@ const SectionModal = (function () {
         
         console.log(`Processing item ${index + 1}:`, itemId, itemData);
         
+        // Separate main item data from nested items data
+        const mainItemData = { ...itemData };
+        if (mainItemData.nestedItems) {
+          delete mainItemData.nestedItems; // Remove nested items from main data
+        }
+        
         // Collect nested items
         const nestedItems = [];
         const nestedCards = card.querySelectorAll(".nested-item-card");
@@ -318,7 +341,7 @@ const SectionModal = (function () {
           nestedItems.push({
             TempId: nestedId,
             SortOrder: nestedIndex + 1,
-            Data: nestedData,
+            Data: nestedData, // Direct nested data object
             Type: 0, // Will be set by backend based on template
             Status: 1,
             MediaType: 0,
@@ -329,8 +352,8 @@ const SectionModal = (function () {
         sectionItems.push({
           TempId: itemId,
           SortOrder: index + 1,
-          Data: itemData,
-          NestedItems: nestedItems,
+          Data: mainItemData, // Only main item data, no nested items
+          NestedItems: nestedItems, // Separate nested items array
           Type: 0, // Will be set by backend based on template
           Status: 1,
           MediaType: 0,
@@ -841,6 +864,81 @@ const SectionModal = (function () {
     window.sectionItemsData[parentTempId].nestedItems[nestedTempId][fieldName] = value;
   }
 
+  /**
+   * Update nested item field translation (multi-language support)
+   */
+  function updateNestedItemFieldTranslation(
+    parentTempId,
+    nestedTempId,
+    fieldName,
+    languageCode,
+    languageId,
+    value
+  ) {
+    console.log(
+      "Nested field translation updated:",
+      parentTempId,
+      nestedTempId,
+      fieldName,
+      languageCode,
+      value
+    );
+    
+    // Store data for saving later
+    if (!window.sectionItemsData) {
+      window.sectionItemsData = {};
+    }
+    if (!window.sectionItemsData[parentTempId]) {
+      window.sectionItemsData[parentTempId] = { nestedItems: {} };
+    }
+    if (!window.sectionItemsData[parentTempId].nestedItems[nestedTempId]) {
+      window.sectionItemsData[parentTempId].nestedItems[nestedTempId] = {};
+    }
+    
+    // Store translation data
+    const fieldKey = `${fieldName}_${languageCode}`;
+    window.sectionItemsData[parentTempId].nestedItems[nestedTempId][fieldKey] = value;
+    
+    // Also store the translation info for backend processing
+    if (!window.sectionItemsData[parentTempId].nestedItems[nestedTempId].translations) {
+      window.sectionItemsData[parentTempId].nestedItems[nestedTempId].translations = {};
+    }
+    
+    if (!window.sectionItemsData[parentTempId].nestedItems[nestedTempId].translations[languageId]) {
+      window.sectionItemsData[parentTempId].nestedItems[nestedTempId].translations[languageId] = {
+        languageId: languageId,
+        languageCode: languageCode
+      };
+    }
+    
+    window.sectionItemsData[parentTempId].nestedItems[nestedTempId].translations[languageId][fieldName] = value;
+  }
+
+  /**
+   * Switch language tab for nested items
+   */
+  function switchNestedLanguageTab(button, parentTempId, nestedTempId, fieldName) {
+    const fieldContainer = button.closest('.nested-field-container');
+    const languageCode = button.dataset.language;
+    
+    // Update active tab
+    fieldContainer.querySelectorAll('.lang-tab').forEach(tab => {
+        tab.classList.remove('border-purple-500', 'text-purple-600');
+        tab.classList.add('border-transparent', 'text-slate-500');
+    });
+    button.classList.remove('border-transparent', 'text-slate-500');
+    button.classList.add('border-purple-500', 'text-purple-600');
+    
+    // Show/hide language panels
+    fieldContainer.querySelectorAll('.language-panel').forEach(panel => {
+        if (panel.dataset.language === languageCode) {
+            panel.classList.remove('hidden');
+        } else {
+            panel.classList.add('hidden');
+        }
+    });
+  }
+
   // ==================== HELPER FUNCTIONS ====================
 
   /**
@@ -964,6 +1062,8 @@ const SectionModal = (function () {
     addNestedItem,
     removeNestedItem,
     updateNestedItemField,
+    updateNestedItemFieldTranslation,
+    switchNestedLanguageTab,
     // Image handling
     handleImageUpload,
     // UI management

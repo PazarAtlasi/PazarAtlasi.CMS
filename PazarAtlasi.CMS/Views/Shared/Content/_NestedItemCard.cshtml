@@ -3,6 +3,7 @@
     var nestedConfig = ViewBag.NestedConfig as PazarAtlasi.CMS.Application.Dtos.NestedItemConfiguration;
     var parentTempId = ViewBag.ParentTempId as string;
     var nestedIndex = ViewBag.NestedIndex as int? ?? 0;
+    var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
 }
 
 <div class="nested-item-card bg-purple-50 border border-purple-200 rounded p-3" data-nested-id="@Model.TempId">
@@ -27,6 +28,7 @@
                 ViewBag.NestedItem = Model;
                 ViewBag.ParentTempId = parentTempId;
                 ViewBag.Value = Model.Data?.ContainsKey(field.Name) == true ? Model.Data[field.Name]?.ToString() : field.DefaultValue ?? "";
+                ViewBag.AvailableLanguages = availableLanguages;
                 
                 @await Html.PartialAsync("~/Views/Shared/Content/_SectionItemNestedField.cshtml", field)
             }

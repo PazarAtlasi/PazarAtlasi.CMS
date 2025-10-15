@@ -681,6 +681,22 @@ namespace PazarAtlasi.CMS.Controllers
                     SectionItems = new List<SectionItemViewModel>()
                 };
 
+                // Get available languages for translation support
+                var availableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderByDescending(l => l.IsDefault)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
+                ViewBag.AvailableLanguages = availableLanguages;
+
                 // Create default items based on configuration
                 if (configuration.ItemConfiguration != null)
                 {
@@ -883,6 +899,22 @@ namespace PazarAtlasi.CMS.Controllers
                 ViewBag.IsNewItem = true;
                 ViewBag.ItemIndex = itemIndex;
 
+                // Get available languages for translation support
+                var availableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderByDescending(l => l.IsDefault)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
+                ViewBag.AvailableLanguages = availableLanguages;
+
                 return PartialView("~/Views/Shared/Content/_SectionItemCard.cshtml", newItem);
             }
             catch (Exception ex)
@@ -937,9 +969,24 @@ namespace PazarAtlasi.CMS.Controllers
                     }
                 }
 
+                // Get available languages for translation support
+                var availableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderByDescending(l => l.IsDefault)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
                 ViewBag.NestedConfig = configuration.ItemConfiguration.NestedItems;
                 ViewBag.ParentTempId = parentTempId;
                 ViewBag.NestedIndex = nestedIndex;
+                ViewBag.AvailableLanguages = availableLanguages;
 
                 return PartialView("~/Views/Shared/Content/_NestedItemCard.cshtml", nestedItem);
             }
@@ -1888,8 +1935,15 @@ namespace PazarAtlasi.CMS.Controllers
         /// </summary>
         private async Task ProcessSectionItems(List<SectionItemRequest> itemRequests, int sectionId, int? parentItemId = null)
         {
+            if (itemRequests == null || !itemRequests.Any())
+                return;
+
             foreach (var itemRequest in itemRequests)
             {
+                Console.WriteLine($"Processing item: {itemRequest.TempId}");
+                Console.WriteLine($"Item data: {System.Text.Json.JsonSerializer.Serialize(itemRequest.Data)}");
+                Console.WriteLine($"Nested items count: {itemRequest.NestedItems?.Count ?? 0}");
+
                 var newItem = new SectionItem
                 {
                     SectionId = sectionId,
@@ -1911,6 +1965,8 @@ namespace PazarAtlasi.CMS.Controllers
                 _pazarAtlasiDbContext.SectionItems.Add(newItem);
                 await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
 
+                Console.WriteLine($"Created item with ID: {newItem.Id}");
+
                 // Add item translations
                 if (itemRequest.Translations != null && itemRequest.Translations.Any())
                 {
@@ -1926,11 +1982,13 @@ namespace PazarAtlasi.CMS.Controllers
                     }).ToList();
 
                     _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
+                    Console.WriteLine($"Added {itemTranslations.Count} translations for item {newItem.Id}");
                 }
 
                 // Process nested items recursively
                 if (itemRequest.NestedItems != null && itemRequest.NestedItems.Any())
                 {
+                    Console.WriteLine($"Processing {itemRequest.NestedItems.Count} nested items for parent {newItem.Id}");
                     await ProcessSectionItems(itemRequest.NestedItems, sectionId, newItem.Id);
                 }
             }

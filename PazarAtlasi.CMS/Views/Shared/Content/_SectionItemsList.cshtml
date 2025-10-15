@@ -98,6 +98,7 @@
                                                     ViewBag.NestedItem = nestedItem;
                                                     ViewBag.ParentTempId = item.TempId;
                                                     ViewBag.Value = nestedItem.Data?.ContainsKey(field.Name) == true ? nestedItem.Data[field.Name]?.ToString() : field.DefaultValue ?? "";
+                                                    ViewBag.AvailableLanguages = ViewBag.AvailableLanguages;
 
                                                     @await Html.PartialAsync("~/Views/Shared/Content/_SectionItemNestedField.cshtml", field)
                                                 }

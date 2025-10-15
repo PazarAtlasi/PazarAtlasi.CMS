@@ -120,6 +120,12 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public int? MaxLength { get; set; }
         public List<string>? Options { get; set; } // For select fields
         public string? DefaultValue { get; set; }
+        public string? Description { get; set; } // Field description for UI
+        
+        /// <summary>
+        /// Whether this field supports multiple languages/translations
+        /// </summary>
+        public bool IsTranslatable { get; set; } = false;
     }
 
     /// <summary>

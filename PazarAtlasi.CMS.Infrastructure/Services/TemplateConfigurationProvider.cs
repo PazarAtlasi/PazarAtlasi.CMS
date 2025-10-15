@@ -71,7 +71,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Menu",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Products, Services" },
+                        new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Products, Services", IsTranslatable = true },
                         new() { Name = "icon", Label = "Icon (Optional)", Type = "text", Placeholder = "fa fa-bars" }
                     },
                     NestedItems = new NestedItemConfiguration
@@ -83,7 +83,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         ItemType = "Link",
                         Fields = new List<SectionItemField>
                         {
-                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Home, About" },
+                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Home, About", IsTranslatable = true },
                             new() { Name = "url", Label = "URL", Type = "url", Required = true, Placeholder = "/page-url or https://example.com" },
                             new() { Name = "icon", Label = "Icon (Optional)", Type = "text", Placeholder = "fa fa-home" },
                             new() { Name = "openInNewTab", Label = "Open in New Tab", Type = "checkbox", DefaultValue = "false" }
@@ -138,9 +138,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         ItemType = "Link",
                         Fields = new List<SectionItemField>
                         {
-                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50 },
+                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
                             new() { Name = "url", Label = "URL", Type = "url", Required = true },
-                            new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 100 },
+                            new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 100, IsTranslatable = true },
                             new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-chevron-right" }
                         },
                         UIConfiguration = new ItemUIConfiguration
@@ -224,7 +224,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         ItemType = "Link",
                         Fields = new List<SectionItemField>
                         {
-                            new() { Name = "title", Label = "Item Title", Type = "text", Required = true, MaxLength = 50 },
+                            new() { Name = "title", Label = "Item Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
                             new() { Name = "url", Label = "URL", Type = "url", Required = true },
                             new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-chevron-right" }
                         },
