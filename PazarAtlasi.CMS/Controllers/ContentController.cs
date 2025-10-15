@@ -565,8 +565,6 @@ namespace PazarAtlasi.CMS.Controllers
 
         #endregion
 
-
-
         /// <summary>
         /// Get available templates by section type
         /// </summary>
@@ -1527,17 +1525,13 @@ namespace PazarAtlasi.CMS.Controllers
                 }
                 else
                 {
-                    // Create new section
-                    var maxSortOrder = await _pazarAtlasiDbContext.Sections
-                        .Where(s => s.PageId == pageId)
-                        .MaxAsync(s => (int?)s.SortOrder) ?? 0;
 
                     model = new SectionViewModel
                     {
                         Id = 0,
                         PageId = pageId,
                         Type = SectionType.None,
-                        SortOrder = maxSortOrder + 1,
+                        SortOrder = 1,
                         Status = Domain.Common.Status.Active
                     };
                 }

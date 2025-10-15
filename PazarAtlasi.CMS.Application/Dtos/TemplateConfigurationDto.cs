@@ -1,3 +1,5 @@
+using PazarAtlasi.CMS.Domain.Common;
+
 namespace PazarAtlasi.CMS.Application.Dtos
 {
     /// <summary>
@@ -6,7 +8,9 @@ namespace PazarAtlasi.CMS.Application.Dtos
     public class TemplateConfigurationDto
     {
         public int TemplateId { get; set; }
+
         public string TemplateName { get; set; } = string.Empty;
+            
         public string TemplateKey { get; set; } = string.Empty;
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// <summary>
         /// Item type for all items in this template
         /// </summary>
-        public string ItemType { get; set; } = "Text"; // Text, Image, Link, Video, etc.
+        public SectionItemType ItemType { get; set; } 
 
         /// <summary>
         /// Media type if item type is media-based
@@ -113,13 +117,21 @@ namespace PazarAtlasi.CMS.Application.Dtos
     public class SectionItemField
     {
         public string Name { get; set; } = string.Empty;
+
         public string Label { get; set; } = string.Empty;
+
         public string Type { get; set; } = "text"; // text, textarea, url, image, video, select, checkbox
+        
         public bool Required { get; set; } = false;
+        
         public string? Placeholder { get; set; }
+        
         public int? MaxLength { get; set; }
+        
         public List<string>? Options { get; set; } // For select fields
+        
         public string? DefaultValue { get; set; }
+        
         public string? Description { get; set; } // Field description for UI
         
         /// <summary>
@@ -134,10 +146,15 @@ namespace PazarAtlasi.CMS.Application.Dtos
     public class ItemUIConfiguration
     {
         public string Layout { get; set; } = "grid"; // grid, list, carousel
+        
         public int Columns { get; set; } = 3;
+        
         public bool ShowPreview { get; set; } = true;
+        
         public bool ShowReorder { get; set; } = true;
+        
         public string AddButtonText { get; set; } = "Add Item";
+        
         public string? IconClass { get; set; }
     }
 }
