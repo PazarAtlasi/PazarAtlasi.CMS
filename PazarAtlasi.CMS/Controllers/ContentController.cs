@@ -1757,19 +1757,24 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Save section with items
+        /// Save section with items and nested items
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> SaveSectionAjax([FromBody] SectionRequest request)
         {
             try
             {
+                Console.WriteLine($"Received section request: {System.Text.Json.JsonSerializer.Serialize(request)}");
+
                 if (request.Id > 0)
                 {
                     // Update existing section
                     var section = await _pazarAtlasiDbContext.Sections
                         .Include(s => s.SectionItems)
                             .ThenInclude(si => si.Translations)
+                        .Include(s => s.SectionItems)
+                            .ThenInclude(si => si.NestedItems)
+                                .ThenInclude(ni => ni.Translations)
                         .Include(s => s.Translations)
                         .FirstOrDefaultAsync(s => s.Id == request.Id);
 
@@ -1785,54 +1790,23 @@ namespace PazarAtlasi.CMS.Controllers
                     section.Status = request.Status;
                     section.UpdatedAt = DateTime.UtcNow;
 
-                    // Update section items
-                    if (request.SectionItems != null)
+                    // Remove existing items and nested items
+                    foreach (var existingItem in section.SectionItems.ToList())
                     {
-                        // Remove existing items
-                        _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(
-                            section.SectionItems.SelectMany(si => si.Translations));
-                        _pazarAtlasiDbContext.SectionItems.RemoveRange(section.SectionItems);
-
-                        // Add new items
-                        foreach (var itemRequest in request.SectionItems)
+                        // Remove nested items and their translations
+                        foreach (var nestedItem in existingItem.NestedItems.ToList())
                         {
-                            var newItem = new SectionItem
-                            {
-                                SectionId = section.Id,
-                                Type = itemRequest.Type,
-                                MediaType = itemRequest.MediaType,
-                                PictureUrl = itemRequest.PictureUrl,
-                                VideoUrl = itemRequest.VideoUrl,
-                                RedirectUrl = itemRequest.RedirectUrl,
-                                Icon = itemRequest.Icon,
-                                SortOrder = itemRequest.SortOrder,
-                                MediaAttributes = itemRequest.MediaAttributes,
-                                Status = itemRequest.Status,
-                                CreatedAt = DateTime.UtcNow,
-                                IsDeleted = false
-                            };
-
-                            _pazarAtlasiDbContext.SectionItems.Add(newItem);
-                            await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
-
-                            // Add item translations
-                            if (itemRequest.Translations != null)
-                            {
-                                var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
-                                {
-                                    SectionItemId = newItem.Id,
-                                    LanguageId = t.LanguageId,
-                                    Name = t.Name,
-                                    Title = t.Title,
-                                    Description = t.Description,
-                                    CreatedAt = DateTime.UtcNow,
-                                    IsDeleted = false
-                                }).ToList();
-
-                                _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
-                            }
+                            _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(nestedItem.Translations);
+                            _pazarAtlasiDbContext.SectionItems.Remove(nestedItem);
                         }
+                        
+                        // Remove item translations
+                        _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(existingItem.Translations);
+                        _pazarAtlasiDbContext.SectionItems.Remove(existingItem);
                     }
+
+                    // Add new items
+                    await ProcessSectionItems(request.SectionItems, section.Id);
 
                     // Update section translations
                     if (request.Translations != null)
@@ -1878,47 +1852,7 @@ namespace PazarAtlasi.CMS.Controllers
                     await _pazarAtlasiDbContext.SaveChangesAsync();
 
                     // Add section items
-                    if (request.SectionItems != null)
-                    {
-                        foreach (var itemRequest in request.SectionItems)
-                        {
-                            var newItem = new SectionItem
-                            {
-                                SectionId = newSection.Id,
-                                Type = itemRequest.Type,
-                                MediaType = itemRequest.MediaType,
-                                PictureUrl = itemRequest.PictureUrl,
-                                VideoUrl = itemRequest.VideoUrl,
-                                RedirectUrl = itemRequest.RedirectUrl,
-                                Icon = itemRequest.Icon,
-                                SortOrder = itemRequest.SortOrder,
-                                MediaAttributes = itemRequest.MediaAttributes,
-                                Status = itemRequest.Status,
-                                CreatedAt = DateTime.UtcNow,
-                                IsDeleted = false
-                            };
-
-                            _pazarAtlasiDbContext.SectionItems.Add(newItem);
-                            await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
-
-                            // Add item translations
-                            if (itemRequest.Translations != null)
-                            {
-                                var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
-                                {
-                                    SectionItemId = newItem.Id,
-                                    LanguageId = t.LanguageId,
-                                    Name = t.Name,
-                                    Title = t.Title,
-                                    Description = t.Description,
-                                    CreatedAt = DateTime.UtcNow,
-                                    IsDeleted = false
-                                }).ToList();
-
-                                _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
-                            }
-                        }
-                    }
+                    await ProcessSectionItems(request.SectionItems, newSection.Id);
 
                     // Add section translations
                     if (request.Translations != null)
@@ -1944,7 +1878,61 @@ namespace PazarAtlasi.CMS.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error in SaveSectionAjax: {ex}");
                 return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Process section items and their nested items recursively
+        /// </summary>
+        private async Task ProcessSectionItems(List<SectionItemRequest> itemRequests, int sectionId, int? parentItemId = null)
+        {
+            foreach (var itemRequest in itemRequests)
+            {
+                var newItem = new SectionItem
+                {
+                    SectionId = sectionId,
+                    ParentItemId = parentItemId, // For nested items
+                    Type = itemRequest.Type,
+                    MediaType = itemRequest.MediaType,
+                    PictureUrl = itemRequest.PictureUrl,
+                    VideoUrl = itemRequest.VideoUrl,
+                    RedirectUrl = itemRequest.RedirectUrl,
+                    Icon = itemRequest.Icon,
+                    SortOrder = itemRequest.SortOrder,
+                    MediaAttributes = itemRequest.MediaAttributes,
+                    Status = itemRequest.Status,
+                    Data = itemRequest.Data != null ? System.Text.Json.JsonSerializer.Serialize(itemRequest.Data) : "{}",
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.SectionItems.Add(newItem);
+                await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
+
+                // Add item translations
+                if (itemRequest.Translations != null && itemRequest.Translations.Any())
+                {
+                    var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
+                    {
+                        SectionItemId = newItem.Id,
+                        LanguageId = t.LanguageId,
+                        Name = t.Name,
+                        Title = t.Title,
+                        Description = t.Description,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    }).ToList();
+
+                    _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
+                }
+
+                // Process nested items recursively
+                if (itemRequest.NestedItems != null && itemRequest.NestedItems.Any())
+                {
+                    await ProcessSectionItems(itemRequest.NestedItems, sectionId, newItem.Id);
+                }
             }
         }
 

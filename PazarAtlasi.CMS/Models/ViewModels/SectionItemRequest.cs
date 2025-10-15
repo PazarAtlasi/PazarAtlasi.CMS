@@ -9,6 +9,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     {
         public int Id { get; set; }
         public int SectionId { get; set; }
+        public string? TempId { get; set; }
         public SectionItemType Type { get; set; }
         public MediaType MediaType { get; set; }
         public string? PictureUrl { get; set; }
@@ -19,6 +20,8 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int SortOrder { get; set; }
         public string? MediaAttributes { get; set; }
         public Status Status { get; set; }
+        public Dictionary<string, object>? Data { get; set; } = new();
+        public List<SectionItemRequest> NestedItems { get; set; } = new();
         public List<SectionItemTranslationRequest> Translations { get; set; } = new();
     }
 }

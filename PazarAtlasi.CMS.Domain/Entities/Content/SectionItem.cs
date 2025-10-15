@@ -11,7 +11,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     {
         public int SectionId { get; set; }
 
-        public int? ParentId { get; set; }
+        public int? ParentItemId { get; set; } // For nested items
 
         public SectionItemType Type { get; set; } = SectionItemType.None;
 
@@ -30,9 +30,16 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public int SortOrder { get; set; } = 0;
 
         public string? MediaAttributes { get; set; } // JSON field for additional media properties
+
+        public string? Data { get; set; } = "{}"; // JSON field for template-based data
         
+        // Navigation properties
         public virtual Section Section { get; set; }
 
-        public virtual ICollection<SectionItemTranslation> Translations { get; set; }
+        public virtual SectionItem? ParentItem { get; set; }
+
+        public virtual ICollection<SectionItem> NestedItems { get; set; } = new List<SectionItem>();
+
+        public virtual ICollection<SectionItemTranslation> Translations { get; set; } = new List<SectionItemTranslation>();
     }
 }

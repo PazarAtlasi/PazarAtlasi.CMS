@@ -9,6 +9,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     {
         public int Id { get; set; }
         public int PageId { get; set; }
+        public int? TemplateId { get; set; }
         public SectionType Type { get; set; }
         public string? Attributes { get; set; }
         public int SortOrder { get; set; }

@@ -294,6 +294,8 @@ const SectionModal = (function () {
     }
 
     try {
+      console.log("Collecting section items data...");
+      
       // Collect section items data from form fields
       const sectionItems = [];
       const itemCards = document.querySelectorAll(".section-item-card");
@@ -302,6 +304,8 @@ const SectionModal = (function () {
         const itemId = card.dataset.itemId;
         const itemData = window.sectionItemsData?.[itemId] || {};
         
+        console.log(`Processing item ${index + 1}:`, itemId, itemData);
+        
         // Collect nested items
         const nestedItems = [];
         const nestedCards = card.querySelectorAll(".nested-item-card");
@@ -309,12 +313,16 @@ const SectionModal = (function () {
           const nestedId = nestedCard.dataset.nestedId;
           const nestedData = itemData.nestedItems?.[nestedId] || {};
           
+          console.log(`  Processing nested item ${nestedIndex + 1}:`, nestedId, nestedData);
+          
           nestedItems.push({
             TempId: nestedId,
             SortOrder: nestedIndex + 1,
             Data: nestedData,
             Type: 0, // Will be set by backend based on template
-            Status: 1
+            Status: 1,
+            MediaType: 0,
+            Translations: []
           });
         });
 
@@ -324,7 +332,9 @@ const SectionModal = (function () {
           Data: itemData,
           NestedItems: nestedItems,
           Type: 0, // Will be set by backend based on template
-          Status: 1
+          Status: 1,
+          MediaType: 0,
+          Translations: []
         });
       });
 
@@ -343,12 +353,16 @@ const SectionModal = (function () {
         Translations: [],
       };
 
+      console.log("Final section data to be sent:", sectionData);
+
       const result = await ContentServices.saveSection(sectionData);
 
       if (result.success) {
+        console.log("Section saved successfully");
         close();
         location.reload(); // Refresh page to show new section
       } else {
+        console.error("Save failed:", result);
         alert(
           "Error saving section: " +
             (result.message || "Unknown error")
