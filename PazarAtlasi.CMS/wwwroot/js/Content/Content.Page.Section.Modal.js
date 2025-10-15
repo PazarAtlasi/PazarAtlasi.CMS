@@ -570,6 +570,76 @@ const SectionModal = (function () {
     }
     window.sectionItemsData[itemTempId][fieldName] = value;
   }
+
+  /**
+   * Update item field translation (multi-language support)
+   */
+  function updateItemFieldTranslation(
+    itemTempId,
+    fieldName,
+    languageCode,
+    languageId,
+    value
+  ) {
+    console.log(
+      "Item field translation updated:",
+      itemTempId,
+      fieldName,
+      languageCode,
+      value
+    );
+    
+    // Store data for saving later
+    if (!window.sectionItemsData) {
+      window.sectionItemsData = {};
+    }
+    if (!window.sectionItemsData[itemTempId]) {
+      window.sectionItemsData[itemTempId] = {};
+    }
+    
+    // Store translation data
+    const fieldKey = `${fieldName}_${languageCode}`;
+    window.sectionItemsData[itemTempId][fieldKey] = value;
+    
+    // Also store the translation info for backend processing
+    if (!window.sectionItemsData[itemTempId].translations) {
+      window.sectionItemsData[itemTempId].translations = {};
+    }
+    
+    if (!window.sectionItemsData[itemTempId].translations[languageId]) {
+      window.sectionItemsData[itemTempId].translations[languageId] = {
+        languageId: languageId,
+        languageCode: languageCode
+      };
+    }
+    
+    window.sectionItemsData[itemTempId].translations[languageId][fieldName] = value;
+  }
+
+  /**
+   * Switch language tab for section items
+   */
+  function switchItemLanguageTab(button, itemTempId, fieldName) {
+    const fieldContainer = button.closest('.field-container');
+    const languageCode = button.dataset.language;
+    
+    // Update active tab
+    fieldContainer.querySelectorAll('.lang-tab').forEach(tab => {
+        tab.classList.remove('border-purple-500', 'text-purple-600');
+        tab.classList.add('border-transparent', 'text-slate-500');
+    });
+    button.classList.remove('border-transparent', 'text-slate-500');
+    button.classList.add('border-purple-500', 'text-purple-600');
+    
+    // Show/hide language panels
+    fieldContainer.querySelectorAll('.language-panel').forEach(panel => {
+        if (panel.dataset.language === languageCode) {
+            panel.classList.remove('hidden');
+        } else {
+            panel.classList.add('hidden');
+        }
+    });
+  }
   async function handleImageUpload(
     itemTempId,
     fieldName,
@@ -1056,6 +1126,8 @@ const SectionModal = (function () {
     addSectionItem,
     removeSectionItem,
     updateItemField,
+    updateItemFieldTranslation,
+    switchItemLanguageTab,
     openImageUpload,
     removeImage,
     // Nested items management

@@ -124,8 +124,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Menu",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50 },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 200, Placeholder = "Brief description for mega menu" },
+                        new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 200, Placeholder = "Brief description for mega menu", IsTranslatable = true },
                         new() { Name = "image", Label = "Featured Image", Type = "image" },
                         new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-star" }
                     },
@@ -180,8 +180,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Link",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Tab Title", Type = "text", Required = true, MaxLength = 50 },
-                        new() { Name = "description", Label = "Content", Type = "textarea", Required = true, MaxLength = 500 },
+                        new() { Name = "title", Label = "Tab Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "description", Label = "Content", Type = "textarea", Required = true, MaxLength = 500, IsTranslatable = true },
                         new() { Name = "url", Label = "Link URL", Type = "url" },
                         new() { Name = "icon", Label = "Tab Icon", Type = "text", Required = true, Placeholder = "fa fa-cog" }
                     },
@@ -212,7 +212,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Menu",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Category Title", Type = "text", Required = true, MaxLength = 50 },
+                        new() { Name = "title", Label = "Category Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
                         new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-tag" }
                     },
                     NestedItems = new NestedItemConfiguration
@@ -268,8 +268,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Text",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100 },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 500 }
+                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 500, IsTranslatable = true }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -299,9 +299,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     Fields = new List<SectionItemField>
                     {
                         new() { Name = "image", Label = "Slide Image", Type = "image", Required = true },
-                        new() { Name = "title", Label = "Slide Title", Type = "text", MaxLength = 100 },
-                        new() { Name = "description", Label = "Slide Description", Type = "textarea", MaxLength = 300 },
-                        new() { Name = "buttonText", Label = "Button Text", Type = "text", MaxLength = 50 },
+                        new() { Name = "title", Label = "Slide Title", Type = "text", MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Slide Description", Type = "textarea", MaxLength = 300, IsTranslatable = true },
+                        new() { Name = "buttonText", Label = "Button Text", Type = "text", MaxLength = 50, IsTranslatable = true },
                         new() { Name = "buttonUrl", Label = "Button URL", Type = "url" }
                     },
                     UIConfiguration = new ItemUIConfiguration
@@ -333,8 +333,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     Fields = new List<SectionItemField>
                     {
                         new() { Name = "image", Label = "Image", Type = "image" },
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100 },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 300 },
+                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 300, IsTranslatable = true },
                         new() { Name = "url", Label = "Link URL", Type = "url" }
                     },
                     UIConfiguration = new ItemUIConfiguration
@@ -366,8 +366,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     Fields = new List<SectionItemField>
                     {
                         new() { Name = "image", Label = "Image", Type = "image", Required = true },
-                        new() { Name = "title", Label = "Title", Type = "text", MaxLength = 100 },
-                        new() { Name = "description", Label = "Caption", Type = "textarea", MaxLength = 200 }
+                        new() { Name = "title", Label = "Title", Type = "text", MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Caption", Type = "textarea", MaxLength = 200, IsTranslatable = true }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -396,8 +396,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Text",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Step Title", Type = "text", Required = true, MaxLength = 100 },
-                        new() { Name = "description", Label = "Step Description", Type = "textarea", Required = true, MaxLength = 500 },
+                        new() { Name = "title", Label = "Step Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Step Description", Type = "textarea", Required = true, MaxLength = 500, IsTranslatable = true },
                         new() { Name = "icon", Label = "Step Icon", Type = "text", Placeholder = "fa fa-check" }
                     },
                     UIConfiguration = new ItemUIConfiguration
@@ -426,7 +426,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Text",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Item Text", Type = "text", Required = true, MaxLength = 200 },
+                        new() { Name = "title", Label = "Item Text", Type = "text", Required = true, MaxLength = 200, IsTranslatable = true },
                         new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-check-circle" },
                         new() { Name = "url", Label = "Link (Optional)", Type = "url" }
                     },
@@ -457,9 +457,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     Fields = new List<SectionItemField>
                     {
                         new() { Name = "image", Label = "Featured Image", Type = "image" },
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 150 },
-                        new() { Name = "description", Label = "Description", Type = "textarea", Required = true, MaxLength = 1000 },
-                        new() { Name = "buttonText", Label = "Button Text", Type = "text", MaxLength = 50 },
+                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 150, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = "textarea", Required = true, MaxLength = 1000, IsTranslatable = true },
+                        new() { Name = "buttonText", Label = "Button Text", Type = "text", MaxLength = 50, IsTranslatable = true },
                         new() { Name = "buttonUrl", Label = "Button URL", Type = "url" }
                     },
                     UIConfiguration = new ItemUIConfiguration
@@ -489,8 +489,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     Fields = new List<SectionItemField>
                     {
                         new() { Name = "image", Label = "Image", Type = "image" },
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100 },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 300 },
+                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 300, IsTranslatable = true },
                         new() { Name = "url", Label = "Link", Type = "url" }
                     },
                     UIConfiguration = new ItemUIConfiguration
@@ -520,8 +520,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Text",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Panel Title", Type = "text", Required = true, MaxLength = 150 },
-                        new() { Name = "description", Label = "Panel Content", Type = "textarea", Required = true, MaxLength = 1000 },
+                        new() { Name = "title", Label = "Panel Title", Type = "text", Required = true, MaxLength = 150, IsTranslatable = true },
+                        new() { Name = "description", Label = "Panel Content", Type = "textarea", Required = true, MaxLength = 1000, IsTranslatable = true },
                         new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-question-circle" }
                     },
                     UIConfiguration = new ItemUIConfiguration
@@ -550,8 +550,8 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     ItemType = "Text",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Tab Title", Type = "text", Required = true, MaxLength = 50 },
-                        new() { Name = "description", Label = "Tab Content", Type = "textarea", Required = true, MaxLength = 1000 },
+                        new() { Name = "title", Label = "Tab Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "description", Label = "Tab Content", Type = "textarea", Required = true, MaxLength = 1000, IsTranslatable = true },
                         new() { Name = "icon", Label = "Tab Icon", Type = "text", Placeholder = "fa fa-star" }
                     },
                     UIConfiguration = new ItemUIConfiguration

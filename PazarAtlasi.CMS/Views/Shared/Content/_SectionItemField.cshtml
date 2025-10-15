@@ -4,117 +4,206 @@
     var item = ViewBag.Item as PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel;
     var value = ViewBag.Value?.ToString() ?? Model.DefaultValue ?? "";
     var fieldName = $"item_{item?.TempId}_{Model.Name}";
+    
+    // Check if this field supports multiple languages
+    var isTranslatable = Model.IsTranslatable == true;
+    var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
 }
 
-<div class="field-container" data-field-name="@Model.Name">
-    <label class="block text-sm font-medium text-slate-700 mb-1">
-        @Model.Label
-        @if (Model.Required)
-        {
-            <span class="text-red-500">*</span>
-        }
-    </label>
-
-    @switch (Model.Type)
+<div class="field-container" data-field-name="@Model.Name" data-translatable="@isTranslatable.ToString().ToLower()">
+    @if (isTranslatable && availableLanguages.Any())
     {
-        case "text":
-            <input type="text" id="@fieldName" name="@fieldName"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
-                value="@value"
-                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
-            break;
-
-        case "textarea":
-            <textarea id="@fieldName" name="@fieldName" rows="@(Model.MaxLength > 200 ? 4 : 2)"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
-                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">@value</textarea>
-            break;
-
-        case "richtext":
-            <div class="richtext-editor border border-slate-300 rounded-lg">
-                <textarea id="@fieldName" name="@fieldName" class="w-full px-3 py-2 text-sm" 
-                    placeholder="@Model.Placeholder" required="@Model.Required"
-                    onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">@value</textarea>
-            </div>
-            break;
-
-        case "url":
-            <input type="url" id="@fieldName" name="@fieldName"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" required="@Model.Required" value="@value"
-                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
-            break;
-
-        case "image":
-            <div class="image-upload-container">
-                <input type="hidden" id="@fieldName" name="@fieldName" class="image-path-input" value="@value" />
-                <div class="flex items-center space-x-2">
-                    <input type="file" id="@(fieldName)_file" class="hidden" accept="image/*"
-                        onchange="SectionModal.handleImageUpload('@item.TempId', '@Model.Name', this)" />
-                    <button type="button" onclick="document.getElementById('@(fieldName)_file').click()"
-                        class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
-                        <i class="fas fa-upload mr-2"></i> Upload Image
-                    </button>
-                    @if (!string.IsNullOrEmpty(value))
-                    {
-                        <span class="text-xs text-green-600"><i class="fas fa-check mr-1"></i> Uploaded</span>
-                    }
-                </div>
-                @if (!string.IsNullOrEmpty(value))
-                {
-                    <img src="@value" class="mt-2 max-h-20 rounded" alt="Preview" />
-                }
-                @if (!string.IsNullOrEmpty(Model.Placeholder))
-                {
-                    <p class="mt-1 text-xs text-slate-500">@Model.Placeholder</p>
-                }
-            </div>
-            break;
-
-        case "select":
-            <select id="@fieldName" name="@fieldName"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required="@Model.Required" onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">
-                <option value="">Select...</option>
-                @if (Model.Options != null)
-                {
-                    @foreach (var option in Model.Options)
-                    {
-                        <option value="@option" selected="@(value == option)">@option</option>
-                    }
-                }
-            </select>
-            break;
-
-        case "number":
-            <input type="number" id="@fieldName" name="@fieldName"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" required="@Model.Required" value="@value"
-                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
-            break;
-
-        case "checkbox":
-            <label class="flex items-center space-x-2">
-                <input type="checkbox" id="@fieldName" name="@fieldName"
-                    class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                    checked="@(value == "true" || value == "True")"
-                    onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.checked)" />
-                <span class="text-sm text-slate-600">@Model.Placeholder</span>
+        <!-- Multi-language field with tabs -->
+        <div class="mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1">
+                @Model.Label
+                @if (Model.Required) { <span class="text-red-500">*</span> }
+                <span class="ml-1 text-xs text-purple-500">(Multi-language)</span>
             </label>
-            break;
+            
+            <!-- Language tabs -->
+            <div class="border-b border-slate-200 mb-2">
+                <nav class="-mb-px flex space-x-2" aria-label="Language tabs">
+                    @foreach (var language in availableLanguages.Take(3))
+                    {
+                        <button type="button" 
+                                class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
+                                data-language="@language.Code"
+                                data-language-id="@language.Id"
+                                onclick="SectionModal.switchItemLanguageTab(this, '@item.TempId', '@Model.Name')">
+                            @language.Code.ToUpper()
+                            @if (language.IsDefault) { <span class="ml-1 text-xs">?</span> }
+                        </button>
+                    }
+                </nav>
+            </div>
 
-        default:
-            <input type="text" id="@fieldName" name="@fieldName"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="@Model.Placeholder" value="@value"
-                onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
-            break;
+            <!-- Language content panels -->
+            <div class="language-panels">
+                @foreach (var language in availableLanguages.Take(3))
+                {
+                    <div class="language-panel @(language.IsDefault ? "" : "hidden")" 
+                         data-language="@language.Code">
+                        @{
+                            var langFieldId = $"{fieldName}_{language.Code}";
+                            var langValue = value; // TODO: Get language-specific value
+                        }
+                        
+                        @switch (Model.Type?.ToLower())
+                        {
+                            case "text":
+                                <input type="text" id="@langFieldId"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="@Model.Placeholder (@language.Name)" maxlength="@Model.MaxLength" required="@Model.Required"
+                                    value="@langValue"
+                                    onchange="SectionModal.updateItemFieldTranslation('@item.TempId', '@Model.Name', '@language.Code', @language.Id, this.value)" />
+                                break;
+
+                            case "textarea":
+                                <textarea id="@langFieldId" rows="@(Model.MaxLength > 200 ? 4 : 2)"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="@Model.Placeholder (@language.Name)" maxlength="@Model.MaxLength" required="@Model.Required"
+                                    onchange="SectionModal.updateItemFieldTranslation('@item.TempId', '@Model.Name', '@language.Code', @language.Id, this.value)">@langValue</textarea>
+                                break;
+
+                            case "url":
+                                <input type="url" id="@langFieldId"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="@Model.Placeholder (@language.Name)" required="@Model.Required" value="@langValue"
+                                    onchange="SectionModal.updateItemFieldTranslation('@item.TempId', '@Model.Name', '@language.Code', @language.Id, this.value)" />
+                                break;
+
+                            default:
+                                <input type="text" id="@langFieldId"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="@Model.Placeholder (@language.Name)" value="@langValue"
+                                    onchange="SectionModal.updateItemFieldTranslation('@item.TempId', '@Model.Name', '@language.Code', @language.Id, this.value)" />
+                                break;
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Single language field (non-translatable) -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">
+                @Model.Label
+                @if (Model.Required)
+                {
+                    <span class="text-red-500">*</span>
+                }
+            </label>
+
+            @switch (Model.Type)
+            {
+                case "text":
+                    <input type="text" id="@fieldName" name="@fieldName"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
+                        value="@value"
+                        onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
+                    break;
+
+                case "textarea":
+                    <textarea id="@fieldName" name="@fieldName" rows="@(Model.MaxLength > 200 ? 4 : 2)"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
+                        onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">@value</textarea>
+                    break;
+
+                case "richtext":
+                    <div class="richtext-editor border border-slate-300 rounded-lg">
+                        <textarea id="@fieldName" name="@fieldName" class="w-full px-3 py-2 text-sm" 
+                            placeholder="@Model.Placeholder" required="@Model.Required"
+                            onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">@value</textarea>
+                    </div>
+                    break;
+
+                case "url":
+                    <input type="url" id="@fieldName" name="@fieldName"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="@Model.Placeholder" required="@Model.Required" value="@value"
+                        onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
+                    break;
+
+                case "image":
+                    <div class="image-upload-container">
+                        <input type="hidden" id="@fieldName" name="@fieldName" class="image-path-input" value="@value" />
+                        <div class="flex items-center space-x-2">
+                            <input type="file" id="@(fieldName)_file" class="hidden" accept="image/*"
+                                onchange="SectionModal.handleImageUpload('@item.TempId', '@Model.Name', this)" />
+                            <button type="button" onclick="document.getElementById('@(fieldName)_file').click()"
+                                class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
+                                <i class="fas fa-upload mr-2"></i> Upload Image
+                            </button>
+                            @if (!string.IsNullOrEmpty(value))
+                            {
+                                <span class="text-xs text-green-600"><i class="fas fa-check mr-1"></i> Uploaded</span>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(value))
+                        {
+                            <img src="@value" class="mt-2 max-h-20 rounded" alt="Preview" />
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Placeholder))
+                        {
+                            <p class="mt-1 text-xs text-slate-500">@Model.Placeholder</p>
+                        }
+                    </div>
+                    break;
+
+                case "select":
+                    <select id="@fieldName" name="@fieldName"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required="@Model.Required" onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)">
+                        <option value="">Select...</option>
+                        @if (Model.Options != null)
+                        {
+                            @foreach (var option in Model.Options)
+                            {
+                                <option value="@option" selected="@(value == option)">@option</option>
+                            }
+                        }
+                    </select>
+                    break;
+
+                case "number":
+                    <input type="number" id="@fieldName" name="@fieldName"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="@Model.Placeholder" required="@Model.Required" value="@value"
+                        onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
+                    break;
+
+                case "checkbox":
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="@fieldName" name="@fieldName"
+                            class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                            checked="@(value == "true" || value == "True")"
+                            onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.checked)" />
+                        <span class="text-sm text-slate-600">@Model.Placeholder</span>
+                    </label>
+                    break;
+
+                default:
+                    <input type="text" id="@fieldName" name="@fieldName"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="@Model.Placeholder" value="@value"
+                        onchange="SectionModal.updateItemField('@item.TempId', '@Model.Name', this.value)" />
+                    break;
+            }
+        </div>
     }
 
-    @if (Model.MaxLength > 0 && (Model.Type == "text" || Model.Type == "textarea"))
+    @if (Model.MaxLength > 0 && (Model.Type == "text" || Model.Type == "textarea") && !isTranslatable)
     {
         <p class="mt-1 text-xs text-slate-500">Max @Model.MaxLength characters</p>
+    }
+    
+    @if (isTranslatable && Model.MaxLength > 0 && (Model.Type == "text" || Model.Type == "textarea"))
+    {
+        <p class="mt-1 text-xs text-slate-500">Max @Model.MaxLength characters per language</p>
     }
 </div>
