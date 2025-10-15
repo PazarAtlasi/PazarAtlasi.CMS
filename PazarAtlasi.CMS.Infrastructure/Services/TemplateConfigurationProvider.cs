@@ -66,15 +66,36 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 8,
-                    DefaultItems = 6,
+                    DefaultItems = 3,
                     AllowDynamicItems = true,
-                    ItemType = "Link",
+                    ItemType = "Menu",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Home, About, Services" },
-                        new() { Name = "url", Label = "URL", Type = "url", Required = true, Placeholder = "/page-url or https://example.com" },
-                        new() { Name = "icon", Label = "Icon (Optional)", Type = "text", Placeholder = "fa fa-home" },
-                        new() { Name = "openInNewTab", Label = "Open in New Tab", Type = "checkbox", DefaultValue = "false" }
+                        new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Products, Services" },
+                        new() { Name = "icon", Label = "Icon (Optional)", Type = "text", Placeholder = "fa fa-bars" }
+                    },
+                    NestedItems = new NestedItemConfiguration
+                    {
+                        MinItems = 1,
+                        MaxItems = 10,
+                        DefaultItems = 3,
+                        AllowDynamicItems = true,
+                        ItemType = "Link",
+                        Fields = new List<SectionItemField>
+                        {
+                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Home, About" },
+                            new() { Name = "url", Label = "URL", Type = "url", Required = true, Placeholder = "/page-url or https://example.com" },
+                            new() { Name = "icon", Label = "Icon (Optional)", Type = "text", Placeholder = "fa fa-home" },
+                            new() { Name = "openInNewTab", Label = "Open in New Tab", Type = "checkbox", DefaultValue = "false" }
+                        },
+                        UIConfiguration = new ItemUIConfiguration
+                        {
+                            Layout = "list",
+                            ShowPreview = true,
+                            ShowReorder = true,
+                            AddButtonText = "Add Dropdown Link",
+                            IconClass = "fa-link"
+                        }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -82,7 +103,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         ShowPreview = true,
                         ShowReorder = true,
                         AddButtonText = "Add Menu Item",
-                        IconClass = "fa-link"
+                        IconClass = "fa-bars"
                     }
                 }
             };
@@ -96,18 +117,40 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 TemplateKey = "navbar-megamenu",
                 ItemConfiguration = new SectionItemConfiguration
                 {
-                    MinItems = 4,
+                    MinItems = 3,
                     MaxItems = 6,
-                    DefaultItems = 5,
+                    DefaultItems = 3,
                     AllowDynamicItems = true,
-                    ItemType = "Link",
+                    ItemType = "Menu",
                     Fields = new List<SectionItemField>
                     {
                         new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50 },
                         new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 200, Placeholder = "Brief description for mega menu" },
-                        new() { Name = "url", Label = "URL", Type = "url", Required = true },
                         new() { Name = "image", Label = "Featured Image", Type = "image" },
                         new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-star" }
+                    },
+                    NestedItems = new NestedItemConfiguration
+                    {
+                        MinItems = 2,
+                        MaxItems = 15,
+                        DefaultItems = 3,
+                        AllowDynamicItems = true,
+                        ItemType = "Link",
+                        Fields = new List<SectionItemField>
+                        {
+                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50 },
+                            new() { Name = "url", Label = "URL", Type = "url", Required = true },
+                            new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 100 },
+                            new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-chevron-right" }
+                        },
+                        UIConfiguration = new ItemUIConfiguration
+                        {
+                            Layout = "list",
+                            ShowPreview = true,
+                            ShowReorder = true,
+                            AddButtonText = "Add Mega Menu Link",
+                            IconClass = "fa-link"
+                        }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -115,7 +158,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         Columns = 2,
                         ShowPreview = true,
                         ShowReorder = true,
-                        AddButtonText = "Add Mega Menu Item",
+                        AddButtonText = "Add Mega Menu Category",
                         IconClass = "fa-th-large"
                     }
                 }
@@ -162,24 +205,44 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 TemplateKey = "navbar-categorized",
                 ItemConfiguration = new SectionItemConfiguration
                 {
-                    MinItems = 4,
-                    MaxItems = 10,
-                    DefaultItems = 6,
+                    MinItems = 3,
+                    MaxItems = 8,
+                    DefaultItems = 3,
                     AllowDynamicItems = true,
-                    ItemType = "Link",
+                    ItemType = "Menu",
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Item Title", Type = "text", Required = true, MaxLength = 50 },
-                        new() { Name = "category", Label = "Category", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Products, Services" },
-                        new() { Name = "url", Label = "URL", Type = "url", Required = true },
+                        new() { Name = "title", Label = "Category Title", Type = "text", Required = true, MaxLength = 50 },
                         new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-tag" }
+                    },
+                    NestedItems = new NestedItemConfiguration
+                    {
+                        MinItems = 1,
+                        MaxItems = 12,
+                        DefaultItems = 3,
+                        AllowDynamicItems = true,
+                        ItemType = "Link",
+                        Fields = new List<SectionItemField>
+                        {
+                            new() { Name = "title", Label = "Item Title", Type = "text", Required = true, MaxLength = 50 },
+                            new() { Name = "url", Label = "URL", Type = "url", Required = true },
+                            new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-chevron-right" }
+                        },
+                        UIConfiguration = new ItemUIConfiguration
+                        {
+                            Layout = "list",
+                            ShowPreview = true,
+                            ShowReorder = true,
+                            AddButtonText = "Add Category Link",
+                            IconClass = "fa-link"
+                        }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
                         Layout = "list",
                         ShowPreview = true,
                         ShowReorder = true,
-                        AddButtonText = "Add Category Item",
+                        AddButtonText = "Add Category",
                         IconClass = "fa-tags"
                     }
                 }

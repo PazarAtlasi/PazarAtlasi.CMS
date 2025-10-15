@@ -56,7 +56,53 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public List<SectionItemField> Fields { get; set; } = new();
 
         /// <summary>
+        /// Nested child item configuration (e.g., dropdown menu items)
+        /// </summary>
+        public NestedItemConfiguration? NestedItems { get; set; }
+
+        /// <summary>
         /// UI rendering hints
+        /// </summary>
+        public ItemUIConfiguration UIConfiguration { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Configuration for nested/child items
+    /// </summary>
+    public class NestedItemConfiguration
+    {
+        /// <summary>
+        /// Minimum number of nested items
+        /// </summary>
+        public int MinItems { get; set; } = 0;
+
+        /// <summary>
+        /// Maximum number of nested items (null = unlimited)
+        /// </summary>
+        public int? MaxItems { get; set; }
+
+        /// <summary>
+        /// Default number of nested items to create
+        /// </summary>
+        public int DefaultItems { get; set; } = 0;
+
+        /// <summary>
+        /// Whether user can add/remove nested items dynamically
+        /// </summary>
+        public bool AllowDynamicItems { get; set; } = true;
+
+        /// <summary>
+        /// Item type for nested items
+        /// </summary>
+        public string ItemType { get; set; } = "Link";
+
+        /// <summary>
+        /// Fields for nested items
+        /// </summary>
+        public List<SectionItemField> Fields { get; set; } = new();
+
+        /// <summary>
+        /// UI configuration for nested items
         /// </summary>
         public ItemUIConfiguration UIConfiguration { get; set; } = new();
     }

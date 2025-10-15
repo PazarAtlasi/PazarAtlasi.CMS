@@ -326,6 +326,19 @@ const ContentServices = (function () {
   }
 
   /**
+   * Get layout sections with configuration
+   */
+  function getLayoutSections(layoutId) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetLayoutSections`,
+      type: "GET",
+      data: { layoutId },
+      headers: buildHeaders(),
+      dataType: "json",
+    });
+  }
+
+  /**
    * Delete layout
    */
   function deleteLayout(layoutId) {
@@ -441,6 +454,7 @@ const ContentServices = (function () {
 
     // Layout services
     getAvailableLayouts,
+    getLayoutSections,
     deleteLayout,
 
     // Media upload services

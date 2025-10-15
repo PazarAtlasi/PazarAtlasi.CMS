@@ -117,7 +117,8 @@ namespace PazarAtlasi.CMS.Domain.Common
         Testimonials,
         CallToAction,
         Breadcrumbs,
-        Pagination
+        Pagination,
+        Menu
     }
 
     public enum MediaType

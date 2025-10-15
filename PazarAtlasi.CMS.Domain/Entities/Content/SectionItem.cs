@@ -11,6 +11,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     {
         public int SectionId { get; set; }
 
+        public int? ParentId { get; set; }
+
         public SectionItemType Type { get; set; } = SectionItemType.None;
 
         public MediaType MediaType { get; set; } = MediaType.None;

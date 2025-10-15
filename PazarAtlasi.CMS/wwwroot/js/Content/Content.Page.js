@@ -988,11 +988,11 @@ async function loadAvailableLayouts() {
 
       result.layouts.forEach((layout) => {
         const option = document.createElement("option");
-        option.value = layout.Id;
+        option.value = layout.id;
         option.textContent =
-          layout.Name + (layout.IsDefault ? " (Default)" : "");
-        if (layout.Description) {
-          option.title = layout.Description;
+          layout.name + (layout.isDefault ? " (Default)" : "");
+        if (layout.description) {
+          option.title = layout.description;
         }
         layoutSelect.appendChild(option);
       });
@@ -1002,11 +1002,77 @@ async function loadAvailableLayouts() {
   }
 }
 
-function handleLayoutChange(layoutId) {
-  if (layoutId && layoutId !== "") {
-    // Show information about the selected layout
-    console.log("Layout selected:", layoutId);
-    // You could show a preview or description of the layout here
+async function handleLayoutChange(layoutId) {
+  if (!layoutId || layoutId === "") {
+    return;
+  }
+
+  try {
+    // Get layout sections
+    const result = await ContentServices.getLayoutSections(layoutId);
+
+    if (
+      result.success &&
+      result.sections &&
+      result.sections.length > 0
+    ) {
+      // Ask user if they want to add layout sections
+      const confirmMessage = `This layout has ${result.sections.length} predefined section(s). Would you like to add them to the page?`;
+
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      // Get page ID
+      const pageId = document.querySelector(
+        'input[name="Id"]'
+      )?.value;
+      if (!pageId) {
+        console.error("Page ID not found");
+        return;
+      }
+
+      // Add each section
+      for (const section of result.sections) {
+        await addLayoutSection(pageId, section);
+      }
+
+      // Reload page sections to show the newly added sections
+      location.reload();
+    } else {
+      console.log("No sections found for this layout");
+    }
+  } catch (error) {
+    console.error("Error loading layout sections:", error);
+    alert("An error occurred while loading layout sections.");
+  }
+}
+
+async function addLayoutSection(pageId, sectionConfig) {
+  const data = {
+    pageId: parseInt(pageId),
+    sectionType: sectionConfig.sectionType,
+    TemplateType: "", // Will be set based on section type
+  };
+
+  try {
+    const result = await ContentServices.addSection(data);
+
+    if (result.success) {
+      console.log(
+        `Section ${sectionConfig.sectionType} added successfully`
+      );
+    } else {
+      console.error(
+        `Failed to add section ${sectionConfig.sectionType}:`,
+        result.message
+      );
+    }
+  } catch (error) {
+    console.error(
+      `Error adding section ${sectionConfig.sectionType}:`,
+      error
+    );
   }
 }
 

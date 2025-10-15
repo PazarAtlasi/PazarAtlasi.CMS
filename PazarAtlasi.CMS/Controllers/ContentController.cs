@@ -2136,6 +2136,35 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
+        /// <summary>
+        /// Get layout sections with their configuration
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetLayoutSections(int layoutId)
+        {
+            try
+            {
+                var layoutSections = await _pazarAtlasiDbContext.Set<LayoutSection>()
+                    .Include(ls => ls.Section)
+                    .Where(ls => ls.LayoutId == layoutId && ls.Section.Status == Status.Active)
+                    .OrderBy(ls => ls.SortOrder)
+                    .Select(ls => new
+                    {
+                        sectionType = ls.Section.Type.ToString(),
+                        position = ls.Position,
+                        sortOrder = ls.SortOrder,
+                        isRequired = ls.IsRequired
+                    })
+                    .ToListAsync();
+
+                return Json(new { success = true, sections = layoutSections });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
         #endregion
     }
 }
