@@ -89,11 +89,10 @@ namespace PazarAtlasi.CMS.Controllers
         {
             var page = await _pazarAtlasiDbContext.Pages
                 .Include(p => p.PageSEOParameter)
-                .Include(p => p.Sections.OrderBy(s => s.SortOrder))
+                .Include(p => p.PageSections.OrderBy(s => s.SortOrder))
+                    .ThenInclude(s => s.Section)
                     .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
                         .ThenInclude(si => si.Translations)
-                .Include(p => p.Sections)
-                    .ThenInclude(s => s.Translations)
                 .Include(p => p.PageTranslations)
                     .ThenInclude(pt => pt.Language)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -124,7 +123,7 @@ namespace PazarAtlasi.CMS.Controllers
                     Author = page.PageSEOParameter.Author,
                     Description = page.PageSEOParameter.Description
                 } : null,
-                Sections = page.Sections.Select(s => new SectionViewModel
+                Sections = page.PageSections.Select(t => t.Section).Select(s => new SectionViewModel
                 {
                     Id = s.Id,
                     Type = s.Type,
@@ -188,16 +187,17 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     // Sections'ları ayrı query ile yükle
                     await _pazarAtlasiDbContext.Entry(page)
-                        .Collection(p => p.Sections)
+                        .Collection(p => p.PageSections)
                         .Query()
-                        .Include(s => s.Translations)
+                        .Include(s => s.Section)
+                        .ThenInclude(s => s.Translations)
                         .OrderBy(s => s.SortOrder)
                         .LoadAsync();
 
                     // Tüm section item'larını tek query ile yükle (daha performanslı)
-                    if (page.Sections.Any())
+                    if (page.PageSections.Select(t => t.Section).Any())
                     {
-                        var sectionIds = page.Sections.Select(s => s.Id).ToList();
+                        var sectionIds = page.PageSections.Select(t=> t.Section).Select(s => s.Id).ToList();
                         var allSectionItems = await _pazarAtlasiDbContext.SectionItems
                             .Include(si => si.Translations)
                             .Include(si => si.Fields)
@@ -207,7 +207,7 @@ namespace PazarAtlasi.CMS.Controllers
                             .ToListAsync();
 
                         // Section item'larını ilgili section'lara dağıt
-                        foreach (var section in page.Sections)
+                        foreach (var section in page.PageSections.Select(t => t.Section))
                         {
                             section.SectionItems = allSectionItems
                                 .Where(si => si.SectionId == section.Id)
@@ -262,11 +262,10 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 var page = await _pazarAtlasiDbContext.Pages
                     .Include(p => p.PageSEOParameter)
-                    .Include(p => p.Sections)
+                    .Include(p => p.PageSections)
+                    .ThenInclude(ps => ps.Section)
                         .ThenInclude(s => s.SectionItems)
                             .ThenInclude(si => si.Translations)
-                    .Include(p => p.Sections)
-                        .ThenInclude(s => s.Translations)
                     .Include(p => p.PageTranslations)
                     .FirstOrDefaultAsync(p => p.Id == model.Id);
 
@@ -396,7 +395,7 @@ namespace PazarAtlasi.CMS.Controllers
                     Author = page.PageSEOParameter.Author,
                     Description = page.PageSEOParameter.Description
                 } : new PageSEOParameterEditViewModel(),
-                Sections = page.Sections.Select(s => new SectionEditViewModel
+                Sections = page.PageSections.Select(t => t.Section).Select(s => new SectionEditViewModel
                 {
                     Id = s.Id,
                     Type = s.Type,
@@ -449,7 +448,8 @@ namespace PazarAtlasi.CMS.Controllers
             try
             {
                 var page = await _pazarAtlasiDbContext.Pages
-                    .Include(p => p.Sections)
+                    .Include(p => p.PageSections)
+                    .ThenInclude(ps => ps.Section)
                     .FirstOrDefaultAsync(p => p.Id == pageId);
 
                 if (page == null)
@@ -458,12 +458,11 @@ namespace PazarAtlasi.CMS.Controllers
                 }
 
                 // Get next sort order
-                var maxSortOrder = page.Sections.Any() ? page.Sections.Max(s => s.SortOrder) : 0;
+                var maxSortOrder = page.PageSections.Select(t => t.Section).Any() ? page.PageSections.Select(t => t.Section).Max(s => s.SortOrder) : 0;
 
                 var newSection = new Section
                 {
                     Id = 0, // EF will generate
-                    PageId = pageId,
                     Type = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.SectionType>(sectionType, out var parsedSectionType)
                         ? parsedSectionType
                         : PazarAtlasi.CMS.Domain.Common.SectionType.None,
@@ -1456,7 +1455,6 @@ namespace PazarAtlasi.CMS.Controllers
                     model = new SectionViewModel
                     {
                         Id = section.Id,
-                        PageId = section.PageId ?? 0,
                         Type = section.Type,
                         Attributes = section.Attributes,
                         SortOrder = section.SortOrder,
@@ -1646,10 +1644,13 @@ namespace PazarAtlasi.CMS.Controllers
         /// </summary>
         public async Task<IActionResult> Sections(int page = 1, int pageSize = 10)
         {
+            var relatedPage = await _pazarAtlasiDbContext.Pages
+                .Where(p => p.Id == page && p.Status == Status.Active)
+                .FirstOrDefaultAsync();
+
             var totalCount = await _pazarAtlasiDbContext.Sections.CountAsync();
 
             var sections = await _pazarAtlasiDbContext.Sections
-                .Include(s => s.Page)
                 .Include(s => s.SectionItems)
                 .Include(s => s.Translations)
                 .OrderByDescending(s => s.CreatedAt)
@@ -1662,11 +1663,10 @@ namespace PazarAtlasi.CMS.Controllers
                     Type = s.Type,
                     Status = s.Status,
                     ItemsCount = s.SectionItems.Count,
-                    PageName = s.Page != null ? s.Page.Name : null,
-                    PageId = s.PageId,
+                    PageName = relatedPage != null ? relatedPage.Name : null,
+                    PageId = page,
                     CreatedAt = s.CreatedAt,
-                    UpdatedAt = s.UpdatedAt,
-                    IsReusable = s.PageId == null // Sections without a specific page are reusable
+                    UpdatedAt = s.UpdatedAt
                 })
                 .ToListAsync();
 
@@ -1687,7 +1687,6 @@ namespace PazarAtlasi.CMS.Controllers
         public async Task<IActionResult> SectionDetails(int id)
         {
             var section = await _pazarAtlasiDbContext.Sections
-                .Include(s => s.Page)
                 .Include(s => s.SectionItems.OrderBy(si => si.SortOrder))
                     .ThenInclude(si => si.Translations)
                 .Include(s => s.Translations)
@@ -1701,12 +1700,7 @@ namespace PazarAtlasi.CMS.Controllers
 
             // Get pages where this section is used (for reusable sections)
             var usedInPages = new List<PageUsageViewModel>();
-            if (section.PageId == null) // Reusable section
-            {
-                // This would require a many-to-many relationship or a usage tracking system
-                // For now, we'll leave it empty and implement later
-            }
-
+          
             var model = new SectionDetailsViewModel
             {
                 Id = section.Id,
@@ -1717,11 +1711,8 @@ namespace PazarAtlasi.CMS.Controllers
                 SortOrder = section.SortOrder,
                 Attributes = section.Attributes,
                 Configure = section.Configure,
-                IsReusable = section.PageId == null,
                 CreatedAt = section.CreatedAt,
                 UpdatedAt = section.UpdatedAt,
-                PageName = section.Page?.Name,
-                PageId = section.PageId,
                 SectionItems = section.SectionItems.Select(si => new SectionItemDetailsViewModel
                 {
                     Id = si.Id,
@@ -1845,7 +1836,6 @@ namespace PazarAtlasi.CMS.Controllers
                     // Create new section
                     var newSection = new Section
                     {
-                        PageId = request.PageId,
                         Type = request.Type,
                         Attributes = request.Attributes ?? "{}",
                         SortOrder = request.SortOrder,
@@ -1969,7 +1959,6 @@ namespace PazarAtlasi.CMS.Controllers
                         SortOrder = model.SortOrder,
                         Attributes = model.Attributes ?? "{}",
                         Configure = model.Configure ?? "{}",
-                        PageId = model.PageId,
                         CreatedAt = DateTime.UtcNow
                     };
 
@@ -2049,7 +2038,7 @@ namespace PazarAtlasi.CMS.Controllers
             try
             {
                 var sections = await _pazarAtlasiDbContext.Sections
-                    .Where(s => s.PageId == null && s.Status == Status.Active) // Reusable and active sections
+                    .Where(s => s.Status == Status.Active) // Reusable and active sections
                     .Include(s => s.Translations)
                     .Include(s => s.SectionTemplates)
                         .ThenInclude(st => st.Template)
@@ -2086,7 +2075,7 @@ namespace PazarAtlasi.CMS.Controllers
                     .Include(s => s.SectionItems)
                         .ThenInclude(si => si.Translations)
                     .Include(s => s.Translations)
-                    .FirstOrDefaultAsync(s => s.Id == sectionId && s.PageId == null);
+                    .FirstOrDefaultAsync(s => s.Id == sectionId);
 
                 if (originalSection == null)
                 {
@@ -2102,13 +2091,11 @@ namespace PazarAtlasi.CMS.Controllers
 
                 // Get the next sort order for this page
                 var maxSortOrder = await _pazarAtlasiDbContext.Sections
-                    .Where(s => s.PageId == pageId)
                     .MaxAsync(s => (int?)s.SortOrder) ?? 0;
 
                 // Create a copy of the section for this page
                 var newSection = new Domain.Entities.Content.Section
                 {
-                    PageId = pageId,
                     Type = originalSection.Type,
                     Status = originalSection.Status,
                     SortOrder = maxSortOrder + 1,

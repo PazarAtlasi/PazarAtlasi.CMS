@@ -12,7 +12,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.ToTable("Sections").HasKey(s => s.Id);
 
             builder.Property(s => s.Id).HasColumnName("Id").IsRequired();
-            builder.Property(s => s.PageId).HasColumnName("PageId"); // Nullable for reusable sections
             builder.Property(s => s.Type).HasColumnName("Type").HasDefaultValue(SectionType.None);
             builder.Property(s => s.Attributes).HasColumnName("Attributes").HasColumnType("nvarchar(max)");
             builder.Property(s => s.SortOrder).HasColumnName("SortOrder").HasDefaultValue(0);
@@ -24,13 +23,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(s => s.CreatedBy).HasColumnName("CreatedBy");
             builder.Property(s => s.UpdatedBy).HasColumnName("UpdatedBy");
 
-            // Relationships
-            builder.HasOne(s => s.Page)
-                   .WithMany(p => p.Sections)
-                   .HasForeignKey(s => s.PageId)
-                   .OnDelete(DeleteBehavior.Cascade)
-                   .IsRequired(false); // Allow null for reusable sections
-
             builder.HasMany(s => s.SectionItems)
                    .WithOne(si => si.Section)
                    .HasForeignKey(si => si.SectionId)
@@ -41,7 +33,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                    .HasForeignKey(st => st.SectionId)
                    .OnDelete(DeleteBehavior.Cascade);
             // Indexes
-            builder.HasIndex(s => new { s.PageId, s.SortOrder }).HasDatabaseName("IX_Sections_PageId_SortOrder");
             builder.HasIndex(s => s.Type).HasDatabaseName("IX_Sections_Type");
 
             // Query Filter
@@ -53,7 +44,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Section
                 {
                     Id = 1,
-                    PageId = 1,
                     Type = SectionType.Hero,
                     SortOrder = 1,
                     Attributes = "{\"backgroundImage\": \"hero-bg.jpg\", \"height\": \"500px\"}",
@@ -65,7 +55,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Section
                 {
                     Id = 2,
-                    PageId = 1,
                     Type = SectionType.Featured,
                     SortOrder = 2,
                     Attributes = "{\"columns\": 3}",
@@ -77,7 +66,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Section
                 {
                     Id = 3,
-                    PageId = 1,
                     Type = SectionType.Newsletter,
                     SortOrder = 3,
                     Attributes = "{\"backgroundColor\": \"#f8f9fa\"}",
@@ -90,7 +78,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Section
                 {
                     Id = 4,
-                    PageId = 2,
                     Type = SectionType.Header,
                     SortOrder = 1,
                     Attributes = "{}",
@@ -102,7 +89,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Section
                 {
                     Id = 5,
-                    PageId = 2,
                     Type = SectionType.MainContent,
                     SortOrder = 2,
                     Attributes = "{}",
@@ -115,7 +101,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Section
                 {
                     Id = 6,
-                    PageId = 3,
                     Type = SectionType.Catalog,
                     SortOrder = 1,
                     Attributes = "{\"columns\": 4}",

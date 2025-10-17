@@ -36,11 +36,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                    .HasForeignKey<PageSEOParameter>(seo => seo.PageId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(p => p.Sections)
-                   .WithOne(s => s.Page)
-                   .HasForeignKey(s => s.PageId)
-                   .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(p => p.PageTranslations)
                    .WithOne(pt => pt.Page)
                    .HasForeignKey(pt => pt.PageId)

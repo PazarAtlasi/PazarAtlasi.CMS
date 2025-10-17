@@ -28,7 +28,7 @@
                                     <i class="fas fa-grip-vertical"></i>
                                 </div>
                                 <div>
-                                    <h6 class="font-medium text-slate-800">Section #@currentSection.Id</h6>
+                                    <h6 class="font-medium text-slate-800">Section #@currentSection.Translations.FirstOrDefault()?.Name</h6>
                                     <p class="text-sm text-slate-500">@currentSection.Type.ToString() - Template System</p>
                                 </div>
                                 <span class="ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded">
@@ -93,12 +93,6 @@
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </div>
-                                            @if (!string.IsNullOrEmpty(item.PictureUrl))
-                                            {
-                                                <div class="h-20 bg-slate-100 rounded mb-2 flex items-center justify-center">
-                                                    <img src="@item.PictureUrl" alt="Item image" class="max-h-full max-w-full object-cover rounded" />
-                                                </div>
-                                            }
                                             <div class="text-sm font-medium text-slate-800 truncate">
                                                 @(item.Translations?.FirstOrDefault()?.Title ?? "Untitled")
                                             </div>

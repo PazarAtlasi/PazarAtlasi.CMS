@@ -36,7 +36,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public virtual Layout Layout { get; set; }
 
-        public virtual ICollection<Section> Sections { get; set; }
+        public virtual ICollection<PageSection> PageSections { get; set; }
 
         public virtual ICollection<PageTranslation> PageTranslations { get; set; }
     }
