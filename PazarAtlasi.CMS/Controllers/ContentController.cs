@@ -180,13 +180,26 @@ namespace PazarAtlasi.CMS.Controllers
                 var page = await _pazarAtlasiDbContext.Pages
                     .Include(p => p.PageSEOParameter)
                     .Include(p => p.Sections.OrderBy(s => s.SortOrder))
-                        .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
+                        .ThenInclude(s => s.SectionItems.Where(si => si.ParentSectionItemId == null).OrderBy(si => si.SortOrder))
                             .ThenInclude(si => si.Translations)
+                    .Include(p => p.Sections)
+                        .ThenInclude(s => s.SectionItems.Where(si => si.ParentSectionItemId == null).OrderBy(si => si.SortOrder))
+                            .ThenInclude(si => si.Fields)
+                                .ThenInclude(f => f.Translations)
                     .Include(p => p.Sections)
                         .ThenInclude(s => s.Translations)
                     .Include(p => p.PageTranslations)
                         .ThenInclude(pt => pt.Language)
                     .FirstOrDefaultAsync(p => p.Id == id);
+
+                // Load nested section items recursively
+                if (page != null)
+                {
+                    foreach (var section in page.Sections)
+                    {
+                        await LoadAllSectionItemsAsync(section);
+                    }
+                }
 
                 if (page == null)
                 {
@@ -376,22 +389,7 @@ namespace PazarAtlasi.CMS.Controllers
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
                     Status = s.Status,
-                    SectionItems = s.SectionItems.Select(si => new SectionItemEditViewModel
-                    {
-                        Id = si.Id,
-                        Type = si.Type,
-                        MediaType = si.MediaType,
-                        SortOrder = si.SortOrder,
-                        Status = si.Status,
-                        Translations = si.Translations.Select(sit => new SectionItemTranslationEditViewModel
-                        {
-                            Id = sit.Id,
-                            LanguageId = sit.LanguageId,
-                            Name = sit.Name,
-                            Title = sit.Title,
-                            Description = sit.Description
-                        }).ToList()
-                    }).ToList(),
+                    SectionItems = MapSectionItemsToViewModel(s.SectionItems.Where(si => si.ParentSectionItemId == null).ToList()),
                     Translations = s.Translations.Select(st => new SectionTranslationEditViewModel
                     {
                         Id = st.Id,
@@ -2446,6 +2444,111 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Map section items to view model with nested structure
+        /// </summary>
+        private List<SectionItemEditViewModel> MapSectionItemsToViewModel(List<SectionItem> sectionItems)
+        {
+            // Only map root level items (parentId == null)
+            // Child items will be mapped recursively in MapSingleSectionItemToViewModel
+            var rootItems = sectionItems.Where(si => si.ParentSectionItemId == null).ToList();
+            return rootItems.Select(si => MapSingleSectionItemToViewModel(si, sectionItems)).ToList();
+        }
+
+        /// <summary>
+        /// Map a single section item to view model
+        /// </summary>
+        private SectionItemEditViewModel MapSingleSectionItemToViewModel(SectionItem si, List<SectionItem> allItems)
+        {
+            return new SectionItemEditViewModel
+            {
+                Id = si.Id,
+                ParentSectionItemId = si.ParentSectionItemId,
+                Type = si.Type,
+                MediaType = si.MediaType,
+                SortOrder = si.SortOrder,
+                Status = si.Status,
+                Fields = si.Fields?.Select(f => new SectionItemFieldEditViewModel
+                {
+                    Id = f.Id,
+                    SectionItemId = f.SectionItemId,
+                    FieldType = f.FieldType,
+                    FieldKey = f.FieldKey,
+                    FieldValue = f.FieldValue,
+                    Translations = f.Translations?.Select(ft => new SectionItemFieldTranslationEditViewModel
+                    {
+                        Id = ft.Id,
+                        SectionItemFieldId = ft.SectionItemFieldId,
+                        LanguageId = ft.LanguageId,
+                        FieldValue = ft.Name // SectionItemFieldTranslation uses Name property for field value
+                    }).ToList() ?? new List<SectionItemFieldTranslationEditViewModel>()
+                }).ToList() ?? new List<SectionItemFieldEditViewModel>(),
+                Translations = si.Translations?.Select(sit => new SectionItemTranslationEditViewModel
+                {
+                    Id = sit.Id,
+                    LanguageId = sit.LanguageId,
+                    Name = sit.Name,
+                    Title = sit.Title,
+                    Description = sit.Description
+                }).ToList() ?? new List<SectionItemTranslationEditViewModel>(),
+                ChildItems = GetChildSectionItems(si, allItems)
+            };
+        }
+
+        /// <summary>
+        /// Recursively get child section items
+        /// </summary>
+        private List<SectionItemEditViewModel> GetChildSectionItems(SectionItem parent, List<SectionItem> allItems)
+        {
+            var childItems = allItems.Where(si => si.ParentSectionItemId == parent.Id).ToList();
+            
+            return childItems.Select(child => MapSingleSectionItemToViewModel(child, allItems)).ToList();
+        }
+
+        /// <summary>
+        /// Load all section items for a section including nested ones
+        /// </summary>
+        private async Task LoadAllSectionItemsAsync(Section section)
+        {
+            // Load all section items for this section (including nested ones)
+            var allSectionItems = await _pazarAtlasiDbContext.SectionItems
+                .Include(si => si.Translations)
+                .Include(si => si.Fields)
+                    .ThenInclude(f => f.Translations)
+                .Where(si => si.SectionId == section.Id)
+                .OrderBy(si => si.SortOrder)
+                .ToListAsync();
+
+            // Replace the section's SectionItems with all items (including nested)
+            section.SectionItems = allSectionItems;
+        }
+
+        /// <summary>
+        /// Recursively load nested section items with their fields and translations
+        /// </summary>
+        private async Task LoadNestedSectionItemsAsync(List<SectionItem> parentItems)
+        {
+            if (parentItems == null || !parentItems.Any())
+                return;
+
+            var parentIds = parentItems.Select(p => p.Id).ToList();
+            
+            // Load all child items for the current level
+            var childItems = await _pazarAtlasiDbContext.SectionItems
+                .Include(si => si.Translations)
+                .Include(si => si.Fields)
+                    .ThenInclude(f => f.Translations)
+                .Where(si => parentIds.Contains(si.ParentSectionItemId.Value))
+                .OrderBy(si => si.SortOrder)
+                .ToListAsync();
+
+            if (childItems.Any())
+            {
+                // Recursively load children of children first
+                await LoadNestedSectionItemsAsync(childItems);
             }
         }
 
