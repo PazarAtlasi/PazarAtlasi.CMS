@@ -53,9 +53,13 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         // Helper properties for rendering - will be updated with template system
         public bool IsCarousel => false;
+        
         public bool IsSingleItem => false;
+        
         public bool IsGrid => false;
+        
         public bool IsList => false;
+        
         public bool IsMasonry => false;
         
         public string TemplateClass => "default-section"; // Will be determined by template
@@ -64,15 +68,17 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class SectionItemEditViewModel
     {
         public int Id { get; set; }
+
         public int? ParentSectionItemId { get; set; }
+        
         public SectionItemType Type { get; set; }
+        
         public MediaType MediaType { get; set; }
-        public string? PictureUrl { get; set; }
-        public string? VideoUrl { get; set; }
-        public string? RedirectUrl { get; set; }
-        public string? Icon { get; set; }
+        
         public int SortOrder { get; set; }
+        
         public string? MediaAttributes { get; set; }
+        
         public Status Status { get; set; }
         
         // Nested structure support
@@ -110,15 +116,20 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         // Helper properties for nested structure
         public bool IsNested => ParentSectionItemId.HasValue;
+        
         public bool HasChildren => ChildItems.Any();
     }
 
     public class SectionItemFieldEditViewModel
     {
         public int Id { get; set; }
+        
         public int SectionItemId { get; set; }
+        
         public SectionItemFieldType FieldType { get; set; }
+        
         public string FieldKey { get; set; } = string.Empty;
+        
         public string FieldValue { get; set; } = string.Empty;
         
         // Field translations
@@ -128,49 +139,73 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class SectionItemFieldTranslationEditViewModel
     {
         public int Id { get; set; }
+        
         public int SectionItemFieldId { get; set; }
+        
         public int LanguageId { get; set; }
+        
         public string? LanguageName { get; set; }
+        
         public string? LanguageCode { get; set; }
+        
         public string FieldValue { get; set; } = string.Empty;
     }
 
     public class PageTranslationEditViewModel
     {
         public int Id { get; set; }
+        
         public int LanguageId { get; set; }
+        
         public string? LanguageName { get; set; }
+        
         public string? LanguageCode { get; set; }
+        
         public string Value { get; set; } = string.Empty;
     }
 
     public class SectionTranslationEditViewModel
     {
         public int Id { get; set; }
+        
         public int LanguageId { get; set; }
+        
         public string? LanguageName { get; set; }
+        
         public string? LanguageCode { get; set; }
+        
         public string Name { get; set; } = string.Empty;
+        
         public string? Title { get; set; }
+        
         public string? Description { get; set; }
     }
 
     public class SectionItemTranslationEditViewModel
     {
         public int Id { get; set; }
+        
         public int LanguageId { get; set; }
+        
         public string? LanguageName { get; set; }
+        
         public string? LanguageCode { get; set; }
+        
         public string Name { get; set; } = string.Empty;
+        
         public string? Title { get; set; }
+        
         public string? Description { get; set; }
     }
 
     public class LanguageViewModel
     {
         public int Id { get; set; }
+        
         public string Name { get; set; } = string.Empty;
+        
         public string? Code { get; set; }
+        
         public bool IsDefault { get; set; }
     }
 }

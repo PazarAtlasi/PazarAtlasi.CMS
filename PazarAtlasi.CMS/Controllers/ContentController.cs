@@ -177,27 +177,42 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
+                // Önce sadece temel page bilgilerini yükle
                 var page = await _pazarAtlasiDbContext.Pages
                     .Include(p => p.PageSEOParameter)
-                    .Include(p => p.Sections.OrderBy(s => s.SortOrder))
-                        .ThenInclude(s => s.SectionItems.Where(si => si.ParentSectionItemId == null).OrderBy(si => si.SortOrder))
-                            .ThenInclude(si => si.Translations)
-                    .Include(p => p.Sections)
-                        .ThenInclude(s => s.SectionItems.Where(si => si.ParentSectionItemId == null).OrderBy(si => si.SortOrder))
-                            .ThenInclude(si => si.Fields)
-                                .ThenInclude(f => f.Translations)
-                    .Include(p => p.Sections)
-                        .ThenInclude(s => s.Translations)
                     .Include(p => p.PageTranslations)
                         .ThenInclude(pt => pt.Language)
                     .FirstOrDefaultAsync(p => p.Id == id);
 
-                // Load nested section items recursively
                 if (page != null)
                 {
-                    foreach (var section in page.Sections)
+                    // Sections'ları ayrı query ile yükle
+                    await _pazarAtlasiDbContext.Entry(page)
+                        .Collection(p => p.Sections)
+                        .Query()
+                        .Include(s => s.Translations)
+                        .OrderBy(s => s.SortOrder)
+                        .LoadAsync();
+
+                    // Tüm section item'larını tek query ile yükle (daha performanslı)
+                    if (page.Sections.Any())
                     {
-                        await LoadAllSectionItemsAsync(section);
+                        var sectionIds = page.Sections.Select(s => s.Id).ToList();
+                        var allSectionItems = await _pazarAtlasiDbContext.SectionItems
+                            .Include(si => si.Translations)
+                            .Include(si => si.Fields)
+                                .ThenInclude(f => f.Translations)
+                            .Where(si => sectionIds.Contains(si.SectionId))
+                            .OrderBy(si => si.SortOrder)
+                            .ToListAsync();
+
+                        // Section item'larını ilgili section'lara dağıt
+                        foreach (var section in page.Sections)
+                        {
+                            section.SectionItems = allSectionItems
+                                .Where(si => si.SectionId == section.Id)
+                                .ToList();
+                        }
                     }
                 }
 
@@ -2508,23 +2523,6 @@ namespace PazarAtlasi.CMS.Controllers
             return childItems.Select(child => MapSingleSectionItemToViewModel(child, allItems)).ToList();
         }
 
-        /// <summary>
-        /// Load all section items for a section including nested ones
-        /// </summary>
-        private async Task LoadAllSectionItemsAsync(Section section)
-        {
-            // Load all section items for this section (including nested ones)
-            var allSectionItems = await _pazarAtlasiDbContext.SectionItems
-                .Include(si => si.Translations)
-                .Include(si => si.Fields)
-                    .ThenInclude(f => f.Translations)
-                .Where(si => si.SectionId == section.Id)
-                .OrderBy(si => si.SortOrder)
-                .ToListAsync();
-
-            // Replace the section's SectionItems with all items (including nested)
-            section.SectionItems = allSectionItems;
-        }
 
         /// <summary>
         /// Recursively load nested section items with their fields and translations
