@@ -99,14 +99,14 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <!-- Sidebar -->
             <div class="lg:col-span-1 space-y-6">
-                @await Html.PartialAsync("~/Views/Shared/Content/_PageSettingsPartial.cshtml", Model)
-                @await Html.PartialAsync("~/Views/Shared/Content/_QuickActionsPartial.cshtml")
+                @await Html.PartialAsync("~/Views/Content/_PageSettingsPartial.cshtml", Model)
+                @await Html.PartialAsync("~/Views/Content/_QuickActionsPartial.cshtml")
             </div>
 
             <!-- Main Content -->
             <div class="lg:col-span-3 space-y-6">
-                @await Html.PartialAsync("~/Views/Shared/Content/_SEOPanelPartial.cshtml", Model)
-                @await Html.PartialAsync("~/Views/Shared/Content/_PageSectionsPartial.cshtml", Model)
+                @await Html.PartialAsync("~/Views/Content/_SEOPanelPartial.cshtml", Model)
+                @await Html.PartialAsync("~/Views/Content/_PageSectionsPartial.cshtml", Model)
             </div>
         </div>
     </form>
