@@ -5,7 +5,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
     /// <summary>
     /// Template configuration that defines how section items should be rendered
     /// </summary>
-    public class TemplateConfigurationDto
+    public class TemplateConfiguration
     {
         public int TemplateId { get; set; }
 
@@ -37,7 +37,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// <summary>
         /// Default number of items to create
         /// </summary>
-        public int DefaultItems { get; set; } = 0;
+        public int DefaultItemCount { get; set; }
 
         /// <summary>
         /// Whether user can add/remove items dynamically
@@ -52,7 +52,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// <summary>
         /// Media type if item type is media-based
         /// </summary>
-        public string? MediaType { get; set; } // Image, Video, Audio, etc.
+        public MediaType? MediaType { get; set; }
 
         /// <summary>
         /// Fields that should be shown for each item
@@ -88,7 +88,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// <summary>
         /// Default number of nested items to create
         /// </summary>
-        public int DefaultItems { get; set; } = 0;
+        public int DefaultItemCount { get; set; } 
 
         /// <summary>
         /// Whether user can add/remove nested items dynamically
@@ -98,7 +98,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// <summary>
         /// Item type for nested items
         /// </summary>
-        public string ItemType { get; set; } = "Link";
+        public SectionItemType ItemType { get; set; }
 
         /// <summary>
         /// Fields for nested items
@@ -120,7 +120,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
 
         public string Label { get; set; } = string.Empty;
 
-        public string Type { get; set; } = "text"; // text, textarea, url, image, video, select, checkbox
+        public SectionItemFieldType Type { get; set; }
         
         public bool Required { get; set; } = false;
         

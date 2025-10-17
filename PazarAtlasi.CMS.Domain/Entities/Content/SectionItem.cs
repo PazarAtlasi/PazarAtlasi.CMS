@@ -11,34 +11,22 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     {
         public int SectionId { get; set; }
 
-        public int? ParentItemId { get; set; } // For nested items
+        public int? ParentSectionItemId { get; set; }
 
         public SectionItemType Type { get; set; } = SectionItemType.None;
 
-        public MediaType MediaType { get; set; } = MediaType.None;
+        public MediaType MediaType { get; set; }
         
-        public string? PictureUrl { get; set; }
-
-        public string? VideoUrl { get; set; }
-
-        public string? RedirectUrl { get; set; }
-
         public int? LinkedPageId { get; set; } // Reference to linked page
-
-        public string? Icon { get; set; }
 
         public int SortOrder { get; set; } = 0;
 
-        public string? MediaAttributes { get; set; } // JSON field for additional media properties
-
-        public string? Data { get; set; } = "{}"; // JSON field for template-based data
-        
         // Navigation properties
         public virtual Section Section { get; set; }
 
-        public virtual SectionItem? ParentItem { get; set; }
+        public virtual SectionItem? ParentSectionItem { get; set; }
 
-        public virtual ICollection<SectionItem> NestedItems { get; set; } = new List<SectionItem>();
+        public virtual ICollection<SectionItemField> Fields { get; set; } = new List<SectionItemField>();
 
         public virtual ICollection<SectionItemTranslation> Translations { get; set; } = new List<SectionItemTranslation>();
     }

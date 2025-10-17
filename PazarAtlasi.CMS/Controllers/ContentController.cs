@@ -136,9 +136,6 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = si.Id,
                         Type = si.Type,
-                        PictureUrl = si.PictureUrl,
-                        RedirectUrl = si.RedirectUrl,
-                        Icon = si.Icon,
                         SortOrder = si.SortOrder,
                         Status = si.Status,
                         Translations = si.Translations.Select(sit => new SectionItemTranslationViewModel
@@ -384,12 +381,7 @@ namespace PazarAtlasi.CMS.Controllers
                         Id = si.Id,
                         Type = si.Type,
                         MediaType = si.MediaType,
-                        PictureUrl = si.PictureUrl,
-                        VideoUrl = si.VideoUrl,
-                        RedirectUrl = si.RedirectUrl,
-                        Icon = si.Icon,
                         SortOrder = si.SortOrder,
-                        MediaAttributes = si.MediaAttributes,
                         Status = si.Status,
                         Translations = si.Translations.Select(sit => new SectionItemTranslationEditViewModel
                         {
@@ -698,7 +690,7 @@ namespace PazarAtlasi.CMS.Controllers
                 // Create default items based on configuration
                 if (configuration.ItemConfiguration != null)
                 {
-                    var defaultItemsCount = Math.Max(0, configuration.ItemConfiguration.DefaultItems);
+                    var defaultItemsCount = Math.Max(0, configuration.ItemConfiguration.DefaultItemCount);
                     
                     for (int i = 0; i < defaultItemsCount; i++)
                     {
@@ -706,7 +698,6 @@ namespace PazarAtlasi.CMS.Controllers
                         {
                             Id = 0,
                             SectionId = sectionId,
-                            TempId = $"temp_{DateTime.Now.Ticks}_{i}",
                             SortOrder = i + 1,
                             Type = SectionItemType.Text, // Default type
                             Status = Status.Active,
@@ -728,16 +719,14 @@ namespace PazarAtlasi.CMS.Controllers
                         // Create default nested items if configured
                         if (configuration.ItemConfiguration.NestedItems != null)
                         {
-                            item.NestedItems = new List<SectionItemViewModel>();
-                            var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItems);
+                            item.ChildItems = new List<SectionItemViewModel>();
+                            var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItemCount);
                             
                             for (int j = 0; j < nestedDefaultCount; j++)
                             {
                                 var nestedItem = new SectionItemViewModel
                                 {
                                     Id = 0,
-                                    TempId = $"nested_{DateTime.Now.Ticks}_{i}_{j}",
-                                    ParentTempId = item.TempId,
                                     SortOrder = j + 1,
                                     Type = SectionItemType.Text, // Default type
                                     Status = Status.Active,
@@ -756,7 +745,7 @@ namespace PazarAtlasi.CMS.Controllers
                                     }
                                 }
 
-                                item.NestedItems.Add(nestedItem);
+                                item.ChildItems.Add(nestedItem);
                             }
                         }
 
@@ -839,12 +828,11 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     Id = 0,
                     SectionId = sectionId,
-                    TempId = $"temp_{DateTime.Now.Ticks}_js",
                     SortOrder = itemIndex + 1,
                     Type = SectionItemType.Text,
                     Status = Status.Active,
                     Data = new Dictionary<string, object>(),
-                    NestedItems = new List<SectionItemViewModel>()
+                    ChildItems = new List<SectionItemViewModel>()
                 };
 
                 // Add default field values
@@ -862,15 +850,13 @@ namespace PazarAtlasi.CMS.Controllers
                 // Create default nested items if configured
                 if (configuration.ItemConfiguration.NestedItems != null)
                 {
-                    var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItems);
+                    var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItemCount);
                     
                     for (int j = 0; j < nestedDefaultCount; j++)
                     {
                         var nestedItem = new SectionItemViewModel
                         {
                             Id = 0,
-                            TempId = $"nested_{DateTime.Now.Ticks}_{j}",
-                            ParentTempId = newItem.TempId,
                             SortOrder = j + 1,
                             Type = SectionItemType.Text,
                             Status = Status.Active,
@@ -889,7 +875,7 @@ namespace PazarAtlasi.CMS.Controllers
                             }
                         }
 
-                        newItem.NestedItems.Add(nestedItem);
+                        newItem.ChildItems.Add(nestedItem);
                     }
                 }
 
@@ -947,8 +933,6 @@ namespace PazarAtlasi.CMS.Controllers
                 var nestedItem = new SectionItemViewModel
                 {
                     Id = 0,
-                    TempId = $"nested_{DateTime.Now.Ticks}",
-                    ParentTempId = parentTempId,
                     SortOrder = nestedIndex + 1,
                     Type = SectionItemType.Text,
                     Status = Status.Active,
@@ -1091,16 +1075,10 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = sectionItem.Id,
                         SectionId = sectionItem.SectionId,
-                        SectionCode = $"Section #{sectionItem.Section?.Id}",
                         SectionType = sectionItem.Section?.Type ?? SectionType.None,
                         Type = sectionItem.Type,
                         MediaType = sectionItem.MediaType,
-                        PictureUrl = sectionItem.PictureUrl,
-                        VideoUrl = sectionItem.VideoUrl,
-                        RedirectUrl = sectionItem.RedirectUrl,
-                        Icon = sectionItem.Icon,
                         SortOrder = sectionItem.SortOrder,
-                        MediaAttributes = sectionItem.MediaAttributes,
                         Status = sectionItem.Status,
                         Translations = sectionItem.Translations.Select(t => new SectionItemTranslationViewModel
                         {
@@ -1133,7 +1111,6 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = 0,
                         SectionId = sectionId,
-                        SectionCode = $"Section #{section.Id}",
                         SectionType = section.Type,
                         SortOrder = maxSortOrder + 1,
                         Status = Domain.Common.Status.Active
@@ -1184,12 +1161,7 @@ namespace PazarAtlasi.CMS.Controllers
                     // Update section item properties
                     sectionItem.Type = request.Type;
                     sectionItem.MediaType = request.MediaType;
-                    sectionItem.PictureUrl = request.PictureUrl;
-                    sectionItem.VideoUrl = request.VideoUrl;
-                    sectionItem.RedirectUrl = request.RedirectUrl;
-                    sectionItem.Icon = request.Icon;
                     sectionItem.SortOrder = request.SortOrder;
-                    sectionItem.MediaAttributes = request.MediaAttributes;
                     sectionItem.Status = request.Status;
                     sectionItem.UpdatedAt = DateTime.UtcNow;
 
@@ -1235,12 +1207,7 @@ namespace PazarAtlasi.CMS.Controllers
                         SectionId = request.SectionId,
                         Type = request.Type,
                         MediaType = request.MediaType,
-                        PictureUrl = request.PictureUrl,
-                        VideoUrl = request.VideoUrl,
-                        RedirectUrl = request.RedirectUrl,
-                        Icon = request.Icon,
                         SortOrder = request.SortOrder,
-                        MediaAttributes = request.MediaAttributes,
                         Status = request.Status,
                         CreatedAt = DateTime.UtcNow,
                         IsDeleted = false
@@ -1336,12 +1303,7 @@ namespace PazarAtlasi.CMS.Controllers
                     SectionId = si.SectionId,
                     Type = si.Type,
                     MediaType = si.MediaType,
-                    PictureUrl = si.PictureUrl,
-                    VideoUrl = si.VideoUrl,
-                    RedirectUrl = si.RedirectUrl,
-                    Icon = si.Icon,
                     SortOrder = si.SortOrder,
-                    MediaAttributes = si.MediaAttributes,
                     Status = si.Status,
                     Translations = si.Translations.Select(t => new SectionItemTranslationResponseDto
                     {
@@ -1493,12 +1455,7 @@ namespace PazarAtlasi.CMS.Controllers
                             SectionId = si.SectionId,
                             Type = si.Type,
                             MediaType = si.MediaType,
-                            PictureUrl = si.PictureUrl,
-                            VideoUrl = si.VideoUrl,
-                            RedirectUrl = si.RedirectUrl,
-                            Icon = si.Icon,
                             SortOrder = si.SortOrder,
-                            MediaAttributes = si.MediaAttributes,
                             Status = si.Status,
                             Translations = si.Translations.Select(t => new SectionItemTranslationViewModel
                             {
@@ -1757,10 +1714,6 @@ namespace PazarAtlasi.CMS.Controllers
                     Id = si.Id,
                     Type = si.Type,
                     MediaType = si.MediaType,
-                    PictureUrl = si.PictureUrl,
-                    VideoUrl = si.VideoUrl,
-                    RedirectUrl = si.RedirectUrl,
-                    Icon = si.Icon,
                     SortOrder = si.SortOrder,
                     Title = si.Translations.FirstOrDefault()?.Title,
                     Description = si.Translations.FirstOrDefault()?.Description
@@ -1814,7 +1767,7 @@ namespace PazarAtlasi.CMS.Controllers
                         .Include(s => s.SectionItems)
                             .ThenInclude(si => si.Translations)
                         .Include(s => s.SectionItems)
-                            .ThenInclude(si => si.NestedItems)
+                            .ThenInclude(si => si.Fields)
                                 .ThenInclude(ni => ni.Translations)
                         .Include(s => s.Translations)
                         .FirstOrDefaultAsync(s => s.Id == request.Id);
@@ -1835,10 +1788,10 @@ namespace PazarAtlasi.CMS.Controllers
                     foreach (var existingItem in section.SectionItems.ToList())
                     {
                         // Remove nested items and their translations
-                        foreach (var nestedItem in existingItem.NestedItems.ToList())
+                        foreach (var nestedItem in existingItem.Fields.ToList())
                         {
-                            _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(nestedItem.Translations);
-                            _pazarAtlasiDbContext.SectionItems.Remove(nestedItem);
+                            //_pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(nestedItem.Translations);
+                            //_pazarAtlasiDbContext.SectionItems.Remove(nestedItem);
                         }
                         
                         // Remove item translations
@@ -1941,17 +1894,10 @@ namespace PazarAtlasi.CMS.Controllers
                 var newItem = new SectionItem
                 {
                     SectionId = sectionId,
-                    ParentItemId = parentItemId, // For nested items
                     Type = itemRequest.Type,
                     MediaType = itemRequest.MediaType,
-                    PictureUrl = itemRequest.PictureUrl,
-                    VideoUrl = itemRequest.VideoUrl,
-                    RedirectUrl = itemRequest.RedirectUrl,
-                    Icon = itemRequest.Icon,
                     SortOrder = itemRequest.SortOrder,
-                    MediaAttributes = itemRequest.MediaAttributes,
                     Status = itemRequest.Status,
-                    Data = itemRequest.Data != null ? System.Text.Json.JsonSerializer.Serialize(itemRequest.Data) : "{}",
                     CreatedAt = DateTime.UtcNow,
                     IsDeleted = false
                 };
@@ -2183,13 +2129,8 @@ namespace PazarAtlasi.CMS.Controllers
                         SectionId = newSection.Id,
                         Type = item.Type,
                         MediaType = item.MediaType,
-                        PictureUrl = item.PictureUrl,
-                        VideoUrl = item.VideoUrl,
-                        RedirectUrl = item.RedirectUrl,
                         LinkedPageId = item.LinkedPageId,
-                        Icon = item.Icon,
                         SortOrder = item.SortOrder,
-                        MediaAttributes = item.MediaAttributes,
                         Status = item.Status
                     };
 

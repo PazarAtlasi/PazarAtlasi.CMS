@@ -8,28 +8,26 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class SectionItemViewModel
     {
         public int Id { get; set; }
+        
         public int SectionId { get; set; }
-        public string? SectionCode { get; set; }
+
+        public int? ParentId { get; set; }
+
         public SectionType SectionType { get; set; }
+        
         public SectionItemType Type { get; set; }
+        
         public MediaType MediaType { get; set; }
-        public string? PictureUrl { get; set; }
-        public string? VideoUrl { get; set; }
-        public string? RedirectUrl { get; set; }
+        
         public int? LinkedPageId { get; set; }
-        public string? Icon { get; set; }
+        
         public int SortOrder { get; set; }
-        public string? MediaAttributes { get; set; }
+        
         public Status Status { get; set; }
 
-        // For dynamic templates
-        public string? TempId { get; set; }
-        public string? ParentTempId { get; set; }
         public Dictionary<string, object>? Data { get; set; } = new();
-        public List<SectionItemViewModel> NestedItems { get; set; } = new();
 
-        // For slider - multiple images
-        public List<string> SliderImages { get; set; } = new();
+        public List<SectionItemViewModel> ChildItems { get; set; } = new();
 
         // Translations
         public List<SectionItemTranslationViewModel> Translations { get; set; } = new();
@@ -39,10 +37,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
         // Helper properties
         public bool IsNew => Id == 0;
-        public bool IsHeroSection => SectionType == SectionType.Hero;
-        public bool HasImage => !string.IsNullOrEmpty(PictureUrl);
-        public bool HasVideo => !string.IsNullOrEmpty(VideoUrl);
-        public bool IsSlider => MediaType == MediaType.ImageSlider;
-        public bool IsNested => !string.IsNullOrEmpty(ParentTempId);
+
+        public bool IsNested => ParentId.HasValue;
     }
 }

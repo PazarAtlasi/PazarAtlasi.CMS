@@ -13,16 +13,9 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             builder.Property(si => si.Id).HasColumnName("Id").IsRequired();
             builder.Property(si => si.SectionId).HasColumnName("SectionId").IsRequired();
-            builder.Property(si => si.ParentItemId).HasColumnName("ParentItemId"); // For nested items
             builder.Property(si => si.Type).HasColumnName("Type").HasDefaultValue(SectionItemType.None);
             builder.Property(si => si.MediaType).HasColumnName("MediaType").HasDefaultValue(MediaType.None);
-            builder.Property(si => si.PictureUrl).HasColumnName("PictureUrl").HasMaxLength(500);
-            builder.Property(si => si.VideoUrl).HasColumnName("VideoUrl").HasMaxLength(500);
-            builder.Property(si => si.RedirectUrl).HasColumnName("RedirectUrl").HasMaxLength(500);
-            builder.Property(si => si.Icon).HasColumnName("Icon").HasMaxLength(100);
             builder.Property(si => si.SortOrder).HasColumnName("SortOrder").HasDefaultValue(0);
-            builder.Property(si => si.MediaAttributes).HasColumnName("MediaAttributes").HasColumnType("nvarchar(max)");
-            builder.Property(si => si.Data).HasColumnName("Data").HasColumnType("nvarchar(max)").HasDefaultValue("{}"); // Template data
             builder.Property(si => si.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(si => si.UpdatedAt).HasColumnName("UpdatedAt");
             builder.Property(si => si.IsDeleted).HasColumnName("IsDeleted").HasDefaultValue(false);
@@ -36,12 +29,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                    .HasForeignKey(si => si.SectionId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            // Self-referencing relationship for nested items
-            builder.HasOne(si => si.ParentItem)
-                   .WithMany(si => si.NestedItems)
-                   .HasForeignKey(si => si.ParentItemId)
-                   .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete loops
-
             builder.HasMany(si => si.Translations)
                    .WithOne(sit => sit.SectionItem)
                    .HasForeignKey(sit => sit.SectionItemId)
@@ -50,7 +37,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             // Indexes
             builder.HasIndex(si => new { si.SectionId, si.SortOrder }).HasDatabaseName("IX_SectionItems_SectionId_SortOrder");
             builder.HasIndex(si => si.Type).HasDatabaseName("IX_SectionItems_Type");
-            builder.HasIndex(si => si.ParentItemId).HasDatabaseName("IX_SectionItems_ParentItemId");
 
             // Query Filter
             builder.HasQueryFilter(si => !si.IsDeleted);
@@ -83,7 +69,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     Id = 3,
                     SectionId = 1, // hero-section
                     Type = SectionItemType.Button,
-                    RedirectUrl = "/products",
                     SortOrder = 3,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,
@@ -94,9 +79,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 4,
                     SectionId = 2, // featured-products
-                    Type = SectionItemType.Picture,
-                    PictureUrl = "/images/products/product1.jpg",
-                    RedirectUrl = "/products/1",
+                    Type = SectionItemType.Image,
                     SortOrder = 1,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,
@@ -106,9 +89,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 5,
                     SectionId = 2, // featured-products
-                    Type = SectionItemType.Picture,
-                    PictureUrl = "/images/products/product2.jpg",
-                    RedirectUrl = "/products/2",
+                    Type = SectionItemType.Image,
                     SortOrder = 2,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,
@@ -118,9 +99,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 6,
                     SectionId = 2, // featured-products
-                    Type = SectionItemType.Picture,
-                    PictureUrl = "/images/products/product3.jpg",
-                    RedirectUrl = "/products/3",
+                    Type = SectionItemType.Image,
                     SortOrder = 3,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,

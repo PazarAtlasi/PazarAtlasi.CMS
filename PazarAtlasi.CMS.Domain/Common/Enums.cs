@@ -6,6 +6,69 @@ using System.Threading.Tasks;
 
 namespace PazarAtlasi.CMS.Domain.Common
 {
+    public enum ThemeType
+    {
+        None,
+        Light,
+        Dark,
+        Colorful,
+        Minimalistic,
+        Modern,
+        Classic,
+        Professional,
+        Creative,
+        Elegant
+    }
+
+    public enum  SectionItemFieldType
+    {
+        None,
+        Text,
+        Title,
+        Description,
+        TextArea,
+        Checkbox,
+        Paragraph,
+        Number,
+        RichText,
+        Date,
+        Boolean,
+        Image,
+        Video,
+        URL,
+        Dropdown,
+        MultiSelect,
+        Color,
+        Icon,
+        FileUpload
+    }
+
+    public enum SectionItemType
+    {
+        None,
+        FeatureCard,
+        Dropdown,
+        List,
+        Button,
+        Text,
+        Link,
+        PageRedirect,
+        Paragraph,
+        Image,
+        Video,
+        Gallery,
+        Document,
+        Map,
+        Form,
+        Grid,
+        Sidebar,
+        Search,
+        ContactForm,
+        SocialMediaLinks,
+        Menu,
+        Media
+    }
+
     public enum TemplateType
     {
         None,
@@ -89,36 +152,6 @@ namespace PazarAtlasi.CMS.Domain.Common
         Pagination,
         Map,
         Gallery
-    }
-
-    public enum SectionItemType
-    {
-        None,
-        Text,
-        Image,
-        Paragraph,
-        Link,
-        Button,
-        Gallery,
-        Audio,
-        Pdf,
-        Picture,
-        Video,
-        Document,
-        Map,
-        Form,
-        List,
-        Grid,
-        Sidebar,
-        Advertisement,
-        Search,
-        ContactForm,
-        SocialMediaLinks,
-        Testimonials,
-        CallToAction,
-        Breadcrumbs,
-        Pagination,
-        Menu
     }
 
     public enum MediaType

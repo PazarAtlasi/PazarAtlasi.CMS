@@ -3,7 +3,6 @@
     var nestedItem = ViewBag.NestedItem as PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel;
     var parentTempId = ViewBag.ParentTempId?.ToString();
     var value = ViewBag.Value?.ToString() ?? "";
-    var fieldId = $"nested_{parentTempId}_{nestedItem?.TempId}_{field?.Name}";
     
     // Check if this field supports multiple languages
     var isTranslatable = field?.IsTranslatable == true;
@@ -32,7 +31,7 @@
                                     class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
                                     data-language="@language.Code"
                                     data-language-id="@language.Id"
-                                    onclick="SectionModal.switchNestedLanguageTab(this, '@parentTempId', '@nestedItem.TempId', '@field.Name')">
+                                    onclick="SectionModal.switchNestedLanguageTab(this, '@parentTempId', '@nestedItem', '@field.Name')">
                                 @language.Code.ToUpper()
                                 @if (language.IsDefault) { <span class="ml-1 text-xs">?</span> }
                             </button>
@@ -47,11 +46,11 @@
                         <div class="language-panel @(language.IsDefault ? "" : "hidden")" 
                              data-language="@language.Code">
                             @{
-                                var langFieldId = $"{fieldId}_{language.Code}";
+                                var langFieldId = $"{language.Code}";
                                 var langValue = value; // TODO: Get language-specific value
                             }
                             
-                            @switch (field.Type?.ToLower())
+                            @switch (field.Type.ToString().ToLower())
                             {
                                 case "text":
                                 case "url":
@@ -62,7 +61,7 @@
                                            maxlength="@(field.MaxLength > 0 ? field.MaxLength : 255)"
                                            required="@field.Required"
                                            value="@langValue"
-                                           onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem.TempId', '@field.Name', '@language.Code', @language.Id, this.value)">
+                                           onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.Name', '@language.Code', @language.Id, this.value)">
                                     break;
 
                                 case "textarea":
@@ -72,7 +71,7 @@
                                               maxlength="@(field.MaxLength > 0 ? field.MaxLength : 500)"
                                               required="@field.Required"
                                               rows="2"
-                                              onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem.TempId', '@field.Name', '@language.Code', @language.Id, this.value)">@langValue</textarea>
+                                              onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.Name', '@language.Code', @language.Id, this.value)">@langValue</textarea>
                                     break;
 
                                 default:
@@ -81,7 +80,7 @@
                                            class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
                                            placeholder="@field.Placeholder (@language.Name)"
                                            value="@langValue"
-                                           onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem.TempId', '@field.Name', '@language.Code', @language.Id, this.value)">
+                                           onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.Name', '@language.Code', @language.Id, this.value)">
                                     break;
                             }
                         </div>
@@ -97,8 +96,10 @@
                     @field.Label
                     @if (field.Required) { <span class="text-red-500">*</span> }
                 </label>
+                @{
+                    var fieldId = $"{field.Name}";
                 
-                @switch (field.Type?.ToLower())
+                }@switch (field.Type.ToString().ToLower())
                 {
                     case "text":
                     case "url":
@@ -109,7 +110,7 @@
                                maxlength="@(field.MaxLength > 0 ? field.MaxLength : 255)"
                                required="@field.Required"
                                value="@value"
-                               onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">
+                               onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">
                         break;
 
                     case "textarea":
@@ -119,7 +120,7 @@
                                   maxlength="@(field.MaxLength > 0 ? field.MaxLength : 500)"
                                   required="@field.Required"
                                   rows="2"
-                                  onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">@value</textarea>
+                                  onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">@value</textarea>
                         break;
 
                     case "checkbox":
@@ -128,7 +129,7 @@
                                    id="@fieldId"
                                    class="mr-2"
                                    checked="@(value == "true" || value == "True")"
-                                   onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.checked)">
+                                   onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.checked)">
                             <label class="text-xs font-medium text-slate-600">@field.Label</label>
                         </div>
                         break;
@@ -137,7 +138,7 @@
                         <select id="@fieldId"
                                 class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
                                 required="@field.Required"
-                                onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">
+                                onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">
                             <option value="">Select...</option>
                             @if (field.Options != null)
                             {
@@ -154,7 +155,7 @@
                                id="@fieldId"
                                class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
                                value="@value"
-                               onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem.TempId', '@field.Name', this.value)">
+                               onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">
                         break;
                 }
             </div>

@@ -8,18 +8,18 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
     /// </summary>
     public interface ITemplateConfigurationProvider
     {
-        TemplateConfigurationDto GetConfiguration(int templateId, string templateKey);
+        TemplateConfiguration GetConfiguration(int templateId, string templateKey);
     }
 
     public class TemplateConfigurationProvider : ITemplateConfigurationProvider
     {
         // Template configuration registry - SOLID: Open/Closed Principle
         // Easy to extend with new configurations without modifying existing code
-        private readonly Dictionary<string, Func<TemplateConfigurationDto>> _configurations;
+        private readonly Dictionary<string, Func<TemplateConfiguration>> _configurations;
 
         public TemplateConfigurationProvider()
         {
-            _configurations = new Dictionary<string, Func<TemplateConfigurationDto>>
+            _configurations = new Dictionary<string, Func<TemplateConfiguration>>
             {
                 // Navbar Templates
                 ["navbar-simple"] = () => CreateNavbarSimpleConfig(),
@@ -41,7 +41,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        public TemplateConfigurationDto GetConfiguration(int templateId, string templateKey)
+        public TemplateConfiguration GetConfiguration(int templateId, string templateKey)
         {
             if (_configurations.TryGetValue(templateKey, out var configFactory))
             {
@@ -56,9 +56,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
 
         #region Navbar Configurations
 
-        private TemplateConfigurationDto CreateNavbarSimpleConfig()
+        private TemplateConfiguration CreateNavbarSimpleConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Simple Navbar",
                 TemplateKey = "navbar-simple",
@@ -66,27 +66,27 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 8,
-                    DefaultItems = 3,
+                    DefaultItemCount = 3,
                     AllowDynamicItems = true,
-                    ItemType = "Menu",
+                    ItemType = Domain.Common.SectionItemType.Menu,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Products, Services", IsTranslatable = true },
-                        new() { Name = "icon", Label = "Icon (Optional)", Type = "text", Placeholder = "fa fa-bars" }
+                        new() { Name = "title", Label = "Menu Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, Placeholder = "e.g., Products, Services", IsTranslatable = true },
+                        new() { Name = "icon", Label = "Icon (Optional)", Type = Domain.Common.SectionItemFieldType.Text, Placeholder = "fa fa-bars" }
                     },
                     NestedItems = new NestedItemConfiguration
                     {
                         MinItems = 1,
                         MaxItems = 10,
-                        DefaultItems = 3,
+                        DefaultItemCount = 3,
                         AllowDynamicItems = true,
-                        ItemType = "Link",
+                        ItemType = Domain.Common.SectionItemType.Link,
                         Fields = new List<SectionItemField>
                         {
-                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50, Placeholder = "e.g., Home, About", IsTranslatable = true },
-                            new() { Name = "url", Label = "URL", Type = "url", Required = true, Placeholder = "/page-url or https://example.com" },
-                            new() { Name = "icon", Label = "Icon (Optional)", Type = "text", Placeholder = "fa fa-home" },
-                            new() { Name = "openInNewTab", Label = "Open in New Tab", Type = "checkbox", DefaultValue = "false" }
+                            new() { Name = "title", Label = "Link Text", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, Placeholder = "e.g., Home, About", IsTranslatable = true },
+                            new() { Name = "url", Label = "URL", Type = Domain.Common.SectionItemFieldType.URL, Required = true, Placeholder = "/page-url or https://example.com" },
+                            new() { Name = "icon", Label = "Icon (Optional)", Type = Domain.Common.SectionItemFieldType.Text, Placeholder = "fa fa-home" },
+                            new() { Name = "openInNewTab", Label = "Open in New Tab", Type = Domain.Common.SectionItemFieldType.Checkbox, DefaultValue = "false" }
                         },
                         UIConfiguration = new ItemUIConfiguration
                         {
@@ -109,9 +109,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateNavbarMegaMenuConfig()
+        private TemplateConfiguration CreateNavbarMegaMenuConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Mega Menu Navbar",
                 TemplateKey = "navbar-megamenu",
@@ -119,29 +119,29 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 6,
-                    DefaultItems = 3,
+                    DefaultItemCount = 3,
                     AllowDynamicItems = true,
-                    ItemType = "Menu",
+                    ItemType = Domain.Common.SectionItemType.Menu,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Menu Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 200, Placeholder = "Brief description for mega menu", IsTranslatable = true },
-                        new() { Name = "image", Label = "Featured Image", Type = "image" },
-                        new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-star" }
+                        new() { Name = "title", Label = "Menu Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = Domain.Common.SectionItemFieldType.Description, MaxLength = 200, Placeholder = "Brief description for mega menu", IsTranslatable = true },
+                        new() { Name = "image", Label = "Featured Image", Type = Domain.Common.SectionItemFieldType.Image },
+                        new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-star" }
                     },
                     NestedItems = new NestedItemConfiguration
                     {
                         MinItems = 2,
                         MaxItems = 15,
-                        DefaultItems = 3,
+                        DefaultItemCount = 3,
                         AllowDynamicItems = true,
-                        ItemType = "Link",
+                        ItemType = Domain.Common.SectionItemType.Link,
                         Fields = new List<SectionItemField>
                         {
-                            new() { Name = "title", Label = "Link Text", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
-                            new() { Name = "url", Label = "URL", Type = "url", Required = true },
-                            new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 100, IsTranslatable = true },
-                            new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-chevron-right" }
+                            new() { Name = "title", Label = "Link Text", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, IsTranslatable = true },
+                            new() { Name = "url", Label = "URL", Type = Domain.Common.SectionItemFieldType.URL, Required = true },
+                            new() { Name = "description", Label = "Description", Type = Domain.Common.SectionItemFieldType.Description, MaxLength = 100, IsTranslatable = true },
+                            new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-chevron-right" }
                         },
                         UIConfiguration = new ItemUIConfiguration
                         {
@@ -165,9 +165,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateNavbarServiceTabsConfig()
+        private TemplateConfiguration CreateNavbarServiceTabsConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Service Tabs Navbar",
                 TemplateKey = "navbar-servicetabs",
@@ -175,15 +175,15 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 6,
-                    DefaultItems = 4,
+                    DefaultItemCount = 4,
                     AllowDynamicItems = true,
-                    ItemType = "Link",
+                    ItemType = Domain.Common.SectionItemType.Menu,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Tab Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
-                        new() { Name = "description", Label = "Content", Type = "textarea", Required = true, MaxLength = 500, IsTranslatable = true },
-                        new() { Name = "url", Label = "Link URL", Type = "url" },
-                        new() { Name = "icon", Label = "Tab Icon", Type = "text", Required = true, Placeholder = "fa fa-cog" }
+                        new() { Name = "title", Label = "Tab Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "description", Label = "Content", Type = Domain.Common.SectionItemFieldType.Description, Required = true, MaxLength = 500, IsTranslatable = true },
+                        new() { Name = "url", Label = "Link URL", Type = Domain.Common.SectionItemFieldType.URL },
+                        new() { Name = "icon", Label = "Tab Icon", Type = Domain.Common.SectionItemFieldType.Icon, Required = true, Placeholder = "fa fa-cog" }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -197,9 +197,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateNavbarCategorizedConfig()
+        private TemplateConfiguration CreateNavbarCategorizedConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Categorized Navbar",
                 TemplateKey = "navbar-categorized",
@@ -207,26 +207,26 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 8,
-                    DefaultItems = 3,
+                    DefaultItemCount = 3,
                     AllowDynamicItems = true,
-                    ItemType = "Menu",
+                    ItemType = Domain.Common.SectionItemType.Menu,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Category Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
-                        new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-tag" }
+                        new() { Name = "title", Label = "Category Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-tag" }
                     },
                     NestedItems = new NestedItemConfiguration
                     {
                         MinItems = 1,
                         MaxItems = 12,
-                        DefaultItems = 3,
+                        DefaultItemCount = 3,
                         AllowDynamicItems = true,
-                        ItemType = "Link",
+                        ItemType = Domain.Common.SectionItemType.Link,
                         Fields = new List<SectionItemField>
                         {
-                            new() { Name = "title", Label = "Item Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
-                            new() { Name = "url", Label = "URL", Type = "url", Required = true },
-                            new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-chevron-right" }
+                            new() { Name = "title", Label = "Item Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, IsTranslatable = true },
+                            new() { Name = "url", Label = "URL", Type = Domain.Common.SectionItemFieldType.URL, Required = true },
+                            new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-chevron-right" }
                         },
                         UIConfiguration = new ItemUIConfiguration
                         {
@@ -253,9 +253,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
 
         #region General Template Configurations
 
-        private TemplateConfigurationDto CreateDefaultConfig()
+        private TemplateConfiguration CreateDefaultConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Default Template",
                 TemplateKey = "default",
@@ -263,13 +263,13 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 1,
                     MaxItems = null, // Unlimited
-                    DefaultItems = 3,
+                    DefaultItemCount = 3,
                     AllowDynamicItems = true,
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 500, IsTranslatable = true }
+                        new() { Name = "title", Label = "Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = Domain.Common.SectionItemFieldType.Description, MaxLength = 500, IsTranslatable = true }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -282,9 +282,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateCarouselConfig()
+        private TemplateConfiguration CreateCarouselConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Carousel",
                 TemplateKey = "carousel",
@@ -292,17 +292,17 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 10,
-                    DefaultItems = 5,
+                    DefaultItemCount = 5,
                     AllowDynamicItems = true,
-                    ItemType = "Image",
-                    MediaType = "Image",
+                    ItemType = Domain.Common.SectionItemType.Image,
+                    MediaType = Domain.Common.MediaType.Image,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "image", Label = "Slide Image", Type = "image", Required = true },
-                        new() { Name = "title", Label = "Slide Title", Type = "text", MaxLength = 100, IsTranslatable = true },
-                        new() { Name = "description", Label = "Slide Description", Type = "textarea", MaxLength = 300, IsTranslatable = true },
-                        new() { Name = "buttonText", Label = "Button Text", Type = "text", MaxLength = 50, IsTranslatable = true },
-                        new() { Name = "buttonUrl", Label = "Button URL", Type = "url" }
+                        new() { Name = "image", Label = "Slide Image", Type = Domain.Common.SectionItemFieldType.Image, Required = true },
+                        new() { Name = "title", Label = "Slide Title", Type = Domain.Common.SectionItemFieldType.Title, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Slide Description", Type = Domain.Common.SectionItemFieldType.Description, MaxLength = 300, IsTranslatable = true },
+                        new() { Name = "buttonText", Label = "Button Text", Type = Domain.Common.SectionItemFieldType.Text, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "buttonUrl", Label = "Button URL", Type = Domain.Common.SectionItemFieldType.URL }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -317,9 +317,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateGridConfig()
+        private TemplateConfiguration CreateGridConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Grid Layout",
                 TemplateKey = "grid",
@@ -327,15 +327,15 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 12,
-                    DefaultItems = 6,
+                    DefaultItemCount = 6,
                     AllowDynamicItems = true,
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "image", Label = "Image", Type = "image" },
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 300, IsTranslatable = true },
-                        new() { Name = "url", Label = "Link URL", Type = "url" }
+                        new() { Name = "image", Label = "Image", Type = Domain.Common.SectionItemFieldType.Image },
+                        new() { Name = "title", Label = "Title", Type = Domain.Common.SectionItemFieldType.Text, Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = Domain.Common.SectionItemFieldType.Description, MaxLength = 300, IsTranslatable = true },
+                        new() { Name = "url", Label = "Link URL", Type = Domain.Common.SectionItemFieldType.URL }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -349,9 +349,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateMasonryConfig()
+        private TemplateConfiguration CreateMasonryConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Masonry Layout",
                 TemplateKey = "masonry",
@@ -359,15 +359,15 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 4,
                     MaxItems = 20,
-                    DefaultItems = 8,
+                    DefaultItemCount = 8,
                     AllowDynamicItems = true,
-                    ItemType = "Image",
-                    MediaType = "Image",
+                    ItemType = Domain.Common.SectionItemType.Image,
+                    MediaType = Domain.Common.MediaType.Image,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "image", Label = "Image", Type = "image", Required = true },
-                        new() { Name = "title", Label = "Title", Type = "text", MaxLength = 100, IsTranslatable = true },
-                        new() { Name = "description", Label = "Caption", Type = "textarea", MaxLength = 200, IsTranslatable = true }
+                        new() { Name = "image", Label = "Image", Type = Domain.Common.SectionItemFieldType.Image, Required = true },
+                        new() { Name = "title", Label = "Title", Type = Domain.Common.SectionItemFieldType.Title, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Caption", Type = Domain.Common.SectionItemFieldType.Description, MaxLength = 200, IsTranslatable = true }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -381,9 +381,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateSequentialConfig()
+        private TemplateConfiguration CreateSequentialConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Sequential Layout",
                 TemplateKey = "sequential",
@@ -391,14 +391,14 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 2,
                     MaxItems = 10,
-                    DefaultItems = 4,
+                    DefaultItemCount = 4,
                     AllowDynamicItems = true,
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Step Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
-                        new() { Name = "description", Label = "Step Description", Type = "textarea", Required = true, MaxLength = 500, IsTranslatable = true },
-                        new() { Name = "icon", Label = "Step Icon", Type = "text", Placeholder = "fa fa-check" }
+                        new() { Name = "title", Label = "Step Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Step Description", Type = Domain.Common.SectionItemFieldType.Description, Required = true, MaxLength = 500, IsTranslatable = true },
+                        new() { Name = "icon", Label = "Step Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-check" }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -411,9 +411,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateListConfig()
+        private TemplateConfiguration CreateListConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "List Layout",
                 TemplateKey = "list",
@@ -421,14 +421,14 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 15,
-                    DefaultItems = 5,
+                    DefaultItemCount = 5,
                     AllowDynamicItems = true,
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Item Text", Type = "text", Required = true, MaxLength = 200, IsTranslatable = true },
-                        new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-check-circle" },
-                        new() { Name = "url", Label = "Link (Optional)", Type = "url" }
+                        new() { Name = "title", Label = "Item Text", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 200, IsTranslatable = true },
+                        new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-check-circle" },
+                        new() { Name = "url", Label = "Link (Optional)", Type = Domain.Common.SectionItemFieldType.URL }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -441,9 +441,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateSingleItemConfig()
+        private TemplateConfiguration CreateSingleItemConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Single Item",
                 TemplateKey = "single-item",
@@ -451,16 +451,16 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 1,
                     MaxItems = 1,
-                    DefaultItems = 1,
+                    DefaultItemCount = 1,
                     AllowDynamicItems = false, // Fixed single item
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "image", Label = "Featured Image", Type = "image" },
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 150, IsTranslatable = true },
-                        new() { Name = "description", Label = "Description", Type = "textarea", Required = true, MaxLength = 1000, IsTranslatable = true },
-                        new() { Name = "buttonText", Label = "Button Text", Type = "text", MaxLength = 50, IsTranslatable = true },
-                        new() { Name = "buttonUrl", Label = "Button URL", Type = "url" }
+                        new() { Name = "image", Label = "Featured Image", Type = Domain.Common.SectionItemFieldType.Image },
+                        new() { Name = "title", Label = "Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 150, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = Domain.Common.SectionItemFieldType.Description, Required = true, MaxLength = 1000, IsTranslatable = true },
+                        new() { Name = "buttonText", Label = "Button Text", Type = Domain.Common.SectionItemFieldType.Text, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "buttonUrl", Label = "Button URL", Type = Domain.Common.SectionItemFieldType.URL }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -473,9 +473,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateMultiItemConfig()
+        private TemplateConfiguration CreateMultiItemConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Multi Item",
                 TemplateKey = "multi-item",
@@ -483,15 +483,15 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 2,
                     MaxItems = 8,
-                    DefaultItems = 4,
+                    DefaultItemCount = 4,
                     AllowDynamicItems = true,
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "image", Label = "Image", Type = "image" },
-                        new() { Name = "title", Label = "Title", Type = "text", Required = true, MaxLength = 100, IsTranslatable = true },
-                        new() { Name = "description", Label = "Description", Type = "textarea", MaxLength = 300, IsTranslatable = true },
-                        new() { Name = "url", Label = "Link", Type = "url" }
+                        new() { Name = "image", Label = "Image", Type = Domain.Common.SectionItemFieldType.Image },
+                        new() { Name = "title", Label = "Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 100, IsTranslatable = true },
+                        new() { Name = "description", Label = "Description", Type = Domain.Common.SectionItemFieldType.Description, MaxLength = 300, IsTranslatable = true },
+                        new() { Name = "url", Label = "Link", Type = Domain.Common.SectionItemFieldType.URL }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -505,9 +505,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateAccordionConfig()
+        private TemplateConfiguration CreateAccordionConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Accordion",
                 TemplateKey = "accordion",
@@ -515,14 +515,14 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 3,
                     MaxItems = 10,
-                    DefaultItems = 5,
+                    DefaultItemCount = 5,
                     AllowDynamicItems = true,
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Panel Title", Type = "text", Required = true, MaxLength = 150, IsTranslatable = true },
-                        new() { Name = "description", Label = "Panel Content", Type = "textarea", Required = true, MaxLength = 1000, IsTranslatable = true },
-                        new() { Name = "icon", Label = "Icon", Type = "text", Placeholder = "fa fa-question-circle" }
+                        new() { Name = "title", Label = "Panel Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 150, IsTranslatable = true },
+                        new() { Name = "description", Label = "Panel Content", Type = Domain.Common.SectionItemFieldType.Description, Required = true, MaxLength = 1000, IsTranslatable = true },
+                        new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-question-circle" }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {
@@ -535,9 +535,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             };
         }
 
-        private TemplateConfigurationDto CreateTabsConfig()
+        private TemplateConfiguration CreateTabsConfig()
         {
-            return new TemplateConfigurationDto
+            return new TemplateConfiguration
             {
                 TemplateName = "Tabs",
                 TemplateKey = "tabs",
@@ -545,14 +545,14 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 {
                     MinItems = 2,
                     MaxItems = 8,
-                    DefaultItems = 4,
+                    DefaultItemCount = 4,
                     AllowDynamicItems = true,
-                    ItemType = "Text",
+                    ItemType = Domain.Common.SectionItemType.Text,
                     Fields = new List<SectionItemField>
                     {
-                        new() { Name = "title", Label = "Tab Title", Type = "text", Required = true, MaxLength = 50, IsTranslatable = true },
-                        new() { Name = "description", Label = "Tab Content", Type = "textarea", Required = true, MaxLength = 1000, IsTranslatable = true },
-                        new() { Name = "icon", Label = "Tab Icon", Type = "text", Placeholder = "fa fa-star" }
+                        new() { Name = "title", Label = "Tab Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, IsTranslatable = true },
+                        new() { Name = "description", Label = "Tab Content", Type = Domain.Common.SectionItemFieldType.Description, Required = true, MaxLength = 1000, IsTranslatable = true },
+                        new() { Name = "icon", Label = "Tab Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-star" }
                     },
                     UIConfiguration = new ItemUIConfiguration
                     {

@@ -28,7 +28,6 @@
             ViewBag.Field = field;
             ViewBag.NestedItem = Model.Item ?? new PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel 
             { 
-                TempId = $"new_{DateTime.Now.Ticks}",
                 Data = new Dictionary<string, object>()
             };
             ViewBag.ParentTempId = Model.ParentItemId.ToString();
@@ -42,7 +41,6 @@
             ViewBag.Field = field;
             ViewBag.Item = Model.Item ?? new PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel 
             { 
-                TempId = $"new_{DateTime.Now.Ticks}",
                 Data = new Dictionary<string, object>()
             };
             ViewBag.Value = field.DefaultValue ?? "";

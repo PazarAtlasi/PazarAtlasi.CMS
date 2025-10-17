@@ -17,7 +17,6 @@
                 <i class="fas fa-times text-xl"></i>
             </button>
         </div>
-        <p class="text-sm text-slate-500 mt-1">Section: @Model.SectionCode (@Model.SectionType.ToString())</p>
     </div>
 
     <form id="sectionItemForm" class="p-6 space-y-6">
@@ -111,16 +110,14 @@
                 <div id="singleImageUpload" class="media-upload-section" style="display: @(Model.MediaType == PazarAtlasi.CMS.Domain.Common.MediaType.Image ? "block" : "none")">
                     <label class="block text-sm font-medium text-slate-700 mb-2">Upload Image</label>
                     <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-purple-400 transition-colors">
-                        @if (!string.IsNullOrEmpty(Model.PictureUrl))
                         {
                             <div class="relative inline-block">
-                                <img src="@Model.PictureUrl" alt="Preview" class="max-h-40 rounded" id="singleImagePreview" />
+                                <img src="@Model" alt="Preview" class="max-h-40 rounded" id="singleImagePreview" />
                                 <button type="button" onclick="removeSingleImage()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600">
                                     <i class="fas fa-trash text-xs"></i>
                                 </button>
                             </div>
                         }
-                        else
                         {
                             <div id="singleImagePlaceholder">
                                 <i class="fas fa-cloud-upload-alt text-4xl text-slate-400 mb-2"></i>
@@ -135,7 +132,6 @@
                             <i class="fas fa-upload mr-2"></i> Choose Image
                         </button>
                     </div>
-                    <input type="hidden" id="pictureUrl" value="@Model.PictureUrl" />
                 </div>
 
                 <!-- Slider Images Upload -->
@@ -144,12 +140,9 @@
                     <div class="grid grid-cols-3 gap-3" id="sliderImagesContainer">
                         @for (int i = 0; i < 3; i++)
                         {
-                            var imageUrl = Model.SliderImages != null && Model.SliderImages.Count > i ? Model.SliderImages[i] : "";
                             <div class="border-2 border-dashed border-slate-300 rounded-lg p-3 text-center slider-image-slot" data-slot="@i">
-                                @if (!string.IsNullOrEmpty(imageUrl))
                                 {
                                     <div class="relative">
-                                        <img src="@imageUrl" alt="Slider @(i+1)" class="w-full h-24 object-cover rounded" />
                                         <button type="button" onclick="removeSliderImage(@i)" 
                                                 class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 text-xs">
                                             <i class="fas fa-times"></i>
@@ -177,10 +170,9 @@
                 <div id="videoUpload" class="media-upload-section" style="display: @(Model.MediaType == PazarAtlasi.CMS.Domain.Common.MediaType.Video ? "block" : "none")">
                     <label class="block text-sm font-medium text-slate-700 mb-2">Upload Video</label>
                     <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-purple-400 transition-colors">
-                        @if (!string.IsNullOrEmpty(Model.VideoUrl))
                         {
                             <div class="relative inline-block w-full">
-                                <video src="@Model.VideoUrl" class="max-h-40 rounded mx-auto" controls id="videoPreview"></video>
+                                @* <video src="@Model.VideoUrl" class="max-h-40 rounded mx-auto" controls id="videoPreview"></video> *@
                                 <button type="button" onclick="removeVideo()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600">
                                     <i class="fas fa-trash text-xs"></i>
                                 </button>
@@ -201,7 +193,7 @@
                             <i class="fas fa-upload mr-2"></i> Choose Video
                         </button>
                     </div>
-                    <input type="hidden" id="videoUrl" value="@Model.VideoUrl" />
+                    @* <input type="hidden" id="videoUrl" value="@Model.VideoUrl" /> *@
                 </div>
         </div>
 
@@ -239,7 +231,7 @@
                                           placeholder="Enter description">@(translation?.Description ?? "")</textarea>
                             </div>
                             
-                            @if (Model.IsHeroSection)
+                            @* @if (Model.IsHeroSection) *@
                             {
                                 <div class="grid grid-cols-2 gap-3">
                                     <div>
