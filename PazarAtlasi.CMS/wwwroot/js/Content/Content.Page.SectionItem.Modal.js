@@ -2,40 +2,6 @@
 let currentMediaType = "None";
 let sliderImages = ["", "", ""];
 
-function showSectionItemModal(html) {
-  // Remove existing modal if any
-  const existingModal = document.getElementById(
-    "sectionItemModalOverlay"
-  );
-  if (existingModal) {
-    existingModal.remove();
-  }
-
-  // Create modal overlay
-  const modalOverlay = document.createElement("div");
-  modalOverlay.id = "sectionItemModalOverlay";
-  modalOverlay.className =
-    "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4";
-  modalOverlay.style.overflowY = "auto";
-  modalOverlay.innerHTML = html;
-
-  document.body.appendChild(modalOverlay);
-  document.body.style.overflow = "hidden";
-
-  // Ensure modal content is scrollable
-  const modalContent = modalOverlay.querySelector(
-    ".section-item-modal"
-  );
-  if (modalContent) {
-    modalContent.style.maxHeight = "90vh";
-    modalContent.style.overflowY = "auto";
-    modalContent.style.overflowX = "hidden";
-  }
-
-  // Initialize modal
-  initializeSectionItemModal();
-}
-
 function closeSectionItemModal() {
   const modal = document.getElementById("sectionItemModalOverlay");
   if (modal) {

@@ -403,7 +403,7 @@ namespace PazarAtlasi.CMS.Controllers
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
                     Status = s.Status,
-                    SectionItems = MapSectionItemsToViewModel(s.SectionItems.Where(si => si.ParentSectionItemId == null).ToList()),
+                    SectionItems = MapSectionItemsToViewModel(s.SectionItems.ToList()),
                     Translations = s.Translations.Select(st => new SectionTranslationEditViewModel
                     {
                         Id = st.Id,
@@ -570,33 +570,6 @@ namespace PazarAtlasi.CMS.Controllers
         #endregion
 
         /// <summary>
-        /// Get available templates by section type
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetTemplatesBySectionType(int sectionType)
-        {
-            try
-            {
-                var templates = await _pazarAtlasiDbContext.SectionTemplates
-                    .Where(st => (int)st.SectionType == sectionType && !st.IsDeleted && st.Template.IsActive && !st.Template.IsDeleted)
-                    .Include(st => st.Template)
-                    .OrderBy(st => st.Template.SortOrder)
-                    .Select(st => new
-                    {
-                        id = st.Template.Id,  // Template ID, not SectionTypeTemplate ID
-                        name = st.Template.Name
-                    })
-                    .ToListAsync();
-
-                return Json(new { success = true, templates });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error loading templates." });
-            }
-        }
-
-        /// <summary>
         /// Get template configuration with section item settings
         /// </summary>
         [HttpGet]
@@ -619,197 +592,6 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Error loading template configuration." });
-            }
-        }
-
-        /// <summary>
-        /// Get section items UI partial view based on template configuration
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetSectionItemsUI(int templateId)
-        {
-            try
-            {
-                var template = await _pazarAtlasiDbContext.Templates
-                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
-
-                if (template == null)
-                {
-                    return Content("<div class='text-red-500'>Template not found</div>");
-                }
-
-                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
-
-                return PartialView("~/Views/Shared/Content/_SectionItemsUI.cshtml", configuration);
-            }
-            catch (Exception ex)
-            {
-                return Content($"<div class='text-red-500'>Error loading template UI: {ex.Message}</div>");
-            }
-        }
-
-        /// <summary>
-        /// Get section items list as partial view with example data
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetSectionItemsList(int templateId, int sectionId = 0)
-        {
-            try
-            {
-                // First check if template exists
-                var template = await _pazarAtlasiDbContext.Templates
-                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
-
-                if (template == null)
-                {
-                    // Return empty HTML instead of JSON for consistency
-                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found or inactive.</p></div>", "text/html");
-                }
-
-                // Get template configuration
-                var configuration = _templateConfigurationProvider?.GetConfiguration(template.Id, template.TemplateKey);
-                if (configuration == null)
-                {
-                    // Return empty HTML instead of JSON for consistency
-                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
-                }
-
-                // Create example section items based on template configuration
-                var model = new SectionItemsListViewModel
-                {
-                    TemplateId = templateId,
-                    SectionId = sectionId,
-                    Configuration = configuration,
-                    SectionItems = new List<SectionItemViewModel>()
-                };
-
-                // Get available languages for translation support
-                var availableLanguages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .Select(l => new LanguageViewModel
-                    {
-                        Id = l.Id,
-                        Name = l.Name,
-                        Code = l.Code,
-                        IsDefault = l.IsDefault
-                    })
-                    .OrderByDescending(l => l.IsDefault)
-                    .ThenBy(l => l.Name)
-                    .ToListAsync();
-
-                ViewBag.AvailableLanguages = availableLanguages;
-
-                // Create default items based on configuration
-                if (configuration.ItemConfiguration != null)
-                {
-                    var defaultItemsCount = Math.Max(0, configuration.ItemConfiguration.DefaultItemCount);
-                    
-                    for (int i = 0; i < defaultItemsCount; i++)
-                    {
-                        var item = new SectionItemViewModel
-                        {
-                            Id = 0,
-                            SectionId = sectionId,
-                            SortOrder = i + 1,
-                            Type = SectionItemType.Text, // Default type
-                            Status = Status.Active,
-                            Data = new Dictionary<string, object>()
-                        };
-
-                        // Add default field values
-                        if (configuration.ItemConfiguration.Fields != null)
-                        {
-                            foreach (var field in configuration.ItemConfiguration.Fields)
-                            {
-                                if (!string.IsNullOrEmpty(field.DefaultValue))
-                                {
-                                    item.Data[field.Name] = field.DefaultValue;
-                                }
-                            }
-                        }
-
-                        // Create default nested items if configured
-                        if (configuration.ItemConfiguration.NestedItems != null)
-                        {
-                            item.ChildItems = new List<SectionItemViewModel>();
-                            var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItemCount);
-                            
-                            for (int j = 0; j < nestedDefaultCount; j++)
-                            {
-                                var nestedItem = new SectionItemViewModel
-                                {
-                                    Id = 0,
-                                    SortOrder = j + 1,
-                                    Type = SectionItemType.Text, // Default type
-                                    Status = Status.Active,
-                                    Data = new Dictionary<string, object>()
-                                };
-
-                                // Add default nested field values
-                                if (configuration.ItemConfiguration.NestedItems.Fields != null)
-                                {
-                                    foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
-                                    {
-                                        if (!string.IsNullOrEmpty(field.DefaultValue))
-                                        {
-                                            nestedItem.Data[field.Name] = field.DefaultValue;
-                                        }
-                                    }
-                                }
-
-                                item.ChildItems.Add(nestedItem);
-                            }
-                        }
-
-                        model.SectionItems.Add(item);
-                    }
-                }
-
-                return PartialView("~/Views/Shared/Content/_SectionItemsList.cshtml", model);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception details for debugging
-                System.Diagnostics.Debug.WriteLine($"Error in GetSectionItemsList: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                
-                // Return error HTML instead of JSON for consistency
-                return Content($"<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Error loading section items: {ex.Message}</p></div>", "text/html");
-            }
-        }
-
-        /// <summary>
-        /// Get section item form as partial view
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetSectionItemForm(int templateId, int itemId = 0, int parentItemId = 0)
-        {
-            try
-            {
-                var template = await _pazarAtlasiDbContext.Templates
-                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
-
-                if (template == null)
-                {
-                    return Content("<div class='text-red-500'>Template not found</div>");
-                }
-
-                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
-
-                var model = new SectionItemFormViewModel
-                {
-                    TemplateId = templateId,
-                    ItemId = itemId,
-                    ParentItemId = parentItemId,
-                    Configuration = configuration,
-                    IsNested = parentItemId > 0
-                };
-
-                return PartialView("~/Views/Shared/Content/_SectionItemForm.cshtml", model);
-            }
-            catch (Exception ex)
-            {
-                return Content($"<div class='text-red-500'>Error loading item form: {ex.Message}</div>");
             }
         }
 
@@ -1058,96 +840,6 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         #region Section Item Management
-
-        /// <summary>
-        /// Get section item modal for editing
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetSectionItemModal(int id, int sectionId)
-        {
-            try
-            {
-                SectionItemViewModel model;
-
-                if (id > 0)
-                {
-                    // Edit existing item
-                    var sectionItem = await _pazarAtlasiDbContext.SectionItems
-                        .Include(si => si.Translations)
-                            .ThenInclude(t => t.Language)
-                        .Include(si => si.Section)
-                        .FirstOrDefaultAsync(si => si.Id == id && !si.IsDeleted);
-
-                    if (sectionItem == null)
-                    {
-                        return Json(new { success = false, message = "Section item not found." });
-                    }
-
-                    model = new SectionItemViewModel
-                    {
-                        Id = sectionItem.Id,
-                        SectionId = sectionItem.SectionId,
-                        SectionType = sectionItem.Section?.Type ?? SectionType.None,
-                        Type = sectionItem.Type,
-                        MediaType = sectionItem.MediaType,
-                        SortOrder = sectionItem.SortOrder,
-                        Status = sectionItem.Status,
-                        Translations = sectionItem.Translations.Select(t => new SectionItemTranslationViewModel
-                        {
-                            Id = t.Id,
-                            LanguageId = t.LanguageId,
-                            LanguageName = t.Language?.Name,
-                            LanguageCode = t.Language?.Code,
-                            Name = t.Name,
-                            Title = t.Title,
-                            Description = t.Description
-                        }).ToList()
-                    };
-                }
-                else
-                {
-                    // Create new item
-                    var section = await _pazarAtlasiDbContext.Sections
-                        .FirstOrDefaultAsync(s => s.Id == sectionId);
-
-                    if (section == null)
-                    {
-                        return Json(new { success = false, message = "Section not found." });
-                    }
-
-                    var maxSortOrder = await _pazarAtlasiDbContext.SectionItems
-                        .Where(si => si.SectionId == sectionId)
-                        .MaxAsync(si => (int?)si.SortOrder) ?? 0;
-
-                    model = new SectionItemViewModel
-                    {
-                        Id = 0,
-                        SectionId = sectionId,
-                        SectionType = section.Type,
-                        SortOrder = maxSortOrder + 1,
-                        Status = Domain.Common.Status.Active
-                    };
-                }
-
-                // Get available languages
-                model.AvailableLanguages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .Select(l => new LanguageViewModel
-                    {
-                        Id = l.Id,
-                        Name = l.Name,
-                        Code = l.Code,
-                        IsDefault = l.IsDefault
-                    })
-                    .ToListAsync();
-
-                return PartialView("~/Views/Shared/Content/_SectionItemModal.cshtml", model);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "An error occurred: " + ex.Message });
-            }
-        }
 
         /// <summary>
         /// Create or update section item
@@ -1440,12 +1132,14 @@ namespace PazarAtlasi.CMS.Controllers
 
                 if (id > 0)
                 {
-                    // Edit existing section
-                    var section = await _pazarAtlasiDbContext.Sections
-                        .Include(s => s.SectionItems)
-                            .ThenInclude(si => si.Translations)
-                        .Include(s => s.Translations).ThenInclude(t => t.Language)
-                        .FirstOrDefaultAsync(s => s.Id == id);
+                    var pageSection = await _pazarAtlasiDbContext.PageSections
+                        .Include(ps => ps.Section)
+                        .ThenInclude(s => s.SectionItems)
+                        .ThenInclude(si => si.Translations)
+                        .ThenInclude(t => t.Language)
+                        .FirstOrDefaultAsync(ps => ps.SectionId == id && ps.PageId == pageId);
+
+                    var section = pageSection?.Section;
 
                     if (section == null)
                     {
@@ -1516,11 +1210,168 @@ namespace PazarAtlasi.CMS.Controllers
                     })
                     .ToListAsync();
 
-                return PartialView("~/Views/Shared/Content/_SectionModal.cshtml", model);
+                return PartialView("~/Views/Content/_SectionModal.cshtml", model);
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get available templates by section type
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetTemplatesBySectionType(int sectionType)
+        {
+            try
+            {
+                var templates = await _pazarAtlasiDbContext.SectionTypeTemplates
+                    .Where(st => (int)st.SectionType == sectionType && !st.IsDeleted && st.Template.IsActive && !st.Template.IsDeleted)
+                    .Include(st => st.Template)
+                    .OrderBy(st => st.Template.SortOrder)
+                    .Select(st => new
+                    {
+                        id = st.Template.Id,  // Template ID, not SectionTypeTemplate ID
+                        name = st.Template.Name
+                    })
+                    .ToListAsync();
+
+                return Json(new { success = true, templates });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error loading templates." });
+            }
+        }
+
+        /// <summary>
+        /// Get section items list as partial view with example data
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSectionItemsList(int templateId, int sectionId = 0)
+        {
+            try
+            {
+                // First check if template exists
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    // Return empty HTML instead of JSON for consistency
+                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found or inactive.</p></div>", "text/html");
+                }
+
+                // Get template configuration
+                var configuration = _templateConfigurationProvider?.GetConfiguration(template.Id, template.TemplateKey);
+                if (configuration == null)
+                {
+                    // Return empty HTML instead of JSON for consistency
+                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
+                }
+
+                // Create example section items based on template configuration
+                var model = new SectionItemsListViewModel
+                {
+                    TemplateId = templateId,
+                    SectionId = sectionId,
+                    Configuration = configuration,
+                    SectionItems = new List<SectionItemViewModel>()
+                };
+
+                // Get available languages for translation support
+                var availableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderByDescending(l => l.IsDefault)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
+                ViewBag.AvailableLanguages = availableLanguages;
+
+                // Create default items based on configuration
+                if (configuration.ItemConfiguration != null)
+                {
+                    var defaultItemsCount = Math.Max(0, configuration.ItemConfiguration.DefaultItemCount);
+
+                    for (int i = 0; i < defaultItemsCount; i++)
+                    {
+                        var item = new SectionItemViewModel
+                        {
+                            Id = 0,
+                            SectionId = sectionId,
+                            SortOrder = i + 1,
+                            Type = SectionItemType.Text, // Default type
+                            Status = Status.Active,
+                            Data = new Dictionary<string, object>()
+                        };
+
+                        // Add default field values
+                        if (configuration.ItemConfiguration.Fields != null)
+                        {
+                            foreach (var field in configuration.ItemConfiguration.Fields)
+                            {
+                                if (!string.IsNullOrEmpty(field.DefaultValue))
+                                {
+                                    item.Data[field.Name] = field.DefaultValue;
+                                }
+                            }
+                        }
+
+                        // Create default nested items if configured
+                        if (configuration.ItemConfiguration.NestedItems != null)
+                        {
+                            item.ChildItems = new List<SectionItemViewModel>();
+                            var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItemCount);
+
+                            for (int j = 0; j < nestedDefaultCount; j++)
+                            {
+                                var nestedItem = new SectionItemViewModel
+                                {
+                                    Id = 0,
+                                    SortOrder = j + 1,
+                                    Type = SectionItemType.Text, // Default type
+                                    Status = Status.Active,
+                                    Data = new Dictionary<string, object>()
+                                };
+
+                                // Add default nested field values
+                                if (configuration.ItemConfiguration.NestedItems.Fields != null)
+                                {
+                                    foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
+                                    {
+                                        if (!string.IsNullOrEmpty(field.DefaultValue))
+                                        {
+                                            nestedItem.Data[field.Name] = field.DefaultValue;
+                                        }
+                                    }
+                                }
+
+                                item.ChildItems.Add(nestedItem);
+                            }
+                        }
+
+                        model.SectionItems.Add(item);
+                    }
+                }
+
+                return PartialView("~/Views/Content/_SectionItemsList.cshtml", model);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details for debugging
+                System.Diagnostics.Debug.WriteLine($"Error in GetSectionItemsList: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+
+                // Return error HTML instead of JSON for consistency
+                return Content($"<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Error loading section items: {ex.Message}</p></div>", "text/html");
             }
         }
 

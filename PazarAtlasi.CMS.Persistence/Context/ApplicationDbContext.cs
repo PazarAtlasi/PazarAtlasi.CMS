@@ -18,7 +18,13 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<Language> Languages { get; set; }
 
+        public DbSet<Layout> Layouts { get; set; }
+
+        public DbSet<LayoutSection> LayoutSections { get; set; }
+
         public DbSet<Page> Pages { get; set; }
+
+        public DbSet<PageSection> PageSections { get; set; }
 
         public DbSet<PageSEOParameter> PageSEOParameters { get; set; }
 
@@ -28,17 +34,17 @@ namespace PazarAtlasi.CMS.Persistence.Context
         
         public DbSet<SectionItem> SectionItems { get; set; }
 
+        public DbSet<SectionItemField> SectionItemFields { get; set; }
+
+        public DbSet<SectionItemFieldTranslation> SectionItemFieldTranslations { get; set; }
+
         public DbSet<SectionItemTranslation> SectionItemTranslations { get; set; }
         
         public DbSet<SectionTranslation> SectionTranslations { get; set; }
 
+        public DbSet<SectionTypeTemplate> SectionTypeTemplates { get; set; }
+
         public DbSet<Template> Templates { get; set; }
-
-        public DbSet<SectionTypeTemplate> SectionTemplates { get; set; }
-
-        public DbSet<Layout> Layouts { get; set; }
-
-        public DbSet<LayoutSection> LayoutSections { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

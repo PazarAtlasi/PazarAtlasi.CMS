@@ -1,7 +1,7 @@
 @model PazarAtlasi.CMS.Models.ViewModels.SectionViewModel
 
 <div class="section-modal bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto"
-    style="max-height: 90vh; overflow-y: auto;">
+     style="max-height: 90vh; overflow-y: auto;">
     <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 z-10">
         <div class="flex items-center justify-between">
             <h3 class="text-xl font-semibold text-slate-800">
@@ -28,18 +28,11 @@
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Section Type</label>
                     <select id="sectionType"
-                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                        onchange="SectionModal.handleSectionTypeChange(this.value)">
+                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                            onchange="SectionModal.handleSectionTypeChange(this.value)">
                         @foreach (var sectionType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionType>())
                         {
-                            @if (Model.Type == sectionType)
-                            {
-                                <option value="@((int)sectionType)" selected>@sectionType.ToString()</option>
-                            }
-                            else
-                            {
-                                <option value="@((int)sectionType)">@sectionType.ToString()</option>
-                            }
+                            <!option value="@((int)sectionType)" @((Model.Type == sectionType) ? "selected" : "")>@sectionType.ToString()</!option>
                         }
                     </select>
                 </div>
@@ -47,8 +40,8 @@
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Template</label>
                     <select id="sectionTemplate"
-                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                        onchange="SectionModal.selectTemplate(this.value)">
+                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                            onchange="SectionModal.selectTemplate(this.value)">
                         <option value="">Select a template...</option>
                     </select>
                     <p class="text-xs text-slate-500 mt-1">Choose a template for this section type</p>
@@ -58,8 +51,8 @@
                 <div id="gridConfiguration" class="hidden">
                     <label class="block text-sm font-medium text-slate-700 mb-1">Grid Layout</label>
                     <select id="gridLayout"
-                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                        onchange="handleGridLayoutChange(this.value)">
+                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                            onchange="handleGridLayoutChange(this.value)">
                         <option value="3">3 Items (Vertical)</option>
                         <option value="6">6 Items (3x2 Grid)</option>
                     </select>
@@ -68,7 +61,7 @@
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
                     <select id="modalSectionStatus"
-                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                         @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
                         {
                             @if (Model.Status == status)
@@ -100,7 +93,7 @@
 
             <div class="mt-4 text-center">
                 <button type="button" id="addItemBtn" onclick="SectionModal.addSectionItem()"
-                    class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
+                        class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
                     <i class="fas fa-plus mr-2"></i> Add Item
                 </button>
             </div>
@@ -117,8 +110,8 @@
                 @foreach (var lang in Model.AvailableLanguages)
                 {
                     <button type="button"
-                        class="language-tab flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors @(lang.IsDefault ? "bg-green-100 text-green-800" : "text-slate-600 hover:text-slate-800 hover:bg-slate-50")"
-                        data-language-id="@lang.Id" onclick="switchLanguageTab(@lang.Id)">
+                            class="language-tab flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors @(lang.IsDefault ? "bg-green-100 text-green-800" : "text-slate-600 hover:text-slate-800 hover:bg-slate-50")"
+                            data-language-id="@lang.Id" onclick="switchLanguageTab(@lang.Id)">
                         @lang.Code.ToUpper()
                         @if (lang.IsDefault)
                         {
@@ -148,16 +141,15 @@
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Section Title</label>
                                     <input type="text"
-                                        class="section-translation-title w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
-                                        value="@(translation?.Title ?? "")" placeholder="Enter section title" />
+                                           class="section-translation-title w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
+                                           value="@(translation?.Title ?? "")" placeholder="Enter section title" />
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Section Description</label>
-                                    <textarea
-                                    class="section-translation-description w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
-                                    rows="2"
-                                    placeholder="Enter section description">@(translation?.Description ?? "")</textarea>
+                                    <textarea class="section-translation-description w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
+                                          rows="2"
+                                          placeholder="Enter section description">@(translation?.Description ?? "")</textarea>
                                 </div>
                             </div>
                         </div>
@@ -169,11 +161,11 @@
         <!-- Action Buttons -->
         <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200">
             <button type="button" onclick="SectionModal.close()"
-                class="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm transition-colors">
+                    class="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm transition-colors">
                 <i class="fas fa-times mr-2"></i> Cancel
             </button>
             <button type="button" onclick="SectionModal.save()"
-                class="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                    class="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
                 <i class="fas fa-save mr-2"></i> Save Section
             </button>
         </div>
@@ -195,16 +187,16 @@
         justify-content: space-between;
     }
 
-    .item-card:hover {
-        border-color: #a855f7;
-        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
-    }
+        .item-card:hover {
+            border-color: #a855f7;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+        }
 
-    .item-card.filled {
-        border-style: solid;
-        border-color: #10b981;
-        background: #f0fdf4;
-    }
+        .item-card.filled {
+            border-style: solid;
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
 
     .item-preview img {
         width: 100%;
@@ -237,7 +229,7 @@
         transition: opacity 0.2s ease-in-out;
     }
 
-    .translation-content.hidden {
-        display: none;
-    }
+        .translation-content.hidden {
+            display: none;
+        }
 </style>

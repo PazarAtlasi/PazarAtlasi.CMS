@@ -261,11 +261,6 @@ function toggleSectionSettings(sectionId) {
 }
 
 function addNewSection() {
-    // Show section selection modal first
-    showSectionSelectionModal();
-}
-
-function showSectionSelectionModal() {
     const modal = document.getElementById("sectionSelectionModal");
     if (modal) {
         modal.classList.remove("hidden");

@@ -25,8 +25,8 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         public Status Status { get; set; }
 
-        public Dictionary<string, object>? Data { get; set; } = new();
-
+        public Dictionary<string, object> Data { get; set; }
+        
         public List<SectionItemViewModel> ChildItems { get; set; } = new();
 
         // Translations
