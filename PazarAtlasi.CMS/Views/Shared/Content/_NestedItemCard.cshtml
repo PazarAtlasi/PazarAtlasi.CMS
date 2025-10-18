@@ -1,6 +1,6 @@
 @model PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel
 @{
-    var nestedConfig = ViewBag.NestedConfig as PazarAtlasi.CMS.Application.Dtos.NestedItemConfiguration;
+    var nestedConfig = ViewBag.NestedConfig as PazarAtlasi.CMS.Application.Dtos.NestedSectionConfiguration;
     var parentTempId = ViewBag.ParentTempId as string;
     var nestedIndex = ViewBag.NestedIndex as int? ?? 0;
     var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();

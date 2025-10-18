@@ -16,13 +16,13 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// <summary>
         /// Section item configuration for this template
         /// </summary>
-        public SectionItemConfiguration ItemConfiguration { get; set; } = new();
+        public SectionConfiguration SectionConfiguration { get; set; } = new();
     }
 
     /// <summary>
     /// Defines how section items should be configured for a template
     /// </summary>
-    public class SectionItemConfiguration
+    public class SectionConfiguration
     {
         /// <summary>
         /// Minimum number of items required
@@ -62,7 +62,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// <summary>
         /// Nested child item configuration (e.g., dropdown menu items)
         /// </summary>
-        public NestedItemConfiguration? NestedItems { get; set; }
+        public NestedSectionConfiguration? NestedItems { get; set; }
 
         /// <summary>
         /// UI rendering hints
@@ -73,7 +73,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
     /// <summary>
     /// Configuration for nested/child items
     /// </summary>
-    public class NestedItemConfiguration
+    public class NestedSectionConfiguration
     {
         /// <summary>
         /// Minimum number of nested items

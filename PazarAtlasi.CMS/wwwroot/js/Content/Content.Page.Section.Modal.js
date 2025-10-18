@@ -210,9 +210,9 @@ const SectionModal = (function () {
                             console.log("✅ Template configuration loaded successfully:", currentSection.templateConfiguration);
 
                             // Debug the configuration structure
-                            if (currentSection.templateConfiguration?.itemConfiguration) {
-                                const itemConfig = currentSection.templateConfiguration.itemConfiguration;
-                                console.log("✅ ItemConfiguration details:", {
+                            if (currentSection.templateConfiguration?.sectionConfiguration) {
+                                const itemConfig = currentSection.templateConfiguration.sectionConfiguration;
+                                console.log("✅ SectionConfiguration details:", {
                                     allowDynamicItems: itemConfig.allowDynamicItems,
                                     minItems: itemConfig.minItems,
                                     maxItems: itemConfig.maxItems,
@@ -234,7 +234,7 @@ const SectionModal = (function () {
                                     });
                                 }
                             } else {
-                                console.warn("❌ No itemConfiguration found in template configuration");
+                                console.warn("❌ No SectionConfiguration found in template configuration");
                             }
                         } catch (parseError) {
                             console.error("❌ Error parsing template configuration:", parseError);
@@ -426,7 +426,7 @@ const SectionModal = (function () {
         const maxRetries = 5;
 
         while (retryCount < maxRetries) {
-            if (currentSection.templateConfiguration?.itemConfiguration) {
+            if (currentSection.templateConfiguration?.sectionConfiguration) {
                 break;
             }
 
@@ -438,14 +438,14 @@ const SectionModal = (function () {
         try {
             // Get current configuration
             const config = currentSection.templateConfiguration;
-            if (!config || !config.itemConfiguration) {
+            if (!config || !config.sectionConfiguration) {
                 console.error("❌ No item configuration found after retries");
                 console.log("Current template configuration:", currentSection.templateConfiguration);
                 alert("Template configuration not loaded. Please try again or refresh the page.");
                 return;
             }
 
-            const itemConfig = config.itemConfiguration;
+            const itemConfig = config.sectionConfiguration;
             console.log("✅ Item configuration found:", itemConfig);
 
             // Check max items limit
@@ -683,14 +683,14 @@ const SectionModal = (function () {
         console.log("Current section state:", currentSection);
 
         const config = currentSection.templateConfiguration;
-        if (!config || !config.itemConfiguration) {
+        if (!config || !config.sectionConfiguration) {
             console.error("❌ No template configuration found");
             console.log("Available configuration:", currentSection.templateConfiguration);
             alert("Template configuration not loaded. Please refresh and try again.");
             return;
         }
 
-        const itemConfig = config.itemConfiguration;
+        const itemConfig = config.sectionConfiguration;
         console.log("✅ Item configuration found:", itemConfig);
 
         // Check min items limit - now using camelCase
@@ -780,12 +780,12 @@ const SectionModal = (function () {
         try {
             // Get current configuration
             const config = currentSection.templateConfiguration;
-            if (!config || !config.itemConfiguration || !config.itemConfiguration.nestedItems) {
+            if (!config || !config.sectionConfiguration || !config.sectionConfiguration.nestedItems) {
                 console.warn("No nested items configuration found");
                 return;
             }
 
-            const nestedConfig = config.itemConfiguration.nestedItems;
+            const nestedConfig = config.sectionConfiguration.nestedItems;
             const parentContainer = document.querySelector(`#nestedItems_${parentTempId}`);
             if (!parentContainer) {
                 console.error("Parent container not found");
@@ -1075,13 +1075,13 @@ const SectionModal = (function () {
         }
 
         const config = currentSection.templateConfiguration;
-        if (!config || !config.itemConfiguration) {
+        if (!config || !config.sectionConfiguration) {
             console.log("No item configuration, showing add button");
             addButton.style.display = "block";
             return;
         }
 
-        const itemConfig = config.itemConfiguration;
+        const itemConfig = config.sectionConfiguration;
         const currentCount = document.querySelectorAll(".section-item-card").length;
 
         // Now using camelCase

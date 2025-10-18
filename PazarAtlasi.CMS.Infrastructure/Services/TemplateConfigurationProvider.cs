@@ -62,7 +62,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Simple Navbar",
                 TemplateKey = "navbar-simple",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 8,
@@ -74,7 +74,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         new() { Name = "title", Label = "Menu Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, Placeholder = "e.g., Products, Services", IsTranslatable = true },
                         new() { Name = "icon", Label = "Icon (Optional)", Type = Domain.Common.SectionItemFieldType.Text, Placeholder = "fa fa-bars" }
                     },
-                    NestedItems = new NestedItemConfiguration
+                    NestedItems = new NestedSectionConfiguration
                     {
                         MinItems = 1,
                         MaxItems = 10,
@@ -115,7 +115,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Mega Menu Navbar",
                 TemplateKey = "navbar-megamenu",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 6,
@@ -129,7 +129,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         new() { Name = "image", Label = "Featured Image", Type = Domain.Common.SectionItemFieldType.Image },
                         new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-star" }
                     },
-                    NestedItems = new NestedItemConfiguration
+                    NestedItems = new NestedSectionConfiguration
                     {
                         MinItems = 2,
                         MaxItems = 15,
@@ -171,7 +171,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Service Tabs Navbar",
                 TemplateKey = "navbar-servicetabs",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 6,
@@ -203,7 +203,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Categorized Navbar",
                 TemplateKey = "navbar-categorized",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 8,
@@ -215,7 +215,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         new() { Name = "title", Label = "Category Title", Type = Domain.Common.SectionItemFieldType.Title, Required = true, MaxLength = 50, IsTranslatable = true },
                         new() { Name = "icon", Label = "Icon", Type = Domain.Common.SectionItemFieldType.Icon, Placeholder = "fa fa-tag" }
                     },
-                    NestedItems = new NestedItemConfiguration
+                    NestedItems = new NestedSectionConfiguration
                     {
                         MinItems = 1,
                         MaxItems = 12,
@@ -259,7 +259,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Default Template",
                 TemplateKey = "default",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 1,
                     MaxItems = null, // Unlimited
@@ -288,7 +288,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Carousel",
                 TemplateKey = "carousel",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 10,
@@ -323,7 +323,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Grid Layout",
                 TemplateKey = "grid",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 12,
@@ -355,7 +355,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Masonry Layout",
                 TemplateKey = "masonry",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 4,
                     MaxItems = 20,
@@ -387,7 +387,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Sequential Layout",
                 TemplateKey = "sequential",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 2,
                     MaxItems = 10,
@@ -417,7 +417,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "List Layout",
                 TemplateKey = "list",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 15,
@@ -447,7 +447,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Single Item",
                 TemplateKey = "single-item",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 1,
                     MaxItems = 1,
@@ -479,7 +479,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Multi Item",
                 TemplateKey = "multi-item",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 2,
                     MaxItems = 8,
@@ -511,7 +511,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Accordion",
                 TemplateKey = "accordion",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 3,
                     MaxItems = 10,
@@ -541,7 +541,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
             {
                 TemplateName = "Tabs",
                 TemplateKey = "tabs",
-                ItemConfiguration = new SectionItemConfiguration
+                SectionConfiguration = new SectionConfiguration
                 {
                     MinItems = 2,
                     MaxItems = 8,

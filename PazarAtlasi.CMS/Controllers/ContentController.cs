@@ -612,7 +612,7 @@ namespace PazarAtlasi.CMS.Controllers
                 }
 
                 var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
-                if (configuration?.ItemConfiguration == null)
+                if (configuration?.SectionConfiguration == null)
                 {
                     return Content("<div class='text-red-500'>Template configuration not found</div>");
                 }
@@ -630,9 +630,9 @@ namespace PazarAtlasi.CMS.Controllers
                 };
 
                 // Add default field values
-                if (configuration.ItemConfiguration.Fields != null)
+                if (configuration.SectionConfiguration.Fields != null)
                 {
-                    foreach (var field in configuration.ItemConfiguration.Fields)
+                    foreach (var field in configuration.SectionConfiguration.Fields)
                     {
                         if (!string.IsNullOrEmpty(field.DefaultValue))
                         {
@@ -642,9 +642,9 @@ namespace PazarAtlasi.CMS.Controllers
                 }
 
                 // Create default nested items if configured
-                if (configuration.ItemConfiguration.NestedItems != null)
+                if (configuration.SectionConfiguration.NestedItems != null)
                 {
-                    var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItemCount);
+                    var nestedDefaultCount = Math.Max(0, configuration.SectionConfiguration.NestedItems.DefaultItemCount);
                     
                     for (int j = 0; j < nestedDefaultCount; j++)
                     {
@@ -658,9 +658,9 @@ namespace PazarAtlasi.CMS.Controllers
                         };
 
                         // Add default nested field values
-                        if (configuration.ItemConfiguration.NestedItems.Fields != null)
+                        if (configuration.SectionConfiguration.NestedItems.Fields != null)
                         {
-                            foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
+                            foreach (var field in configuration.SectionConfiguration.NestedItems.Fields)
                             {
                                 if (!string.IsNullOrEmpty(field.DefaultValue))
                                 {
@@ -718,7 +718,7 @@ namespace PazarAtlasi.CMS.Controllers
                 }
 
                 var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
-                if (configuration?.ItemConfiguration?.NestedItems == null)
+                if (configuration?.SectionConfiguration?.NestedItems == null)
                 {
                     return Content("<div class='text-red-500'>Nested items configuration not found</div>");
                 }
@@ -734,9 +734,9 @@ namespace PazarAtlasi.CMS.Controllers
                 };
 
                 // Add default nested field values
-                if (configuration.ItemConfiguration.NestedItems.Fields != null)
+                if (configuration.SectionConfiguration.NestedItems.Fields != null)
                 {
-                    foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
+                    foreach (var field in configuration.SectionConfiguration.NestedItems.Fields)
                     {
                         if (!string.IsNullOrEmpty(field.DefaultValue))
                         {
@@ -759,7 +759,7 @@ namespace PazarAtlasi.CMS.Controllers
                     .ThenBy(l => l.Name)
                     .ToListAsync();
 
-                ViewBag.NestedConfig = configuration.ItemConfiguration.NestedItems;
+                ViewBag.NestedConfig = configuration.SectionConfiguration.NestedItems;
                 ViewBag.ParentTempId = parentTempId;
                 ViewBag.NestedIndex = nestedIndex;
                 ViewBag.AvailableLanguages = availableLanguages;
@@ -1297,9 +1297,9 @@ namespace PazarAtlasi.CMS.Controllers
                 ViewBag.AvailableLanguages = availableLanguages;
 
                 // Create default items based on configuration
-                if (configuration.ItemConfiguration != null)
+                if (configuration.SectionConfiguration != null)
                 {
-                    var defaultItemsCount = Math.Max(0, configuration.ItemConfiguration.DefaultItemCount);
+                    var defaultItemsCount = Math.Max(0, configuration.SectionConfiguration.DefaultItemCount);
 
                     for (int i = 0; i < defaultItemsCount; i++)
                     {
@@ -1314,9 +1314,9 @@ namespace PazarAtlasi.CMS.Controllers
                         };
 
                         // Add default field values
-                        if (configuration.ItemConfiguration.Fields != null)
+                        if (configuration.SectionConfiguration.Fields != null)
                         {
-                            foreach (var field in configuration.ItemConfiguration.Fields)
+                            foreach (var field in configuration.SectionConfiguration.Fields)
                             {
                                 if (!string.IsNullOrEmpty(field.DefaultValue))
                                 {
@@ -1326,10 +1326,10 @@ namespace PazarAtlasi.CMS.Controllers
                         }
 
                         // Create default nested items if configured
-                        if (configuration.ItemConfiguration.NestedItems != null)
+                        if (configuration.SectionConfiguration.NestedItems != null)
                         {
                             item.ChildItems = new List<SectionItemViewModel>();
-                            var nestedDefaultCount = Math.Max(0, configuration.ItemConfiguration.NestedItems.DefaultItemCount);
+                            var nestedDefaultCount = Math.Max(0, configuration.SectionConfiguration.NestedItems.DefaultItemCount);
 
                             for (int j = 0; j < nestedDefaultCount; j++)
                             {
@@ -1343,9 +1343,9 @@ namespace PazarAtlasi.CMS.Controllers
                                 };
 
                                 // Add default nested field values
-                                if (configuration.ItemConfiguration.NestedItems.Fields != null)
+                                if (configuration.SectionConfiguration.NestedItems.Fields != null)
                                 {
-                                    foreach (var field in configuration.ItemConfiguration.NestedItems.Fields)
+                                    foreach (var field in configuration.SectionConfiguration.NestedItems.Fields)
                                     {
                                         if (!string.IsNullOrEmpty(field.DefaultValue))
                                         {
