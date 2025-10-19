@@ -85,26 +85,38 @@
             }
         </div>
 
-        <!-- Add item buttons for each item configuration type -->
-        @if (sectionConfig.AllowDynamicSectionItems)
+        <!-- Add section item button with type selection -->
+        @if (sectionConfig.AllowDynamicSectionItems && sectionConfig.SectionItems?.Any() == true)
         {
-            <div class="mt-4 space-y-2">
-                @foreach (var itemConfig in sectionConfig.SectionItems)
+            <div class="mt-4">
+                @if (sectionConfig.SectionItems.Count == 1)
                 {
-                    var currentTypeCount = Model.SectionItems.Count(i => i.Type == itemConfig.ItemType);
-                    var canAddMore = itemConfig.MaxItems == null || currentTypeCount < itemConfig.MaxItems;
+                    // If only one item type, add directly
+                    var singleConfig = sectionConfig.SectionItems.First();
+                    var currentTypeCount = Model.SectionItems.Count(i => i.Type == singleConfig.ItemType);
+                    var canAddMore = singleConfig.MaxItems == null || currentTypeCount < singleConfig.MaxItems;
                     
                     @if (canAddMore)
                     {
-                        <button type="button" onclick="SectionModal.addSectionItemByType('@itemConfig.ItemType')"
+                        <button type="button" 
+                                onclick="SectionModal.addSectionItemByType('@Model.TemplateId', '@singleConfig.ItemType', @Model.SectionId)"
                                 class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
-                            <i class="fas fa-plus mr-2"></i> @(itemConfig.UIConfiguration?.AddButtonText ?? $"Add {itemConfig.ItemType}")
-                            @if (itemConfig.MaxItems != null)
+                            <i class="fas fa-plus mr-2"></i> @(singleConfig.UIConfiguration?.AddButtonText ?? $"Add {singleConfig.ItemType}")
+                            @if (singleConfig.MaxItems != null)
                             {
-                                <span class="ml-2 text-xs">(@currentTypeCount/@itemConfig.MaxItems)</span>
+                                <span class="ml-2 text-xs">(@currentTypeCount/@singleConfig.MaxItems)</span>
                             }
                         </button>
                     }
+                }
+                else
+                {
+                    // Multiple item types - show selection modal
+                    <button type="button" 
+                            onclick="SectionModal.showItemTypeSelectionModal(@Model.TemplateId, @Model.SectionId, 0)"
+                            class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
+                        <i class="fas fa-plus mr-2"></i> @(sectionConfig.SectionUIConfiguration?.AddButtonText ?? "Add Section Item")
+                    </button>
                 }
             </div>
         }

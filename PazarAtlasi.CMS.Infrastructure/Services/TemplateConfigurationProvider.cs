@@ -67,7 +67,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 SectionConfiguration = new SectionConfiguration
                 {
                     MinSectionItemCount = 2,
-                    MaxSectionItemCount = 2,
+                    MaxSectionItemCount = 6,
                     DefaultSectionCount = 2,
                     AllowDynamicSectionItems = false, // Logo + Menu items fixed
                     SectionItems = new List<SectionItemConfiguration>
