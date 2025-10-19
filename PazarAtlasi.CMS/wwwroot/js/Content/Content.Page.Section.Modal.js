@@ -343,7 +343,7 @@ const SectionModal = (function () {
       );
 
       // Collect section items data recursively
-      const sectionItems = collectSectionItemsFromDOM();
+      const sectionItems = collectSectionItems();
 
       const sectionData = {
         Id: currentSection.id,
@@ -385,7 +385,7 @@ const SectionModal = (function () {
    * Collect section items from DOM recursively
    * @returns {Array} Array of section items with their fields and nested items
    */
-  function collectSectionItemsFromDOM() {
+  function collectSectionItems() {
     const itemCards = document.querySelectorAll(
       "#itemsGrid > .section-item-card"
     );
