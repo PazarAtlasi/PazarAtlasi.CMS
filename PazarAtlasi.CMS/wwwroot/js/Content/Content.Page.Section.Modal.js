@@ -575,172 +575,6 @@ const SectionModal = (function () {
   }
 
   /**
-   * Update item field value
-   * @param {string} itemId - The section item ID
-   * @param {string} parentItemId - The parent item ID (empty string if root level)
-   * @param {string} fieldKey - The field key
-   * @param {any} value - The field value
-   */
-  function updateItemField(itemId, parentItemId, fieldKey, value) {
-    console.log("Field updated:", {
-      itemId,
-      parentItemId,
-      fieldKey,
-      value,
-    });
-
-    // Initialize storage
-    if (!window.sectionItemsData) {
-      window.sectionItemsData = {};
-    }
-
-    // Determine if this is a nested item or root item
-    if (parentItemId && parentItemId !== "" && parentItemId !== "0") {
-      // This is a nested item
-      if (!window.sectionItemsData[parentItemId]) {
-        window.sectionItemsData[parentItemId] = {
-          fields: {},
-          childItems: {},
-        };
-      }
-      if (!window.sectionItemsData[parentItemId].childItems) {
-        window.sectionItemsData[parentItemId].childItems = {};
-      }
-      if (!window.sectionItemsData[parentItemId].childItems[itemId]) {
-        window.sectionItemsData[parentItemId].childItems[itemId] = {
-          fields: {},
-          translations: {},
-        };
-      }
-
-      // Store the field value
-      window.sectionItemsData[parentItemId].childItems[itemId].fields[
-        fieldKey
-      ] = value;
-    } else {
-      // This is a root level item
-      if (!window.sectionItemsData[itemId]) {
-        window.sectionItemsData[itemId] = {
-          fields: {},
-          childItems: {},
-          translations: {},
-        };
-      }
-      if (!window.sectionItemsData[itemId].fields) {
-        window.sectionItemsData[itemId].fields = {};
-      }
-
-      // Store the field value
-      window.sectionItemsData[itemId].fields[fieldKey] = value;
-    }
-
-    console.log("Current sectionItemsData:", window.sectionItemsData);
-  }
-
-  /**
-   * Update item field translation (multi-language support)
-   * @param {string} itemId - The section item ID
-   * @param {string} parentItemId - The parent item ID (empty string if root level)
-   * @param {string} fieldKey - The field key
-   * @param {string} languageCode - Language code (e.g., 'en-US')
-   * @param {number} languageId - Language ID
-   * @param {any} value - The field value
-   */
-  function updateItemFieldTranslation(
-    itemId,
-    parentItemId,
-    fieldKey,
-    languageCode,
-    languageId,
-    value
-  ) {
-    console.log("Field translation updated:", {
-      itemId,
-      parentItemId,
-      fieldKey,
-      languageCode,
-      languageId,
-      value,
-    });
-
-    // Initialize storage
-    if (!window.sectionItemsData) {
-      window.sectionItemsData = {};
-    }
-
-    // Determine if this is a nested item or root item
-    if (parentItemId && parentItemId !== "" && parentItemId !== "0") {
-      // This is a nested item
-      if (!window.sectionItemsData[parentItemId]) {
-        window.sectionItemsData[parentItemId] = {
-          fields: {},
-          childItems: {},
-        };
-      }
-      if (!window.sectionItemsData[parentItemId].childItems) {
-        window.sectionItemsData[parentItemId].childItems = {};
-      }
-      if (!window.sectionItemsData[parentItemId].childItems[itemId]) {
-        window.sectionItemsData[parentItemId].childItems[itemId] = {
-          fields: {},
-          translations: {},
-        };
-      }
-      if (
-        !window.sectionItemsData[parentItemId].childItems[itemId]
-          .translations
-      ) {
-        window.sectionItemsData[parentItemId].childItems[
-          itemId
-        ].translations = {};
-      }
-      if (
-        !window.sectionItemsData[parentItemId].childItems[itemId]
-          .translations[languageId]
-      ) {
-        window.sectionItemsData[parentItemId].childItems[
-          itemId
-        ].translations[languageId] = {
-          languageId: languageId,
-          languageCode: languageCode,
-          fields: {},
-        };
-      }
-
-      // Store the translated field value
-      window.sectionItemsData[parentItemId].childItems[
-        itemId
-      ].translations[languageId].fields[fieldKey] = value;
-    } else {
-      // This is a root level item
-      if (!window.sectionItemsData[itemId]) {
-        window.sectionItemsData[itemId] = {
-          fields: {},
-          childItems: {},
-          translations: {},
-        };
-      }
-      if (!window.sectionItemsData[itemId].translations) {
-        window.sectionItemsData[itemId].translations = {};
-      }
-      if (!window.sectionItemsData[itemId].translations[languageId]) {
-        window.sectionItemsData[itemId].translations[languageId] = {
-          languageId: languageId,
-          languageCode: languageCode,
-          fields: {},
-        };
-      }
-
-      // Store the translated field value
-      window.sectionItemsData[itemId].translations[languageId].fields[
-        fieldKey
-      ] = value;
-    }
-
-    console.log("Current sectionItemsData:", window.sectionItemsData);
-  }
-
-  /**
    * Switch language tab for section items
    * @param {HTMLElement} button - The clicked tab button
    */
@@ -790,9 +624,6 @@ const SectionModal = (function () {
         "section-item"
       );
       if (result.success) {
-        // Update the stored data
-        updateItemField(itemId, parentItemId, fieldKey, result.url);
-
         // Update the preview image in UI
         const fieldContainer = inputElement.closest(
           ".image-upload-container"
@@ -1744,12 +1575,9 @@ const SectionModal = (function () {
 
     // Section items management
     addSectionItem,
-    removeSectionItem,
-    updateItemField,
-    updateItemFieldTranslation,
     switchItemLanguageTab,
     openImageUpload,
-      removeImage,
+    removeImage,
 
     // Nested items management
     addNestedItem,

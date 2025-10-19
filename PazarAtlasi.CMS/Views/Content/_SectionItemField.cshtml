@@ -1,10 +1,7 @@
 @model PazarAtlasi.CMS.Application.Dtos.SectionItemFieldDto
 
 @{
-    var item = ViewBag.Item as PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel;
     var value = Model.DefaultValue;
-    var itemId = item?.Id.ToString() ?? "0";
-    var parentItemId = ViewBag.ParentItemId?.ToString() ?? "";
     var level = ViewBag.Level as int? ?? 0;
 
     // Check if this field supports multiple languages
@@ -17,8 +14,7 @@
     var fieldDescription = Model.Translations?.FirstOrDefault()?.Description;
 }
 
-<div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@isTranslatable.ToString().ToLower()"
-    data-item-id="@itemId" data-parent-id="@parentItemId" data-level="@level">
+<div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@isTranslatable.ToString().ToLower()" data-level="@level">
     @if (isTranslatable && availableLanguages.Any())
     {
         <!-- Multi-language field with tabs -->
@@ -71,8 +67,7 @@
                                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="@Model.Placeholder (@language.Name)" maxlength="@Model.MaxLength"
                                     required="@Model.Required" value="@langValue" data-field-key="@Model.FieldKey"
-                                    data-language-code="@language.Code" data-language-id="@language.Id"
-                                    onchange="SectionModal.updateItemFieldTranslation('@itemId', '@parentItemId', '@Model.FieldKey', '@language.Code', @language.Id, this.value)" />
+                                    data-language-code="@language.Code" data-language-id="@language.Id" />
                                 break;
 
                             case "textarea":
@@ -80,24 +75,21 @@
                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="@Model.Placeholder (@language.Name)" maxlength="@Model.MaxLength"
                     required="@Model.Required" data-field-key="@Model.FieldKey" data-language-code="@language.Code"
-                    data-language-id="@language.Id"
-                    onchange="SectionModal.updateItemFieldTranslation('@itemId', '@parentItemId', '@Model.FieldKey', '@language.Code', @language.Id, this.value)">@langValue</textarea>
+                    data-language-id="@language.Id">@langValue</textarea>
                                 break;
 
                             case "url":
                                 <input type="url"
                                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="@Model.Placeholder (@language.Name)" required="@Model.Required" value="@langValue"
-                                    data-field-key="@Model.FieldKey" data-language-code="@language.Code" data-language-id="@language.Id"
-                                    onchange="SectionModal.updateItemFieldTranslation('@itemId', '@parentItemId', '@Model.FieldKey', '@language.Code', @language.Id, this.value)" />
+                                    data-field-key="@Model.FieldKey" data-language-code="@language.Code" data-language-id="@language.Id"/>
                                 break;
 
                             default:
                                 <input type="text"
                                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="@Model.Placeholder (@language.Name)" value="@langValue"
-                                    data-field-key="@Model.FieldKey" data-language-code="@language.Code" data-language-id="@language.Id"
-                                    onchange="SectionModal.updateItemFieldTranslation('@itemId', '@parentItemId', '@Model.FieldKey', '@language.Code', @language.Id, this.value)" />
+                                    data-field-key="@Model.FieldKey" data-language-code="@language.Code" data-language-id="@language.Id"/>
                                 break;
                         }
                     </div>
@@ -127,31 +119,27 @@
                     <input type="text" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required" value="@value"
-                        data-field-key="@Model.FieldKey"
-                        onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)" />
+                        data-field-key="@Model.FieldKey"/>
                     break;
 
                 case "textarea":
                     <textarea  rows="@(Model.MaxLength > 200 ? 4 : 2)"
             class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
-            data-field-key="@Model.FieldKey"
-            onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)">@value</textarea>
+            data-field-key="@Model.FieldKey">@value</textarea>
                     break;
 
                 case "richtext":
                     <div class="richtext-editor border border-slate-300 rounded-lg">
                         <textarea class="w-full px-3 py-2 text-sm"
-                placeholder="@Model.Placeholder" required="@Model.Required" data-field-key="@Model.FieldKey"
-                onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)">@value</textarea>
+                placeholder="@Model.Placeholder" required="@Model.Required" data-field-key="@Model.FieldKey">@value</textarea>
                     </div>
                     break;
 
                 case "url":
                     <input type="url" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="@Model.Placeholder" required="@Model.Required" value="@value" data-field-key="@Model.FieldKey"
-                        onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)" />
+                        placeholder="@Model.Placeholder" required="@Model.Required" value="@value" data-field-key="@Model.FieldKey" />
                     break;
 
                 case "image":
@@ -159,8 +147,7 @@
                         <input type="hidden"  class="image-path-input" value="@value"
                             data-field-key="@Model.FieldKey" />
                         <div class="flex items-center space-x-2">
-                            <input type="file" class="hidden" accept="image/*"
-                                onchange="SectionModal.handleImageUpload('@itemId', '@parentItemId', '@Model.FieldKey', this)" />
+                            <input type="file" class="hidden" accept="image/*"/>
                             <button type="button"
                                 class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
                                 <i class="fas fa-upload mr-2"></i> Upload Image
@@ -184,8 +171,7 @@
                 case "select":
                     <select 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required="@Model.Required" data-field-key="@Model.FieldKey"
-                        onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)">
+                        required="@Model.Required" data-field-key="@Model.FieldKey">
                         <option value="">Select...</option>
                         @if (Model.Options != null)
                         {
@@ -200,16 +186,14 @@
                 case "number":
                     <input type="number" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="@Model.Placeholder" required="@Model.Required" value="@value" data-field-key="@Model.FieldKey"
-                        onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)" />
+                        placeholder="@Model.Placeholder" required="@Model.Required" value="@value" data-field-key="@Model.FieldKey">
                     break;
 
                 case "checkbox":
                     <label class="flex items-center space-x-2">
                         <input type="checkbox" 
                             class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                            checked="@(value == "true" || value == "True")" data-field-key="@Model.FieldKey"
-                            onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.checked)" />
+                            checked="@(value == "true" || value == "True")" data-field-key="@Model.FieldKey" />
                         <span class="text-sm text-slate-600">@Model.Placeholder</span>
                     </label>
                     break;
@@ -217,8 +201,7 @@
                 default:
                     <input type="text" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="@Model.Placeholder" value="@value" data-field-key="@Model.FieldKey"
-                        onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)" />
+                        placeholder="@Model.Placeholder" value="@value" data-field-key="@Model.FieldKey"/>
                     break;
             }
         </div>
