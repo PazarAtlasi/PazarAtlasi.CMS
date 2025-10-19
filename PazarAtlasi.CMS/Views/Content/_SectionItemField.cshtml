@@ -15,11 +15,6 @@
     // Get default language label or use FieldKey
     var fieldLabel = Model.Translations?.FirstOrDefault()?.Label ?? Model.FieldKey;
     var fieldDescription = Model.Translations?.FirstOrDefault()?.Description;
-
-    // Generate unique field identifier for JS access
-    var uniqueFieldId = string.IsNullOrEmpty(parentItemId)
-    ? $"field_{itemId}_{Model.FieldKey}"
-    : $"field_{parentItemId}_{itemId}_{Model.FieldKey}";
 }
 
 <div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@isTranslatable.ToString().ToLower()"
@@ -67,13 +62,12 @@
                     <div class="language-panel @(language.IsDefault ? "" : "hidden")" data-language="@language.Code">
                         @{
                             var langValue = value; // TODO: Get language-specific value
-                            var langFieldId = $"{uniqueFieldId}_{language.Code}";
                         }
 
                         @switch (Model.Type.ToString().ToLower())
                         {
                             case "text":
-                                <input type="text" id="@langFieldId"
+                                <input type="text"
                                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="@Model.Placeholder (@language.Name)" maxlength="@Model.MaxLength"
                                     required="@Model.Required" value="@langValue" data-field-key="@Model.FieldKey"
@@ -82,7 +76,7 @@
                                 break;
 
                             case "textarea":
-                                <textarea id="@langFieldId" rows="@(Model.MaxLength > 200 ? 4 : 2)"
+                                <textarea rows="@(Model.MaxLength > 200 ? 4 : 2)"
                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="@Model.Placeholder (@language.Name)" maxlength="@Model.MaxLength"
                     required="@Model.Required" data-field-key="@Model.FieldKey" data-language-code="@language.Code"
@@ -91,7 +85,7 @@
                                 break;
 
                             case "url":
-                                <input type="url" id="@langFieldId"
+                                <input type="url"
                                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="@Model.Placeholder (@language.Name)" required="@Model.Required" value="@langValue"
                                     data-field-key="@Model.FieldKey" data-language-code="@language.Code" data-language-id="@language.Id"
@@ -99,7 +93,7 @@
                                 break;
 
                             default:
-                                <input type="text" id="@langFieldId"
+                                <input type="text"
                                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="@Model.Placeholder (@language.Name)" value="@langValue"
                                     data-field-key="@Model.FieldKey" data-language-code="@language.Code" data-language-id="@language.Id"
@@ -130,7 +124,7 @@
             @switch (Model.Type.ToString())
             {
                 case "text":
-                    <input type="text" id="@uniqueFieldId" name="@uniqueFieldId"
+                    <input type="text" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required" value="@value"
                         data-field-key="@Model.FieldKey"
@@ -138,7 +132,7 @@
                     break;
 
                 case "textarea":
-                    <textarea id="@uniqueFieldId" name="@uniqueFieldId" rows="@(Model.MaxLength > 200 ? 4 : 2)"
+                    <textarea  rows="@(Model.MaxLength > 200 ? 4 : 2)"
             class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="@Model.Placeholder" maxlength="@Model.MaxLength" required="@Model.Required"
             data-field-key="@Model.FieldKey"
@@ -147,14 +141,14 @@
 
                 case "richtext":
                     <div class="richtext-editor border border-slate-300 rounded-lg">
-                        <textarea id="@uniqueFieldId" name="@uniqueFieldId" class="w-full px-3 py-2 text-sm"
+                        <textarea class="w-full px-3 py-2 text-sm"
                 placeholder="@Model.Placeholder" required="@Model.Required" data-field-key="@Model.FieldKey"
                 onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)">@value</textarea>
                     </div>
                     break;
 
                 case "url":
-                    <input type="url" id="@uniqueFieldId" name="@uniqueFieldId"
+                    <input type="url" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="@Model.Placeholder" required="@Model.Required" value="@value" data-field-key="@Model.FieldKey"
                         onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)" />
@@ -162,12 +156,12 @@
 
                 case "image":
                     <div class="image-upload-container">
-                        <input type="hidden" id="@uniqueFieldId" name="@uniqueFieldId" class="image-path-input" value="@value"
+                        <input type="hidden"  class="image-path-input" value="@value"
                             data-field-key="@Model.FieldKey" />
                         <div class="flex items-center space-x-2">
-                            <input type="file" id="@(uniqueFieldId)_file" class="hidden" accept="image/*"
+                            <input type="file" class="hidden" accept="image/*"
                                 onchange="SectionModal.handleImageUpload('@itemId', '@parentItemId', '@Model.FieldKey', this)" />
-                            <button type="button" onclick="document.getElementById('@(uniqueFieldId)_file').click()"
+                            <button type="button"
                                 class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
                                 <i class="fas fa-upload mr-2"></i> Upload Image
                             </button>
@@ -188,7 +182,7 @@
                     break;
 
                 case "select":
-                    <select id="@uniqueFieldId" name="@uniqueFieldId"
+                    <select 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required="@Model.Required" data-field-key="@Model.FieldKey"
                         onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)">
@@ -204,7 +198,7 @@
                     break;
 
                 case "number":
-                    <input type="number" id="@uniqueFieldId" name="@uniqueFieldId"
+                    <input type="number" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="@Model.Placeholder" required="@Model.Required" value="@value" data-field-key="@Model.FieldKey"
                         onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)" />
@@ -212,7 +206,7 @@
 
                 case "checkbox":
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" id="@uniqueFieldId" name="@uniqueFieldId"
+                        <input type="checkbox" 
                             class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
                             checked="@(value == "true" || value == "True")" data-field-key="@Model.FieldKey"
                             onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.checked)" />
@@ -221,7 +215,7 @@
                     break;
 
                 default:
-                    <input type="text" id="@uniqueFieldId" name="@uniqueFieldId"
+                    <input type="text" 
                         class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="@Model.Placeholder" value="@value" data-field-key="@Model.FieldKey"
                         onchange="SectionModal.updateItemField('@itemId', '@parentItemId', '@Model.FieldKey', this.value)" />
