@@ -2,7 +2,7 @@
 
 @{
     var item = ViewBag.Item as PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel;
-    var value = ViewBag.Value?.ToString() ?? Model.DefaultValue ?? "";
+    var value = Model.DefaultValue;
     var itemId = item?.Id.ToString() ?? "0";
     var parentItemId = ViewBag.ParentItemId?.ToString() ?? "";
     var level = ViewBag.Level as int? ?? 0;
@@ -49,7 +49,7 @@
                         <button type="button"
                             class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
                             data-language="@language.Code" data-language-id="@language.Id"
-                            onclick="SectionModal.switchItemLanguageTab(this, '@uniqueFieldId')">
+                            onclick="SectionModal.switchItemLanguageTab(this)">
                             @language.Code.ToUpper()
                             @if (language.IsDefault)
                             {

@@ -63,7 +63,8 @@
                             {
                                 ViewBag.Field = field;
                                 ViewBag.Item = item;
-                                ViewBag.Value = item.Data != null && item.Data.ContainsKey(field.FieldKey) == true ? item.Data[field.FieldKey]?.ToString() : field.DefaultValue ?? "";
+                                var fieldViewModel = item.Fields?.FirstOrDefault(f => f.FieldKey == field.FieldKey);
+                                ViewBag.Value = fieldViewModel?.FieldValue ?? field.DefaultValue ?? "";
                                 ViewBag.AvailableLanguages = ViewBag.AvailableLanguages;
 
                                 @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)

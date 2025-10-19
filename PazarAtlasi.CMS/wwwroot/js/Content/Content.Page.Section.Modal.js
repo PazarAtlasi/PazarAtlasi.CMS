@@ -193,6 +193,8 @@ const SectionModal = (function () {
       // Collect section items data recursively
       const sectionItems = collectSectionItems();
 
+       console.log("Collected section items:", sectionItems);
+
       const sectionData = {
         Id: currentSection.id,
         PageId: currentSection.pageId,
@@ -291,7 +293,7 @@ const SectionModal = (function () {
     // Collect fields
     const fields = [];
     const fieldContainers = itemCard.querySelectorAll(
-      ":scope > .space-y-3 > .field-container, :scope > .space-y-2 > .field-container"
+      ".field-container"
     );
 
     fieldContainers.forEach((container) => {
@@ -741,9 +743,8 @@ const SectionModal = (function () {
   /**
    * Switch language tab for section items
    * @param {HTMLElement} button - The clicked tab button
-   * @param {string} uniqueFieldId - Unique field identifier
    */
-  function switchItemLanguageTab(button, uniqueFieldId) {
+  function switchItemLanguageTab(button) {
     const fieldContainer = button.closest(".field-container");
     const languageCode = button.dataset.language;
 

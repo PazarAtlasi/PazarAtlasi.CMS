@@ -85,6 +85,11 @@ namespace PazarAtlasi.CMS.Controllers
                 .Include(p => p.PageSections.OrderBy(s => s.SortOrder))
                     .ThenInclude(s => s.Section)
                     .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
+                        .ThenInclude(si => si.Fields)
+                        .ThenInclude(f => f.Translations)
+                .Include(p => p.PageSections)
+                    .ThenInclude(s => s.Section)
+                    .ThenInclude(s => s.SectionItems)
                         .ThenInclude(si => si.Translations)
                 .Include(p => p.PageTranslations)
                     .ThenInclude(pt => pt.Language)
@@ -130,6 +135,22 @@ namespace PazarAtlasi.CMS.Controllers
                         Type = si.Type,
                         SortOrder = si.SortOrder,
                         Status = si.Status,
+                        Fields = si.Fields.Select(f => new SectionItemFieldViewModel
+                        {
+                            Id = f.Id,
+                            SectionItemId = f.SectionItemId,
+                            FieldType = f.FieldType,
+                            FieldKey = f.FieldKey,
+                            FieldValue = f.FieldValue,
+                            Translations = f.Translations.Select(ft => new SectionItemFieldTranslationViewModel
+                            {
+                                Id = ft.Id,
+                                SectionItemFieldId = ft.SectionItemFieldId,
+                                LanguageId = ft.LanguageId,
+                                Name = ft.Name,
+                                Description = ft.Description
+                            }).ToList()
+                        }).ToList(),
                         Translations = si.Translations.Select(sit => new SectionItemTranslationViewModel
                         {
                             Id = sit.Id,
@@ -642,6 +663,10 @@ namespace PazarAtlasi.CMS.Controllers
                     var pageSection = await _pazarAtlasiDbContext.PageSections
                         .Include(ps => ps.Section)
                         .ThenInclude(s => s.SectionItems)
+                        .ThenInclude(si => si.Fields)
+                        .ThenInclude(f => f.Translations)
+                        .Include(ps => ps.Section)
+                        .ThenInclude(s => s.SectionItems)
                         .ThenInclude(si => si.Translations)
                         .ThenInclude(t => t.Language)
                         .FirstOrDefaultAsync(ps => ps.SectionId == id && ps.PageId == pageId);
@@ -669,6 +694,22 @@ namespace PazarAtlasi.CMS.Controllers
                             MediaType = si.MediaType,
                             SortOrder = si.SortOrder,
                             Status = si.Status,
+                            Fields = si.Fields.Select(f => new SectionItemFieldViewModel
+                            {
+                                Id = f.Id,
+                                SectionItemId = f.SectionItemId,
+                                FieldType = f.FieldType,
+                                FieldKey = f.FieldKey,
+                                FieldValue = f.FieldValue,
+                                Translations = f.Translations.Select(ft => new SectionItemFieldTranslationViewModel
+                                {
+                                    Id = ft.Id,
+                                    SectionItemFieldId = ft.SectionItemFieldId,
+                                    LanguageId = ft.LanguageId,
+                                    Name = ft.Name,
+                                    Description = ft.Description
+                                }).ToList()
+                            }).ToList(),
                             Translations = si.Translations.Select(t => new SectionItemTranslationViewModel
                             {
                                 Id = t.Id,
@@ -1754,7 +1795,7 @@ namespace PazarAtlasi.CMS.Controllers
                 SortOrder = sortOrder,
                 Type = itemConfig.ItemType,
                 Status = Status.Active,
-                Data = new Dictionary<string, object>(),
+                Fields = new List<SectionItemFieldViewModel>(),
                 ChildItems = new List<SectionItemViewModel>()
             };
 
@@ -1763,10 +1804,16 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 foreach (var field in itemConfig.Fields)
                 {
-                    if (!string.IsNullOrEmpty(field.DefaultValue))
+                    var fieldViewModel = new SectionItemFieldViewModel
                     {
-                        item.Data[field.FieldKey] = field.DefaultValue;
-                    }
+                        Id = 0,
+                        SectionItemId = 0,
+                        FieldKey = field.FieldKey,
+                        FieldType = field.Type,
+                        FieldValue = field.DefaultValue ?? string.Empty,
+                        Translations = new List<SectionItemFieldTranslationViewModel>()
+                    };
+                    item.Fields.Add(fieldViewModel);
                 }
             }
 
@@ -1801,7 +1848,7 @@ namespace PazarAtlasi.CMS.Controllers
             foreach (var itemRequest in itemRequests)
             {
                 Console.WriteLine($"Processing item: {itemRequest.TempId}");
-                Console.WriteLine($"Item data: {System.Text.Json.JsonSerializer.Serialize(itemRequest.Data)}");
+                Console.WriteLine($"Item fields: {System.Text.Json.JsonSerializer.Serialize(itemRequest.Fields)}");
                 Console.WriteLine($"Nested items count: {itemRequest.NestedItems?.Count ?? 0}");
 
                 var newItem = new SectionItem
@@ -1819,6 +1866,48 @@ namespace PazarAtlasi.CMS.Controllers
                 await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
 
                 Console.WriteLine($"Created item with ID: {newItem.Id}");
+
+                // Add item fields
+                if (itemRequest.Fields != null && itemRequest.Fields.Any())
+                {
+                    var itemFields = itemRequest.Fields.Select(f => new SectionItemField
+                    {
+                        SectionItemId = newItem.Id,
+                        FieldType = f.FieldType,
+                        FieldKey = f.FieldKey,
+                        FieldValue = f.FieldValue ?? string.Empty,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    }).ToList();
+
+                    _pazarAtlasiDbContext.SectionItemFields.AddRange(itemFields);
+                    await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get field IDs
+                    
+                    Console.WriteLine($"Added {itemFields.Count} fields for item {newItem.Id}");
+
+                    // Add field translations
+                    foreach (var fieldViewModel in itemRequest.Fields)
+                    {
+                        if (fieldViewModel.Translations != null && fieldViewModel.Translations.Any())
+                        {
+                            var field = itemFields.FirstOrDefault(f => f.FieldKey == fieldViewModel.FieldKey);
+                            if (field != null)
+                            {
+                                var fieldTranslations = fieldViewModel.Translations.Select(t => new SectionItemFieldTranslation
+                                {
+                                    SectionItemFieldId = field.Id,
+                                    LanguageId = t.LanguageId,
+                                    Name = t.Name ?? string.Empty,
+                                    Description = t.Description ?? string.Empty,
+                                    CreatedAt = DateTime.UtcNow,
+                                    IsDeleted = false
+                                }).ToList();
+
+                                _pazarAtlasiDbContext.SectionItemFieldTranslations.AddRange(fieldTranslations);
+                            }
+                        }
+                    }
+                }
 
                 // Add item translations
                 if (itemRequest.Translations != null && itemRequest.Translations.Any())

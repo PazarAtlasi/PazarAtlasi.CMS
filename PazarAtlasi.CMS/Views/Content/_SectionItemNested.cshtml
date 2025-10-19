@@ -58,15 +58,15 @@
                         </div>
                         
                         <!-- Render fields for this nested item -->
-                        <div class="space-y-2">
+                        <div class="nested-field-list space-y-2">
                             @foreach (var field in childConfig.Fields ?? new List<SectionItemFieldDto>())
                             {
                                 ViewBag.Field = field;
                                 ViewBag.Item = childItem;
                                 ViewBag.ParentItemId = parentItem.Id;
                                 ViewBag.Level = level;
-                                ViewBag.Value = childItem.Data != null && childItem.Data.ContainsKey(field.FieldKey) == true ? 
-                                    childItem.Data[field.FieldKey]?.ToString() : field.DefaultValue ?? "";
+                                var fieldViewModel = childItem.Fields?.FirstOrDefault(f => f.FieldKey == field.FieldKey);
+                                ViewBag.Value = fieldViewModel?.FieldValue ?? field.DefaultValue ?? "";
 
                                 @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
                             }

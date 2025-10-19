@@ -20,7 +20,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int SortOrder { get; set; }
         public string? MediaAttributes { get; set; }
         public Status Status { get; set; }
-        public Dictionary<string, object>? Data { get; set; } = new();
+        public List<SectionItemFieldViewModel>? Fields { get; set; } = new();
         public List<SectionItemRequest> NestedItems { get; set; } = new();
         public List<SectionItemTranslationRequest> Translations { get; set; } = new();
     }

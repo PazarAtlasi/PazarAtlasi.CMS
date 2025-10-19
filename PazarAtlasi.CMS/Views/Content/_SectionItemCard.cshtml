@@ -47,14 +47,9 @@
         {
             @foreach (var field in itemConfig.Fields)
             {
-                ViewBag.Field = field;
                 ViewBag.Item = Model;
                 ViewBag.ParentItemId = "";
                 ViewBag.Level = 0;
-                ViewBag.Value = Model.Data != null && Model.Data.ContainsKey(field.FieldKey) == true
-                ? Model.Data[field.FieldKey]?.ToString()
-                : field.DefaultValue ?? "";
-                ViewBag.AvailableLanguages = availableLanguages;
 
                 @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
             }
@@ -73,7 +68,6 @@
             ViewBag.ParentItem = Model;
             ViewBag.NestedConfigs = itemConfig.SectionItems;
             ViewBag.Level = 1;
-            ViewBag.AvailableLanguages = availableLanguages;
 
             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
         }
