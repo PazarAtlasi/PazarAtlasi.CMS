@@ -33,8 +33,9 @@
             </span>
             @if (itemConfig?.AllowDynamicSectionItems == true)
             {
-                <button type="button" onclick="SectionModal.removeSectionItem('@Model.Id')"
-                        class="text-red-600 hover:text-red-800 text-sm p-2 hover:bg-red-50 rounded transition-colors">
+                <button type="button" onclick="this.closest('.section-item-card').remove(); updateItemNumbers();"
+                        class="text-red-600 hover:text-red-800 text-sm p-2 hover:bg-red-50 rounded transition-colors"
+                        title="Remove this item">
                     <i class="fas fa-trash"></i>
                 </button>
             }

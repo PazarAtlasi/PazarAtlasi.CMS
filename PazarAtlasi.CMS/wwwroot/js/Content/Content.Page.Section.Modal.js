@@ -193,7 +193,7 @@ const SectionModal = (function () {
       // Collect section items data recursively
       const sectionItems = collectSectionItems();
 
-       console.log("Collected section items:", sectionItems);
+      console.log("Collected section items:", sectionItems);
 
       const sectionData = {
         Id: currentSection.id,
@@ -829,77 +829,6 @@ const SectionModal = (function () {
   }
 
   /**
-   * Remove a section item
-   */
-  function removeSectionItem(itemId) {
-    console.log("removeSectionItem called with itemId:", itemId);
-    console.log("Current section state:", currentSection);
-
-    const config = currentSection.templateConfiguration;
-    if (!config || !config.sectionConfiguration) {
-      console.error("❌ No template configuration found");
-      console.log(
-        "Available configuration:",
-        currentSection.templateConfiguration
-      );
-      alert(
-        "Template configuration not loaded. Please refresh and try again."
-      );
-      return;
-    }
-
-    const itemConfig = config.sectionConfiguration;
-    console.log("✅ Item configuration found:", itemConfig);
-
-    // Check min items limit - now using camelCase
-    const currentItemsCount = document.querySelectorAll(
-      ".section-item-card"
-    ).length;
-
-    console.log("Current items count:", currentItemsCount);
-
-    const minItems = itemConfig.minItems || 0;
-    console.log("Min items required:", minItems);
-
-    if (minItems && currentItemsCount <= minItems) {
-      alert(`Minimum ${minItems} items required`);
-      return;
-    }
-
-    // Remove from DOM
-    const card = document.querySelector(`[data-item-id="${itemId}"]`);
-
-    console.log("Card found:", !!card);
-    console.log("Card element:", card);
-
-    if (card) {
-      card.remove();
-      console.log("✅ Card removed successfully");
-    } else {
-      console.error("❌ Card not found with itemId:", itemId);
-      // Debug: Log all existing cards
-      const allCards = document.querySelectorAll(
-        ".section-item-card"
-      );
-      console.log("All existing cards:", allCards.length);
-      allCards.forEach((c, index) => {
-        console.log(`Card ${index}:`, c.dataset.itemId);
-      });
-    }
-
-    // Remove from stored data
-    if (window.sectionItemsData && window.sectionItemsData[itemId]) {
-      delete window.sectionItemsData[itemId];
-      console.log("✅ Removed from sectionItemsData");
-    }
-
-    // Update UI
-    updateItemNumbers();
-    updateItemsCountBadge();
-    updateAddButtonVisibility();
-  }
-
-  /**
    * Open image upload modal (placeholder)
    */
   function openImageUpload(button) {
@@ -1195,38 +1124,6 @@ const SectionModal = (function () {
     window.sectionItemsData[parentTempId].nestedItems[
       nestedTempId
     ].translations[languageId][fieldName] = value;
-  }
-
-  /**
-   * Switch language tab for nested items
-   */
-  function switchNestedLanguageTab(
-    button,
-    parentTempId,
-    nestedTempId,
-    fieldName
-  ) {
-    const fieldContainer = button.closest(".nested-field-container");
-    const languageCode = button.dataset.language;
-
-    // Update active tab
-    fieldContainer.querySelectorAll(".lang-tab").forEach((tab) => {
-      tab.classList.remove("border-purple-500", "text-purple-600");
-      tab.classList.add("border-transparent", "text-slate-500");
-    });
-    button.classList.remove("border-transparent", "text-slate-500");
-    button.classList.add("border-purple-500", "text-purple-600");
-
-    // Show/hide language panels
-    fieldContainer
-      .querySelectorAll(".language-panel")
-      .forEach((panel) => {
-        if (panel.dataset.language === languageCode) {
-          panel.classList.remove("hidden");
-        } else {
-          panel.classList.add("hidden");
-        }
-      });
   }
 
   // ==================== HELPER FUNCTIONS ====================
@@ -1526,7 +1423,7 @@ const SectionModal = (function () {
       alert("No templates available for this section type");
       return;
     }
-      console.log(templates);
+    console.log(templates);
     // Create modal HTML
     const modalHTML = `
       <div id="templateSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -1804,6 +1701,38 @@ const SectionModal = (function () {
     }
   }
 
+  /**
+   * Update item numbers after adding/removing items
+   */
+  function updateItemNumbers() {
+    const itemCards = document.querySelectorAll(".section-item-card");
+    itemCards.forEach((card, index) => {
+      const numberElement = card.querySelector(".item-number");
+      if (numberElement) {
+        // Update the number while preserving the text before the #
+        const text = numberElement.textContent;
+        const hashIndex = text.lastIndexOf("#");
+        if (hashIndex !== -1) {
+          numberElement.textContent =
+            text.substring(0, hashIndex + 1) + (index + 1);
+        }
+      }
+    });
+  }
+
+  /**
+   * Update items count badge
+   */
+  function updateItemsCountBadge() {
+    const badge = document.getElementById("itemsCountBadge");
+    if (badge) {
+      const count = document.querySelectorAll(
+        ".section-item-card"
+      ).length;
+      badge.textContent = `${count} item${count !== 1 ? "s" : ""}`;
+    }
+  }
+
   // Public API
   return {
     show,
@@ -1812,6 +1741,7 @@ const SectionModal = (function () {
     handleSectionTypeChange,
     save,
     loadAvailablePages,
+
     // Section items management
     addSectionItem,
     removeSectionItem,
@@ -1819,22 +1749,27 @@ const SectionModal = (function () {
     updateItemFieldTranslation,
     switchItemLanguageTab,
     openImageUpload,
-    removeImage,
+      removeImage,
+
     // Nested items management
     addNestedItem,
     removeNestedItem,
     updateNestedItemField,
-    updateNestedItemFieldTranslation,
-    switchNestedLanguageTab,
+      updateNestedItemFieldTranslation,
+
     // Image handling
-    handleImageUpload,
+      handleImageUpload,
+
     // UI management
     clearSectionItemsUI,
+      updateItemNumbers,
+
     // NEW: Type-based item management
     addSectionItemByType,
     addNestedItemByType,
     showItemTypeSelectionModal,
-    closeItemTypeSelectionModal,
+      closeItemTypeSelectionModal,
+
     // NEW: Template selection for items
     showTemplateSelectionForNewItem,
     closeTemplateSelectionModal,

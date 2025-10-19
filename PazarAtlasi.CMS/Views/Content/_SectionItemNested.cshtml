@@ -50,8 +50,9 @@
                             </span>
                             @if (childConfig.AllowDynamicSectionItems)
                             {
-                                <button type="button" onclick="SectionModal.removeNestedItem('@parentItem.Id', '@childItem.Id', @level)"
-                                        class="text-red-500 hover:text-red-700 text-xs">
+                                <button type="button" onclick="this.closest('.nested-item-card').remove();"
+                                        class="text-red-500 hover:text-red-700 text-xs"
+                                        title="Remove this nested item">
                                     <i class="fas fa-times"></i>
                                 </button>
                             }
