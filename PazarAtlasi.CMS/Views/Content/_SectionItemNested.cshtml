@@ -32,6 +32,8 @@
         <div class="space-y-2 ml-@(marginLeft) pl-3 border-l-2 border-@(borderColor)">
             @foreach (var childItem in parentItem.ChildItems)
             {
+                ViewBag.AvailableLanguages = availableLanguages;
+
                 // Find matching configuration for this child item's type
                 var childConfig = nestedConfigs.FirstOrDefault(nc => nc.ItemType == childItem.Type);
                 
@@ -63,7 +65,6 @@
                                 ViewBag.Item = childItem;
                                 ViewBag.Value = childItem.Data != null && childItem.Data.ContainsKey(field.FieldKey) == true ? 
                                     childItem.Data[field.FieldKey]?.ToString() : field.DefaultValue ?? "";
-                                ViewBag.AvailableLanguages = availableLanguages;
 
                                 @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
                             }
@@ -76,7 +77,6 @@
                             ViewBag.ParentItem = childItem;
                             ViewBag.NestedConfigs = childConfig.SectionItems;
                             ViewBag.Level = level + 1;
-                            ViewBag.AvailableLanguages = availableLanguages;
                             
                             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
                         }

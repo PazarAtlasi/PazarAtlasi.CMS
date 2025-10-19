@@ -72,12 +72,12 @@
                             <!-- NEW: Recursively render nested items -->
                             @if (item.ChildItems?.Any() == true && itemConfig.SectionItems?.Any() == true)
                             {
-                                @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml", new 
-                                { 
-                                    ParentItem = item, 
-                                    NestedConfigs = itemConfig.SectionItems,
-                                    Level = 1
-                                })
+                                ViewBag.ParentItem = item;
+                                ViewBag.NestedConfigs = itemConfig.SectionItems;
+                                ViewBag.Level = 1;
+                                ViewBag.AvailableLanguages = ViewBag.AvailableLanguages;
+                                
+                                @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
                             }
                         </div>
                     </div>
