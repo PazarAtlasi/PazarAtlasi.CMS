@@ -837,10 +837,9 @@ namespace PazarAtlasi.CMS.Controllers
 
                 // Create a single item with a temporary ID (negative number to indicate it's a new/temp item)
                 var item = CreateDefaultSectionItem(firstItemConfig, sectionId, currentCount + 1);
-                item.Id = -(new Random().Next(100000, 999999)); // Negative ID for temporary items
 
                 // Set ViewBag for the partial view
-                ViewBag.ItemConfig = firstItemConfig;
+                item.SectionItemConfiguration = firstItemConfig;
 
                 return PartialView("~/Views/Content/_SectionItemCard.cshtml", item);
             }

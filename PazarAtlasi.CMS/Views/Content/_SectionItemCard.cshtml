@@ -1,7 +1,7 @@
 @using PazarAtlasi.CMS.Application.Dtos
 @model PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel
 @{
-    var itemConfig = ViewBag.ItemConfig as SectionItemConfiguration;
+    var itemConfig = Model.SectionItemConfiguration;
     var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
 }
 
@@ -48,10 +48,7 @@
         {
             @foreach (var field in itemConfig.Fields)
             {
-                ViewBag.Item = Model;
-                ViewBag.ParentItemId = "";
                 ViewBag.Level = 0;
-
                 @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
             }
         }
