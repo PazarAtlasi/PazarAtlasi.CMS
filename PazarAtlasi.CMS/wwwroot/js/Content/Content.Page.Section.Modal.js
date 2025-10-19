@@ -94,34 +94,37 @@ const SectionModal = (function () {
   }
 
   /**
-   * Handle section type change - Load templates from backend
+   * Handle section type change - Show Add Item button
    */
   async function handleSectionTypeChange(sectionType) {
     currentSection.type = parseInt(sectionType);
 
-    const templateSelect = document.getElementById("sectionTemplate");
+    console.log("Section type changed:", sectionType);
 
-    if (!templateSelect) {
-      console.warn("Template select element not found");
-      return;
-    }
-
-    // Clear existing options except the first one
-    templateSelect.innerHTML =
-      '<option value="">Select a template...</option>';
+    // Hide items grid, show add item button
+    const addItemButtonContainer = document.getElementById(
+      "addItemButtonContainer"
+    );
+    const itemsGridContainer = document.getElementById(
+      "itemsGridContainer"
+    );
 
     if (sectionType === "0" || !sectionType) {
-      templateSelect.disabled = true;
+      // Hide both if no type selected
+      if (addItemButtonContainer)
+        addItemButtonContainer.classList.add("hidden");
+      if (itemsGridContainer)
+        itemsGridContainer.classList.add("hidden");
       return;
     }
 
-    // Show loading state
-    templateSelect.disabled = true;
-    templateSelect.innerHTML =
-      '<option value="">Loading templates...</option>';
+    // Show add item button
+    if (addItemButtonContainer) {
+      addItemButtonContainer.classList.remove("hidden");
+    }
 
+    // Load available templates for this section type (for later use)
     try {
-      // Load templates list from backend
       const result = await ContentServices.getTemplatesBySectionType(
         sectionType
       );
@@ -131,170 +134,15 @@ const SectionModal = (function () {
         result.templates &&
         result.templates.length > 0
       ) {
-        templateSelect.innerHTML =
-          '<option value="">Select a template...</option>';
-
-        result.templates.forEach((template) => {
-          const option = document.createElement("option");
-          option.value = template.id;
-          option.textContent = template.name;
-          templateSelect.appendChild(option);
-        });
-
-        templateSelect.disabled = false;
+        currentSection.availableTemplates = result.templates;
+        console.log("Available templates loaded:", result.templates);
       } else {
-        templateSelect.innerHTML =
-          '<option value="">No templates available</option>';
+        currentSection.availableTemplates = [];
+        console.warn("No templates available for this section type");
       }
     } catch (error) {
       console.error("Error loading templates:", error);
-      templateSelect.innerHTML =
-        '<option value="">Error loading templates</option>';
-    }
-  }
-
-  /**
-   * Select template (for backward compatibility)
-   */
-  async function selectTemplate(templateId) {
-    console.log(
-      "handleTemplateChange called with templateId:",
-      templateId
-    );
-
-    currentSection.templateId = parseInt(templateId) || null;
-
-    if (!templateId) {
-      console.log("No template ID provided, clearing UI");
-      // Clear section items if no template selected
-      clearSectionItemsUI();
-      return;
-    }
-
-    try {
-      console.log("Making request to getSectionItemsList...");
-
-      // Load section items list as HTML from backend (partial view)
-      const html = await ContentServices.getSectionItemsList(
-        templateId,
-        currentSection.id
-      );
-
-      console.log(
-        "Received HTML from backend, length:",
-        html ? html.length : 0
-      );
-      console.log(
-        "HTML content preview:",
-        html ? html.substring(0, 200) + "..." : "null"
-      );
-
-      // Insert HTML into container
-      const container = document.getElementById(
-        "sectionItemsContainer"
-      );
-
-      console.log("Container found:", !!container);
-
-      if (container) {
-        console.log("Setting container innerHTML...");
-        container.innerHTML = html;
-
-        // Give a small delay for DOM to update
-        setTimeout(() => {
-          // Parse and store template configuration from script tag
-          const configScript = document.getElementById(
-            "templateConfiguration"
-          );
-
-          console.log(
-            "Looking for templateConfiguration script tag..."
-          );
-          console.log("Config script found:", !!configScript);
-
-          if (configScript) {
-            console.log("Script content:", configScript.textContent);
-            try {
-              currentSection.templateConfiguration = JSON.parse(
-                configScript.textContent
-              );
-              console.log(
-                "✅ Template configuration loaded successfully:",
-                currentSection.templateConfiguration
-              );
-
-              // Debug the configuration structure
-              if (
-                currentSection.templateConfiguration
-                  ?.sectionConfiguration
-              ) {
-                const itemConfig =
-                  currentSection.templateConfiguration
-                    .sectionConfiguration;
-                console.log("✅ SectionConfiguration details:", {
-                  allowDynamicItems: itemConfig.allowDynamicItems,
-                  minItems: itemConfig.minItems,
-                  maxItems: itemConfig.maxItems,
-                  uiConfiguration: itemConfig.uiConfiguration,
-                  fields: itemConfig.fields,
-                  nestedItems: itemConfig.nestedItems,
-                });
-
-                // Debug nested fields specifically
-                if (itemConfig.nestedItems?.fields) {
-                  console.log(
-                    "🔄 Nested fields with translation info:"
-                  );
-                  itemConfig.nestedItems.fields.forEach(
-                    (field, index) => {
-                      console.log(`  Field ${index + 1}:`, {
-                        name: field.name,
-                        label: field.label,
-                        type: field.type,
-                        isTranslatable: field.isTranslatable,
-                      });
-                    }
-                  );
-                }
-              } else {
-                console.warn(
-                  "❌ No SectionConfiguration found in template configuration"
-                );
-              }
-            } catch (parseError) {
-              console.error(
-                "❌ Error parsing template configuration:",
-                parseError
-              );
-              console.error(
-                "Script content that failed to parse:",
-                configScript.textContent
-              );
-            }
-          } else {
-            console.error(
-              "❌ templateConfiguration script tag not found"
-            );
-            // Let's check what scripts are available
-            const allScripts = document.querySelectorAll("script");
-            console.log("All script tags found:", allScripts.length);
-            allScripts.forEach((script, index) => {
-              console.log(`Script ${index}:`, script.id, script.type);
-            });
-          }
-
-          // Initialize plugins (SortableJS, etc.)
-          initializePlugins();
-
-          // Update UI counters
-          updateItemsCountBadge();
-        }, 100); // Small delay to ensure DOM is updated
-      } else {
-        console.error("❌ sectionItemsContainer not found");
-      }
-    } catch (error) {
-      console.error("❌ Error in handleTemplateChange:", error);
-      clearSectionItemsUI();
+      currentSection.availableTemplates = [];
     }
   }
 
@@ -1661,6 +1509,182 @@ const SectionModal = (function () {
   }
 
   /**
+   * NEW: Show template selection modal for adding new item
+   */
+  function showTemplateSelectionForNewItem() {
+    console.log("showTemplateSelectionForNewItem called");
+
+    if (!currentSection.type) {
+      alert("Please select a section type first");
+      return;
+    }
+
+    const templates = currentSection.availableTemplates || [];
+
+    if (templates.length === 0) {
+      alert("No templates available for this section type");
+      return;
+    }
+      console.log(templates);
+    // Create modal HTML
+    const modalHTML = `
+      <div id="templateSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-slate-800">
+                <i class="fas fa-layer-group mr-2 text-blue-600"></i>
+                Select Template for Section Item
+              </h3>
+              <button type="button" onclick="SectionModal.closeTemplateSelectionModal()" 
+                      class="text-slate-400 hover:text-slate-600">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${templates
+                .map(
+                  (template) => `
+                <button type="button"
+                        onclick="SectionModal.addItemWithTemplate(${
+                          template.id
+                        }); SectionModal.closeTemplateSelectionModal();"
+                        class="p-4 border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg transition-all text-left group">
+                  <div class="flex items-start mb-2">
+                    <i class="fas fa-layer-group text-2xl text-slate-400 group-hover:text-blue-600 mr-3 mt-1"></i>
+                    <div class="flex-1">
+                      <h4 class="font-medium text-slate-800 group-hover:text-blue-600 mb-1">
+                        ${template.name}
+                      </h4>
+                      <p class="text-xs text-slate-500 line-clamp-2">
+                        ${
+                          template.description ||
+                          "Template for " + template.name
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between text-xs text-slate-400 mt-2 pt-2 border-t border-slate-100">
+                    <span><i class="fas fa-tag mr-1"></i>${
+                      template.templateType
+                    }</span>
+                    <span class="text-blue-600 group-hover:text-blue-700 font-medium">
+                      Select <i class="fas fa-arrow-right ml-1"></i>
+                    </span>
+                  </div>
+                </button>
+              `
+                )
+                .join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add to body
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = modalHTML;
+    document.body.appendChild(tempDiv.firstElementChild);
+    document.body.style.overflow = "hidden";
+  }
+
+  /**
+   * NEW: Close template selection modal
+   */
+  function closeTemplateSelectionModal() {
+    const modal = document.getElementById("templateSelectionModal");
+    if (modal) {
+      modal.remove();
+      document.body.style.overflow = "";
+    }
+  }
+
+  /**
+   * NEW: Add item with selected template
+   */
+  async function addItemWithTemplate(templateId) {
+    console.log(
+      "addItemWithTemplate called with templateId:",
+      templateId
+    );
+
+    try {
+      // Store selected template
+      currentSection.templateId = templateId;
+
+      // Get item card HTML from backend
+      const itemsGrid = document.getElementById("itemsGrid");
+      const currentCount = itemsGrid
+        ? itemsGrid.querySelectorAll(".section-item-card").length
+        : 0;
+
+      const itemCardHtml =
+        await ContentServices.getNewSectionItemCard(
+          templateId,
+          currentSection.id,
+          currentCount
+        );
+
+      // Parse HTML
+      const tempContainer = document.createElement("div");
+      tempContainer.innerHTML = itemCardHtml;
+      const itemCard = tempContainer.firstElementChild;
+
+      if (!itemCard) {
+        console.error("Failed to create item card");
+        alert("Failed to create section item. Please try again.");
+        return;
+      }
+
+      // Get the item ID
+      const itemId = itemCard.dataset.itemId;
+      console.log("New item card created with ID:", itemId);
+
+      // Initialize storage for this item
+      if (!window.sectionItemsData) {
+        window.sectionItemsData = {};
+      }
+
+      window.sectionItemsData[itemId] = {
+        fields: {},
+        childItems: {},
+        translations: {},
+        templateId: templateId,
+      };
+
+      // Show items grid container if hidden
+      const itemsGridContainer = document.getElementById(
+        "itemsGridContainer"
+      );
+      if (
+        itemsGridContainer &&
+        itemsGridContainer.classList.contains("hidden")
+      ) {
+        itemsGridContainer.classList.remove("hidden");
+      }
+
+      // Add to grid
+      if (itemsGrid) {
+        itemsGrid.appendChild(itemCard);
+      }
+
+      // Update UI
+      updateItemNumbers();
+      updateItemsCountBadge();
+
+      console.log(
+        "Item added successfully with template:",
+        templateId
+      );
+    } catch (error) {
+      console.error("Error adding item with template:", error);
+      alert("Failed to add section item. Please try again.");
+    }
+  }
+
+  /**
    * NEW: Show item type selection modal
    */
   function showItemTypeSelectionModal(templateId, sectionId, level) {
@@ -1785,7 +1809,6 @@ const SectionModal = (function () {
     close,
     handlePageChange,
     handleSectionTypeChange,
-    selectTemplate,
     save,
     loadAvailablePages,
     // Section items management
@@ -1811,6 +1834,10 @@ const SectionModal = (function () {
     addNestedItemByType,
     showItemTypeSelectionModal,
     closeItemTypeSelectionModal,
+    // NEW: Template selection for items
+    showTemplateSelectionForNewItem,
+    closeTemplateSelectionModal,
+    addItemWithTemplate,
   };
 })();
 

@@ -182,19 +182,6 @@ const ContentServices = (function () {
     }
 
     /**
-     * Get section items list as partial view HTML with example data
-     */
-    function getSectionItemsList(templateId, sectionId = 0) {
-        return $.ajax({
-            url: `${config.baseUrl}/GetSectionItemsList`,
-            type: "GET",
-            data: { templateId, sectionId },
-            headers: buildHeaders(),
-            dataType: "html",
-        });
-    }
-
-    /**
      * Get new section item card as partial view HTML
      */
     function getNewSectionItemCard(templateId, sectionId = 0, itemIndex = 0) {
@@ -453,7 +440,6 @@ const ContentServices = (function () {
         getSectionModal,
         getTemplatesBySectionType,
         getTemplateConfiguration,
-        getSectionItemsList,
         getNewSectionItemCard,
         getNewNestedItemCard,
         getTemplatesPartial,

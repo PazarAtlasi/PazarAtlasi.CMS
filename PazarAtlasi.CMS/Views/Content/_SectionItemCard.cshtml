@@ -1,0 +1,82 @@
+@using PazarAtlasi.CMS.Application.Dtos
+@model PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel
+@{
+    var itemConfig = ViewBag.ItemConfig as SectionItemConfiguration;
+    var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
+}
+
+<div class="section-item-card border-2 border-slate-300 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+     data-item-id="@Model.Id"
+     data-item-type="@Model.Type">
+
+    <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-200">
+        <div class="flex items-center">
+            @if (itemConfig?.UIConfiguration?.ShowReorder == true)
+            {
+                <div class="drag-handle cursor-move mr-3 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded">
+                    <i class="fas fa-grip-vertical"></i>
+                </div>
+            }
+            <div>
+                <h5 class="text-sm font-semibold text-slate-800 item-number">
+                    @(itemConfig?.Translations?.FirstOrDefault()?.Title ?? Model.Type.ToString()) #@Model.SortOrder
+                </h5>
+                @if (!string.IsNullOrEmpty(itemConfig?.Translations?.FirstOrDefault()?.Description))
+                {
+                    <p class="text-xs text-slate-500 mt-0.5">@itemConfig.Translations.FirstOrDefault().Description</p>
+                }
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                <i class="fas fa-check-circle mr-1"></i>Active
+            </span>
+            @if (itemConfig?.AllowDynamicSectionItems == true)
+            {
+                <button type="button" onclick="SectionModal.removeSectionItem('@Model.Id')"
+                        class="text-red-600 hover:text-red-800 text-sm p-2 hover:bg-red-50 rounded transition-colors">
+                    <i class="fas fa-trash"></i>
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- Render fields for this item -->
+    <div class="space-y-3">
+        @if (itemConfig?.Fields != null && itemConfig.Fields.Any())
+        {
+            @foreach (var field in itemConfig.Fields)
+            {
+                ViewBag.Field = field;
+                ViewBag.Item = Model;
+                ViewBag.ParentItemId = "";
+                ViewBag.Level = 0;
+                ViewBag.Value = Model.Data != null && Model.Data.ContainsKey(field.FieldKey) == true
+                ? Model.Data[field.FieldKey]?.ToString()
+                : field.DefaultValue ?? "";
+                ViewBag.AvailableLanguages = availableLanguages;
+
+                @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
+            }
+        }
+        else
+        {
+            <div class="text-center py-4 text-slate-400">
+                <i class="fas fa-info-circle mr-2"></i>
+                <span class="text-sm">No fields configured for this item type</span>
+            </div>
+        }
+
+        <!-- Recursively render nested items -->
+        @if (Model.ChildItems?.Any() == true && itemConfig?.SectionItems?.Any() == true)
+        {
+            ViewBag.ParentItem = Model;
+            ViewBag.NestedConfigs = itemConfig.SectionItems;
+            ViewBag.Level = 1;
+            ViewBag.AvailableLanguages = availableLanguages;
+
+            @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
+        }
+    </div>
+</div>
+

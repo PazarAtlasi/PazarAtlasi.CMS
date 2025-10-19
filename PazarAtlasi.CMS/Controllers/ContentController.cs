@@ -597,104 +597,6 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Get new section item card as partial view
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetNewSectionItemCard(int templateId, int sectionId = 0, int itemIndex = 0)
-        {
-            try
-            {
-                var template = await _pazarAtlasiDbContext.Templates
-                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
-
-                if (template == null)
-                {
-                    return Content("<div class='text-red-500'>Template not found</div>");
-                }
-
-                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
-                if (configuration?.SectionConfiguration == null)
-                {
-                    return Content("<div class='text-red-500'>Template configuration not found</div>");
-                }
-
-                // Create new item data structure
-                var newItem = new SectionItemViewModel
-                {
-                    Id = 0,
-                    SectionId = sectionId,
-                    SortOrder = itemIndex + 1,
-                    Type = SectionItemType.Text,
-                    Status = Status.Active,
-                    Data = new Dictionary<string, object>(),
-                    ChildItems = new List<SectionItemViewModel>()
-                };
-
-                // NEW: Use first section item configuration as default if available
-                var defaultItemConfig = configuration.SectionConfiguration.SectionItems?.FirstOrDefault();
-                if (defaultItemConfig != null)
-                {
-                    // Add default field values from the item configuration
-                    if (defaultItemConfig.Fields != null)
-                    {
-                        foreach (var field in defaultItemConfig.Fields)
-                        {
-                            if (!string.IsNullOrEmpty(field.DefaultValue))
-                            {
-                                newItem.Data[field.FieldKey] = field.DefaultValue;
-                            }
-                        }
-                    }
-
-                    // Set the item type from configuration
-                    newItem.Type = defaultItemConfig.ItemType;
-
-                    // Create default nested items if configured (recursive structure)
-                    if (defaultItemConfig.SectionItems != null && defaultItemConfig.SectionItems.Any())
-                    {
-                        foreach (var nestedConfig in defaultItemConfig.SectionItems)
-                        {
-                            var nestedDefaultCount = Math.Max(0, nestedConfig.DefaultItemCount);
-                            
-                            for (int j = 0; j < nestedDefaultCount; j++)
-                            {
-                                // Use the helper method for recursive creation
-                                var nestedItem = CreateDefaultSectionItem(nestedConfig, 0, j + 1);
-                                newItem.ChildItems.Add(nestedItem);
-                            }
-                        }
-                    }
-                }
-
-                ViewBag.Configuration = configuration;
-                ViewBag.IsNewItem = true;
-                ViewBag.ItemIndex = itemIndex;
-
-                // Get available languages for translation support
-                var availableLanguages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .Select(l => new LanguageViewModel
-                    {
-                        Id = l.Id,
-                        Name = l.Name,
-                        Code = l.Code,
-                        IsDefault = l.IsDefault
-                    })
-                    .OrderByDescending(l => l.IsDefault)
-                    .ThenBy(l => l.Name)
-                    .ToListAsync();
-
-                ViewBag.AvailableLanguages = availableLanguages;
-
-                return PartialView("~/Views/Shared/Content/_SectionItemCard.cshtml", newItem);
-            }
-            catch (Exception ex)
-            {
-                return Content($"<div class='text-red-500'>Error creating new item: {ex.Message}</div>");
-            }
-        }
-
-        /// <summary>
         /// Get templates partial view
         /// </summary>
         [HttpGet]
@@ -1155,7 +1057,8 @@ namespace PazarAtlasi.CMS.Controllers
                     .Select(st => new
                     {
                         id = st.Template.Id,  // Template ID, not SectionTypeTemplate ID
-                        name = st.Template.Name
+                        name = st.Template.Name,
+                        templateType = st.Template.TemplateType.ToString()
                     })
                     .ToListAsync();
 
@@ -1164,86 +1067,6 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Error loading templates." });
-            }
-        }
-
-        /// <summary>
-        /// Get section items list as partial view with example data
-        /// NEW: Supports recursive SectionItemConfiguration structure
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetSectionItemsList(int templateId, int sectionId = 0)
-        {
-            try
-            {
-                // First check if template exists
-                var template = await _pazarAtlasiDbContext.Templates
-                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
-
-                if (template == null)
-                {
-                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found or inactive.</p></div>", "text/html");
-                }
-
-                // Get template configuration
-                var configuration = _templateConfigurationProvider?.GetConfiguration(template.Id, template.TemplateKey);
-                if (configuration == null)
-                {
-                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
-                }
-
-                // Create model
-                var model = new SectionItemsListViewModel
-                {
-                    TemplateId = templateId,
-                    SectionId = sectionId,
-                    Configuration = configuration,
-                    SectionItems = new List<SectionItemViewModel>()
-                };
-
-                // Get available languages for translation support
-                var availableLanguages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .Select(l => new LanguageViewModel
-                    {
-                        Id = l.Id,
-                        Name = l.Name,
-                        Code = l.Code,
-                        IsDefault = l.IsDefault
-                    })
-                    .OrderByDescending(l => l.IsDefault)
-                    .ThenBy(l => l.Name)
-                    .ToListAsync();
-
-                ViewBag.AvailableLanguages = availableLanguages;
-
-                // NEW: Create items based on new recursive SectionItemConfiguration structure
-                if (configuration.SectionConfiguration?.SectionItems != null)
-                {
-                    // The SectionConfiguration now has a list of SectionItemConfigurations
-                    // Each can have its own item type, fields, and nested SectionItems
-                    // We'll create default items for each SectionItemConfiguration
-                    
-                    foreach (var itemConfig in configuration.SectionConfiguration.SectionItems)
-                    {
-                        // Create default items for this configuration
-                        var defaultCount = Math.Max(0, itemConfig.DefaultItemCount);
-                        
-                        for (int i = 0; i < defaultCount; i++)
-                        {
-                            var item = CreateDefaultSectionItem(itemConfig, sectionId, model.SectionItems.Count + 1);
-                            model.SectionItems.Add(item);
-                        }
-                    }
-                }
-
-                return PartialView("~/Views/Content/_SectionItemsList.cshtml", model);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error in GetSectionItemsList: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                return Content($"<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Error loading section items: {ex.Message}</p></div>", "text/html");
             }
         }
 
@@ -1293,6 +1116,63 @@ namespace PazarAtlasi.CMS.Controllers
             }
 
             return item;
+        }
+
+        /// <summary>
+        /// Get a single new section item card as HTML (for adding items individually with different templates)
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetNewSectionItemCard(int templateId, int sectionId = 0, int currentCount = 0)
+        {
+            try
+            {
+                // Get template and configuration
+                var template = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found.</p></div>", "text/html");
+                }
+
+                var configuration = _templateConfigurationProvider?.GetConfiguration(template.Id, template.TemplateKey);
+                if (configuration == null || configuration.SectionConfiguration?.SectionItems == null || !configuration.SectionConfiguration.SectionItems.Any())
+                {
+                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
+                }
+
+                // Get available languages
+                var availableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderByDescending(l => l.IsDefault)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
+                ViewBag.AvailableLanguages = availableLanguages;
+
+                // Get the first item configuration (we'll create one item from this template's first config)
+                var firstItemConfig = configuration.SectionConfiguration.SectionItems.First();
+                
+                // Create a single item with a temporary ID (negative number to indicate it's a new/temp item)
+                var item = CreateDefaultSectionItem(firstItemConfig, sectionId, currentCount + 1);
+                item.Id = -(new Random().Next(100000, 999999)); // Negative ID for temporary items
+                
+                // Set ViewBag for the partial view
+                ViewBag.ItemConfig = firstItemConfig;
+
+                return PartialView("~/Views/Content/_SectionItemCard.cshtml", item);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GetNewSectionItemCard: {ex.Message}");
+                return Content($"<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Error: {ex.Message}</p></div>", "text/html");
+            }
         }
 
         [HttpGet]
