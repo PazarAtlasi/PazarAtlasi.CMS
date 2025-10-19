@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 {
-    public class SectionItemFieldConfiguration : IEntityTypeConfiguration<SectionItemField>
+    public class SectionItemFieldConfigurationBuilder : IEntityTypeConfiguration<SectionItemField>
     {
-        public SectionItemFieldConfiguration() { }
-
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<SectionItemField> builder)
         {
             builder.ToTable("SectionItemFields");

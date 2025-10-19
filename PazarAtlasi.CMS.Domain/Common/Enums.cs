@@ -46,6 +46,7 @@ namespace PazarAtlasi.CMS.Domain.Common
     public enum SectionItemType
     {
         None,
+        Logo,
         FeatureCard,
         Dropdown,
         List,

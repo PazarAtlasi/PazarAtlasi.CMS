@@ -5,7 +5,7 @@ using PazarAtlasi.CMS.Domain.Common;
 
 namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 {
-    public class TemplateConfiguration : IEntityTypeConfiguration<Template>
+    public class TemplateConfigurationBuilder : IEntityTypeConfiguration<Template>
     {
         public void Configure(EntityTypeBuilder<Template> builder)
         {

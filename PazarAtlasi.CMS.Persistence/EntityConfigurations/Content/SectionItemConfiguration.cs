@@ -5,7 +5,7 @@ using PazarAtlasi.CMS.Domain.Common;
 
 namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 {
-    public class SectionItemConfiguration : IEntityTypeConfiguration<SectionItem>
+    public class SectionItemConfigurationBuilder : IEntityTypeConfiguration<SectionItem>
     {
         public void Configure(EntityTypeBuilder<SectionItem> builder)
         {

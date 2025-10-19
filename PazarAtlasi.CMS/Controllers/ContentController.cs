@@ -12,6 +12,7 @@ using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
 using PazarAtlasi.CMS.Application.Dtos;
 using PazarAtlasi.CMS.Infrastructure.Services;
+using SectionItemConfiguration = PazarAtlasi.CMS.Application.Dtos.SectionItemConfiguration;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -629,47 +630,39 @@ namespace PazarAtlasi.CMS.Controllers
                     ChildItems = new List<SectionItemViewModel>()
                 };
 
-                // Add default field values
-                if (configuration.SectionConfiguration.Fields != null)
+                // NEW: Use first section item configuration as default if available
+                var defaultItemConfig = configuration.SectionConfiguration.SectionItems?.FirstOrDefault();
+                if (defaultItemConfig != null)
                 {
-                    foreach (var field in configuration.SectionConfiguration.Fields)
+                    // Add default field values from the item configuration
+                    if (defaultItemConfig.Fields != null)
                     {
-                        if (!string.IsNullOrEmpty(field.DefaultValue))
+                        foreach (var field in defaultItemConfig.Fields)
                         {
-                            newItem.Data[field.Name] = field.DefaultValue;
-                        }
-                    }
-                }
-
-                // Create default nested items if configured
-                if (configuration.SectionConfiguration.NestedItems != null)
-                {
-                    var nestedDefaultCount = Math.Max(0, configuration.SectionConfiguration.NestedItems.DefaultItemCount);
-                    
-                    for (int j = 0; j < nestedDefaultCount; j++)
-                    {
-                        var nestedItem = new SectionItemViewModel
-                        {
-                            Id = 0,
-                            SortOrder = j + 1,
-                            Type = SectionItemType.Text,
-                            Status = Status.Active,
-                            Data = new Dictionary<string, object>()
-                        };
-
-                        // Add default nested field values
-                        if (configuration.SectionConfiguration.NestedItems.Fields != null)
-                        {
-                            foreach (var field in configuration.SectionConfiguration.NestedItems.Fields)
+                            if (!string.IsNullOrEmpty(field.DefaultValue))
                             {
-                                if (!string.IsNullOrEmpty(field.DefaultValue))
-                                {
-                                    nestedItem.Data[field.Name] = field.DefaultValue;
-                                }
+                                newItem.Data[field.FieldKey] = field.DefaultValue;
                             }
                         }
+                    }
 
-                        newItem.ChildItems.Add(nestedItem);
+                    // Set the item type from configuration
+                    newItem.Type = defaultItemConfig.ItemType;
+
+                    // Create default nested items if configured (recursive structure)
+                    if (defaultItemConfig.SectionItems != null && defaultItemConfig.SectionItems.Any())
+                    {
+                        foreach (var nestedConfig in defaultItemConfig.SectionItems)
+                        {
+                            var nestedDefaultCount = Math.Max(0, nestedConfig.DefaultItemCount);
+                            
+                            for (int j = 0; j < nestedDefaultCount; j++)
+                            {
+                                // Use the helper method for recursive creation
+                                var nestedItem = CreateDefaultSectionItem(nestedConfig, 0, j + 1);
+                                newItem.ChildItems.Add(nestedItem);
+                            }
+                        }
                     }
                 }
 
@@ -698,77 +691,6 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 return Content($"<div class='text-red-500'>Error creating new item: {ex.Message}</div>");
-            }
-        }
-
-        /// <summary>
-        /// Get new nested item card as partial view
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetNewNestedItemCard(int templateId, string parentTempId, int nestedIndex = 0)
-        {
-            try
-            {
-                var template = await _pazarAtlasiDbContext.Templates
-                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
-
-                if (template == null)
-                {
-                    return Content("<div class='text-red-500'>Template not found</div>");
-                }
-
-                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
-                if (configuration?.SectionConfiguration?.NestedItems == null)
-                {
-                    return Content("<div class='text-red-500'>Nested items configuration not found</div>");
-                }
-
-                // Create new nested item data structure
-                var nestedItem = new SectionItemViewModel
-                {
-                    Id = 0,
-                    SortOrder = nestedIndex + 1,
-                    Type = SectionItemType.Text,
-                    Status = Status.Active,
-                    Data = new Dictionary<string, object>()
-                };
-
-                // Add default nested field values
-                if (configuration.SectionConfiguration.NestedItems.Fields != null)
-                {
-                    foreach (var field in configuration.SectionConfiguration.NestedItems.Fields)
-                    {
-                        if (!string.IsNullOrEmpty(field.DefaultValue))
-                        {
-                            nestedItem.Data[field.Name] = field.DefaultValue;
-                        }
-                    }
-                }
-
-                // Get available languages for translation support
-                var availableLanguages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .Select(l => new LanguageViewModel
-                    {
-                        Id = l.Id,
-                        Name = l.Name,
-                        Code = l.Code,
-                        IsDefault = l.IsDefault
-                    })
-                    .OrderByDescending(l => l.IsDefault)
-                    .ThenBy(l => l.Name)
-                    .ToListAsync();
-
-                ViewBag.NestedConfig = configuration.SectionConfiguration.NestedItems;
-                ViewBag.ParentTempId = parentTempId;
-                ViewBag.NestedIndex = nestedIndex;
-                ViewBag.AvailableLanguages = availableLanguages;
-
-                return PartialView("~/Views/Shared/Content/_NestedItemCard.cshtml", nestedItem);
-            }
-            catch (Exception ex)
-            {
-                return Content($"<div class='text-red-500'>Error creating nested item: {ex.Message}</div>");
             }
         }
 
@@ -1247,6 +1169,7 @@ namespace PazarAtlasi.CMS.Controllers
 
         /// <summary>
         /// Get section items list as partial view with example data
+        /// NEW: Supports recursive SectionItemConfiguration structure
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetSectionItemsList(int templateId, int sectionId = 0)
@@ -1259,7 +1182,6 @@ namespace PazarAtlasi.CMS.Controllers
 
                 if (template == null)
                 {
-                    // Return empty HTML instead of JSON for consistency
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found or inactive.</p></div>", "text/html");
                 }
 
@@ -1267,11 +1189,10 @@ namespace PazarAtlasi.CMS.Controllers
                 var configuration = _templateConfigurationProvider?.GetConfiguration(template.Id, template.TemplateKey);
                 if (configuration == null)
                 {
-                    // Return empty HTML instead of JSON for consistency
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
                 }
 
-                // Create example section items based on template configuration
+                // Create model
                 var model = new SectionItemsListViewModel
                 {
                     TemplateId = templateId,
@@ -1296,69 +1217,23 @@ namespace PazarAtlasi.CMS.Controllers
 
                 ViewBag.AvailableLanguages = availableLanguages;
 
-                // Create default items based on configuration
-                if (configuration.SectionConfiguration != null)
+                // NEW: Create items based on new recursive SectionItemConfiguration structure
+                if (configuration.SectionConfiguration?.SectionItems != null)
                 {
-                    var defaultItemsCount = Math.Max(0, configuration.SectionConfiguration.DefaultItemCount);
-
-                    for (int i = 0; i < defaultItemsCount; i++)
+                    // The SectionConfiguration now has a list of SectionItemConfigurations
+                    // Each can have its own item type, fields, and nested SectionItems
+                    // We'll create default items for each SectionItemConfiguration
+                    
+                    foreach (var itemConfig in configuration.SectionConfiguration.SectionItems)
                     {
-                        var item = new SectionItemViewModel
+                        // Create default items for this configuration
+                        var defaultCount = Math.Max(0, itemConfig.DefaultItemCount);
+                        
+                        for (int i = 0; i < defaultCount; i++)
                         {
-                            Id = 0,
-                            SectionId = sectionId,
-                            SortOrder = i + 1,
-                            Type = SectionItemType.Text, // Default type
-                            Status = Status.Active,
-                            Data = new Dictionary<string, object>()
-                        };
-
-                        // Add default field values
-                        if (configuration.SectionConfiguration.Fields != null)
-                        {
-                            foreach (var field in configuration.SectionConfiguration.Fields)
-                            {
-                                if (!string.IsNullOrEmpty(field.DefaultValue))
-                                {
-                                    item.Data[field.Name] = field.DefaultValue;
-                                }
-                            }
+                            var item = CreateDefaultSectionItem(itemConfig, sectionId, model.SectionItems.Count + 1);
+                            model.SectionItems.Add(item);
                         }
-
-                        // Create default nested items if configured
-                        if (configuration.SectionConfiguration.NestedItems != null)
-                        {
-                            item.ChildItems = new List<SectionItemViewModel>();
-                            var nestedDefaultCount = Math.Max(0, configuration.SectionConfiguration.NestedItems.DefaultItemCount);
-
-                            for (int j = 0; j < nestedDefaultCount; j++)
-                            {
-                                var nestedItem = new SectionItemViewModel
-                                {
-                                    Id = 0,
-                                    SortOrder = j + 1,
-                                    Type = SectionItemType.Text, // Default type
-                                    Status = Status.Active,
-                                    Data = new Dictionary<string, object>()
-                                };
-
-                                // Add default nested field values
-                                if (configuration.SectionConfiguration.NestedItems.Fields != null)
-                                {
-                                    foreach (var field in configuration.SectionConfiguration.NestedItems.Fields)
-                                    {
-                                        if (!string.IsNullOrEmpty(field.DefaultValue))
-                                        {
-                                            nestedItem.Data[field.Name] = field.DefaultValue;
-                                        }
-                                    }
-                                }
-
-                                item.ChildItems.Add(nestedItem);
-                            }
-                        }
-
-                        model.SectionItems.Add(item);
                     }
                 }
 
@@ -1366,13 +1241,58 @@ namespace PazarAtlasi.CMS.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception details for debugging
                 System.Diagnostics.Debug.WriteLine($"Error in GetSectionItemsList: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-
-                // Return error HTML instead of JSON for consistency
                 return Content($"<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Error loading section items: {ex.Message}</p></div>", "text/html");
             }
+        }
+
+        /// <summary>
+        /// NEW: Helper method to create default section item from SectionItemConfiguration (recursive)
+        /// </summary>
+        private SectionItemViewModel CreateDefaultSectionItem(SectionItemConfiguration itemConfig, int sectionId, int sortOrder)
+        {
+            var item = new SectionItemViewModel
+            {
+                Id = 0,
+                SectionId = sectionId,
+                SortOrder = sortOrder,
+                Type = itemConfig.ItemType,
+                Status = Status.Active,
+                Data = new Dictionary<string, object>(),
+                ChildItems = new List<SectionItemViewModel>()
+            };
+
+            // Add default field values from field configuration
+            if (itemConfig.Fields != null)
+            {
+                foreach (var field in itemConfig.Fields)
+                {
+                    if (!string.IsNullOrEmpty(field.DefaultValue))
+                    {
+                        item.Data[field.FieldKey] = field.DefaultValue;
+                    }
+                }
+            }
+
+            // NEW: Recursively create nested items if configured
+            // SectionItemConfiguration can have nested SectionItems (recursive structure)
+            if (itemConfig.SectionItems != null && itemConfig.SectionItems.Any())
+            {
+                foreach (var nestedConfig in itemConfig.SectionItems)
+                {
+                    var nestedDefaultCount = Math.Max(0, nestedConfig.DefaultItemCount);
+                    
+                    for (int j = 0; j < nestedDefaultCount; j++)
+                    {
+                        // Recursive call to create nested items
+                        var nestedItem = CreateDefaultSectionItem(nestedConfig, 0, j + 1);
+                        item.ChildItems.Add(nestedItem);
+                    }
+                }
+            }
+
+            return item;
         }
 
         [HttpGet]

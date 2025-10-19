@@ -1,39 +1,54 @@
 @{
-    var field = ViewBag.Field as PazarAtlasi.CMS.Application.Dtos.SectionItemField;
+    var field = ViewBag.Field as PazarAtlasi.CMS.Application.Dtos.SectionItemFieldDto;
     var nestedItem = ViewBag.NestedItem as PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel;
     var parentTempId = ViewBag.ParentTempId?.ToString();
     var value = ViewBag.Value?.ToString() ?? "";
-    
+
     // Check if this field supports multiple languages
     var isTranslatable = field?.IsTranslatable == true;
-    var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
+    var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new
+    List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
+
+    // Get field label and description from translations
+    var fieldLabel = field?.Translations?.FirstOrDefault()?.Label ?? field?.FieldKey ?? "Field";
+    var fieldDescription = field?.Translations?.FirstOrDefault()?.Description;
 }
 
 @if (field != null && nestedItem != null)
 {
-    <div class="nested-field-container" data-field-name="@field.Name" data-translatable="@isTranslatable.ToString().ToLower()">
+    <div class="nested-field-container" data-field-name="@field.FieldKey"
+        data-translatable="@isTranslatable.ToString().ToLower()">
         @if (isTranslatable && availableLanguages.Any())
         {
             <!-- Multi-language field with tabs -->
             <div class="mb-2">
                 <label class="block text-xs font-medium text-slate-600 mb-1">
-                    @field.Label
-                    @if (field.Required) { <span class="text-red-500">*</span> }
+                    @fieldLabel
+                    @if (field.Required)
+                    {
+                        <span class="text-red-500">*</span>
+                    }
                     <span class="ml-1 text-xs text-purple-500">(Multi-language)</span>
                 </label>
-                
+                @if (!string.IsNullOrEmpty(fieldDescription))
+                {
+                    <p class="text-xs text-slate-500 mb-1">@fieldDescription</p>
+                }
+
                 <!-- Language tabs -->
                 <div class="border-b border-slate-200 mb-2">
                     <nav class="-mb-px flex space-x-2" aria-label="Language tabs">
                         @foreach (var language in availableLanguages.Take(3))
                         {
-                            <button type="button" 
-                                    class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
-                                    data-language="@language.Code"
-                                    data-language-id="@language.Id"
-                                    onclick="SectionModal.switchNestedLanguageTab(this, '@parentTempId', '@nestedItem', '@field.Name')">
+                            <button type="button"
+                                class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
+                                data-language="@language.Code" data-language-id="@language.Id"
+                                onclick="SectionModal.switchNestedLanguageTab(this, '@parentTempId', '@nestedItem', '@field.FieldKey')">
                                 @language.Code.ToUpper()
-                                @if (language.IsDefault) { <span class="ml-1 text-xs">?</span> }
+                                @if (language.IsDefault)
+                                {
+                                    <span class="ml-1 text-xs">?</span>
+                                }
                             </button>
                         }
                     </nav>
@@ -43,44 +58,35 @@
                 <div class="language-panels">
                     @foreach (var language in availableLanguages.Take(3))
                     {
-                        <div class="language-panel @(language.IsDefault ? "" : "hidden")" 
-                             data-language="@language.Code">
+                        <div class="language-panel @(language.IsDefault ? "" : "hidden")" data-language="@language.Code">
                             @{
-                                var langFieldId = $"{language.Code}";
+                                var langFieldId = $"{field.FieldKey}_{language.Code}";
                                 var langValue = value; // TODO: Get language-specific value
                             }
-                            
+
                             @switch (field.Type.ToString().ToLower())
                             {
                                 case "text":
                                 case "url":
-                                    <input type="@field.Type"
-                                           id="@langFieldId"
-                                           class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                                           placeholder="@field.Placeholder (@language.Name)"
-                                           maxlength="@(field.MaxLength > 0 ? field.MaxLength : 255)"
-                                           required="@field.Required"
-                                           value="@langValue"
-                                           onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.Name', '@language.Code', @language.Id, this.value)">
+                                    <input type="@field.Type" id="@langFieldId"
+                                        class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                                        placeholder="@field.Placeholder (@language.Name)"
+                                        maxlength="@(field.MaxLength > 0 ? field.MaxLength : 255)" required="@field.Required"
+                                        value="@langValue"
+                                        onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.FieldKey', '@language.Code', @language.Id, this.value)">
                                     break;
 
                                 case "textarea":
-                                    <textarea id="@langFieldId"
-                                              class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                                              placeholder="@field.Placeholder (@language.Name)"
-                                              maxlength="@(field.MaxLength > 0 ? field.MaxLength : 500)"
-                                              required="@field.Required"
-                                              rows="2"
-                                              onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.Name', '@language.Code', @language.Id, this.value)">@langValue</textarea>
+                                    <textarea id="@langFieldId" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                    placeholder="@field.Placeholder (@language.Name)"
+                    maxlength="@(field.MaxLength > 0 ? field.MaxLength : 500)" required="@field.Required" rows="2"
+                    onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.FieldKey', '@language.Code', @language.Id, this.value)">@langValue</textarea>
                                     break;
 
                                 default:
-                                    <input type="text"
-                                           id="@langFieldId"
-                                           class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                                           placeholder="@field.Placeholder (@language.Name)"
-                                           value="@langValue"
-                                           onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.Name', '@language.Code', @language.Id, this.value)">
+                                    <input type="text" id="@langFieldId" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                                        placeholder="@field.Placeholder (@language.Name)" value="@langValue"
+                                        onchange="SectionModal.updateNestedItemFieldTranslation('@parentTempId', '@nestedItem', '@field.FieldKey', '@language.Code', @language.Id, this.value)">
                                     break;
                             }
                         </div>
@@ -93,52 +99,45 @@
             <!-- Single language field (non-translatable) -->
             <div>
                 <label class="block text-xs font-medium text-slate-600 mb-1">
-                    @field.Label
-                    @if (field.Required) { <span class="text-red-500">*</span> }
+                    @fieldLabel
+                    @if (field.Required)
+                    {
+                        <span class="text-red-500">*</span>
+                    }
                 </label>
                 @{
-                    var fieldId = $"{field.Name}";
-                
-                }@switch (field.Type.ToString().ToLower())
+                    var fieldId = $"{field.FieldKey}";
+                }
+
+                @switch (field.Type.ToString().ToLower())
                 {
                     case "text":
                     case "url":
-                        <input type="@field.Type"
-                               id="@fieldId"
-                               class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                               placeholder="@field.Placeholder"
-                               maxlength="@(field.MaxLength > 0 ? field.MaxLength : 255)"
-                               required="@field.Required"
-                               value="@value"
-                               onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">
+                        <input type="@field.Type" id="@fieldId" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                            placeholder="@field.Placeholder" maxlength="@(field.MaxLength > 0 ? field.MaxLength : 255)"
+                            required="@field.Required" value="@value"
+                            onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.FieldKey', this.value)">
                         break;
 
                     case "textarea":
-                        <textarea id="@fieldId"
-                                  class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                                  placeholder="@field.Placeholder"
-                                  maxlength="@(field.MaxLength > 0 ? field.MaxLength : 500)"
-                                  required="@field.Required"
-                                  rows="2"
-                                  onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">@value</textarea>
+                        <textarea id="@fieldId" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+            placeholder="@field.Placeholder" maxlength="@(field.MaxLength > 0 ? field.MaxLength : 500)"
+            required="@field.Required" rows="2"
+            onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.FieldKey', this.value)">@value</textarea>
                         break;
 
                     case "checkbox":
                         <div class="flex items-center">
-                            <input type="checkbox"
-                                   id="@fieldId"
-                                   class="mr-2"
-                                   checked="@(value == "true" || value == "True")"
-                                   onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.checked)">
-                            <label class="text-xs font-medium text-slate-600">@field.Label</label>
+                            <input type="checkbox" id="@fieldId" class="mr-2" checked="@(value == "true" || value == "True")"
+                                onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.FieldKey', this.checked)">
+                            <label class="text-xs font-medium text-slate-600">@fieldLabel</label>
                         </div>
                         break;
 
                     case "select":
-                        <select id="@fieldId"
-                                class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                                required="@field.Required"
-                                onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">
+                        <select id="@fieldId" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                            required="@field.Required"
+                            onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.FieldKey', this.value)">
                             <option value="">Select...</option>
                             @if (field.Options != null)
                             {
@@ -151,19 +150,17 @@
                         break;
 
                     default:
-                        <input type="text"
-                               id="@fieldId"
-                               class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                               value="@value"
-                               onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.Name', this.value)">
+                        <input type="text" id="@fieldId" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
+                            value="@value"
+                            onchange="SectionModal.updateNestedItemField('@parentTempId', '@nestedItem', '@field.FieldKey', this.value)">
                         break;
                 }
             </div>
         }
     </div>
 
-    @if (field.Description != null)
+    @if (!string.IsNullOrEmpty(fieldDescription))
     {
-        <p class="text-xs text-slate-500 mt-1">@field.Description</p>
+        <p class="text-xs text-slate-500 mt-1">@fieldDescription</p>
     }
 }
