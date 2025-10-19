@@ -373,73 +373,6 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
-        #region Helper Methods
-
-        private PageEditViewModel MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
-        {
-            return new PageEditViewModel
-            {
-                Id = page.Id,
-                Name = page.Name,
-                Code = page.Code,
-                PageType = page.PageType,
-                Description = page.Description,
-                Status = page.Status,
-                SEOParameter = page.PageSEOParameter != null ? new PageSEOParameterEditViewModel
-                {
-                    Id = page.PageSEOParameter.Id,
-                    MetaTitle = page.PageSEOParameter.MetaTitle,
-                    MetaDescription = page.PageSEOParameter.MetaDescription,
-                    MetaKeywords = page.PageSEOParameter.MetaKeywords,
-                    Title = page.PageSEOParameter.Title,
-                    CanonicalURL = page.PageSEOParameter.CanonicalURL,
-                    Author = page.PageSEOParameter.Author,
-                    Description = page.PageSEOParameter.Description
-                } : new PageSEOParameterEditViewModel(),
-                Sections = page.PageSections.Select(t => t.Section).Select(s => new SectionEditViewModel
-                {
-                    Id = s.Id,
-                    Type = s.Type,
-                    Attributes = s.Attributes,
-                    SortOrder = s.SortOrder,
-                    Configure = s.Configure,
-                    Status = s.Status,
-                    SectionItems = MapSectionItemsToViewModel(s.SectionItems.ToList()),
-                    Translations = s.Translations.Select(st => new SectionTranslationEditViewModel
-                    {
-                        Id = st.Id,
-                        LanguageId = st.LanguageId,
-                        Name = st.Name,
-                        Title = st.Title,
-                        Description = st.Description
-                    }).ToList()
-                }).ToList(),
-                Translations = page.PageTranslations.Select(pt => new PageTranslationEditViewModel
-                {
-                    Id = pt.Id,
-                    LanguageId = pt.LanguageId,
-                    LanguageName = pt.Language.Name,
-                    LanguageCode = pt.Language.Code,
-                    Value = pt.Value
-                }).ToList(),
-                AvailableLanguages = languages
-            };
-        }
-
-        private async Task<List<LanguageViewModel>> GetAvailableLanguagesAsync()
-        {
-            return await _pazarAtlasiDbContext.Languages
-                .Where(l => !l.IsDeleted)
-                .Select(l => new LanguageViewModel
-                {
-                    Id = l.Id,
-                    Name = l.Name,
-                    Code = l.Code,
-                    IsDefault = l.IsDefault
-                })
-                .ToListAsync();
-        }
-
         /// <summary>
         /// Add new section to page
         /// </summary>
@@ -525,50 +458,6 @@ namespace PazarAtlasi.CMS.Controllers
                 return Json(new { success = false, message = "An error occurred while removing section." });
             }
         }
-
-        /// <summary>
-        /// Render section HTML for AJAX response
-        /// </summary>
-        private async Task<string> RenderSectionHtml(Section section)
-        {
-            // This is a simplified version - in a real app you'd use a proper view rendering service
-            return $@"
-                <div class='section-editor border border-slate-200 rounded-lg p-6' data-section-id='{section.Id}'>
-                    <div class='flex items-center justify-between mb-4'>
-                        <div class='flex items-center'>
-                            <div class='drag-handle cursor-move mr-3 p-2 text-slate-400 hover:text-slate-600'>
-                                <i class='fas fa-grip-vertical'></i>
-                            </div>
-                            <div>
-                                <h6 class='font-medium text-slate-800'>Section #{section.Id}</h6>
-                                <p class='text-sm text-slate-500'>{section.Type} - Template System</p>
-                            </div>
-                            <span class='ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded'>0 items</span>
-                        </div>
-                        <div class='flex items-center space-x-2'>
-                            <span class='text-sm text-slate-500'>Order: {section.SortOrder}</span>
-                            <button type='button' class='text-blue-600 hover:text-blue-800 p-1' onclick='toggleSectionSettings({section.Id})' title='Settings'>
-                                <i class='fas fa-cog'></i>
-                            </button>
-                            <button type='button' class='text-green-600 hover:text-green-800 p-1' onclick='duplicateSection({section.Id})' title='Duplicate'>
-                                <i class='fas fa-copy'></i>
-                            </button>
-                            <button type='button' class='text-red-600 hover:text-red-800 p-1' onclick='removeSection({section.Id})' title='Delete'>
-                                <i class='fas fa-trash'></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class='text-center py-8 text-slate-500'>
-                        <i class='fas fa-plus-circle text-3xl mb-2'></i>
-                        <p class='text-sm'>No items in this section</p>
-                        <button type='button' class='mt-2 text-blue-600 hover:text-blue-800 text-sm' onclick='safeSectionModalCall(() => window.SectionModal.show({section.Id}, 0))'>
-                            Add First Item
-                        </button>
-                    </div>
-                </div>";
-        }
-
-        #endregion
 
         /// <summary>
         /// Get template configuration with section item settings
@@ -1071,54 +960,6 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// NEW: Helper method to create default section item from SectionItemConfiguration (recursive)
-        /// </summary>
-        private SectionItemViewModel CreateDefaultSectionItem(SectionItemConfiguration itemConfig, int sectionId, int sortOrder)
-        {
-            var item = new SectionItemViewModel
-            {
-                Id = 0,
-                SectionId = sectionId,
-                SortOrder = sortOrder,
-                Type = itemConfig.ItemType,
-                Status = Status.Active,
-                Data = new Dictionary<string, object>(),
-                ChildItems = new List<SectionItemViewModel>()
-            };
-
-            // Add default field values from field configuration
-            if (itemConfig.Fields != null)
-            {
-                foreach (var field in itemConfig.Fields)
-                {
-                    if (!string.IsNullOrEmpty(field.DefaultValue))
-                    {
-                        item.Data[field.FieldKey] = field.DefaultValue;
-                    }
-                }
-            }
-
-            // NEW: Recursively create nested items if configured
-            // SectionItemConfiguration can have nested SectionItems (recursive structure)
-            if (itemConfig.SectionItems != null && itemConfig.SectionItems.Any())
-            {
-                foreach (var nestedConfig in itemConfig.SectionItems)
-                {
-                    var nestedDefaultCount = Math.Max(0, nestedConfig.DefaultItemCount);
-                    
-                    for (int j = 0; j < nestedDefaultCount; j++)
-                    {
-                        // Recursive call to create nested items
-                        var nestedItem = CreateDefaultSectionItem(nestedConfig, 0, j + 1);
-                        item.ChildItems.Add(nestedItem);
-                    }
-                }
-            }
-
-            return item;
-        }
-
-        /// <summary>
         /// Get a single new section item card as HTML (for adding items individually with different templates)
         /// </summary>
         [HttpGet]
@@ -1158,11 +999,11 @@ namespace PazarAtlasi.CMS.Controllers
 
                 // Get the first item configuration (we'll create one item from this template's first config)
                 var firstItemConfig = configuration.SectionConfiguration.SectionItems.First();
-                
+
                 // Create a single item with a temporary ID (negative number to indicate it's a new/temp item)
                 var item = CreateDefaultSectionItem(firstItemConfig, sectionId, currentCount + 1);
                 item.Id = -(new Random().Next(100000, 999999)); // Negative ID for temporary items
-                
+
                 // Set ViewBag for the partial view
                 ViewBag.ItemConfig = firstItemConfig;
 
@@ -1530,64 +1371,6 @@ namespace PazarAtlasi.CMS.Controllers
                 return Json(new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
-
-        /// <summary>
-        /// Process section items and their nested items recursively
-        /// </summary>
-        private async Task ProcessSectionItems(List<SectionItemRequest> itemRequests, int sectionId, int? parentItemId = null)
-        {
-            if (itemRequests == null || !itemRequests.Any())
-                return;
-
-            foreach (var itemRequest in itemRequests)
-            {
-                Console.WriteLine($"Processing item: {itemRequest.TempId}");
-                Console.WriteLine($"Item data: {System.Text.Json.JsonSerializer.Serialize(itemRequest.Data)}");
-                Console.WriteLine($"Nested items count: {itemRequest.NestedItems?.Count ?? 0}");
-
-                var newItem = new SectionItem
-                {
-                    SectionId = sectionId,
-                    Type = itemRequest.Type,
-                    MediaType = itemRequest.MediaType,
-                    SortOrder = itemRequest.SortOrder,
-                    Status = itemRequest.Status,
-                    CreatedAt = DateTime.UtcNow,
-                    IsDeleted = false
-                };
-
-                _pazarAtlasiDbContext.SectionItems.Add(newItem);
-                await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
-
-                Console.WriteLine($"Created item with ID: {newItem.Id}");
-
-                // Add item translations
-                if (itemRequest.Translations != null && itemRequest.Translations.Any())
-                {
-                    var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
-                    {
-                        SectionItemId = newItem.Id,
-                        LanguageId = t.LanguageId,
-                        Name = t.Name,
-                        Title = t.Title,
-                        Description = t.Description,
-                        CreatedAt = DateTime.UtcNow,
-                        IsDeleted = false
-                    }).ToList();
-
-                    _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
-                    Console.WriteLine($"Added {itemTranslations.Count} translations for item {newItem.Id}");
-                }
-
-                // Process nested items recursively
-                if (itemRequest.NestedItems != null && itemRequest.NestedItems.Any())
-                {
-                    Console.WriteLine($"Processing {itemRequest.NestedItems.Count} nested items for parent {newItem.Id}");
-                    await ProcessSectionItems(itemRequest.NestedItems, sectionId, newItem.Id);
-                }
-            }
-        }
-
 
         /// <summary>
         /// Save a new or existing section
@@ -2100,6 +1883,10 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
+        #endregion
+
+        #region Helper Methods
+
         /// <summary>
         /// Map section items to view model with nested structure
         /// </summary>
@@ -2157,7 +1944,7 @@ namespace PazarAtlasi.CMS.Controllers
         private List<SectionItemEditViewModel> GetChildSectionItems(SectionItem parent, List<SectionItem> allItems)
         {
             var childItems = allItems.Where(si => si.ParentSectionItemId == parent.Id).ToList();
-            
+
             return childItems.Select(child => MapSingleSectionItemToViewModel(child, allItems)).ToList();
         }
 
@@ -2171,7 +1958,7 @@ namespace PazarAtlasi.CMS.Controllers
                 return;
 
             var parentIds = parentItems.Select(p => p.Id).ToList();
-            
+
             // Load all child items for the current level
             var childItems = await _pazarAtlasiDbContext.SectionItems
                 .Include(si => si.Translations)
@@ -2188,6 +1975,220 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
-        #endregion
+        /// <summary>
+        /// NEW: Helper method to create default section item from SectionItemConfiguration (recursive)
+        /// </summary>
+        private SectionItemViewModel CreateDefaultSectionItem(SectionItemConfiguration itemConfig, int sectionId, int sortOrder)
+        {
+            var item = new SectionItemViewModel
+            {
+                Id = 0,
+                SectionId = sectionId,
+                SortOrder = sortOrder,
+                Type = itemConfig.ItemType,
+                Status = Status.Active,
+                Data = new Dictionary<string, object>(),
+                ChildItems = new List<SectionItemViewModel>()
+            };
+
+            // Add default field values from field configuration
+            if (itemConfig.Fields != null)
+            {
+                foreach (var field in itemConfig.Fields)
+                {
+                    if (!string.IsNullOrEmpty(field.DefaultValue))
+                    {
+                        item.Data[field.FieldKey] = field.DefaultValue;
+                    }
+                }
+            }
+
+            // NEW: Recursively create nested items if configured
+            // SectionItemConfiguration can have nested SectionItems (recursive structure)
+            if (itemConfig.SectionItems != null && itemConfig.SectionItems.Any())
+            {
+                foreach (var nestedConfig in itemConfig.SectionItems)
+                {
+                    var nestedDefaultCount = Math.Max(0, nestedConfig.DefaultItemCount);
+
+                    for (int j = 0; j < nestedDefaultCount; j++)
+                    {
+                        // Recursive call to create nested items
+                        var nestedItem = CreateDefaultSectionItem(nestedConfig, 0, j + 1);
+                        item.ChildItems.Add(nestedItem);
+                    }
+                }
+            }
+
+            return item;
+        }
+
+        /// <summary>
+        /// Process section items and their nested items recursively
+        /// </summary>
+        private async Task ProcessSectionItems(List<SectionItemRequest> itemRequests, int sectionId, int? parentItemId = null)
+        {
+            if (itemRequests == null || !itemRequests.Any())
+                return;
+
+            foreach (var itemRequest in itemRequests)
+            {
+                Console.WriteLine($"Processing item: {itemRequest.TempId}");
+                Console.WriteLine($"Item data: {System.Text.Json.JsonSerializer.Serialize(itemRequest.Data)}");
+                Console.WriteLine($"Nested items count: {itemRequest.NestedItems?.Count ?? 0}");
+
+                var newItem = new SectionItem
+                {
+                    SectionId = sectionId,
+                    Type = itemRequest.Type,
+                    MediaType = itemRequest.MediaType,
+                    SortOrder = itemRequest.SortOrder,
+                    Status = itemRequest.Status,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.SectionItems.Add(newItem);
+                await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
+
+                Console.WriteLine($"Created item with ID: {newItem.Id}");
+
+                // Add item translations
+                if (itemRequest.Translations != null && itemRequest.Translations.Any())
+                {
+                    var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
+                    {
+                        SectionItemId = newItem.Id,
+                        LanguageId = t.LanguageId,
+                        Name = t.Name,
+                        Title = t.Title,
+                        Description = t.Description,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    }).ToList();
+
+                    _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
+                    Console.WriteLine($"Added {itemTranslations.Count} translations for item {newItem.Id}");
+                }
+
+                // Process nested items recursively
+                if (itemRequest.NestedItems != null && itemRequest.NestedItems.Any())
+                {
+                    Console.WriteLine($"Processing {itemRequest.NestedItems.Count} nested items for parent {newItem.Id}");
+                    await ProcessSectionItems(itemRequest.NestedItems, sectionId, newItem.Id);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Render section HTML for AJAX response
+        /// </summary>
+        private async Task<string> RenderSectionHtml(Section section)
+        {
+            // This is a simplified version - in a real app you'd use a proper view rendering service
+            return $@"
+                <div class='section-editor border border-slate-200 rounded-lg p-6' data-section-id='{section.Id}'>
+                    <div class='flex items-center justify-between mb-4'>
+                        <div class='flex items-center'>
+                            <div class='drag-handle cursor-move mr-3 p-2 text-slate-400 hover:text-slate-600'>
+                                <i class='fas fa-grip-vertical'></i>
+                            </div>
+                            <div>
+                                <h6 class='font-medium text-slate-800'>Section #{section.Id}</h6>
+                                <p class='text-sm text-slate-500'>{section.Type} - Template System</p>
+                            </div>
+                            <span class='ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded'>0 items</span>
+                        </div>
+                        <div class='flex items-center space-x-2'>
+                            <span class='text-sm text-slate-500'>Order: {section.SortOrder}</span>
+                            <button type='button' class='text-blue-600 hover:text-blue-800 p-1' onclick='toggleSectionSettings({section.Id})' title='Settings'>
+                                <i class='fas fa-cog'></i>
+                            </button>
+                            <button type='button' class='text-green-600 hover:text-green-800 p-1' onclick='duplicateSection({section.Id})' title='Duplicate'>
+                                <i class='fas fa-copy'></i>
+                            </button>
+                            <button type='button' class='text-red-600 hover:text-red-800 p-1' onclick='removeSection({section.Id})' title='Delete'>
+                                <i class='fas fa-trash'></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class='text-center py-8 text-slate-500'>
+                        <i class='fas fa-plus-circle text-3xl mb-2'></i>
+                        <p class='text-sm'>No items in this section</p>
+                        <button type='button' class='mt-2 text-blue-600 hover:text-blue-800 text-sm' onclick='safeSectionModalCall(() => window.SectionModal.show({section.Id}, 0))'>
+                            Add First Item
+                        </button>
+                    </div>
+                </div>";
+        }
+
+
+
+        private PageEditViewModel MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
+        {
+            return new PageEditViewModel
+            {
+                Id = page.Id,
+                Name = page.Name,
+                Code = page.Code,
+                PageType = page.PageType,
+                Description = page.Description,
+                Status = page.Status,
+                SEOParameter = page.PageSEOParameter != null ? new PageSEOParameterEditViewModel
+                {
+                    Id = page.PageSEOParameter.Id,
+                    MetaTitle = page.PageSEOParameter.MetaTitle,
+                    MetaDescription = page.PageSEOParameter.MetaDescription,
+                    MetaKeywords = page.PageSEOParameter.MetaKeywords,
+                    Title = page.PageSEOParameter.Title,
+                    CanonicalURL = page.PageSEOParameter.CanonicalURL,
+                    Author = page.PageSEOParameter.Author,
+                    Description = page.PageSEOParameter.Description
+                } : new PageSEOParameterEditViewModel(),
+                Sections = page.PageSections.Select(t => t.Section).Select(s => new SectionEditViewModel
+                {
+                    Id = s.Id,
+                    Type = s.Type,
+                    Attributes = s.Attributes,
+                    SortOrder = s.SortOrder,
+                    Configure = s.Configure,
+                    Status = s.Status,
+                    SectionItems = MapSectionItemsToViewModel(s.SectionItems.ToList()),
+                    Translations = s.Translations.Select(st => new SectionTranslationEditViewModel
+                    {
+                        Id = st.Id,
+                        LanguageId = st.LanguageId,
+                        Name = st.Name,
+                        Title = st.Title,
+                        Description = st.Description
+                    }).ToList()
+                }).ToList(),
+                Translations = page.PageTranslations.Select(pt => new PageTranslationEditViewModel
+                {
+                    Id = pt.Id,
+                    LanguageId = pt.LanguageId,
+                    LanguageName = pt.Language.Name,
+                    LanguageCode = pt.Language.Code,
+                    Value = pt.Value
+                }).ToList(),
+                AvailableLanguages = languages
+            };
+        }
+
+        private async Task<List<LanguageViewModel>> GetAvailableLanguagesAsync()
+        {
+            return await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .ToListAsync();
+        }
+
+        #endregion Helper Methods
     }
 }
