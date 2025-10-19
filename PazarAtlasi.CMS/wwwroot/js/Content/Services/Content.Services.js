@@ -169,19 +169,6 @@ const ContentServices = (function () {
     }
 
     /**
-     * Get template configuration with section item settings
-     */
-    function getTemplateConfiguration(templateId) {
-        return $.ajax({
-            url: `${config.baseUrl}/GetTemplateConfiguration`,
-            type: "GET",
-            data: { templateId },
-            headers: buildHeaders(),
-            dataType: "json",
-        });
-    }
-
-    /**
      * Get new section item card as partial view HTML
      */
     function getNewSectionItemCard(templateId, sectionId = 0, itemIndex = 0) {
@@ -228,19 +215,6 @@ const ContentServices = (function () {
             url: `${config.baseUrl}/GetReusableSections`,
             type: "GET",
             headers: buildHeaders(),
-            dataType: "json",
-        });
-    }
-
-    /**
-     * Add section to page
-     */
-    function addSection(payload) {
-        return $.ajax({
-            url: `${config.baseUrl}/AddSection`,
-            type: "POST",
-            headers: buildHeaders({ "Content-Type": "application/json" }),
-            data: JSON.stringify(payload),
             dataType: "json",
         });
     }
@@ -408,23 +382,7 @@ const ContentServices = (function () {
         });
     }
 
-    // ==================== MENU SERVICES ====================
-
-    /**
-     * Save menu content
-     */
-    function saveMenuContent(payload) {
-        return $.ajax({
-            url: `${config.baseUrl}/SaveMenuContent`,
-            type: "POST",
-            headers: buildHeaders({ "Content-Type": "application/json" }),
-            data: JSON.stringify(payload),
-            dataType: "json",
-        });
-    }
-
     // ==================== PUBLIC API ====================
-
     return {
         // Page services
         getPages,
@@ -439,12 +397,10 @@ const ContentServices = (function () {
         // Section services
         getSectionModal,
         getTemplatesBySectionType,
-        getTemplateConfiguration,
         getNewSectionItemCard,
         getNewNestedItemCard,
         getTemplatesPartial,
         getReusableSections,
-        addSection,
         addReusableSection,
         removeSection,
         saveSection,
@@ -461,8 +417,6 @@ const ContentServices = (function () {
         uploadImage,
         uploadVideo,
         uploadDocument,
-
-        saveMenuContent,
 
         // Utility
         getAntiForgeryToken,

@@ -41,14 +41,6 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Menu items management view
-        /// </summary>
-        public IActionResult MenuItems()
-        {
-            return View();
-        }
-
-        /// <summary>
         /// Pages list with pagination
         /// </summary>
         public async Task<IActionResult> Pages(int page = 1, int pageSize = 10)
@@ -374,56 +366,6 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Add new section to page
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> AddSection(int pageId, string sectionType, string TemplateType)
-        {
-            try
-            {
-                var page = await _pazarAtlasiDbContext.Pages
-                    .Include(p => p.PageSections)
-                    .ThenInclude(ps => ps.Section)
-                    .FirstOrDefaultAsync(p => p.Id == pageId);
-
-                if (page == null)
-                {
-                    return Json(new { success = false, message = "Page not found." });
-                }
-
-                // Get next sort order
-                var maxSortOrder = page.PageSections.Select(t => t.Section).Any() ? page.PageSections.Select(t => t.Section).Max(s => s.SortOrder) : 0;
-
-                var newSection = new Section
-                {
-                    Id = 0, // EF will generate
-                    Type = Enum.TryParse<PazarAtlasi.CMS.Domain.Common.SectionType>(sectionType, out var parsedSectionType)
-                        ? parsedSectionType
-                        : PazarAtlasi.CMS.Domain.Common.SectionType.None,
-                    SortOrder = maxSortOrder + 1,
-                    Status = PazarAtlasi.CMS.Domain.Common.Status.Active,
-                    Configure = "{}",
-                    Attributes = "{}"
-                };
-
-                _pazarAtlasiDbContext.Sections.Add(newSection);
-                await _pazarAtlasiDbContext.SaveChangesAsync();
-
-                return Json(new
-                {
-                    success = true,
-                    message = "Section added successfully.",
-                    sectionId = newSection.Id,
-                    sectionHtml = await RenderSectionHtml(newSection)
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "An error occurred while adding section." });
-            }
-        }
-
-        /// <summary>
         /// Remove section from page
         /// </summary>
         [HttpPost]
@@ -460,32 +402,6 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Get template configuration with section item settings
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetTemplateConfiguration(int templateId)
-        {
-            try
-            {
-                var template = await _pazarAtlasiDbContext.Templates
-                    .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
-
-                if (template == null)
-                {
-                    return Json(new { success = false, message = "Template not found." });
-                }
-
-                var configuration = _templateConfigurationProvider.GetConfiguration(template.Id, template.TemplateKey);
-
-                return Json(new { success = true, configuration });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error loading template configuration." });
-            }
-        }
-
-        /// <summary>
         /// Get templates partial view
         /// </summary>
         [HttpGet]
@@ -510,46 +426,6 @@ namespace PazarAtlasi.CMS.Controllers
         public IActionResult WebUrl()
         {
             return View();
-        }
-
-        [HttpGet]
-        public IActionResult Editor(int id = 0)
-        {
-            // In a real application, you would load the page data from a database
-            // For now we'll just return the same view
-            return View("Index");
-        }
-
-        [HttpPost]
-        public IActionResult SavePage(string pageData)
-        {
-            // Here you would save the page data to a database
-            // For now we'll just return a success message
-            return Json(new { success = true, message = "Page saved successfully" });
-        }
-
-        /// <summary>
-        /// Save menu content as JSON
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> SaveMenuContent(string menuItemId, string contentJson)
-        {
-            if (string.IsNullOrEmpty(menuItemId) || string.IsNullOrEmpty(contentJson))
-            {
-                return BadRequest(new { success = false, message = "Menu item ID and content are required" });
-            }
-
-            // Validate JSON structure
-            try
-            {
-                // Here we would save the menu content to the database using a command
-                // For now, we'll just return success
-                return Json(new { success = true, message = "Menu content saved successfully" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
         }
 
         #region Section Item Management
@@ -658,88 +534,6 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "An error occurred: " + ex.Message, error = ex.ToString() });
-            }
-        }
-
-        /// <summary>
-        /// Delete section item
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> DeleteSectionItem(int id)
-        {
-            try
-            {
-                var sectionItem = await _pazarAtlasiDbContext.SectionItems
-                    .Include(si => si.Translations)
-                    .FirstOrDefaultAsync(si => si.Id == id && !si.IsDeleted);
-
-                if (sectionItem == null)
-                {
-                    return Json(new { success = false, message = "Section item not found." });
-                }
-
-                // Soft delete - mark as deleted
-                sectionItem.IsDeleted = true;
-                sectionItem.UpdatedAt = DateTime.UtcNow;
-
-                // Also mark translations as deleted
-                foreach (var translation in sectionItem.Translations)
-                {
-                    translation.IsDeleted = true;
-                    translation.UpdatedAt = DateTime.UtcNow;
-                }
-
-                await _pazarAtlasiDbContext.SaveChangesAsync();
-
-                return Json(new { success = true, message = "Section item deleted successfully." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "An error occurred: " + ex.Message });
-            }
-        }
-
-        /// <summary>
-        /// Get section items by section ID
-        /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetSectionItems(int sectionId)
-        {
-            try
-            {
-                var sectionItems = await _pazarAtlasiDbContext.SectionItems
-                    .Include(si => si.Translations)
-                        .ThenInclude(t => t.Language)
-                    .Where(si => si.SectionId == sectionId && !si.IsDeleted)
-                    .OrderBy(si => si.SortOrder)
-                    .ToListAsync();
-
-                var result = sectionItems.Select(si => new SectionItemResponseDto
-                {
-                    Id = si.Id,
-                    SectionId = si.SectionId,
-                    Type = si.Type,
-                    MediaType = si.MediaType,
-                    SortOrder = si.SortOrder,
-                    Status = si.Status,
-                    Translations = si.Translations.Select(t => new SectionItemTranslationResponseDto
-                    {
-                        Id = t.Id,
-                        SectionItemId = t.SectionItemId,
-                        LanguageId = t.LanguageId,
-                        LanguageName = t.Language?.Name,
-                        LanguageCode = t.Language?.Code,
-                        Name = t.Name,
-                        Title = t.Title,
-                        Description = t.Description
-                    }).ToList()
-                }).ToList();
-
-                return Json(new { success = true, message = "Section items retrieved successfully.", data = result });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
 
@@ -1948,33 +1742,6 @@ namespace PazarAtlasi.CMS.Controllers
             return childItems.Select(child => MapSingleSectionItemToViewModel(child, allItems)).ToList();
         }
 
-
-        /// <summary>
-        /// Recursively load nested section items with their fields and translations
-        /// </summary>
-        private async Task LoadNestedSectionItemsAsync(List<SectionItem> parentItems)
-        {
-            if (parentItems == null || !parentItems.Any())
-                return;
-
-            var parentIds = parentItems.Select(p => p.Id).ToList();
-
-            // Load all child items for the current level
-            var childItems = await _pazarAtlasiDbContext.SectionItems
-                .Include(si => si.Translations)
-                .Include(si => si.Fields)
-                    .ThenInclude(f => f.Translations)
-                .Where(si => parentIds.Contains(si.ParentSectionItemId.Value))
-                .OrderBy(si => si.SortOrder)
-                .ToListAsync();
-
-            if (childItems.Any())
-            {
-                // Recursively load children of children first
-                await LoadNestedSectionItemsAsync(childItems);
-            }
-        }
-
         /// <summary>
         /// NEW: Helper method to create default section item from SectionItemConfiguration (recursive)
         /// </summary>
@@ -2079,51 +1846,7 @@ namespace PazarAtlasi.CMS.Controllers
                 }
             }
         }
-
-        /// <summary>
-        /// Render section HTML for AJAX response
-        /// </summary>
-        private async Task<string> RenderSectionHtml(Section section)
-        {
-            // This is a simplified version - in a real app you'd use a proper view rendering service
-            return $@"
-                <div class='section-editor border border-slate-200 rounded-lg p-6' data-section-id='{section.Id}'>
-                    <div class='flex items-center justify-between mb-4'>
-                        <div class='flex items-center'>
-                            <div class='drag-handle cursor-move mr-3 p-2 text-slate-400 hover:text-slate-600'>
-                                <i class='fas fa-grip-vertical'></i>
-                            </div>
-                            <div>
-                                <h6 class='font-medium text-slate-800'>Section #{section.Id}</h6>
-                                <p class='text-sm text-slate-500'>{section.Type} - Template System</p>
-                            </div>
-                            <span class='ml-4 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded'>0 items</span>
-                        </div>
-                        <div class='flex items-center space-x-2'>
-                            <span class='text-sm text-slate-500'>Order: {section.SortOrder}</span>
-                            <button type='button' class='text-blue-600 hover:text-blue-800 p-1' onclick='toggleSectionSettings({section.Id})' title='Settings'>
-                                <i class='fas fa-cog'></i>
-                            </button>
-                            <button type='button' class='text-green-600 hover:text-green-800 p-1' onclick='duplicateSection({section.Id})' title='Duplicate'>
-                                <i class='fas fa-copy'></i>
-                            </button>
-                            <button type='button' class='text-red-600 hover:text-red-800 p-1' onclick='removeSection({section.Id})' title='Delete'>
-                                <i class='fas fa-trash'></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class='text-center py-8 text-slate-500'>
-                        <i class='fas fa-plus-circle text-3xl mb-2'></i>
-                        <p class='text-sm'>No items in this section</p>
-                        <button type='button' class='mt-2 text-blue-600 hover:text-blue-800 text-sm' onclick='safeSectionModalCall(() => window.SectionModal.show({section.Id}, 0))'>
-                            Add First Item
-                        </button>
-                    </div>
-                </div>";
-        }
-
-
-
+        
         private PageEditViewModel MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
         {
             return new PageEditViewModel

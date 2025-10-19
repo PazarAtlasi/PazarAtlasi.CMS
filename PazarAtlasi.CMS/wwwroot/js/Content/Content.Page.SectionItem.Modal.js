@@ -37,11 +37,8 @@ function handleItemTypeChange(itemType) {
   const mediaSettingsPanel = document.getElementById(
     "mediaSettingsPanel"
   );
-  const translationsContainer = document.getElementById(
-    "translationsContainer"
-  );
 
-  // Parse enum value to number
+    // Parse enum value to number
   const typeValue = parseInt(itemType);
   console.log("Type Value:", typeValue); // Debug
 

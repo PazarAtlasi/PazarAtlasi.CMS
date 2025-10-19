@@ -390,125 +390,10 @@ async function addReusableSection(sectionId) {
     }
 }
 
-function createSectionModal() {
-    const modal = document.createElement("div");
-    modal.className =
-        "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
-    modal.innerHTML = `
-        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-slate-800">Add Page Section</h3>
-                <button type="button" onclick="closeSectionModal()" class="text-slate-400 hover:text-slate-600">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <form id="addSectionForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Type</label>
-                    <select id="sectionType" name="sectionType" 
-                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
-                        <option value="Content">Content</option>
-                        <option value="Hero">Hero</option>
-                        <option value="Gallery">Gallery</option>
-                        <option value="Testimonial">Testimonial</option>
-                        <option value="Contact">Contact</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Template Type</label>
-                    <select id="TemplateType" name="TemplateType" 
-                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
-                        <option value="Default">Default</option>
-                        <option value="Carousel">Carousel</option>
-                        <option value="Grid">Grid</option>
-                        <option value="List">List</option>
-                        <option value="SingleItem">Single Item</option>
-                        <option value="Accordion">Accordion</option>
-                        <option value="Tabs">Tabs</option>
-                        <option value="MegaMenu">Mega Menu</option>
-                    </select>
-                </div>
-                
-                <div class="flex items-center justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeSectionModal()" 
-                            class="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" 
-                            class="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
-                        <i class="fas fa-plus mr-2"></i> Add Section
-                    </button>
-                </div>
-            </form>
-        </div>
-    `;
-
-    // Add form submit handler
-    modal
-        .querySelector("#addSectionForm")
-        .addEventListener("submit", handleAddSection);
-
-    return modal;
-}
-
 function closeSectionModal() {
     const modal = document.querySelector(".fixed.inset-0");
     if (modal) {
         modal.remove();
-    }
-}
-
-async function handleAddSection(e) {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const pageId = document.querySelector('input[name="Id"]').value;
-
-    const data = {
-        pageId: parseInt(pageId),
-        sectionType: formData.get("sectionType"),
-        TemplateType: formData.get("TemplateType"),
-    };
-
-    try {
-        const result = await ContentServices.addSection(data);
-
-        if (result.success) {
-            // Add new section to the page
-            const sectionsContainer = document.getElementById(
-                "sectionsContainer"
-            );
-            const emptyState = sectionsContainer.querySelector(
-                ".text-center.py-12"
-            );
-
-            if (emptyState) {
-                emptyState.remove();
-            }
-
-            // Create new section element
-            const newSectionDiv = document.createElement("div");
-            newSectionDiv.innerHTML = result.sectionHtml;
-            sectionsContainer.appendChild(newSectionDiv.firstElementChild);
-
-            // Close modal
-            closeSectionModal();
-
-            // Show success notification
-            const pageEditor = new PageEditor();
-            pageEditor.showNotification(result.message, "success");
-        } else {
-            const pageEditor = new PageEditor();
-            pageEditor.showNotification(result.message, "error");
-        }
-    } catch (error) {
-        const pageEditor = new PageEditor();
-        pageEditor.showNotification(
-            "An error occurred while adding section.",
-            "error"
-        );
     }
 }
 
@@ -586,39 +471,6 @@ function removeItem(itemId) {
     }
 }
 
-function updateSectionTemplate(sectionId, TemplateType) {
-    console.log(
-        `Update section ${sectionId} template to ${TemplateType}`
-    );
-}
-
-function uploadSlideMedia(itemId, mediaType) {
-    console.log(`Upload ${mediaType} for item ${itemId}`);
-    // Implementation for media upload
-}
-
-function uploadHeroVideo(itemId) {
-    console.log(`Upload hero video for item ${itemId}`);
-    // Implementation for video upload
-}
-
-function uploadHeroImage(itemId) {
-    console.log(`Upload hero image for item ${itemId}`);
-    // Implementation for image upload
-}
-
-function removeHeroMedia(itemId) {
-    if (confirm("Are you sure you want to remove this media?")) {
-        console.log(`Remove hero media for item ${itemId}`);
-        // Implementation for media removal
-    }
-}
-
-function uploadSliderImage(itemId, slotNumber) {
-    console.log(`Upload slider image ${slotNumber} for item ${itemId}`);
-    // Implementation for slider image upload
-}
-
 /**
  * Switch language tab in section modal
  */
@@ -663,13 +515,6 @@ function switchLanguageTab(languageId) {
 document.addEventListener("DOMContentLoaded", () => {
     new PageEditor();
 });
-// Additional helper functions
-function duplicatePage() {
-    if (confirm("Are you sure you want to duplicate this page?")) {
-        const pageId = document.querySelector('input[name="Id"]').value;
-        window.location.href = `/Content/DuplicatePage/${pageId}`;
-    }
-}
 
 async function deletePage() {
     if (
@@ -691,16 +536,6 @@ async function deletePage() {
             alert("An error occurred while deleting the page.");
         }
     }
-}
-
-function duplicateSection(sectionId) {
-    console.log(`Duplicate section ${sectionId}`);
-    // Implementation for duplicating section
-}
-
-function editSectionItems(sectionId) {
-    console.log(`Edit section items for ${sectionId}`);
-    // Implementation for editing section items
 }
 
 async function addSectionItem(sectionId) {
