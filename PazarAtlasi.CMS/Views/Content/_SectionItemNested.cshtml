@@ -63,6 +63,8 @@
                             {
                                 ViewBag.Field = field;
                                 ViewBag.Item = childItem;
+                                ViewBag.ParentItemId = parentItem.Id;
+                                ViewBag.Level = level;
                                 ViewBag.Value = childItem.Data != null && childItem.Data.ContainsKey(field.FieldKey) == true ? 
                                     childItem.Data[field.FieldKey]?.ToString() : field.DefaultValue ?? "";
 

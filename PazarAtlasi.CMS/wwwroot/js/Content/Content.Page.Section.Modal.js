@@ -319,7 +319,7 @@ const SectionModal = (function () {
   }
 
   /**
-   * Save section
+   * Save section - Collects all data recursively from DOM
    */
   async function save() {
     console.log("Starting section save...");
@@ -336,65 +336,14 @@ const SectionModal = (function () {
     }
 
     try {
-      console.log("Collecting section items data...");
-
-      // Collect section items data from form fields
-      const sectionItems = [];
-      const itemCards = document.querySelectorAll(
-        ".section-item-card"
+      console.log("Collecting section items data from DOM...");
+      console.log(
+        "Current sectionItemsData:",
+        window.sectionItemsData
       );
 
-      itemCards.forEach((card, index) => {
-        const itemId = card.dataset.itemId;
-        const itemData = window.sectionItemsData?.[itemId] || {};
-
-        console.log(
-          `Processing item ${index + 1}:`,
-          itemId,
-          itemData
-        );
-
-        // Separate main item data from nested items data
-        const mainItemData = { ...itemData };
-        if (mainItemData.nestedItems) {
-          delete mainItemData.nestedItems; // Remove nested items from main data
-        }
-
-        // Collect nested items
-        const nestedItems = [];
-        const nestedCards = card.querySelectorAll(
-          ".nested-item-card"
-        );
-        nestedCards.forEach((nestedCard, nestedIndex) => {
-          const nestedId = nestedCard.dataset.nestedId;
-          const nestedData = itemData.nestedItems?.[nestedId] || {};
-
-          console.log(
-            `  Processing nested item ${nestedIndex + 1}:`,
-            nestedId,
-            nestedData
-          );
-
-          nestedItems.push({
-            TempId: nestedId,
-            SortOrder: nestedIndex + 1,
-            Type: 0, // Will be set by backend based on template
-            Status: 1,
-            MediaType: 0,
-            Translations: [],
-          });
-        });
-
-        sectionItems.push({
-          TempId: itemId,
-          SortOrder: index + 1,
-          NestedItems: nestedItems, // Separate nested items array
-          Type: 0, // Will be set by backend based on template
-          Status: 1,
-          MediaType: 0,
-          Translations: [],
-        });
-      });
+      // Collect section items data recursively
+      const sectionItems = collectSectionItemsFromDOM();
 
       const sectionData = {
         Id: currentSection.id,
@@ -430,6 +379,170 @@ const SectionModal = (function () {
       console.error("Save error:", error);
       alert("Error saving section. Please try again.");
     }
+  }
+
+  /**
+   * Collect section items from DOM recursively
+   * @returns {Array} Array of section items with their fields and nested items
+   */
+  function collectSectionItemsFromDOM() {
+    const itemCards = document.querySelectorAll(
+      "#itemsGrid > .section-item-card"
+    );
+    const sectionItems = [];
+
+    itemCards.forEach((card, index) => {
+      const itemId = card.dataset.itemId;
+      const itemType = card.dataset.itemType || "Unknown";
+
+      console.log(
+        `Processing root item ${
+          index + 1
+        }: ID=${itemId}, Type=${itemType}`
+      );
+
+      // Collect item data
+      const itemData = collectItemData(card, itemId);
+
+      sectionItems.push({
+        TempId: itemId,
+        SortOrder: index + 1,
+        Type: itemType,
+        Status: 1,
+        MediaType: 0,
+        Fields: itemData.fields,
+        Translations: itemData.translations,
+        ChildItems: itemData.childItems,
+      });
+    });
+
+    console.log("Collected section items:", sectionItems);
+    return sectionItems;
+  }
+
+  /**
+   * Collect data for a single item (fields, translations, nested items)
+   * @param {HTMLElement} itemCard - The item card DOM element
+   * @param {string} itemId - The item ID
+   * @param {string} parentItemId - Parent item ID (for nested items)
+   * @returns {Object} Item data with fields, translations, and child items
+   */
+  function collectItemData(itemCard, itemId, parentItemId = "") {
+    const storedData =
+      parentItemId && parentItemId !== "" && parentItemId !== "0"
+        ? window.sectionItemsData?.[parentItemId]?.childItems?.[
+            itemId
+          ]
+        : window.sectionItemsData?.[itemId];
+
+    console.log(
+      `Collecting data for item ${itemId}, parent ${parentItemId}:`,
+      storedData
+    );
+
+    // Collect fields
+    const fields = [];
+    const fieldContainers = itemCard.querySelectorAll(
+      ":scope > .space-y-3 > .field-container, :scope > .space-y-2 > .field-container"
+    );
+
+    fieldContainers.forEach((container) => {
+      const fieldKey = container.dataset.fieldName;
+      const isTranslatable =
+        container.dataset.translatable === "true";
+
+      if (!isTranslatable) {
+        // Non-translatable field - get value from storage
+        const fieldValue = storedData?.fields?.[fieldKey] ?? "";
+
+        if (fieldKey) {
+          fields.push({
+            FieldKey: fieldKey,
+            FieldValue: fieldValue ? fieldValue.toString() : "",
+          });
+          console.log(`  Field: ${fieldKey} = ${fieldValue}`);
+        }
+      }
+    });
+
+    // Collect translations
+    const translations = [];
+    if (storedData?.translations) {
+      Object.values(storedData.translations).forEach((trans) => {
+        const translationFields = [];
+
+        // Convert fields object to array
+        if (trans.fields) {
+          Object.entries(trans.fields).forEach(
+            ([fieldKey, fieldValue]) => {
+              translationFields.push({
+                FieldKey: fieldKey,
+                FieldValue: fieldValue ? fieldValue.toString() : "",
+              });
+            }
+          );
+        }
+
+        translations.push({
+          LanguageId: trans.languageId,
+          LanguageCode: trans.languageCode,
+          Fields: translationFields,
+        });
+
+        console.log(
+          `  Translation [${trans.languageCode}]:`,
+          translationFields
+        );
+      });
+    }
+
+    // Collect nested items recursively
+    const childItems = [];
+    const nestedCards = itemCard.querySelectorAll(
+      ":scope > .mt-4 .nested-item-card, :scope .space-y-2 > .nested-item-card"
+    );
+
+    const processedNestedIds = new Set();
+
+    nestedCards.forEach((nestedCard, nestedIndex) => {
+      const nestedId = nestedCard.dataset.nestedId;
+      const nestedType = nestedCard.dataset.nestedType || "Unknown";
+      const nestedLevel = parseInt(nestedCard.dataset.level) || 1;
+
+      // Skip if already processed (avoid duplicates in recursive structure)
+      if (processedNestedIds.has(nestedId)) {
+        return;
+      }
+      processedNestedIds.add(nestedId);
+
+      console.log(
+        `  Processing nested item: ID=${nestedId}, Type=${nestedType}, Level=${nestedLevel}`
+      );
+
+      // Recursively collect nested item data
+      const nestedData = collectItemData(
+        nestedCard,
+        nestedId,
+        itemId
+      );
+
+      childItems.push({
+        TempId: nestedId,
+        SortOrder: nestedIndex + 1,
+        Type: nestedType,
+        Status: 1,
+        MediaType: 0,
+        Fields: nestedData.fields,
+        Translations: nestedData.translations,
+        ChildItems: nestedData.childItems,
+      });
+    });
+
+    return {
+      fields: fields,
+      translations: translations,
+      childItems: childItems,
+    };
   }
 
   /**
@@ -613,72 +726,176 @@ const SectionModal = (function () {
 
   /**
    * Update item field value
+   * @param {string} itemId - The section item ID
+   * @param {string} parentItemId - The parent item ID (empty string if root level)
+   * @param {string} fieldKey - The field key
+   * @param {any} value - The field value
    */
-  function updateItemField(itemTempId, fieldName, value) {
-    console.log("Field updated:", itemTempId, fieldName, "=", value);
-    // Store data for saving later
+  function updateItemField(itemId, parentItemId, fieldKey, value) {
+    console.log("Field updated:", {
+      itemId,
+      parentItemId,
+      fieldKey,
+      value,
+    });
+
+    // Initialize storage
     if (!window.sectionItemsData) {
       window.sectionItemsData = {};
     }
-    if (!window.sectionItemsData[itemTempId]) {
-      window.sectionItemsData[itemTempId] = {};
+
+    // Determine if this is a nested item or root item
+    if (parentItemId && parentItemId !== "" && parentItemId !== "0") {
+      // This is a nested item
+      if (!window.sectionItemsData[parentItemId]) {
+        window.sectionItemsData[parentItemId] = {
+          fields: {},
+          childItems: {},
+        };
+      }
+      if (!window.sectionItemsData[parentItemId].childItems) {
+        window.sectionItemsData[parentItemId].childItems = {};
+      }
+      if (!window.sectionItemsData[parentItemId].childItems[itemId]) {
+        window.sectionItemsData[parentItemId].childItems[itemId] = {
+          fields: {},
+          translations: {},
+        };
+      }
+
+      // Store the field value
+      window.sectionItemsData[parentItemId].childItems[itemId].fields[
+        fieldKey
+      ] = value;
+    } else {
+      // This is a root level item
+      if (!window.sectionItemsData[itemId]) {
+        window.sectionItemsData[itemId] = {
+          fields: {},
+          childItems: {},
+          translations: {},
+        };
+      }
+      if (!window.sectionItemsData[itemId].fields) {
+        window.sectionItemsData[itemId].fields = {};
+      }
+
+      // Store the field value
+      window.sectionItemsData[itemId].fields[fieldKey] = value;
     }
-    window.sectionItemsData[itemTempId][fieldName] = value;
+
+    console.log("Current sectionItemsData:", window.sectionItemsData);
   }
 
   /**
    * Update item field translation (multi-language support)
+   * @param {string} itemId - The section item ID
+   * @param {string} parentItemId - The parent item ID (empty string if root level)
+   * @param {string} fieldKey - The field key
+   * @param {string} languageCode - Language code (e.g., 'en-US')
+   * @param {number} languageId - Language ID
+   * @param {any} value - The field value
    */
   function updateItemFieldTranslation(
-    itemTempId,
-    fieldName,
+    itemId,
+    parentItemId,
+    fieldKey,
     languageCode,
     languageId,
     value
   ) {
-    console.log(
-      "Item field translation updated:",
-      itemTempId,
-      fieldName,
+    console.log("Field translation updated:", {
+      itemId,
+      parentItemId,
+      fieldKey,
       languageCode,
-      value
-    );
+      languageId,
+      value,
+    });
 
-    // Store data for saving later
+    // Initialize storage
     if (!window.sectionItemsData) {
       window.sectionItemsData = {};
     }
-    if (!window.sectionItemsData[itemTempId]) {
-      window.sectionItemsData[itemTempId] = {};
+
+    // Determine if this is a nested item or root item
+    if (parentItemId && parentItemId !== "" && parentItemId !== "0") {
+      // This is a nested item
+      if (!window.sectionItemsData[parentItemId]) {
+        window.sectionItemsData[parentItemId] = {
+          fields: {},
+          childItems: {},
+        };
+      }
+      if (!window.sectionItemsData[parentItemId].childItems) {
+        window.sectionItemsData[parentItemId].childItems = {};
+      }
+      if (!window.sectionItemsData[parentItemId].childItems[itemId]) {
+        window.sectionItemsData[parentItemId].childItems[itemId] = {
+          fields: {},
+          translations: {},
+        };
+      }
+      if (
+        !window.sectionItemsData[parentItemId].childItems[itemId]
+          .translations
+      ) {
+        window.sectionItemsData[parentItemId].childItems[
+          itemId
+        ].translations = {};
+      }
+      if (
+        !window.sectionItemsData[parentItemId].childItems[itemId]
+          .translations[languageId]
+      ) {
+        window.sectionItemsData[parentItemId].childItems[
+          itemId
+        ].translations[languageId] = {
+          languageId: languageId,
+          languageCode: languageCode,
+          fields: {},
+        };
+      }
+
+      // Store the translated field value
+      window.sectionItemsData[parentItemId].childItems[
+        itemId
+      ].translations[languageId].fields[fieldKey] = value;
+    } else {
+      // This is a root level item
+      if (!window.sectionItemsData[itemId]) {
+        window.sectionItemsData[itemId] = {
+          fields: {},
+          childItems: {},
+          translations: {},
+        };
+      }
+      if (!window.sectionItemsData[itemId].translations) {
+        window.sectionItemsData[itemId].translations = {};
+      }
+      if (!window.sectionItemsData[itemId].translations[languageId]) {
+        window.sectionItemsData[itemId].translations[languageId] = {
+          languageId: languageId,
+          languageCode: languageCode,
+          fields: {},
+        };
+      }
+
+      // Store the translated field value
+      window.sectionItemsData[itemId].translations[languageId].fields[
+        fieldKey
+      ] = value;
     }
 
-    // Store translation data
-    const fieldKey = `${fieldName}_${languageCode}`;
-    window.sectionItemsData[itemTempId][fieldKey] = value;
-
-    // Also store the translation info for backend processing
-    if (!window.sectionItemsData[itemTempId].translations) {
-      window.sectionItemsData[itemTempId].translations = {};
-    }
-
-    if (
-      !window.sectionItemsData[itemTempId].translations[languageId]
-    ) {
-      window.sectionItemsData[itemTempId].translations[languageId] = {
-        languageId: languageId,
-        languageCode: languageCode,
-      };
-    }
-
-    window.sectionItemsData[itemTempId].translations[languageId][
-      fieldName
-    ] = value;
+    console.log("Current sectionItemsData:", window.sectionItemsData);
   }
 
   /**
    * Switch language tab for section items
+   * @param {HTMLElement} button - The clicked tab button
+   * @param {string} uniqueFieldId - Unique field identifier
    */
-  function switchItemLanguageTab(button, itemTempId, fieldName) {
+  function switchItemLanguageTab(button, uniqueFieldId) {
     const fieldContainer = button.closest(".field-container");
     const languageCode = button.dataset.language;
 
@@ -701,9 +918,18 @@ const SectionModal = (function () {
         }
       });
   }
+
+  /**
+   * Handle image upload for a field
+   * @param {string} itemId - The section item ID
+   * @param {string} parentItemId - The parent item ID (empty string if root level)
+   * @param {string} fieldKey - The field key
+   * @param {HTMLInputElement} inputElement - The file input element
+   */
   async function handleImageUpload(
-    itemTempId,
-    fieldName,
+    itemId,
+    parentItemId,
+    fieldKey,
     inputElement
   ) {
     const file = inputElement.files[0];
@@ -715,12 +941,14 @@ const SectionModal = (function () {
         "section-item"
       );
       if (result.success) {
-        updateItemField(itemTempId, fieldName, result.url);
+        // Update the stored data
+        updateItemField(itemId, parentItemId, fieldKey, result.url);
 
-        // Update the preview image
-        const fieldContainer =
-          inputElement.closest("div").parentElement;
-        const existingPreview = fieldContainer.querySelector("img");
+        // Update the preview image in UI
+        const fieldContainer = inputElement.closest(
+          ".image-upload-container"
+        );
+        let existingPreview = fieldContainer.querySelector("img");
         const uploadStatus =
           fieldContainer.querySelector(".text-green-600");
 
