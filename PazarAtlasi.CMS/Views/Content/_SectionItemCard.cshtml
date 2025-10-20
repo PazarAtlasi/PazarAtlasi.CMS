@@ -23,7 +23,7 @@
                 </h5>
                 @if (!string.IsNullOrEmpty(itemConfig?.Translations?.FirstOrDefault()?.Description))
                 {
-                    <p class="text-xs text-slate-500 mt-0.5">@itemConfig.Translations.FirstOrDefault().Description</p>
+                    <p class="text-xs text-slate-500 mt-0.5">@itemConfig.Translations.FirstOrDefault()?.Description</p>
                 }
             </div>
         </div>
