@@ -13,6 +13,12 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public int? ParentSectionItemId { get; set; }
 
+        /// <summary>
+        /// Configuration template used to create this item
+        /// Defines field structure, validation rules, UI behavior, etc.
+        /// </summary>
+        public int SectionItemSettingId { get; set; }
+
         public SectionItemType Type { get; set; } = SectionItemType.None;
 
         public MediaType MediaType { get; set; }
@@ -25,6 +31,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public virtual Section Section { get; set; }
 
         public virtual SectionItem? ParentSectionItem { get; set; }
+
+        /// <summary>
+        /// Configuration template that defines this item's structure
+        /// </summary>
+        public virtual SectionItemSetting Setting { get; set; } = null!;
 
         public virtual ICollection<SectionItemField> Fields { get; set; } = new List<SectionItemField>();
 
