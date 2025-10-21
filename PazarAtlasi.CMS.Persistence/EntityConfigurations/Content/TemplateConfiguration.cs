@@ -45,6 +45,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 .HasForeignKey(st => st.TemplateId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(t => t.SectionItemSettings)
+                .WithOne(sis => sis.Template)
+                .HasForeignKey(sis => sis.TemplateId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Seed Data
             builder.HasData(
                 // Navbar Templates

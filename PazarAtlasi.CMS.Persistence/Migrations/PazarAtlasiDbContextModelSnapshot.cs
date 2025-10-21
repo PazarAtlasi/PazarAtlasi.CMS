@@ -3824,6 +3824,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ParentSettingId");
 
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("SortOrder");
+
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -3872,6 +3878,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 1,
                             MaxItems = 1,
                             MinItems = 1,
+                            SortOrder = 1,
                             Status = 1,
                             TemplateId = 1,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"IconClass\":\"fa-image\"}"
@@ -3887,6 +3894,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 21,
                             MaxItems = 8,
                             MinItems = 3,
+                            SortOrder = 2,
                             Status = 1,
                             TemplateId = 1,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Menu Item\",\"IconClass\":\"fa-bars\"}"
@@ -3903,6 +3911,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxItems = 10,
                             MinItems = 1,
                             ParentSettingId = 2,
+                            SortOrder = 3,
                             Status = 1,
                             TemplateId = 1,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Dropdown Link\",\"IconClass\":\"fa-link\"}"
@@ -3918,6 +3927,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 21,
                             MaxItems = 6,
                             MinItems = 3,
+                            SortOrder = 6,
                             Status = 1,
                             TemplateId = 2,
                             UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-th-large\"}"
@@ -3934,6 +3944,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxItems = 15,
                             MinItems = 2,
                             ParentSettingId = 30,
+                            SortOrder = 7,
                             Status = 1,
                             TemplateId = 2,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Link\",\"IconClass\":\"fa-link\"}"
@@ -3949,6 +3960,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 21,
                             MaxItems = 6,
                             MinItems = 3,
+                            SortOrder = 8,
                             Status = 1,
                             TemplateId = 3,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder-open\"}"
@@ -3964,6 +3976,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 21,
                             MaxItems = 8,
                             MinItems = 3,
+                            SortOrder = 9,
                             Status = 1,
                             TemplateId = 4,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-tags\"}"
@@ -3980,6 +3993,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxItems = 12,
                             MinItems = 1,
                             ParentSettingId = 50,
+                            SortOrder = 10,
                             Status = 1,
                             TemplateId = 4,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-link\"}"
@@ -3995,6 +4009,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 10,
                             MaxItems = 10,
                             MinItems = 3,
+                            SortOrder = 4,
                             Status = 1,
                             TemplateId = 9,
                             UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Slide\",\"IconClass\":\"fa-images\"}"
@@ -4009,6 +4024,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             ItemType = 6,
                             MinItems = 1,
+                            SortOrder = 5,
                             Status = 1,
                             TemplateId = 5,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-file-alt\"}"
@@ -4024,6 +4040,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 6,
                             MaxItems = 10,
                             MinItems = 2,
+                            SortOrder = 11,
                             Status = 1,
                             TemplateId = 6,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Step\",\"IconClass\":\"fa-list-ol\"}"
@@ -4039,6 +4056,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 6,
                             MaxItems = 12,
                             MinItems = 3,
+                            SortOrder = 12,
                             Status = 1,
                             TemplateId = 7,
                             UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Grid Item\",\"IconClass\":\"fa-th\"}"
@@ -4054,6 +4072,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 10,
                             MaxItems = 20,
                             MinItems = 4,
+                            SortOrder = 13,
                             Status = 1,
                             TemplateId = 8,
                             UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":4,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Image\",\"IconClass\":\"fa-images\"}"
@@ -4069,6 +4088,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 6,
                             MaxItems = 15,
                             MinItems = 3,
+                            SortOrder = 14,
                             Status = 1,
                             TemplateId = 10,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add List Item\",\"IconClass\":\"fa-list\"}"
@@ -4084,6 +4104,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 6,
                             MaxItems = 1,
                             MinItems = 1,
+                            SortOrder = 15,
                             Status = 1,
                             TemplateId = 11,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"AddButtonText\":\"\",\"IconClass\":\"fa-star\"}"
@@ -4099,6 +4120,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 6,
                             MaxItems = 8,
                             MinItems = 2,
+                            SortOrder = 16,
                             Status = 1,
                             TemplateId = 12,
                             UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-th-large\"}"
@@ -4114,6 +4136,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 6,
                             MaxItems = 10,
                             MinItems = 3,
+                            SortOrder = 17,
                             Status = 1,
                             TemplateId = 13,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Panel\",\"IconClass\":\"fa-bars\"}"
@@ -4129,6 +4152,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             ItemType = 6,
                             MaxItems = 8,
                             MinItems = 2,
+                            SortOrder = 18,
                             Status = 1,
                             TemplateId = 14,
                             UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder\"}"
@@ -7681,7 +7705,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
-                        .WithMany()
+                        .WithMany("SectionItemSettings")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -7835,6 +7859,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Template", b =>
                 {
+                    b.Navigation("SectionItemSettings");
+
                     b.Navigation("SectionItemTypeTemplates");
 
                     b.Navigation("SectionTemplates");

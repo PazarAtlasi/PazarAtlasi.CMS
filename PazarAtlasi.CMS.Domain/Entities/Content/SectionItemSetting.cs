@@ -49,6 +49,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public string? UIConfigurationJson { get; set; }
 
         /// <summary>
+        /// Display order for this configuration
+        /// </summary>
+        public int SortOrder { get; set; } = 0;
+
+        /// <summary>
         /// Parent configuration ID for nested items
         /// </summary>
         public int? ParentSettingId { get; set; }

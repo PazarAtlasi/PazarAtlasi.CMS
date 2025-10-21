@@ -794,8 +794,10 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
+
         /// <summary>
         /// Get a single new section item card as HTML (for adding items individually with different templates)
+        /// NOW READS FROM DATABASE using TemplateConfigurationProvider
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetNewSectionItemCard(int templateId, int sectionId = 0, int currentCount = 0)
@@ -803,6 +805,7 @@ namespace PazarAtlasi.CMS.Controllers
             try
             {
                 // Get template and configuration
+                // Get template from database
                 var template = await _pazarAtlasiDbContext.Templates
                     .FirstOrDefaultAsync(t => t.Id == templateId && t.IsActive && !t.IsDeleted);
 
@@ -811,7 +814,8 @@ namespace PazarAtlasi.CMS.Controllers
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found.</p></div>", "text/html");
                 }
 
-                var configuration = _templateConfigurationProvider?.GetConfiguration(template.Id, template.TemplateKey);
+                // Get configuration from database via TemplateConfigurationProvider
+                var configuration = await _templateConfigurationProvider.GetConfigurationAsync(template.Id, template.TemplateKey);
                 if (configuration == null || configuration.SectionConfiguration?.SectionItems == null || !configuration.SectionConfiguration.SectionItems.Any())
                 {
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
@@ -819,6 +823,7 @@ namespace PazarAtlasi.CMS.Controllers
 
                 // Get available languages
                 var availableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
                     .Select(l => new LanguageViewModel
                     {
                         Id = l.Id,
@@ -845,10 +850,10 @@ namespace PazarAtlasi.CMS.Controllers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in GetNewSectionItemCard: {ex.Message}");
                 return Content($"<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Error: {ex.Message}</p></div>", "text/html");
             }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAvailablePages()

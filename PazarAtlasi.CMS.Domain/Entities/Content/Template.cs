@@ -16,5 +16,10 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public virtual ICollection<SectionTypeTemplate> SectionTemplates { get; set; } = new List<SectionTypeTemplate>();
 
         public virtual ICollection<SectionItemTypeTemplate> SectionItemTypeTemplates { get; set; } = new List<SectionItemTypeTemplate>();
+
+        /// <summary>
+        /// Section item configurations for this template
+        /// </summary>
+        public virtual ICollection<SectionItemSetting> SectionItemSettings { get; set; } = new List<SectionItemSetting>();
     }
 }

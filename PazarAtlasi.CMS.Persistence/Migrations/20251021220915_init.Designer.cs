@@ -12,8 +12,8 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    [Migration("20251018214410_fsa")]
-    partial class fsa
+    [Migration("20251021220915_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1109,6 +1109,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("SectionId");
 
+                    b.Property<int>("SectionItemSettingId")
+                        .HasColumnType("int")
+                        .HasColumnName("SectionItemSettingId");
+
                     b.Property<int>("SortOrder")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -1139,6 +1143,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasIndex("ParentSectionItemId");
 
+                    b.HasIndex("SectionItemSettingId")
+                        .HasDatabaseName("IX_SectionItems_SectionItemSettingId");
+
                     b.HasIndex("Type")
                         .HasDatabaseName("IX_SectionItems_Type");
 
@@ -1155,9 +1162,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 1,
+                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
-                            Type = 5
+                            Type = 6
                         },
                         new
                         {
@@ -1166,9 +1174,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 1,
+                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
-                            Type = 8
+                            Type = 9
                         },
                         new
                         {
@@ -1177,9 +1186,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 1,
+                            SectionItemSettingId = 1,
                             SortOrder = 3,
                             Status = 1,
-                            Type = 4
+                            Type = 5
                         },
                         new
                         {
@@ -1188,9 +1198,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 2,
+                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
-                            Type = 9
+                            Type = 10
                         },
                         new
                         {
@@ -1199,9 +1210,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 2,
+                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
-                            Type = 9
+                            Type = 10
                         },
                         new
                         {
@@ -1210,9 +1222,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 2,
+                            SectionItemSettingId = 1,
                             SortOrder = 3,
                             Status = 1,
-                            Type = 9
+                            Type = 10
                         },
                         new
                         {
@@ -1221,9 +1234,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 3,
+                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
-                            Type = 5
+                            Type = 6
                         },
                         new
                         {
@@ -1232,9 +1246,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 3,
+                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
-                            Type = 14
+                            Type = 15
                         },
                         new
                         {
@@ -1243,9 +1258,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 4,
+                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
-                            Type = 5
+                            Type = 6
                         },
                         new
                         {
@@ -1254,9 +1270,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 4,
+                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
-                            Type = 17
+                            Type = 18
                         });
                 });
 
@@ -1311,6 +1328,2396 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.ToTable("SectionItemFields", (string)null);
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("CreatedBy");
+
+                    b.Property<string>("DefaultValue")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("DefaultValue");
+
+                    b.Property<string>("FieldKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("FieldKey");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<bool>("IsTranslatable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsTranslatable");
+
+                    b.Property<int>("MaxLength")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("MaxLength");
+
+                    b.Property<string>("OptionsJson")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("OptionsJson");
+
+                    b.Property<string>("Placeholder")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("Placeholder");
+
+                    b.Property<bool>("Required")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("Required");
+
+                    b.Property<int>("SectionItemSettingId")
+                        .HasColumnType("int")
+                        .HasColumnName("SectionItemSettingId");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("SortOrder");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Status");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("Type");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("IX_SectionItemFieldSettings_Type");
+
+                    b.HasIndex("SectionItemSettingId", "FieldKey")
+                        .IsUnique()
+                        .HasDatabaseName("IX_SectionItemFieldSettings_SettingId_FieldKey");
+
+                    b.HasIndex("SectionItemSettingId", "SortOrder")
+                        .HasDatabaseName("IX_SectionItemFieldSettings_SettingId_SortOrder");
+
+                    b.ToTable("SectionItemFieldSettings", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "image",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = true,
+                            SectionItemSettingId = 1,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 11
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "altText",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Placeholder = "Logo alt text",
+                            Required = false,
+                            SectionItemSettingId = 1,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultValue = "/",
+                            FieldKey = "url",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Placeholder = "/",
+                            Required = false,
+                            SectionItemSettingId = 1,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Placeholder = "e.g., Products, Services",
+                            Required = true,
+                            SectionItemSettingId = 2,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-bars",
+                            Required = false,
+                            SectionItemSettingId = 2,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Placeholder = "e.g., Home, About",
+                            Required = true,
+                            SectionItemSettingId = 3,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "url",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Placeholder = "/page-url or https://example.com",
+                            Required = true,
+                            SectionItemSettingId = 3,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-home",
+                            Required = false,
+                            SectionItemSettingId = 3,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultValue = "false",
+                            FieldKey = "openInNewTab",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = false,
+                            SectionItemSettingId = 3,
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 5
+                        },
+                        new
+                        {
+                            Id = 300,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Placeholder = "e.g., Products, Services",
+                            Required = true,
+                            SectionItemSettingId = 30,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 301,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-cube",
+                            Required = false,
+                            SectionItemSettingId = 30,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 302,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 200,
+                            Required = false,
+                            SectionItemSettingId = 30,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 310,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Required = true,
+                            SectionItemSettingId = 31,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 311,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "url",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = true,
+                            SectionItemSettingId = 31,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 312,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-arrow-right",
+                            Required = false,
+                            SectionItemSettingId = 31,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 400,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Required = true,
+                            SectionItemSettingId = 40,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 401,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-cog",
+                            Required = false,
+                            SectionItemSettingId = 40,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 402,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 300,
+                            Required = false,
+                            SectionItemSettingId = 40,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 403,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "url",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 40,
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 500,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Required = true,
+                            SectionItemSettingId = 50,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 501,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-tag",
+                            Required = false,
+                            SectionItemSettingId = 50,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 510,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Required = true,
+                            SectionItemSettingId = 51,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 511,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "url",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = true,
+                            SectionItemSettingId = 51,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 512,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "badge",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 20,
+                            Placeholder = "New, Hot, etc.",
+                            Required = false,
+                            SectionItemSettingId = 51,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 100,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "image",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = true,
+                            SectionItemSettingId = 10,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 11
+                        },
+                        new
+                        {
+                            Id = 101,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = false,
+                            SectionItemSettingId = 10,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 102,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 300,
+                            Required = false,
+                            SectionItemSettingId = 10,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 103,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "buttonText",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Required = false,
+                            SectionItemSettingId = 10,
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 104,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "buttonUrl",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 10,
+                            SortOrder = 5,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 200,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = true,
+                            SectionItemSettingId = 20,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 201,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 20,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 600,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = true,
+                            SectionItemSettingId = 60,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 601,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 300,
+                            Required = false,
+                            SectionItemSettingId = 60,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 602,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-check",
+                            Required = false,
+                            SectionItemSettingId = 60,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 700,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "image",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = true,
+                            SectionItemSettingId = 70,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 11
+                        },
+                        new
+                        {
+                            Id = 701,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = true,
+                            SectionItemSettingId = 70,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 702,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 200,
+                            Required = false,
+                            SectionItemSettingId = 70,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 703,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "url",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 70,
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 800,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "image",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = true,
+                            SectionItemSettingId = 80,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 11
+                        },
+                        new
+                        {
+                            Id = 801,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "altText",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = false,
+                            SectionItemSettingId = 80,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 802,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "caption",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 200,
+                            Required = false,
+                            SectionItemSettingId = 80,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 803,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "linkUrl",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 80,
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 900,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = true,
+                            SectionItemSettingId = 90,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 901,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 300,
+                            Required = false,
+                            SectionItemSettingId = 90,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 902,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-check",
+                            Required = false,
+                            SectionItemSettingId = 90,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 1010,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "image",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = false,
+                            SectionItemSettingId = 101,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 11
+                        },
+                        new
+                        {
+                            Id = 1011,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = true,
+                            SectionItemSettingId = 101,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 1012,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "subtitle",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = false,
+                            SectionItemSettingId = 101,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 1013,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 101,
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 1014,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "buttonText",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Required = false,
+                            SectionItemSettingId = 101,
+                            SortOrder = 5,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 1015,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "buttonUrl",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 101,
+                            SortOrder = 6,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 1100,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "image",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = false,
+                            SectionItemSettingId = 110,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 11
+                        },
+                        new
+                        {
+                            Id = 1101,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = true,
+                            SectionItemSettingId = 110,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 1102,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "description",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 300,
+                            Required = false,
+                            SectionItemSettingId = 110,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 1103,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "url",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 500,
+                            Required = false,
+                            SectionItemSettingId = 110,
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 13
+                        },
+                        new
+                        {
+                            Id = 1200,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 100,
+                            Required = true,
+                            SectionItemSettingId = 120,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 1201,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "content",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 1000,
+                            Required = true,
+                            SectionItemSettingId = 120,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 4
+                        },
+                        new
+                        {
+                            Id = 1202,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultValue = "false",
+                            FieldKey = "isOpen",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 0,
+                            Required = false,
+                            SectionItemSettingId = 120,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 5
+                        },
+                        new
+                        {
+                            Id = 1300,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "title",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 50,
+                            Required = true,
+                            SectionItemSettingId = 130,
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 1301,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "icon",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            MaxLength = 50,
+                            Placeholder = "fa fa-info",
+                            Required = false,
+                            SectionItemSettingId = 130,
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 1302,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            FieldKey = "content",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 1000,
+                            Required = true,
+                            SectionItemSettingId = 130,
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 4
+                        });
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldSettingTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("CreatedBy");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("Description");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("Label");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int")
+                        .HasColumnName("LanguageId");
+
+                    b.Property<int>("SectionItemFieldSettingId")
+                        .HasColumnType("int")
+                        .HasColumnName("SectionItemFieldSettingId");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("SectionItemFieldSettingId", "LanguageId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_SectionItemFieldSettingTranslations_FieldSettingId_LanguageId");
+
+                    b.ToTable("SectionItemFieldSettingTranslations", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Logo resminizi yükleyin",
+                            IsDeleted = false,
+                            Label = "Logo Resmi",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Upload your logo image",
+                            IsDeleted = false,
+                            Label = "Logo Image",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Alternative text for accessibility",
+                            IsDeleted = false,
+                            Label = "Alt Text",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Erişilebilirlik için alternatif metin",
+                            IsDeleted = false,
+                            Label = "Alternatif Metin",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Where logo should link to",
+                            IsDeleted = false,
+                            Label = "Link URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Logonun yönlendireceği adres",
+                            IsDeleted = false,
+                            Label = "Bağlantı URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Title of the menu item",
+                            IsDeleted = false,
+                            Label = "Menu Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Menü öğesinin başlığı",
+                            IsDeleted = false,
+                            Label = "Menü Başlığı",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "FontAwesome icon class",
+                            IsDeleted = false,
+                            Label = "Icon (Optional)",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "FontAwesome ikon sınıfı",
+                            IsDeleted = false,
+                            Label = "İkon (Opsiyonel)",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Text for the navigation link",
+                            IsDeleted = false,
+                            Label = "Link Text",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 6,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Navigasyon linki için metin",
+                            IsDeleted = false,
+                            Label = "Link Metni",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 6,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link destination",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 7,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link hedefi",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 7,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "FontAwesome icon class",
+                            IsDeleted = false,
+                            Label = "Icon (Optional)",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 8,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "FontAwesome ikon sınıfı",
+                            IsDeleted = false,
+                            Label = "İkon (Opsiyonel)",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 8,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Open link in new browser tab",
+                            IsDeleted = false,
+                            Label = "Open in New Tab",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 9,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Linki yeni tarayıcı sekmesinde aç",
+                            IsDeleted = false,
+                            Label = "Yeni Sekmede Aç",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 9,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Kategori başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 300,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Category title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 300,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Kategori ikonu",
+                            IsDeleted = false,
+                            Label = "İkon",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 301,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Category icon",
+                            IsDeleted = false,
+                            Label = "Icon",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 301,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Kategori açıklaması",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 302,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Category description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 302,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3006,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 310,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3007,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 310,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3008,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link adresi",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 311,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3009,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link address",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 311,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3010,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link ikonu",
+                            IsDeleted = false,
+                            Label = "İkon",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 312,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3011,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link icon",
+                            IsDeleted = false,
+                            Label = "Icon",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 312,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sekme başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 400,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tab title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 400,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sekme ikonu",
+                            IsDeleted = false,
+                            Label = "İkon",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 401,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tab icon",
+                            IsDeleted = false,
+                            Label = "Icon",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 401,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sekme açıklaması",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 402,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tab description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 402,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4006,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sekme bağlantısı",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 403,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4007,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tab link",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 403,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Kategori başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 500,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Category title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 500,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Kategori ikonu",
+                            IsDeleted = false,
+                            Label = "İkon",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 501,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Category icon",
+                            IsDeleted = false,
+                            Label = "Icon",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 501,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 510,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 510,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5006,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe adresi",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 511,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5007,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item URL",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 511,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5008,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe rozeti",
+                            IsDeleted = false,
+                            Label = "Rozet",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 512,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5009,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item badge",
+                            IsDeleted = false,
+                            Label = "Badge",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 512,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 100,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Slayt için resim",
+                            IsDeleted = false,
+                            Label = "Slayt Resmi",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 100,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 101,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Image for the slide",
+                            IsDeleted = false,
+                            Label = "Slide Image",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 100,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 102,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Slayt başlığı",
+                            IsDeleted = false,
+                            Label = "Slayt Başlığı",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 101,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 103,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Title for the slide",
+                            IsDeleted = false,
+                            Label = "Slide Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 101,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 104,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Slayt açıklaması",
+                            IsDeleted = false,
+                            Label = "Slayt Açıklaması",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 102,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 105,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Description for the slide",
+                            IsDeleted = false,
+                            Label = "Slide Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 102,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 106,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Buton metni",
+                            IsDeleted = false,
+                            Label = "Buton Metni",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 103,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 107,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Text for the button",
+                            IsDeleted = false,
+                            Label = "Button Text",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 103,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 108,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Butonun yönlendirileceği adres",
+                            IsDeleted = false,
+                            Label = "Buton URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 104,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 109,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "URL for the button",
+                            IsDeleted = false,
+                            Label = "Button URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 104,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 200,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 200,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 201,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 200,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 202,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe açıklaması",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 201,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 203,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 201,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Adım başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 600,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Step title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 600,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Adım açıklaması",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 601,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Step description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 601,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Adım ikonu",
+                            IsDeleted = false,
+                            Label = "İkon",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 602,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Step icon",
+                            IsDeleted = false,
+                            Label = "Icon",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 602,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Grid resmi",
+                            IsDeleted = false,
+                            Label = "Resim",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 700,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Grid image",
+                            IsDeleted = false,
+                            Label = "Image",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 700,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 701,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 701,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe açıklaması",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 702,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 702,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7006,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Bağlantı adresi",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 703,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7007,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link URL",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 703,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Galeri resmi",
+                            IsDeleted = false,
+                            Label = "Resim",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 800,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Gallery image",
+                            IsDeleted = false,
+                            Label = "Image",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 800,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Resim alt metni",
+                            IsDeleted = false,
+                            Label = "Alt Metni",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 801,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Image alt text",
+                            IsDeleted = false,
+                            Label = "Alt Text",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 801,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Resim başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 802,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Image caption",
+                            IsDeleted = false,
+                            Label = "Caption",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 802,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8006,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Resim bağlantısı",
+                            IsDeleted = false,
+                            Label = "Bağlantı",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 803,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8007,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Image link",
+                            IsDeleted = false,
+                            Label = "Link URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 803,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Liste öğesi başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 900,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "List item title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 900,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Liste öğesi açıklaması",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 901,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "List item description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 901,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Liste ikonu",
+                            IsDeleted = false,
+                            Label = "İkon",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 902,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "List icon",
+                            IsDeleted = false,
+                            Label = "Icon",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 902,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10100,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öne çıkan resim",
+                            IsDeleted = false,
+                            Label = "Resim",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1010,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10101,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Featured image",
+                            IsDeleted = false,
+                            Label = "Image",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1010,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10102,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Ana başlık",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1011,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10103,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Main title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1011,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10104,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "İkincil başlık",
+                            IsDeleted = false,
+                            Label = "Alt Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1012,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10105,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Secondary title",
+                            IsDeleted = false,
+                            Label = "Subtitle",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1012,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10106,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Detaylı açıklama",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1013,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10107,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Detailed description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1013,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10108,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Aksiyon buton metni",
+                            IsDeleted = false,
+                            Label = "Buton Metni",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1014,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10109,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Action button text",
+                            IsDeleted = false,
+                            Label = "Button Text",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1014,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10110,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Buton bağlantısı",
+                            IsDeleted = false,
+                            Label = "Buton URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1015,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10111,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Button link",
+                            IsDeleted = false,
+                            Label = "Button URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1015,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe resmi",
+                            IsDeleted = false,
+                            Label = "Resim",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1100,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item image",
+                            IsDeleted = false,
+                            Label = "Image",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1100,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1101,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1101,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe açıklaması",
+                            IsDeleted = false,
+                            Label = "Açıklama",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1102,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item description",
+                            IsDeleted = false,
+                            Label = "Description",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1102,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11006,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öğe bağlantısı",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1103,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 11007,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item link",
+                            IsDeleted = false,
+                            Label = "URL",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1103,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Panel başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1200,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Panel title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1200,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Panel içeriği",
+                            IsDeleted = false,
+                            Label = "İçerik",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1201,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Panel content",
+                            IsDeleted = false,
+                            Label = "Content",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1201,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Başlangıçta açık",
+                            IsDeleted = false,
+                            Label = "Açık Mı?",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1202,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 12005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Initially open",
+                            IsDeleted = false,
+                            Label = "Is Open?",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1202,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13000,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sekme başlığı",
+                            IsDeleted = false,
+                            Label = "Başlık",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1300,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13001,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tab title",
+                            IsDeleted = false,
+                            Label = "Title",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1300,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13002,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sekme ikonu",
+                            IsDeleted = false,
+                            Label = "İkon",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1301,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13003,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tab icon",
+                            IsDeleted = false,
+                            Label = "Icon",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1301,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13004,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sekme içeriği",
+                            IsDeleted = false,
+                            Label = "İçerik",
+                            LanguageId = 1,
+                            SectionItemFieldSettingId = 1302,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 13005,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Tab content",
+                            IsDeleted = false,
+                            Label = "Content",
+                            LanguageId = 2,
+                            SectionItemFieldSettingId = 1302,
+                            Status = 1
+                        });
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldTranslation", b =>
                 {
                     b.Property<int>("Id")
@@ -1359,6 +3766,865 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasIndex("SectionItemFieldId");
 
                     b.ToTable("SectionItemFieldTranslations", (string)null);
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowDynamicSectionItems")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true)
+                        .HasColumnName("AllowDynamicSectionItems");
+
+                    b.Property<string>("ConfigurationKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("ConfigurationKey");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("CreatedBy");
+
+                    b.Property<int>("DefaultItemCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("DefaultItemCount");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<int>("ItemType")
+                        .HasColumnType("int")
+                        .HasColumnName("ItemType");
+
+                    b.Property<int?>("MaxItems")
+                        .HasColumnType("int")
+                        .HasColumnName("MaxItems");
+
+                    b.Property<int>("MinItems")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("MinItems");
+
+                    b.Property<int?>("ParentSettingId")
+                        .HasColumnType("int")
+                        .HasColumnName("ParentSettingId");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("SortOrder");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Status");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int")
+                        .HasColumnName("TemplateId");
+
+                    b.Property<string>("UIConfigurationJson")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UIConfigurationJson");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemType")
+                        .HasDatabaseName("IX_SectionItemSettings_ItemType");
+
+                    b.HasIndex("ParentSettingId")
+                        .HasDatabaseName("IX_SectionItemSettings_ParentSettingId");
+
+                    b.HasIndex("TemplateId", "ConfigurationKey")
+                        .IsUnique()
+                        .HasDatabaseName("IX_SectionItemSettings_TemplateId_ConfigurationKey");
+
+                    b.ToTable("SectionItemSettings", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AllowDynamicSectionItems = false,
+                            ConfigurationKey = "logo",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 1,
+                            IsDeleted = false,
+                            ItemType = 1,
+                            MaxItems = 1,
+                            MinItems = 1,
+                            SortOrder = 1,
+                            Status = 1,
+                            TemplateId = 1,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"IconClass\":\"fa-image\"}"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "menu",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 3,
+                            IsDeleted = false,
+                            ItemType = 21,
+                            MaxItems = 8,
+                            MinItems = 3,
+                            SortOrder = 2,
+                            Status = 1,
+                            TemplateId = 1,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Menu Item\",\"IconClass\":\"fa-bars\"}"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "dropdown-link",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 3,
+                            IsDeleted = false,
+                            ItemType = 7,
+                            MaxItems = 10,
+                            MinItems = 1,
+                            ParentSettingId = 2,
+                            SortOrder = 3,
+                            Status = 1,
+                            TemplateId = 1,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Dropdown Link\",\"IconClass\":\"fa-link\"}"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "mega-menu-category",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 3,
+                            IsDeleted = false,
+                            ItemType = 21,
+                            MaxItems = 6,
+                            MinItems = 3,
+                            SortOrder = 6,
+                            Status = 1,
+                            TemplateId = 2,
+                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-th-large\"}"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "mega-menu-link",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 3,
+                            IsDeleted = false,
+                            ItemType = 7,
+                            MaxItems = 15,
+                            MinItems = 2,
+                            ParentSettingId = 30,
+                            SortOrder = 7,
+                            Status = 1,
+                            TemplateId = 2,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Link\",\"IconClass\":\"fa-link\"}"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "service-tab",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 4,
+                            IsDeleted = false,
+                            ItemType = 21,
+                            MaxItems = 6,
+                            MinItems = 3,
+                            SortOrder = 8,
+                            Status = 1,
+                            TemplateId = 3,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder-open\"}"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "category",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 3,
+                            IsDeleted = false,
+                            ItemType = 21,
+                            MaxItems = 8,
+                            MinItems = 3,
+                            SortOrder = 9,
+                            Status = 1,
+                            TemplateId = 4,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-tags\"}"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "category-item",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 3,
+                            IsDeleted = false,
+                            ItemType = 7,
+                            MaxItems = 12,
+                            MinItems = 1,
+                            ParentSettingId = 50,
+                            SortOrder = 10,
+                            Status = 1,
+                            TemplateId = 4,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-link\"}"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "slide",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 5,
+                            IsDeleted = false,
+                            ItemType = 10,
+                            MaxItems = 10,
+                            MinItems = 3,
+                            SortOrder = 4,
+                            Status = 1,
+                            TemplateId = 9,
+                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Slide\",\"IconClass\":\"fa-images\"}"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "content-item",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 3,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MinItems = 1,
+                            SortOrder = 5,
+                            Status = 1,
+                            TemplateId = 5,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-file-alt\"}"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "step",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 4,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MaxItems = 10,
+                            MinItems = 2,
+                            SortOrder = 11,
+                            Status = 1,
+                            TemplateId = 6,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Step\",\"IconClass\":\"fa-list-ol\"}"
+                        },
+                        new
+                        {
+                            Id = 70,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "grid-item",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 6,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MaxItems = 12,
+                            MinItems = 3,
+                            SortOrder = 12,
+                            Status = 1,
+                            TemplateId = 7,
+                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Grid Item\",\"IconClass\":\"fa-th\"}"
+                        },
+                        new
+                        {
+                            Id = 80,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "masonry-image",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 8,
+                            IsDeleted = false,
+                            ItemType = 10,
+                            MaxItems = 20,
+                            MinItems = 4,
+                            SortOrder = 13,
+                            Status = 1,
+                            TemplateId = 8,
+                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":4,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Image\",\"IconClass\":\"fa-images\"}"
+                        },
+                        new
+                        {
+                            Id = 90,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "list-item",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 5,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MaxItems = 15,
+                            MinItems = 3,
+                            SortOrder = 14,
+                            Status = 1,
+                            TemplateId = 10,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add List Item\",\"IconClass\":\"fa-list\"}"
+                        },
+                        new
+                        {
+                            Id = 101,
+                            AllowDynamicSectionItems = false,
+                            ConfigurationKey = "single-item",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 1,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MaxItems = 1,
+                            MinItems = 1,
+                            SortOrder = 15,
+                            Status = 1,
+                            TemplateId = 11,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"AddButtonText\":\"\",\"IconClass\":\"fa-star\"}"
+                        },
+                        new
+                        {
+                            Id = 110,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "multi-item",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 4,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MaxItems = 8,
+                            MinItems = 2,
+                            SortOrder = 16,
+                            Status = 1,
+                            TemplateId = 12,
+                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-th-large\"}"
+                        },
+                        new
+                        {
+                            Id = 120,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "panel",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 5,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MaxItems = 10,
+                            MinItems = 3,
+                            SortOrder = 17,
+                            Status = 1,
+                            TemplateId = 13,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Panel\",\"IconClass\":\"fa-bars\"}"
+                        },
+                        new
+                        {
+                            Id = 130,
+                            AllowDynamicSectionItems = true,
+                            ConfigurationKey = "tab",
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultItemCount = 4,
+                            IsDeleted = false,
+                            ItemType = 6,
+                            MaxItems = 8,
+                            MinItems = 2,
+                            SortOrder = 18,
+                            Status = 1,
+                            TemplateId = 14,
+                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder\"}"
+                        });
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSettingTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("CreatedBy");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("Description");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int")
+                        .HasColumnName("LanguageId");
+
+                    b.Property<int>("SectionItemSettingId")
+                        .HasColumnType("int")
+                        .HasColumnName("SectionItemSettingId");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Status");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("Title");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("SectionItemSettingId", "LanguageId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_SectionItemSettingTranslations_SettingId_LanguageId");
+
+                    b.ToTable("SectionItemSettingTranslations", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Web sitesi logosu",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 1,
+                            Status = 1,
+                            Title = "Logo"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Website Logo",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 1,
+                            Status = 1,
+                            Title = "Logo"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Navigasyon menü öğeleri",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 2,
+                            Status = 1,
+                            Title = "Menü Öğeleri"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Navigation menu items",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 2,
+                            Status = 1,
+                            Title = "Menu Items"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Açılır menüdeki bağlantı",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 3,
+                            Status = 1,
+                            Title = "Açılır Menü Linki"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link in dropdown menu",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 3,
+                            Status = 1,
+                            Title = "Dropdown Link"
+                        },
+                        new
+                        {
+                            Id = 300,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Geniş açılır menü kategorisi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 30,
+                            Status = 1,
+                            Title = "Mega Menü Kategorisi"
+                        },
+                        new
+                        {
+                            Id = 301,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Large dropdown menu category",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 30,
+                            Status = 1,
+                            Title = "Mega Menu Category"
+                        },
+                        new
+                        {
+                            Id = 302,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Kategori içindeki bağlantı",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 31,
+                            Status = 1,
+                            Title = "Mega Menü Linki"
+                        },
+                        new
+                        {
+                            Id = 303,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Link within category",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 31,
+                            Status = 1,
+                            Title = "Mega Menu Link"
+                        },
+                        new
+                        {
+                            Id = 400,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Hizmet navigasyon sekmesi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 40,
+                            Status = 1,
+                            Title = "Hizmet Sekmesi"
+                        },
+                        new
+                        {
+                            Id = 401,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Service navigation tab",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 40,
+                            Status = 1,
+                            Title = "Service Tab"
+                        },
+                        new
+                        {
+                            Id = 500,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Menü kategorisi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 50,
+                            Status = 1,
+                            Title = "Kategori"
+                        },
+                        new
+                        {
+                            Id = 501,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Menu category",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 50,
+                            Status = 1,
+                            Title = "Category"
+                        },
+                        new
+                        {
+                            Id = 502,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Kategori altındaki öğe",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 51,
+                            Status = 1,
+                            Title = "Kategori Öğesi"
+                        },
+                        new
+                        {
+                            Id = 503,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Item under category",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 51,
+                            Status = 1,
+                            Title = "Category Item"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Carousel slaytı",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 10,
+                            Status = 1,
+                            Title = "Slayt"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Carousel slide",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 10,
+                            Status = 1,
+                            Title = "Slide"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Genel içerik öğesi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 20,
+                            Status = 1,
+                            Title = "İçerik Öğesi"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "General content item",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 20,
+                            Status = 1,
+                            Title = "Content Item"
+                        },
+                        new
+                        {
+                            Id = 600,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sıralı adım öğesi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 60,
+                            Status = 1,
+                            Title = "Adım"
+                        },
+                        new
+                        {
+                            Id = 601,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sequential step item",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 60,
+                            Status = 1,
+                            Title = "Step"
+                        },
+                        new
+                        {
+                            Id = 700,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Izgara düzeninde öğe",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 70,
+                            Status = 1,
+                            Title = "Grid Öğesi"
+                        },
+                        new
+                        {
+                            Id = 701,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Grid layout item",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 70,
+                            Status = 1,
+                            Title = "Grid Item"
+                        },
+                        new
+                        {
+                            Id = 800,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Masonry galeri resmi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 80,
+                            Status = 1,
+                            Title = "Masonry Resim"
+                        },
+                        new
+                        {
+                            Id = 801,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Masonry gallery image",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 80,
+                            Status = 1,
+                            Title = "Masonry Image"
+                        },
+                        new
+                        {
+                            Id = 900,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Liste öğesi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 90,
+                            Status = 1,
+                            Title = "Liste Öğesi"
+                        },
+                        new
+                        {
+                            Id = 901,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "List item",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 90,
+                            Status = 1,
+                            Title = "List Item"
+                        },
+                        new
+                        {
+                            Id = 1010,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Öne çıkan tek öğe",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 101,
+                            Status = 1,
+                            Title = "Tekli Öğe"
+                        },
+                        new
+                        {
+                            Id = 1011,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Featured single item",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 101,
+                            Status = 1,
+                            Title = "Single Item"
+                        },
+                        new
+                        {
+                            Id = 1100,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Çoklu içerik öğesi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 110,
+                            Status = 1,
+                            Title = "Çoklu Öğe"
+                        },
+                        new
+                        {
+                            Id = 1101,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Multiple content item",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 110,
+                            Status = 1,
+                            Title = "Multi Item"
+                        },
+                        new
+                        {
+                            Id = 1200,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Genişletilebilir panel",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 120,
+                            Status = 1,
+                            Title = "Akordeon Paneli"
+                        },
+                        new
+                        {
+                            Id = 1201,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Expandable panel",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 120,
+                            Status = 1,
+                            Title = "Accordion Panel"
+                        },
+                        new
+                        {
+                            Id = 1300,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "İçerik sekmesi",
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            SectionItemSettingId = 130,
+                            Status = 1,
+                            Title = "Sekme"
+                        },
+                        new
+                        {
+                            Id = 1301,
+                            CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Content tab",
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            SectionItemSettingId = 130,
+                            Status = 1,
+                            Title = "Tab"
+                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemTranslation", b =>
@@ -1577,6 +4843,51 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Status = 1,
                             Title = "Blog Posts"
                         });
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemTypeTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomConfiguration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SectionItemType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.HasIndex("SectionItemType", "TemplateId")
+                        .IsUnique();
+
+                    b.ToTable("SectionItemTypeTemplate");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTranslation", b =>
@@ -4316,9 +7627,17 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", "Setting")
+                        .WithMany("SectionItems")
+                        .HasForeignKey("SectionItemSettingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("ParentSectionItem");
 
                     b.Navigation("Section");
+
+                    b.Navigation("Setting");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", b =>
@@ -4330,6 +7649,36 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("SectionItem");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldSetting", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", "SectionItemSetting")
+                        .WithMany("Fields")
+                        .HasForeignKey("SectionItemSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SectionItemSetting");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldSettingTranslation", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldSetting", "SectionItemFieldSetting")
+                        .WithMany("Translations")
+                        .HasForeignKey("SectionItemFieldSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+
+                    b.Navigation("SectionItemFieldSetting");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldTranslation", b =>
@@ -4351,6 +7700,43 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("SectionItemField");
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", "ParentSetting")
+                        .WithMany("ChildSettings")
+                        .HasForeignKey("ParentSettingId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
+                        .WithMany("SectionItemSettings")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParentSetting");
+
+                    b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSettingTranslation", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", "SectionItemSetting")
+                        .WithMany("Translations")
+                        .HasForeignKey("SectionItemSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+
+                    b.Navigation("SectionItemSetting");
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemTranslation", b =>
                 {
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Language", "Language")
@@ -4368,6 +7754,17 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("Language");
 
                     b.Navigation("SectionItem");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemTypeTemplate", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
+                        .WithMany("SectionItemTypeTemplates")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTranslation", b =>
@@ -4447,8 +7844,28 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("Translations");
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldSetting", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", b =>
+                {
+                    b.Navigation("ChildSettings");
+
+                    b.Navigation("Fields");
+
+                    b.Navigation("SectionItems");
+
+                    b.Navigation("Translations");
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Template", b =>
                 {
+                    b.Navigation("SectionItemSettings");
+
+                    b.Navigation("SectionItemTypeTemplates");
+
                     b.Navigation("SectionTemplates");
                 });
 #pragma warning restore 612, 618
