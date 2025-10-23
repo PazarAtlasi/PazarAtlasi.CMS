@@ -232,167 +232,247 @@ const SectionModal = (function () {
   }
 
   /**
-   * Collect section items from DOM recursively
+   * Collect section items from DOM recursively using data-level attribute
    * @returns {Array} Array of section items with their fields and nested items
    */
   function collectSectionItems() {
-    const itemCards = document.querySelectorAll(
-      "#itemsGrid > .section-item-card"
+    console.log("Starting collectSectionItems...");
+
+    // Get all item cards (both section-item-card and nested-item-card)
+    const allCards = document.querySelectorAll(
+      ".section-item-card, .nested-item-card"
     );
+
+    console.log(`Found ${allCards.length} total cards`);
+
+    // Group cards by level
+    const cardsByLevel = new Map();
+
+    allCards.forEach((card) => {
+      const level = parseInt(card.dataset.level) || 0;
+      if (!cardsByLevel.has(level)) {
+        cardsByLevel.set(level, []);
+      }
+      cardsByLevel.get(level).push(card);
+    });
+
+    console.log(
+      "Cards grouped by level:",
+      Array.from(cardsByLevel.keys())
+    );
+
+    // Start with level 0 (root items)
+    const rootCards = cardsByLevel.get(0) || [];
     const sectionItems = [];
 
-    itemCards.forEach((card, index) => {
-      const itemId = card.dataset.itemId;
-      const itemType = card.dataset.itemType || "Unknown";
-
-      console.log(
-        `Processing root item ${
-          index + 1
-        }: ID=${itemId}, Type=${itemType}`
+    rootCards.forEach((card, index) => {
+      const itemData = collectItemDataRecursive(
+        card,
+        cardsByLevel,
+        0
       );
 
-      // Collect item data
-      const itemData = collectItemData(card, itemId);
-
       sectionItems.push({
-        TempId: itemId,
+        TempId: itemData.tempId,
         SortOrder: index + 1,
-        Type: itemType,
+        Type: itemData.type,
         Status: 1,
         MediaType: 0,
         Fields: itemData.fields,
         Translations: itemData.translations,
-        ChildItems: itemData.childItems,
+        NestedItems: itemData.nestedItems, // Changed from ChildItems to NestedItems
       });
     });
 
-    console.log("Collected section items:", sectionItems);
+    console.log("Final collected section items:", sectionItems);
     return sectionItems;
   }
 
   /**
-   * Collect data for a single item (fields, translations, nested items)
+   * Collect data for a single item recursively using level-based approach
    * @param {HTMLElement} itemCard - The item card DOM element
-   * @param {string} itemId - The item ID
-   * @param {string} parentItemId - Parent item ID (for nested items)
-   * @returns {Object} Item data with fields, translations, and child items
+   * @param {Map} cardsByLevel - Map of cards grouped by level
+   * @param {number} currentLevel - Current level being processed
+   * @returns {Object} Item data with fields, translations, and nested items
    */
-  function collectItemData(itemCard, itemId, parentItemId = "") {
-    const storedData =
-      parentItemId && parentItemId !== "" && parentItemId !== "0"
-        ? window.sectionItemsData?.[parentItemId]?.childItems?.[
-            itemId
-          ]
-        : window.sectionItemsData?.[itemId];
+  function collectItemDataRecursive(
+    itemCard,
+    cardsByLevel,
+    currentLevel
+  ) {
+    const itemId =
+      itemCard.dataset.itemId || itemCard.dataset.nestedId;
+    const itemType =
+      itemCard.dataset.itemType ||
+      itemCard.dataset.nestedType ||
+      "Unknown";
 
     console.log(
-      `Collecting data for item ${itemId}, parent ${parentItemId}:`,
-      storedData
+      `Collecting data for item ${itemId} at level ${currentLevel}, type: ${itemType}`
     );
 
-    // Collect fields
+    // Collect fields from this card only (not from nested cards)
     const fields = [];
-    const fieldContainers = itemCard.querySelectorAll(
+    const translations = [];
+
+    // Get field containers that belong DIRECTLY to this card only (not nested ones)
+    // CSS class independent approach - use closest parent card logic
+    const allFieldContainers = itemCard.querySelectorAll(
       ".field-container"
     );
+    const directFieldContainers = Array.from(
+      allFieldContainers
+    ).filter((container) => {
+      // Check if this field container's closest card parent is the current item card
+      const closestCard = container.closest(
+        ".section-item-card, .nested-item-card"
+      );
+      return closestCard === itemCard;
+    });
 
-    fieldContainers.forEach((container) => {
+    console.log(
+      `Found ${allFieldContainers.length} total field containers, ${directFieldContainers.length} direct field containers for item ${itemId} at level ${currentLevel}`
+    );
+
+    directFieldContainers.forEach((container) => {
       const fieldKey = container.dataset.fieldName;
       const isTranslatable =
         container.dataset.translatable === "true";
 
+      console.log(
+        `Processing field: ${fieldKey}, translatable: ${isTranslatable}`
+      );
+
       if (!isTranslatable) {
-        // Non-translatable field - get value from storage
-        const fieldValue = storedData?.fields?.[fieldKey] ?? "";
+        // Non-translatable field - get value directly from input
+        const input = container.querySelector(
+          "input, textarea, select"
+        );
+        const fieldValue = input ? input.value : "";
 
         if (fieldKey) {
           fields.push({
             FieldKey: fieldKey,
-            FieldValue: fieldValue ? fieldValue.toString() : "",
+            FieldValue: fieldValue,
+            FieldType: getFieldTypeFromInput(input),
           });
-          console.log(`  Field: ${fieldKey} = ${fieldValue}`);
+          console.log(
+            `  Non-translatable field: ${fieldKey} = ${fieldValue}`
+          );
         }
+      } else {
+        // Translatable field - collect from all language panels
+        const languagePanels =
+          container.querySelectorAll(".language-panel");
+
+        languagePanels.forEach((panel) => {
+          const languageCode = panel.dataset.language;
+          const input = panel.querySelector(
+            "input, textarea, select"
+          );
+          const fieldValue = input ? input.value : "";
+
+          if (fieldValue) {
+            // Find or create translation for this language
+            let translation = translations.find(
+              (t) => t.LanguageCode === languageCode
+            );
+            if (!translation) {
+              const languageTab = container.querySelector(
+                `[data-language="${languageCode}"]`
+              );
+              const languageId = languageTab
+                ? languageTab.dataset.languageId
+                : null;
+
+              translation = {
+                LanguageId: parseInt(languageId) || 1,
+                LanguageCode: languageCode,
+                Fields: [],
+              };
+              translations.push(translation);
+            }
+
+            translation.Fields.push({
+              FieldKey: fieldKey,
+              FieldValue: fieldValue,
+              FieldType: getFieldTypeFromInput(input),
+            });
+
+            console.log(
+              `  Translatable field [${languageCode}]: ${fieldKey} = ${fieldValue}`
+            );
+          }
+        });
       }
     });
 
-    // Collect translations
-    const translations = [];
-    if (storedData?.translations) {
-      Object.values(storedData.translations).forEach((trans) => {
-        const translationFields = [];
+    // Collect nested items from the next level
+    const nestedItems = [];
+    const nextLevel = currentLevel + 1;
 
-        // Convert fields object to array
-        if (trans.fields) {
-          Object.entries(trans.fields).forEach(
-            ([fieldKey, fieldValue]) => {
-              translationFields.push({
-                FieldKey: fieldKey,
-                FieldValue: fieldValue ? fieldValue.toString() : "",
-              });
-            }
+    if (cardsByLevel.has(nextLevel)) {
+      const nextLevelCards = cardsByLevel.get(nextLevel);
+
+      // Find cards that belong to this parent item
+      nextLevelCards.forEach((nestedCard, index) => {
+        // Check if this nested card is a child of current item
+        // This can be determined by DOM hierarchy or data attributes
+        if (isChildOfItem(nestedCard, itemCard)) {
+          const nestedData = collectItemDataRecursive(
+            nestedCard,
+            cardsByLevel,
+            nextLevel
           );
+
+          nestedItems.push({
+            TempId: nestedData.tempId,
+            SortOrder: index + 1,
+            Type: nestedData.type,
+            Status: 1,
+            MediaType: 0,
+            Fields: nestedData.fields,
+            Translations: nestedData.translations,
+            NestedItems: nestedData.nestedItems,
+          });
         }
-
-        translations.push({
-          LanguageId: trans.languageId,
-          LanguageCode: trans.languageCode,
-          Fields: translationFields,
-        });
-
-        console.log(
-          `  Translation [${trans.languageCode}]:`,
-          translationFields
-        );
       });
     }
 
-    // Collect nested items recursively
-    const childItems = [];
-    const nestedCards = itemCard.querySelectorAll(
-      ":scope > .mt-4 .nested-item-card, :scope .space-y-2 > .nested-item-card"
-    );
-
-    const processedNestedIds = new Set();
-
-    nestedCards.forEach((nestedCard, nestedIndex) => {
-      const nestedId = nestedCard.dataset.nestedId;
-      const nestedType = nestedCard.dataset.nestedType || "Unknown";
-      const nestedLevel = parseInt(nestedCard.dataset.level) || 1;
-
-      // Skip if already processed (avoid duplicates in recursive structure)
-      if (processedNestedIds.has(nestedId)) {
-        return;
-      }
-      processedNestedIds.add(nestedId);
-
-      console.log(
-        `  Processing nested item: ID=${nestedId}, Type=${nestedType}, Level=${nestedLevel}`
-      );
-
-      // Recursively collect nested item data
-      const nestedData = collectItemData(
-        nestedCard,
-        nestedId,
-        itemId
-      );
-
-      childItems.push({
-        TempId: nestedId,
-        SortOrder: nestedIndex + 1,
-        Type: nestedType,
-        Status: 1,
-        MediaType: 0,
-        Fields: nestedData.fields,
-        Translations: nestedData.translations,
-        ChildItems: nestedData.childItems,
-      });
-    });
-
     return {
+      tempId: itemId,
+      type: itemType,
       fields: fields,
       translations: translations,
-      childItems: childItems,
+      nestedItems: nestedItems,
     };
+  }
+
+  /**
+   * Helper function to determine field type from input element
+   */
+  function getFieldTypeFromInput(input) {
+    if (!input) return "text";
+
+    const tagName = input.tagName.toLowerCase();
+    if (tagName === "textarea") return "textarea";
+    if (tagName === "select") return "select";
+
+    const inputType = input.type;
+    if (inputType === "url") return "url";
+    if (inputType === "number") return "number";
+    if (inputType === "checkbox") return "checkbox";
+    if (inputType === "file") return "image";
+
+    return "text";
+  }
+
+  /**
+   * Helper function to check if a nested card is a child of a parent item
+   */
+  function isChildOfItem(nestedCard, parentCard) {
+    // Check if the nested card is contained within the parent card's DOM structure
+    return parentCard.contains(nestedCard);
   }
 
   /**
@@ -1564,6 +1644,88 @@ const SectionModal = (function () {
     }
   }
 
+  /**
+   * Debug function to test field collection
+   */
+  function debugFieldCollection() {
+    console.log("=== DEBUG: Field Collection Test ===");
+
+    const allCards = document.querySelectorAll(
+      ".section-item-card, .nested-item-card"
+    );
+    console.log(`Found ${allCards.length} total cards`);
+
+    allCards.forEach((card) => {
+      const itemId = card.dataset.itemId || card.dataset.nestedId;
+      const level = parseInt(card.dataset.level) || 0;
+
+      // Use the same logic as in collectItemDataRecursive
+      const allFieldContainers = card.querySelectorAll(
+        ".field-container"
+      );
+      const directFieldContainers = Array.from(
+        allFieldContainers
+      ).filter((container) => {
+        const closestCard = container.closest(
+          ".section-item-card, .nested-item-card"
+        );
+        return closestCard === card;
+      });
+
+      console.log(`\n--- Card ${itemId} (level ${level}) ---`);
+      console.log(
+        `  All field containers: ${allFieldContainers.length}`
+      );
+      console.log(
+        `  Direct field containers: ${directFieldContainers.length}`
+      );
+
+      // Show which fields belong to this card directly
+      directFieldContainers.forEach((container) => {
+        const fieldKey = container.dataset.fieldName;
+        const fieldLevel = parseInt(container.dataset.level) || 0;
+        const isTranslatable =
+          container.dataset.translatable === "true";
+
+        console.log(
+          `    ✓ Direct field: ${fieldKey}, level: ${fieldLevel}, translatable: ${isTranslatable}`
+        );
+      });
+
+      // Show which fields are nested (belong to child cards)
+      const nestedFields = Array.from(allFieldContainers).filter(
+        (container) => {
+          const closestCard = container.closest(
+            ".section-item-card, .nested-item-card"
+          );
+          return closestCard !== card;
+        }
+      );
+
+      if (nestedFields.length > 0) {
+        console.log(
+          `    Found ${nestedFields.length} nested fields:`
+        );
+        nestedFields.forEach((container) => {
+          const fieldKey = container.dataset.fieldName;
+          const fieldLevel = parseInt(container.dataset.level) || 0;
+          const parentCard = container.closest(
+            ".section-item-card, .nested-item-card"
+          );
+          const parentId =
+            parentCard?.dataset.itemId ||
+            parentCard?.dataset.nestedId;
+
+          console.log(
+            `    ✗ Nested field: ${fieldKey}, level: ${fieldLevel}, belongs to: ${parentId}`
+          );
+        });
+      }
+    });
+
+    console.log("\n=== END DEBUG ===");
+  }
+
   // Public API
   return {
     show,
@@ -1583,25 +1745,28 @@ const SectionModal = (function () {
     addNestedItem,
     removeNestedItem,
     updateNestedItemField,
-      updateNestedItemFieldTranslation,
+    updateNestedItemFieldTranslation,
 
     // Image handling
-      handleImageUpload,
+    handleImageUpload,
 
     // UI management
     clearSectionItemsUI,
-      updateItemNumbers,
+    updateItemNumbers,
 
     // NEW: Type-based item management
     addSectionItemByType,
     addNestedItemByType,
     showItemTypeSelectionModal,
-      closeItemTypeSelectionModal,
+    closeItemTypeSelectionModal,
 
     // NEW: Template selection for items
     showTemplateSelectionForNewItem,
     closeTemplateSelectionModal,
     addItemWithTemplate,
+
+    // Debug
+    debugFieldCollection,
   };
 })();
 

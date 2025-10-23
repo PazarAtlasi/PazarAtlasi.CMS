@@ -7,7 +7,8 @@
 
 <div class="section-item-card border-2 border-slate-300 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
      data-item-id="@Model.Id"
-     data-item-type="@Model.Type">
+     data-item-type="@Model.Type"
+     data-level="@(ViewBag.Level ?? 0)">
 
     <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-200">
         <div class="flex items-center">
