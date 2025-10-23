@@ -87,13 +87,6 @@ const SectionModal = (function () {
     }
 
     /**
-     * Handle page change
-     */
-    function handlePageChange(pageId) {
-        currentSection.pageId = parseInt(pageId) || 0;
-    }
-
-    /**
      * Handle section type change - Show Add Item button
      */
     async function handleSectionTypeChange(sectionType) {
@@ -147,26 +140,6 @@ const SectionModal = (function () {
     }
 
     /**
-     * Clear section items UI
-     */
-    function clearSectionItemsUI() {
-        const container = document.getElementById(
-            "sectionItemsContainer"
-        );
-        if (container) {
-            container.innerHTML = `
-        <div class="bg-slate-50 rounded-lg p-6 text-center text-slate-500">
-          <i class="fas fa-info-circle text-2xl mb-2"></i>
-          <p class="text-sm">Select a template to configure section items</p>
-        </div>
-      `;
-        }
-        // Clear stored data
-        window.sectionItemsData = {};
-        currentSection.templateConfiguration = null;
-    }
-
-    /**
      * Save section - Collects all data recursively from DOM
      */
     async function save() {
@@ -193,7 +166,14 @@ const SectionModal = (function () {
             // Collect section items data recursively
             const sectionItems = collectSectionItems();
 
+            // Collect section translations
+            const sectionTranslations = collectSectionTranslations();
+
             console.log("Collected section items:", sectionItems);
+            console.log(
+                "Collected section translations:",
+                sectionTranslations
+            );
 
             const sectionData = {
                 Id: currentSection.id,
@@ -207,7 +187,7 @@ const SectionModal = (function () {
                 Attributes: "{}",
                 Configure: "{}",
                 SectionItems: sectionItems,
-                Translations: [],
+                Translations: sectionTranslations,
             };
 
             console.log("Final section data to be sent:", sectionData);
@@ -273,7 +253,6 @@ const SectionModal = (function () {
             );
 
             sectionItems.push({
-                TempId: itemData.tempId,
                 SortOrder: index + 1,
                 Type: itemData.type,
                 Status: 1,
@@ -285,6 +264,64 @@ const SectionModal = (function () {
 
         console.log("Final collected section items:", sectionItems);
         return sectionItems;
+    }
+
+    /**
+     * Collect section translations from the section modal
+     * @returns {Array} Array of section translations
+     */
+    function collectSectionTranslations() {
+        console.log("Starting collectSectionTranslations...");
+
+        const translations = [];
+        const translationContainer = document.getElementById(
+            "sectionTranslationsContainer"
+        );
+
+        if (!translationContainer) {
+            console.log("No section translations container found");
+            return translations;
+        }
+
+        // Get all translation content divs
+        const translationContents = translationContainer.querySelectorAll(
+            ".translation-content"
+        );
+
+        translationContents.forEach((content) => {
+            const languageId = parseInt(content.dataset.languageId);
+
+            // Get title and description inputs
+            const titleInput = content.querySelector(
+                ".section-translation-title"
+            );
+            const descriptionInput = content.querySelector(
+                ".section-translation-description"
+            );
+
+            const title = titleInput ? titleInput.value.trim() : "";
+            const description = descriptionInput
+                ? descriptionInput.value.trim()
+                : "";
+
+            // Only add translation if there's content
+            if (title || description) {
+                translations.push({
+                    LanguageId: languageId,
+                    Title: title,
+                    Description: description,
+                });
+
+                console.log(
+                    `Added section translation [${languageId}]: title="${title}", description="${description}"`
+                );
+            }
+        });
+
+        console.log(
+            `Collected ${translations.length} section translations`
+        );
+        return translations;
     }
 
     /**
@@ -303,7 +340,8 @@ const SectionModal = (function () {
             itemCard.dataset.itemId || itemCard.dataset.nestedId;
         const itemType =
             parseInt(itemCard.dataset.itemType) ||
-            parseInt(itemCard.dataset.nestedType) || 0;
+            parseInt(itemCard.dataset.nestedType) ||
+            0;
 
         console.log(
             `Collecting data for item ${itemId} at level ${currentLevel}, type: ${itemType}`
@@ -384,7 +422,6 @@ const SectionModal = (function () {
 
                         fieldTranslations.push({
                             LanguageId: parseInt(languageId) || 1,
-                            LanguageCode: languageCode,
                             Value: fieldValue,
                         });
 
@@ -430,7 +467,6 @@ const SectionModal = (function () {
                     );
 
                     nestedItems.push({
-                        TempId: nestedData.tempId,
                         SortOrder: index + 1,
                         Type: nestedData.type,
                         Status: 1,
@@ -443,7 +479,6 @@ const SectionModal = (function () {
         }
 
         return {
-            tempId: itemId,
             type: itemType,
             fields: fields,
             nestedItems: nestedItems,
@@ -922,109 +957,6 @@ const SectionModal = (function () {
                 ];
             }
         }
-    }
-
-    /**
-     * Update nested item field value
-     */
-    function updateNestedItemField(
-        parentTempId,
-        nestedTempId,
-        fieldName,
-        value
-    ) {
-        console.log(
-            "Nested field updated:",
-            parentTempId,
-            nestedTempId,
-            fieldName,
-            value
-        );
-        // Store data for saving later
-        if (!window.sectionItemsData) {
-            window.sectionItemsData = {};
-        }
-        if (!window.sectionItemsData[parentTempId]) {
-            window.sectionItemsData[parentTempId] = { nestedItems: {} };
-        }
-        if (
-            !window.sectionItemsData[parentTempId].nestedItems[nestedTempId]
-        ) {
-            window.sectionItemsData[parentTempId].nestedItems[
-                nestedTempId
-            ] = {};
-        }
-        window.sectionItemsData[parentTempId].nestedItems[nestedTempId][
-            fieldName
-        ] = value;
-    }
-
-    /**
-     * Update nested item field translation (multi-language support)
-     */
-    function updateNestedItemFieldTranslation(
-        parentTempId,
-        nestedTempId,
-        fieldName,
-        languageCode,
-        languageId,
-        value
-    ) {
-        console.log(
-            "Nested field translation updated:",
-            parentTempId,
-            nestedTempId,
-            fieldName,
-            languageCode,
-            value
-        );
-
-        // Store data for saving later
-        if (!window.sectionItemsData) {
-            window.sectionItemsData = {};
-        }
-        if (!window.sectionItemsData[parentTempId]) {
-            window.sectionItemsData[parentTempId] = { nestedItems: {} };
-        }
-        if (
-            !window.sectionItemsData[parentTempId].nestedItems[nestedTempId]
-        ) {
-            window.sectionItemsData[parentTempId].nestedItems[
-                nestedTempId
-            ] = {};
-        }
-
-        // Store translation data
-        const fieldKey = `${fieldName}_${languageCode}`;
-        window.sectionItemsData[parentTempId].nestedItems[nestedTempId][
-            fieldKey
-        ] = value;
-
-        // Also store the translation info for backend processing
-        if (
-            !window.sectionItemsData[parentTempId].nestedItems[nestedTempId]
-                .translations
-        ) {
-            window.sectionItemsData[parentTempId].nestedItems[
-                nestedTempId
-            ].translations = {};
-        }
-
-        if (
-            !window.sectionItemsData[parentTempId].nestedItems[nestedTempId]
-                .translations[languageId]
-        ) {
-            window.sectionItemsData[parentTempId].nestedItems[
-                nestedTempId
-            ].translations[languageId] = {
-                languageId: languageId,
-                languageCode: languageCode,
-            };
-        }
-
-        window.sectionItemsData[parentTempId].nestedItems[
-            nestedTempId
-        ].translations[languageId][fieldName] = value;
     }
 
     // ==================== HELPER FUNCTIONS ====================
@@ -1625,95 +1557,10 @@ const SectionModal = (function () {
         }
     }
 
-    /**
-     * Debug function to test field collection
-     */
-    function debugFieldCollection() {
-        console.log("=== DEBUG: Field Collection Test ===");
-
-        const allCards = document.querySelectorAll(
-            ".section-item-card, .nested-item-card"
-        );
-        console.log(`Found ${allCards.length} total cards`);
-
-        allCards.forEach((card) => {
-            const itemId = card.dataset.itemId || card.dataset.nestedId;
-            const level = parseInt(card.dataset.level) || 0;
-
-            // Use the same logic as in collectItemDataRecursive
-            const allFieldContainers = card.querySelectorAll(
-                ".field-container"
-            );
-            const directFieldContainers = Array.from(
-                allFieldContainers
-            ).filter((container) => {
-                const closestCard = container.closest(
-                    ".section-item-card, .nested-item-card"
-                );
-                return closestCard === card;
-            });
-
-            console.log(`\n--- Card ${itemId} (level ${level}) ---`);
-            console.log(
-                `  All field containers: ${allFieldContainers.length}`
-            );
-            console.log(
-                `  Direct field containers: ${directFieldContainers.length}`
-            );
-
-            // Show which fields belong to this card directly
-            directFieldContainers.forEach((container) => {
-                const fieldKey = container.dataset.fieldName;
-                const fieldLevel = parseInt(container.dataset.level) || 0;
-                const isTranslatable =
-                    container.dataset.translatable === "true";
-                const fieldType = getFieldTypeFromContainer(container);
-                const dataFieldType = container.dataset.fieldType;
-
-                console.log(
-                    `    ✓ Direct field: ${fieldKey}, level: ${fieldLevel}, translatable: ${isTranslatable}, type: ${fieldType}, data-type: ${dataFieldType}`
-                );
-            });
-
-            // Show which fields are nested (belong to child cards)
-            const nestedFields = Array.from(allFieldContainers).filter(
-                (container) => {
-                    const closestCard = container.closest(
-                        ".section-item-card, .nested-item-card"
-                    );
-                    return closestCard !== card;
-                }
-            );
-
-            if (nestedFields.length > 0) {
-                console.log(
-                    `    Found ${nestedFields.length} nested fields:`
-                );
-                nestedFields.forEach((container) => {
-                    const fieldKey = container.dataset.fieldName;
-                    const fieldLevel = parseInt(container.dataset.level) || 0;
-                    const parentCard = container.closest(
-                        ".section-item-card, .nested-item-card"
-                    );
-                    const parentId =
-                        parentCard?.dataset.itemId ||
-                        parentCard?.dataset.nestedId;
-
-                    console.log(
-                        `    ✗ Nested field: ${fieldKey}, level: ${fieldLevel}, belongs to: ${parentId}`
-                    );
-                });
-            }
-        });
-
-        console.log("\n=== END DEBUG ===");
-    }
-
     // Public API
     return {
         show,
         close,
-        handlePageChange,
         handleSectionTypeChange,
         save,
         loadAvailablePages,
@@ -1727,14 +1574,11 @@ const SectionModal = (function () {
         // Nested items management
         addNestedItem,
         removeNestedItem,
-        updateNestedItemField,
-        updateNestedItemFieldTranslation,
 
         // Image handling
         handleImageUpload,
 
         // UI management
-        clearSectionItemsUI,
         updateItemNumbers,
 
         // NEW: Type-based item management
@@ -1747,9 +1591,6 @@ const SectionModal = (function () {
         showTemplateSelectionForNewItem,
         closeTemplateSelectionModal,
         addItemWithTemplate,
-
-        // Debug
-        debugFieldCollection,
     };
 })();
 
