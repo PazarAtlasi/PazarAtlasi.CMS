@@ -279,7 +279,6 @@ const SectionModal = (function () {
         Status: 1,
         MediaType: 0,
         Fields: itemData.fields,
-        Translations: itemData.translations,
         NestedItems: itemData.nestedItems, // Changed from ChildItems to NestedItems
       });
     });
@@ -361,9 +360,12 @@ const SectionModal = (function () {
           );
         }
       } else {
-        // Translatable field - collect from all language panels
+        // Translatable field - collect from all language panels and embed in field
         const languagePanels =
           container.querySelectorAll(".language-panel");
+
+        const fieldTranslations = [];
+        let defaultValue = "";
 
         languagePanels.forEach((panel) => {
           const languageCode = panel.dataset.language;
@@ -373,37 +375,43 @@ const SectionModal = (function () {
           const fieldValue = input ? input.value : "";
 
           if (fieldValue) {
-            // Find or create translation for this language
-            let translation = translations.find(
-              (t) => t.LanguageCode === languageCode
+            const languageTab = container.querySelector(
+              `[data-language="${languageCode}"]`
             );
-            if (!translation) {
-              const languageTab = container.querySelector(
-                `[data-language="${languageCode}"]`
-              );
-              const languageId = languageTab
-                ? languageTab.dataset.languageId
-                : null;
+            const languageId = languageTab
+              ? languageTab.dataset.languageId
+              : null;
 
-              translation = {
-                LanguageId: parseInt(languageId) || 1,
-                LanguageCode: languageCode,
-                Fields: [],
-              };
-              translations.push(translation);
-            }
-
-            translation.Fields.push({
-              FieldKey: fieldKey,
-              FieldValue: fieldValue,
-              FieldType: getFieldTypeFromInput(input),
+            fieldTranslations.push({
+              LanguageId: parseInt(languageId) || 1,
+              LanguageCode: languageCode,
+              Value: fieldValue,
             });
+
+            // Use first language as default value
+            if (!defaultValue) {
+              defaultValue = fieldValue;
+            }
 
             console.log(
               `  Translatable field [${languageCode}]: ${fieldKey} = ${fieldValue}`
             );
           }
         });
+
+        // Add field with embedded translations
+        if (fieldTranslations.length > 0) {
+          fields.push({
+            FieldKey: fieldKey,
+            FieldValue: defaultValue,
+            FieldType: getFieldTypeFromInput(
+              languagePanels[0]?.querySelector(
+                "input, textarea, select"
+              )
+            ),
+            Translations: fieldTranslations,
+          });
+        }
       }
     });
 
@@ -432,7 +440,6 @@ const SectionModal = (function () {
             Status: 1,
             MediaType: 0,
             Fields: nestedData.fields,
-            Translations: nestedData.translations,
             NestedItems: nestedData.nestedItems,
           });
         }
@@ -443,7 +450,6 @@ const SectionModal = (function () {
       tempId: itemId,
       type: itemType,
       fields: fields,
-      translations: translations,
       nestedItems: nestedItems,
     };
   }

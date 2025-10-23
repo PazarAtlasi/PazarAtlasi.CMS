@@ -147,8 +147,8 @@ namespace PazarAtlasi.CMS.Controllers
                                 Id = ft.Id,
                                 SectionItemFieldId = ft.SectionItemFieldId,
                                 LanguageId = ft.LanguageId,
-                                Name = ft.Name,
-                                Description = ft.Description
+                                //Name = ft.Name,
+                                //Description = ft.Description
                             }).ToList()
                         }).ToList(),
                         Translations = si.Translations.Select(sit => new SectionItemTranslationViewModel
@@ -706,8 +706,8 @@ namespace PazarAtlasi.CMS.Controllers
                                     Id = ft.Id,
                                     SectionItemFieldId = ft.SectionItemFieldId,
                                     LanguageId = ft.LanguageId,
-                                    Name = ft.Name,
-                                    Description = ft.Description
+                                    //Name = ft.Name,
+                                    //Description = ft.Description
                                 }).ToList()
                             }).ToList(),
                             Translations = si.Translations.Select(t => new SectionItemTranslationViewModel
@@ -1873,87 +1873,44 @@ namespace PazarAtlasi.CMS.Controllers
 
                 Console.WriteLine($"Created item with ID: {newItem.Id}");
 
-                // Process item translations first (for multilingual fields)
-                if (itemRequest.Translations != null && itemRequest.Translations.Any())
+                // Process fields (both translatable and non-translatable)
+                if (itemRequest.Fields != null && itemRequest.Fields.Any())
                 {
-                    foreach (var translation in itemRequest.Translations)
+                    foreach (var fieldRequest in itemRequest.Fields)
                     {
-                        // Add item translation
-                        var itemTranslation = new SectionItemTranslation
+                        // Create the field
+                        var field = new SectionItemField
                         {
                             SectionItemId = newItem.Id,
-                            LanguageId = translation.LanguageId,
-                            Name = translation.Name ?? string.Empty,
-                            Title = translation.Title ?? string.Empty,
-                            Description = translation.Description ?? string.Empty,
+                            FieldType = fieldRequest.FieldType,
+                            FieldKey = fieldRequest.FieldKey,
+                            FieldValue = fieldRequest.FieldValue ?? string.Empty,
                             CreatedAt = DateTime.UtcNow,
                             IsDeleted = false
                         };
 
-                        _pazarAtlasiDbContext.SectionItemTranslations.Add(itemTranslation);
+                        _pazarAtlasiDbContext.SectionItemFields.Add(field);
+                        await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get field ID
 
-                        // Process translatable fields
-                        if (translation.Fields != null && translation.Fields.Any())
+                        // Process field translations if they exist
+                        if (fieldRequest.Translations != null && fieldRequest.Translations.Any())
                         {
-                            foreach (var transField in translation.Fields)
+                            var fieldTranslations = fieldRequest.Translations.Select(t => new SectionItemFieldTranslation
                             {
-                                // Create or find the field
-                                var existingField = await _pazarAtlasiDbContext.SectionItemFields
-                                    .FirstOrDefaultAsync(f => f.SectionItemId == newItem.Id && f.FieldKey == transField.FieldKey);
+                                SectionItemFieldId = field.Id,
+                                LanguageId = t.LanguageId,
+                                Name = t.Value ?? string.Empty, // Use Value instead of Name
+                                Description = string.Empty,
+                                CreatedAt = DateTime.UtcNow,
+                                IsDeleted = false
+                            }).ToList();
 
-                                if (existingField == null)
-                                {
-                                    existingField = new SectionItemField
-                                    {
-                                        SectionItemId = newItem.Id,
-                                        FieldType = transField.FieldType.Value,
-                                        FieldKey = transField.FieldKey,
-                                        FieldValue = string.Empty, // Translatable fields don't have default value
-                                        CreatedAt = DateTime.UtcNow,
-                                        IsDeleted = false
-                                    };
-
-                                    _pazarAtlasiDbContext.SectionItemFields.Add(existingField);
-                                    await _pazarAtlasiDbContext.SaveChangesAsync();
-                                }
-
-                                // Add field translation
-                                var fieldTranslation = new SectionItemFieldTranslation
-                                {
-                                    SectionItemFieldId = existingField.Id,
-                                    LanguageId = translation.LanguageId,
-                                    Name = transField.FieldValue ?? string.Empty,
-                                    Description = string.Empty,
-                                    CreatedAt = DateTime.UtcNow,
-                                    IsDeleted = false
-                                };
-
-                                _pazarAtlasiDbContext.SectionItemFieldTranslations.Add(fieldTranslation);
-                            }
+                            _pazarAtlasiDbContext.SectionItemFieldTranslations.AddRange(fieldTranslations);
                         }
                     }
 
                     await _pazarAtlasiDbContext.SaveChangesAsync();
-                    Console.WriteLine($"Added {itemRequest.Translations.Count} translations for item {newItem.Id}");
-                }
-
-                // Process non-translatable fields
-                if (itemRequest.Fields != null && itemRequest.Fields.Any())
-                {
-                    var itemFields = itemRequest.Fields.Select(f => new SectionItemField
-                    {
-                        SectionItemId = newItem.Id,
-                        FieldType = f.FieldType,
-                        FieldKey = f.FieldKey,
-                        FieldValue = f.FieldValue ?? string.Empty,
-                        CreatedAt = DateTime.UtcNow,
-                        IsDeleted = false
-                    }).ToList();
-
-                    _pazarAtlasiDbContext.SectionItemFields.AddRange(itemFields);
-                    await _pazarAtlasiDbContext.SaveChangesAsync();
-                    
-                    Console.WriteLine($"Added {itemFields.Count} non-translatable fields for item {newItem.Id}");
+                    Console.WriteLine($"Added {itemRequest.Fields.Count} fields for item {newItem.Id}");
                 }
 
                 // Process nested items recursively

@@ -17,7 +17,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         public string FieldValue { get; set; } = string.Empty;
         
-        // Translations
+        // Translations (for translatable fields)
         public List<SectionItemFieldTranslationViewModel> Translations { get; set; } = new();
         
         // Helper properties
