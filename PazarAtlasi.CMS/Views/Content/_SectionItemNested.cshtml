@@ -41,7 +41,7 @@
                 {
                     <div class="nested-item-card bg-@(bgColor) border border-@(borderColor) rounded p-3" 
                          data-nested-id="@childItem.Id" 
-                         data-nested-type="@childItem.Type"
+                         data-nested-type="@((int)childItem.Type)"
                          data-level="@level">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-medium text-slate-600">

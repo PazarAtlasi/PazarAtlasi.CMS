@@ -14,7 +14,7 @@
     var fieldDescription = Model.Translations?.FirstOrDefault()?.Description;
 }
 
-<div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@isTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@Model.Type.ToString().ToLower()">
+<div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@isTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@((int)Model.Type)">
     @if (isTranslatable && availableLanguages.Any())
     {
         <!-- Multi-language field with tabs -->

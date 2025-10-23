@@ -211,7 +211,7 @@ namespace PazarAtlasi.CMS.Controllers
                     // Tüm section item'larını tek query ile yükle (daha performanslı)
                     if (page.PageSections.Select(t => t.Section).Any())
                     {
-                        var sectionIds = page.PageSections.Select(t=> t.Section).Select(s => s.Id).ToList();
+                        var sectionIds = page.PageSections.Select(t => t.Section).Select(s => s.Id).ToList();
                         var allSectionItems = await _pazarAtlasiDbContext.SectionItems
                             .Include(si => si.Translations)
                             .Include(si => si.Fields)
@@ -1030,7 +1030,7 @@ namespace PazarAtlasi.CMS.Controllers
 
             // Get pages where this section is used (for reusable sections)
             var usedInPages = new List<PageUsageViewModel>();
-          
+
             var model = new SectionDetailsViewModel
             {
                 Id = section.Id,
@@ -1127,7 +1127,7 @@ namespace PazarAtlasi.CMS.Controllers
                             //_pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(nestedItem.Translations);
                             //_pazarAtlasiDbContext.SectionItems.Remove(nestedItem);
                         }
-                        
+
                         // Remove item translations
                         _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(existingItem.Translations);
                         _pazarAtlasiDbContext.SectionItems.Remove(existingItem);
@@ -1878,11 +1878,13 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     foreach (var fieldRequest in itemRequest.Fields)
                     {
+                        var fieldType = fieldRequest.FieldType;                   
+
                         // Create the field
                         var field = new SectionItemField
                         {
                             SectionItemId = newItem.Id,
-                            FieldType = fieldRequest.FieldType,
+                            FieldType = fieldType,
                             FieldKey = fieldRequest.FieldKey,
                             FieldValue = fieldRequest.FieldValue ?? string.Empty,
                             CreatedAt = DateTime.UtcNow,
@@ -1921,7 +1923,7 @@ namespace PazarAtlasi.CMS.Controllers
                 }
             }
         }
-        
+
         private PageEditViewModel MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
         {
             return new PageEditViewModel
