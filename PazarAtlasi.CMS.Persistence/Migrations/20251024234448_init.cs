@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class @in : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -232,45 +232,50 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SectionItemSettings",
+                name: "SectionItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TemplateId = table.Column<int>(type: "int", nullable: false),
-                    ConfigurationKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ItemType = table.Column<int>(type: "int", nullable: false),
-                    AllowDynamicSectionItems = table.Column<bool>(type: "bit", nullable: false),
+                    SectionId = table.Column<int>(type: "int", nullable: false),
+                    ParentSectionItemId = table.Column<int>(type: "int", nullable: true),
+                    TemplateId = table.Column<int>(type: "int", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    MediaType = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    LinkedPageId = table.Column<int>(type: "int", nullable: true),
                     SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    ParentSettingId = table.Column<int>(type: "int", nullable: true),
-                    TemplateId1 = table.Column<int>(type: "int", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    AllowReorder = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    AllowRemove = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IconClass = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SectionItemSettings", x => x.Id);
+                    table.PrimaryKey("PK_SectionItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SectionItemSettings_SectionItemSettings_ParentSettingId",
-                        column: x => x.ParentSettingId,
-                        principalTable: "SectionItemSettings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_SectionItems_SectionItems_ParentSectionItemId",
+                        column: x => x.ParentSectionItemId,
+                        principalTable: "SectionItems",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_SectionItemSettings_Templates_TemplateId",
-                        column: x => x.TemplateId,
-                        principalTable: "Templates",
+                        name: "FK_SectionItems_Sections_SectionId",
+                        column: x => x.SectionId,
+                        principalTable: "Sections",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SectionItemSettings_Templates_TemplateId1",
-                        column: x => x.TemplateId1,
+                        name: "FK_SectionItems_Templates_TemplateId",
+                        column: x => x.TemplateId,
                         principalTable: "Templates",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -433,171 +438,28 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SectionItemFieldSettings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SectionItemSettingId = table.Column<int>(type: "int", nullable: false),
-                    FieldKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Required = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    MaxLength = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    Placeholder = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    DefaultValue = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    IsTranslatable = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    OptionsJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SectionItemFieldSettings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SectionItemFieldSettings_SectionItemSettings_SectionItemSettingId",
-                        column: x => x.SectionItemSettingId,
-                        principalTable: "SectionItemSettings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SectionItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SectionId = table.Column<int>(type: "int", nullable: false),
-                    ParentSectionItemId = table.Column<int>(type: "int", nullable: true),
-                    SectionItemSettingId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    MediaType = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    LinkedPageId = table.Column<int>(type: "int", nullable: true),
-                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    SectionItemSettingId1 = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SectionItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SectionItems_SectionItemSettings_SectionItemSettingId1",
-                        column: x => x.SectionItemSettingId1,
-                        principalTable: "SectionItemSettings",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SectionItems_SectionItems_ParentSectionItemId",
-                        column: x => x.ParentSectionItemId,
-                        principalTable: "SectionItems",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SectionItems_Sections_SectionId",
-                        column: x => x.SectionId,
-                        principalTable: "Sections",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SectionItems_Templates_SectionItemSettingId",
-                        column: x => x.SectionItemSettingId,
-                        principalTable: "Templates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SectionItemSettingTranslations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SectionItemSettingId = table.Column<int>(type: "int", nullable: false),
-                    LanguageId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SectionItemSettingTranslations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SectionItemSettingTranslations_Languages_LanguageId",
-                        column: x => x.LanguageId,
-                        principalTable: "Languages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_SectionItemSettingTranslations_SectionItemSettings_SectionItemSettingId",
-                        column: x => x.SectionItemSettingId,
-                        principalTable: "SectionItemSettings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SectionItemFieldSettingTranslations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SectionItemFieldSettingId = table.Column<int>(type: "int", nullable: false),
-                    LanguageId = table.Column<int>(type: "int", nullable: false),
-                    Label = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SectionItemFieldSettingTranslations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SectionItemFieldSettingTranslations_Languages_LanguageId",
-                        column: x => x.LanguageId,
-                        principalTable: "Languages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_SectionItemFieldSettingTranslations_SectionItemFieldSettings_SectionItemFieldSettingId",
-                        column: x => x.SectionItemFieldSettingId,
-                        principalTable: "SectionItemFieldSettings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SectionItemFields",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SectionItemId = table.Column<int>(type: "int", nullable: false),
-                    FieldType = table.Column<int>(type: "int", nullable: false),
                     FieldKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FieldValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FieldName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Required = table.Column<bool>(type: "bit", nullable: false),
+                    MaxLength = table.Column<int>(type: "int", nullable: true),
+                    Placeholder = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    DefaultValue = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IsTranslatable = table.Column<bool>(type: "bit", nullable: false),
+                    OptionsJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SortOrder = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -652,14 +514,15 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SectionItemFieldId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     LanguageId = table.Column<int>(type: "int", nullable: false),
+                    Label = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Placeholder = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -670,11 +533,72 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         column: x => x.LanguageId,
                         principalTable: "Languages",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SectionItemFieldTranslations_SectionItemFields_SectionItemFieldId",
                         column: x => x.SectionItemFieldId,
                         principalTable: "SectionItemFields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SectionItemFieldValues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SectionItemFieldId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    JsonValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SectionItemFieldValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SectionItemFieldValues_SectionItemFields_SectionItemFieldId",
+                        column: x => x.SectionItemFieldId,
+                        principalTable: "SectionItemFields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SectionItemFieldValueTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SectionItemFieldValueId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    JsonValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SectionItemFieldValueTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SectionItemFieldValueTranslations_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SectionItemFieldValueTranslations_SectionItemFieldValues_SectionItemFieldValueId",
+                        column: x => x.SectionItemFieldValueId,
+                        principalTable: "SectionItemFieldValues",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -803,42 +727,20 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "SectionItemSettings",
-                columns: new[] { "Id", "AllowDynamicSectionItems", "ConfigurationKey", "CreatedAt", "CreatedBy", "ItemType", "ParentSettingId", "SortOrder", "Status", "TemplateId", "TemplateId1", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 1, false, "logo", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 1, null, 1, 1, 1, null, null, null },
-                    { 2, true, "menu", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 2, 1, 1, null, null, null },
-                    { 10, true, "slide", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 10, null, 4, 1, 9, null, null, null },
-                    { 20, true, "content-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 5, 1, 5, null, null, null },
-                    { 30, true, "mega-menu-category", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 6, 1, 2, null, null, null },
-                    { 40, true, "service-tab", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 8, 1, 3, null, null, null },
-                    { 50, true, "category", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 9, 1, 4, null, null, null },
-                    { 60, true, "step", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 11, 1, 6, null, null, null },
-                    { 70, true, "grid-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 12, 1, 7, null, null, null },
-                    { 80, true, "masonry-image", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 10, null, 13, 1, 8, null, null, null },
-                    { 90, true, "list-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 14, 1, 10, null, null, null },
-                    { 101, false, "single-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 15, 1, 11, null, null, null },
-                    { 110, true, "multi-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 16, 1, 12, null, null, null },
-                    { 120, true, "panel", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 17, 1, 13, null, null, null },
-                    { 130, true, "tab", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 18, 1, 14, null, null, null }
-                });
+                table: "SectionItems",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "IconClass", "LinkedPageId", "ParentSectionItemId", "SectionId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[] { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Main brand logo and text", "fas fa-image", null, null, 1, 1, 1, 2, "Brand Logo", 1, null, null });
 
             migrationBuilder.InsertData(
                 table: "SectionItems",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "LinkedPageId", "ParentSectionItemId", "SectionId", "SectionItemSettingId1", "SortOrder", "Status", "SectionItemSettingId", "Type", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "LinkedPageId", "ParentSectionItemId", "SectionId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, null, 1, 1, 1, 6, null, null },
-                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, null, 2, 1, 1, 9, null, null },
-                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, null, 3, 1, 1, 5, null, null },
-                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, null, 1, 1, 1, 10, null, null },
-                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, null, 2, 1, 1, 10, null, null },
-                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, null, 3, 1, 1, 10, null, null },
-                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3, null, 1, 1, 1, 6, null, null },
-                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3, null, 2, 1, 1, 15, null, null },
-                    { 9, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4, null, 1, 1, 1, 6, null, null },
-                    { 10, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4, null, 2, 1, 1, 18, null, null }
+                    { 2, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Homepage menu with quick access links", "fas fa-home", null, null, 1, 2, 1, 2, "Ana Sayfa", 26, null, null },
+                    { 3, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Products mega menu with categories", "fas fa-shopping-bag", null, null, 1, 3, 1, 2, "Ürünler", 26, null, null },
+                    { 4, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Services dropdown menu", "fas fa-cogs", null, null, 1, 4, 1, 2, "Hizmetler", 26, null, null },
+                    { 5, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "About us menu item", "fas fa-info-circle", null, null, 1, 5, 1, 2, "Hakkımızda", 26, null, null },
+                    { 6, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Contact menu item", "fas fa-envelope", null, null, 1, 6, 1, 2, "İletişim", 26, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1125,293 +1027,20 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "image", null, null, true, 1, 1, 1, 11, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 2, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "altText", true, 100, null, "Logo alt text", 1, 2, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 3, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "/", "url", 500, null, "/", 1, 3, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 4, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, "e.g., Products, Services", true, 2, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 5, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-bars", 2, 2, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 100, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "image", null, null, true, 10, 1, 1, 11, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                table: "SectionItemFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 101, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, 10, 2, 1, 2, null, null },
-                    { 102, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 300, null, null, 10, 3, 1, 3, null, null },
-                    { 103, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "buttonText", true, 50, null, null, 10, 4, 1, 1, null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 104, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "buttonUrl", 500, null, null, 10, 5, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 200, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, true, 20, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 201, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 500, null, null, 20, 2, 1, 3, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 300, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, "e.g., Products, Services", true, 30, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 301, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-cube", 30, 2, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 302, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 200, null, null, 30, 3, 1, 3, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 400, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, null, true, 40, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 401, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-cog", 40, 2, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 402, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 300, null, null, 40, 3, 1, 3, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 403, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", 500, null, null, 40, 4, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 500, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, null, true, 50, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 501, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-tag", 50, 2, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 600, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, true, 60, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 601, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 300, null, null, 60, 2, 1, 3, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 602, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-check", 60, 3, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 700, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "image", null, null, true, 70, 1, 1, 11, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 701, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, true, 70, 2, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 702, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 200, null, null, 70, 3, 1, 3, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 703, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", 500, null, null, 70, 4, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 800, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "image", null, null, true, 80, 1, 1, 11, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 801, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "altText", true, 100, null, null, 80, 2, 1, 1, null, null },
-                    { 802, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "caption", true, 200, null, null, 80, 3, 1, 1, null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 803, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "linkUrl", 500, null, null, 80, 4, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 900, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, true, 90, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 901, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 300, null, null, 90, 2, 1, 3, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 902, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-check", 90, 3, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1010, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "image", null, null, 101, 1, 1, 11, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1011, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, true, 101, 2, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 1012, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "subtitle", true, 100, null, null, 101, 3, 1, 1, null, null },
-                    { 1013, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 500, null, null, 101, 4, 1, 3, null, null },
-                    { 1014, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "buttonText", true, 50, null, null, 101, 5, 1, 1, null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1015, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "buttonUrl", 500, null, null, 101, 6, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1100, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "image", null, null, 110, 1, 1, 11, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1101, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, true, 110, 2, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1102, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", true, 300, null, null, 110, 3, 1, 3, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1103, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", 500, null, null, 110, 4, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 1200, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 100, null, null, true, 120, 1, 1, 2, null, null },
-                    { 1201, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "content", true, 1000, null, null, true, 120, 2, 1, 4, null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1202, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "false", "isOpen", null, null, 120, 3, 1, 5, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1300, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, null, true, 130, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1301, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-info", 130, 2, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1302, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "content", true, 1000, null, null, true, 130, 3, 1, 4, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemSettingTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "SectionItemSettingId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Web sitesi logosu", 1, 1, 1, "Logo", null, null },
-                    { 2, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Website Logo", 2, 1, 1, "Logo", null, null },
-                    { 3, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Navigasyon menü öğeleri", 1, 2, 1, "Menü Öğeleri", null, null },
-                    { 4, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Navigation menu items", 2, 2, 1, "Menu Items", null, null },
-                    { 10, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Carousel slaytı", 1, 10, 1, "Slayt", null, null },
-                    { 11, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Carousel slide", 2, 10, 1, "Slide", null, null },
-                    { 20, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Genel içerik öğesi", 1, 20, 1, "İçerik Öğesi", null, null },
-                    { 21, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "General content item", 2, 20, 1, "Content Item", null, null },
-                    { 300, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Geniş açılır menü kategorisi", 1, 30, 1, "Mega Menü Kategorisi", null, null },
-                    { 301, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Large dropdown menu category", 2, 30, 1, "Mega Menu Category", null, null },
-                    { 400, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Hizmet navigasyon sekmesi", 1, 40, 1, "Hizmet Sekmesi", null, null },
-                    { 401, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Service navigation tab", 2, 40, 1, "Service Tab", null, null },
-                    { 500, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü kategorisi", 1, 50, 1, "Kategori", null, null },
-                    { 501, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menu category", 2, 50, 1, "Category", null, null },
-                    { 600, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sıralı adım öğesi", 1, 60, 1, "Adım", null, null },
-                    { 601, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sequential step item", 2, 60, 1, "Step", null, null },
-                    { 700, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Izgara düzeninde öğe", 1, 70, 1, "Grid Öğesi", null, null },
-                    { 701, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Grid layout item", 2, 70, 1, "Grid Item", null, null },
-                    { 800, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Masonry galeri resmi", 1, 80, 1, "Masonry Resim", null, null },
-                    { 801, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Masonry gallery image", 2, 80, 1, "Masonry Image", null, null },
-                    { 900, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Liste öğesi", 1, 90, 1, "Liste Öğesi", null, null },
-                    { 901, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "List item", 2, 90, 1, "List Item", null, null },
-                    { 1010, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öne çıkan tek öğe", 1, 101, 1, "Tekli Öğe", null, null },
-                    { 1011, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Featured single item", 2, 101, 1, "Single Item", null, null },
-                    { 1100, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Çoklu içerik öğesi", 1, 110, 1, "Çoklu Öğe", null, null },
-                    { 1101, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Multiple content item", 2, 110, 1, "Multi Item", null, null },
-                    { 1200, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Genişletilebilir panel", 1, 120, 1, "Akordeon Paneli", null, null },
-                    { 1201, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Expandable panel", 2, 120, 1, "Accordion Panel", null, null },
-                    { 1300, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerik sekmesi", 1, 130, 1, "Sekme", null, null },
-                    { 1301, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Content tab", 2, 130, 1, "Tab", null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemSettings",
-                columns: new[] { "Id", "AllowDynamicSectionItems", "ConfigurationKey", "CreatedAt", "CreatedBy", "ItemType", "ParentSettingId", "SortOrder", "Status", "TemplateId", "TemplateId1", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 3, true, "dropdown-link", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 7, 2, 3, 1, 1, null, null, null },
-                    { 31, true, "mega-menu-link", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 7, 30, 7, 1, 2, null, null, null },
-                    { 51, true, "category-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 7, 50, 10, 1, 4, null, null, null }
+                    { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "logo_image", "Logo Image", false, null, null, "Upload your logo image", false, 1, 1, 0, 11, null, null },
+                    { 2, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "logo_text", "Logo Text", true, 100, null, "Enter logo text", false, 1, 2, 0, 1, null, null },
+                    { 3, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "menu_title", "Menu Title", true, 50, null, "Enter menu title", true, 2, 3, 0, 1, null, null },
+                    { 4, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "menu_url", "Menu URL", false, null, null, "Enter menu URL (optional for dropdowns)", false, 2, 4, 0, 13, null, null },
+                    { 5, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "menu_icon", "Menu Icon", false, 50, null, "Enter icon class (e.g., fas fa-home)", false, 2, 5, 0, 1, null, null },
+                    { 6, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "menu_description", "Menu Description", true, 200, null, "Enter menu description for mega menu", false, 2, 6, 0, 2, null, null },
+                    { 7, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "featured_image", "Featured Image", false, null, null, "Upload featured image for mega menu", false, 2, 7, 0, 11, null, null },
+                    { 8, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "false", "is_featured", "Is Featured", false, null, null, "Mark as featured item", false, 2, 8, 0, 5, null, null },
+                    { 9, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "badge_text", "Badge Text", true, 20, null, "Enter badge text (e.g., NEW, HOT)", false, 2, 9, 0, 1, null, null },
+                    { 10, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "primary", "badge_color", "Badge Color", false, null, "[\"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\"]", "Select badge color", false, 2, 10, 0, 15, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1426,7 +1055,128 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tüm ürünleri görüntülemek için tıklayın", 1, "Keşfet", 3, 1, "Ürünleri Keşfet", null, null },
                     { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Click to view all products", 2, "Explore", 3, 1, "Explore Products", null, null },
                     { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yüksek performanslı, şık tasarımlı laptop", 1, "Öne Çıkan Ürün 1", 4, 1, "Premium Laptop", null, null },
-                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, "Featured Product 1", 4, 1, "Premium Laptop", null, null },
+                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, "Featured Product 1", 4, 1, "Premium Laptop", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItems",
+                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "LinkedPageId", "ParentSectionItemId", "SectionId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 7, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Electronics category with featured products", "fas fa-laptop", null, 3, 1, 1, 1, 2, "Elektronik", 2, null, null },
+                    { 8, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Fashion category with seasonal collections", "fas fa-tshirt", null, 3, 1, 2, 1, 2, "Giyim", 2, null, null },
+                    { 9, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Home and lifestyle products", "fas fa-home", null, 3, 1, 3, 1, 2, "Ev & Yaşam", 2, null, null },
+                    { 16, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Professional web design services", "fas fa-paint-brush", null, 4, 1, 1, 1, 2, "Web Tasarım", 6, null, null },
+                    { 17, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "E-commerce solutions and development", "fas fa-shopping-cart", null, 4, 1, 2, 1, 2, "E-Ticaret", 6, null, null },
+                    { 18, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Digital marketing and SEO services", "fas fa-chart-line", null, 4, 1, 3, 1, 2, "Dijital Pazarlama", 6, null, null },
+                    { 19, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "24/7 technical support services", "fas fa-life-ring", null, 4, 1, 4, 1, 2, "Teknik Destek", 6, null, null },
+                    { 20, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Limited time special offers and deals", "fas fa-fire", null, 3, 1, 4, 1, 2, "Özel Kampanya", 7, null, null },
+                    { 21, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest product arrivals and new releases", "fas fa-star", null, 2, 1, 1, 1, 2, "Yeni Ürünler", 26, null, null },
+                    { 22, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Most popular product categories", "fas fa-fire", null, 2, 1, 2, 1, 2, "Popüler Kategoriler", 26, null, null },
+                    { 23, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Current promotions and special offers", "fas fa-percentage", null, 2, 1, 3, 1, 2, "Kampanyalar", 26, null, null },
+                    { 24, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Customer reviews and testimonials", "fas fa-comments", null, 2, 1, 4, 1, 2, "Müşteri Yorumları", 26, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemFieldTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "Label", "LanguageId", "Placeholder", "SectionItemFieldId", "Status", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar için logo resmi yükleyin", "Logo Resmi", 1, "Logo resminizi yükleyin", 1, 0, null, null },
+                    { 2, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Logo yerine gösterilecek metin", "Logo Metni", 1, "Logo metnini girin", 2, 0, null, null },
+                    { 3, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesinin başlığı", "Menü Başlığı", 1, "Menü başlığını girin", 3, 0, null, null },
+                    { 4, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesinin yönlendirileceği URL", "Menü URL'si", 1, "Menü URL'sini girin (dropdown'lar için opsiyonel)", 4, 0, null, null },
+                    { 5, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesi için ikon sınıfı", "Menü İkonu", 1, "İkon sınıfını girin (örn: fas fa-home)", 5, 0, null, null },
+                    { 6, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Mega menü için açıklama metni", "Menü Açıklaması", 1, "Mega menü açıklamasını girin", 6, 0, null, null },
+                    { 7, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Mega menü için öne çıkan resim", "Öne Çıkan Resim", 1, "Öne çıkan resim yükleyin", 7, 0, null, null },
+                    { 8, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Bu öğeyi öne çıkan olarak işaretle", "Öne Çıkan", 1, "Öne çıkan öğe olarak işaretle", 8, 0, null, null },
+                    { 9, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesi için rozet metni", "Rozet Metni", 1, "Rozet metnini girin (örn: YENİ, POPÜLER)", 9, 0, null, null },
+                    { 10, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Rozet için renk seçimi", "Rozet Rengi", 1, "Rozet rengini seçin", 10, 0, null, null },
+                    { 11, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Upload logo image for navbar", "Logo Image", 2, "Upload your logo image", 1, 0, null, null },
+                    { 12, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Text to display instead of logo", "Logo Text", 2, "Enter logo text", 2, 0, null, null },
+                    { 13, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Title of the menu item", "Menu Title", 2, "Enter menu title", 3, 0, null, null },
+                    { 14, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "URL where the menu item should redirect", "Menu URL", 2, "Enter menu URL (optional for dropdowns)", 4, 0, null, null },
+                    { 15, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Icon class for the menu item", "Menu Icon", 2, "Enter icon class (e.g., fas fa-home)", 5, 0, null, null },
+                    { 16, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Description text for mega menu", "Menu Description", 2, "Enter mega menu description", 6, 0, null, null },
+                    { 17, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Featured image for mega menu", "Featured Image", 2, "Upload featured image", 7, 0, null, null },
+                    { 18, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Mark this item as featured", "Is Featured", 2, "Mark as featured item", 8, 0, null, null },
+                    { 19, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Badge text for menu item", "Badge Text", 2, "Enter badge text (e.g., NEW, HOT)", 9, 0, null, null },
+                    { 20, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Color selection for badge", "Badge Color", 2, "Select badge color", 10, 0, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemFieldValues",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "SectionItemFieldId", "Status", "UpdatedAt", "UpdatedBy", "Value" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 0, null, null, "/images/logo.png" },
+                    { 2, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 0, null, null, "PazarAtlası" },
+                    { 3, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Ana Sayfa" },
+                    { 4, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/" },
+                    { 5, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-home" },
+                    { 6, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Ürünler" },
+                    { 7, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/products" },
+                    { 8, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-shopping-bag" },
+                    { 9, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Geniş ürün yelpazemizi keşfedin" },
+                    { 10, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 7, 0, null, null, "/images/products-featured.jpg" },
+                    { 11, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Hizmetler" },
+                    { 12, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/services" },
+                    { 13, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-cogs" },
+                    { 14, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Profesyonel hizmetlerimiz" },
+                    { 15, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Elektronik" },
+                    { 16, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/products/electronics" },
+                    { 17, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-laptop" },
+                    { 18, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "En son teknoloji ürünleri" },
+                    { 19, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 7, 0, null, null, "/images/electronics-category.jpg" },
+                    { 20, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 8, 0, null, null, "true" },
+                    { 21, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, 0, null, null, "YENİ" },
+                    { 22, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, 0, null, null, "success" },
+                    { 23, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Bilgisayarlar" },
+                    { 24, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/products/electronics/computers" },
+                    { 25, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-desktop" },
+                    { 26, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Masaüstü ve dizüstü bilgisayarlar" },
+                    { 27, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Web Tasarım" },
+                    { 28, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/services/web-design" },
+                    { 29, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-paint-brush" },
+                    { 30, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Modern ve kullanıcı dostu web siteleri" },
+                    { 31, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Özel Kampanya" },
+                    { 32, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/special-offers" },
+                    { 33, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-fire" },
+                    { 34, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Sınırlı süre özel fırsatlar" },
+                    { 35, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 7, 0, null, null, "/images/special-offers-banner.jpg" },
+                    { 36, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 8, 0, null, null, "true" },
+                    { 37, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, 0, null, null, "SICAK" },
+                    { 38, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, 0, null, null, "danger" },
+                    { 39, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Yeni Ürünler" },
+                    { 40, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/products/new" },
+                    { 41, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-star" },
+                    { 42, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "En yeni ürün koleksiyonları" },
+                    { 43, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, 0, null, null, "YENİ" },
+                    { 44, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, 0, null, null, "primary" },
+                    { 45, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Popüler Kategoriler" },
+                    { 46, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/categories/popular" },
+                    { 47, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-fire" },
+                    { 48, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "En popüler ürün kategorileri" },
+                    { 49, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Kampanyalar" },
+                    { 50, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/campaigns" },
+                    { 51, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-percentage" },
+                    { 52, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Güncel kampanya ve fırsatlar" },
+                    { 53, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "En Çok Satan" },
+                    { 54, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/products/bestsellers" },
+                    { 55, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-trophy" },
+                    { 56, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, 0, null, null, "Flash Sale" },
+                    { 57, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 4, 0, null, null, "/flash-sale" },
+                    { 58, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 5, 0, null, null, "fas fa-bolt" },
+                    { 59, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Sınırlı süre büyük indirimler" },
+                    { 60, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, 0, null, null, "FLASH" },
+                    { 61, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, 0, null, null, "warning" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
                     { 9, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yeni ürünler ve kampanyalardan haberdar olmak için e-posta listemize katılın", 1, "Bülten", 7, 1, "Haberdar Olun", null, null },
                     { 10, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Join our email list to stay informed about new products and campaigns", 2, "Newsletter", 7, 1, "Stay Informed", null, null },
                     { 11, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En güncel haberler ve makaleler", 1, "Blog", 9, 1, "Blog Yazıları", null, null },
@@ -1434,202 +1184,83 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "SectionItemFieldSettingTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "Label", "LanguageId", "SectionItemFieldSettingId", "Status", "UpdatedAt", "UpdatedBy" },
+                table: "SectionItems",
+                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "LinkedPageId", "ParentSectionItemId", "SectionId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Logo resminizi yükleyin", "Logo Resmi", 1, 1, 1, null, null },
-                    { 2, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Upload your logo image", "Logo Image", 2, 1, 1, null, null },
-                    { 3, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Alternative text for accessibility", "Alt Text", 2, 2, 1, null, null },
-                    { 4, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Erişilebilirlik için alternatif metin", "Alternatif Metin", 1, 2, 1, null, null },
-                    { 5, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Where logo should link to", "Link URL", 2, 3, 1, null, null },
-                    { 6, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Logonun yönlendireceği adres", "Bağlantı URL", 1, 3, 1, null, null },
-                    { 7, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Title of the menu item", "Menu Title", 2, 4, 1, null, null },
-                    { 8, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesinin başlığı", "Menü Başlığı", 1, 4, 1, null, null },
-                    { 9, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "FontAwesome icon class", "Icon (Optional)", 2, 5, 1, null, null },
-                    { 10, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "FontAwesome ikon sınıfı", "İkon (Opsiyonel)", 1, 5, 1, null, null },
-                    { 100, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Slayt için resim", "Slayt Resmi", 1, 100, 1, null, null },
-                    { 101, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Image for the slide", "Slide Image", 2, 100, 1, null, null },
-                    { 102, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Slayt başlığı", "Slayt Başlığı", 1, 101, 1, null, null },
-                    { 103, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Title for the slide", "Slide Title", 2, 101, 1, null, null },
-                    { 104, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Slayt açıklaması", "Slayt Açıklaması", 1, 102, 1, null, null },
-                    { 105, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Description for the slide", "Slide Description", 2, 102, 1, null, null },
-                    { 106, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Buton metni", "Buton Metni", 1, 103, 1, null, null },
-                    { 107, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Text for the button", "Button Text", 2, 103, 1, null, null },
-                    { 108, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Butonun yönlendirileceği adres", "Buton URL", 1, 104, 1, null, null },
-                    { 109, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "URL for the button", "Button URL", 2, 104, 1, null, null },
-                    { 200, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe başlığı", "Başlık", 1, 200, 1, null, null },
-                    { 201, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item title", "Title", 2, 200, 1, null, null },
-                    { 202, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe açıklaması", "Açıklama", 1, 201, 1, null, null },
-                    { 203, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item description", "Description", 2, 201, 1, null, null },
-                    { 3000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori başlığı", "Başlık", 1, 300, 1, null, null },
-                    { 3001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Category title", "Title", 2, 300, 1, null, null },
-                    { 3002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori ikonu", "İkon", 1, 301, 1, null, null },
-                    { 3003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Category icon", "Icon", 2, 301, 1, null, null },
-                    { 3004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori açıklaması", "Açıklama", 1, 302, 1, null, null },
-                    { 3005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Category description", "Description", 2, 302, 1, null, null },
-                    { 4000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme başlığı", "Başlık", 1, 400, 1, null, null },
-                    { 4001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab title", "Title", 2, 400, 1, null, null },
-                    { 4002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme ikonu", "İkon", 1, 401, 1, null, null },
-                    { 4003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab icon", "Icon", 2, 401, 1, null, null },
-                    { 4004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme açıklaması", "Açıklama", 1, 402, 1, null, null },
-                    { 4005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab description", "Description", 2, 402, 1, null, null },
-                    { 4006, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme bağlantısı", "URL", 1, 403, 1, null, null },
-                    { 4007, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab link", "URL", 2, 403, 1, null, null },
-                    { 5000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori başlığı", "Başlık", 1, 500, 1, null, null },
-                    { 5001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Category title", "Title", 2, 500, 1, null, null },
-                    { 5002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori ikonu", "İkon", 1, 501, 1, null, null },
-                    { 5003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Category icon", "Icon", 2, 501, 1, null, null },
-                    { 6000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Adım başlığı", "Başlık", 1, 600, 1, null, null },
-                    { 6001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Step title", "Title", 2, 600, 1, null, null },
-                    { 6002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Adım açıklaması", "Açıklama", 1, 601, 1, null, null },
-                    { 6003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Step description", "Description", 2, 601, 1, null, null },
-                    { 6004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Adım ikonu", "İkon", 1, 602, 1, null, null },
-                    { 6005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Step icon", "Icon", 2, 602, 1, null, null },
-                    { 7000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Grid resmi", "Resim", 1, 700, 1, null, null },
-                    { 7001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Grid image", "Image", 2, 700, 1, null, null },
-                    { 7002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe başlığı", "Başlık", 1, 701, 1, null, null },
-                    { 7003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item title", "Title", 2, 701, 1, null, null },
-                    { 7004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe açıklaması", "Açıklama", 1, 702, 1, null, null },
-                    { 7005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item description", "Description", 2, 702, 1, null, null },
-                    { 7006, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Bağlantı adresi", "URL", 1, 703, 1, null, null },
-                    { 7007, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link URL", "URL", 2, 703, 1, null, null },
-                    { 8000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Galeri resmi", "Resim", 1, 800, 1, null, null },
-                    { 8001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Gallery image", "Image", 2, 800, 1, null, null },
-                    { 8002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Resim alt metni", "Alt Metni", 1, 801, 1, null, null },
-                    { 8003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Image alt text", "Alt Text", 2, 801, 1, null, null },
-                    { 8004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Resim başlığı", "Başlık", 1, 802, 1, null, null },
-                    { 8005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Image caption", "Caption", 2, 802, 1, null, null },
-                    { 8006, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Resim bağlantısı", "Bağlantı", 1, 803, 1, null, null },
-                    { 8007, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Image link", "Link URL", 2, 803, 1, null, null },
-                    { 9000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Liste öğesi başlığı", "Başlık", 1, 900, 1, null, null },
-                    { 9001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "List item title", "Title", 2, 900, 1, null, null },
-                    { 9002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Liste öğesi açıklaması", "Açıklama", 1, 901, 1, null, null },
-                    { 9003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "List item description", "Description", 2, 901, 1, null, null },
-                    { 9004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Liste ikonu", "İkon", 1, 902, 1, null, null },
-                    { 9005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "List icon", "Icon", 2, 902, 1, null, null },
-                    { 10100, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öne çıkan resim", "Resim", 1, 1010, 1, null, null },
-                    { 10101, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Featured image", "Image", 2, 1010, 1, null, null },
-                    { 10102, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Ana başlık", "Başlık", 1, 1011, 1, null, null },
-                    { 10103, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Main title", "Title", 2, 1011, 1, null, null },
-                    { 10104, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "İkincil başlık", "Alt Başlık", 1, 1012, 1, null, null },
-                    { 10105, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Secondary title", "Subtitle", 2, 1012, 1, null, null },
-                    { 10106, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Detaylı açıklama", "Açıklama", 1, 1013, 1, null, null },
-                    { 10107, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Detailed description", "Description", 2, 1013, 1, null, null },
-                    { 10108, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Aksiyon buton metni", "Buton Metni", 1, 1014, 1, null, null },
-                    { 10109, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Action button text", "Button Text", 2, 1014, 1, null, null },
-                    { 10110, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Buton bağlantısı", "Buton URL", 1, 1015, 1, null, null },
-                    { 10111, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Button link", "Button URL", 2, 1015, 1, null, null },
-                    { 11000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe resmi", "Resim", 1, 1100, 1, null, null },
-                    { 11001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item image", "Image", 2, 1100, 1, null, null },
-                    { 11002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe başlığı", "Başlık", 1, 1101, 1, null, null },
-                    { 11003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item title", "Title", 2, 1101, 1, null, null },
-                    { 11004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe açıklaması", "Açıklama", 1, 1102, 1, null, null },
-                    { 11005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item description", "Description", 2, 1102, 1, null, null },
-                    { 11006, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe bağlantısı", "URL", 1, 1103, 1, null, null },
-                    { 11007, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item link", "URL", 2, 1103, 1, null, null },
-                    { 12000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Panel başlığı", "Başlık", 1, 1200, 1, null, null },
-                    { 12001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Panel title", "Title", 2, 1200, 1, null, null },
-                    { 12002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Panel içeriği", "İçerik", 1, 1201, 1, null, null },
-                    { 12003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Panel content", "Content", 2, 1201, 1, null, null },
-                    { 12004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Başlangıçta açık", "Açık Mı?", 1, 1202, 1, null, null },
-                    { 12005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Initially open", "Is Open?", 2, 1202, 1, null, null },
-                    { 13000, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme başlığı", "Başlık", 1, 1300, 1, null, null },
-                    { 13001, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab title", "Title", 2, 1300, 1, null, null },
-                    { 13002, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme ikonu", "İkon", 1, 1301, 1, null, null },
-                    { 13003, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab icon", "Icon", 2, 1301, 1, null, null },
-                    { 13004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme içeriği", "İçerik", 1, 1302, 1, null, null },
-                    { 13005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab content", "Content", 2, 1302, 1, null, null }
+                    { 10, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Desktop and laptop computers", "fas fa-desktop", null, 7, 1, 1, 1, 2, "Bilgisayarlar", 3, null, null },
+                    { 11, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Smartphones and accessories", "fas fa-mobile-alt", null, 7, 1, 2, 1, 2, "Telefonlar", 3, null, null },
+                    { 12, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Audio and video equipment", "fas fa-headphones", null, 7, 1, 3, 1, 2, "Ses & Görüntü", 3, null, null },
+                    { 13, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Women's fashion and accessories", "fas fa-female", null, 8, 1, 1, 1, 2, "Kadın", 3, null, null },
+                    { 14, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Men's fashion and accessories", "fas fa-male", null, 8, 1, 2, 1, 2, "Erkek", 3, null, null },
+                    { 15, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Children's clothing and accessories", "fas fa-child", null, 8, 1, 3, 1, 2, "Çocuk", 3, null, null },
+                    { 25, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Best selling products across all categories", "fas fa-trophy", null, 22, 1, 1, 1, 2, "En Çok Satan", 4, null, null },
+                    { 26, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Trending products and viral items", "fas fa-trending-up", null, 22, 1, 2, 1, 2, "Trend Ürünler", 4, null, null },
+                    { 27, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Editor's choice and curated collections", "fas fa-heart", null, 22, 1, 3, 1, 2, "Editörün Seçimi", 4, null, null },
+                    { 28, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Limited time flash sales with huge discounts", "fas fa-bolt", null, 23, 1, 1, 1, 2, "Flash Sale", 5, null, null },
+                    { 29, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Seasonal discounts and clearance sales", "fas fa-snowflake", null, 23, 1, 2, 1, 2, "Sezon İndirimi", 5, null, null },
+                    { 30, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Free shipping campaigns and offers", "fas fa-shipping-fast", null, 23, 1, 3, 1, 2, "Ücretsiz Kargo", 5, null, null }
                 });
 
             migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 6, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, "e.g., Home, About", true, 3, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 7, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", 500, null, "/page-url or https://example.com", true, 3, 2, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 8, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-home", 3, 3, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 9, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "false", "openInNewTab", null, null, 3, 4, 1, 5, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 310, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, null, true, 31, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 311, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", 500, null, null, true, 31, 2, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 312, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "icon", 50, null, "fa fa-arrow-right", 31, 3, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 510, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", true, 50, null, null, true, 51, 1, 1, 2, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 511, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", 500, null, null, true, 51, 2, 1, 13, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettings",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 512, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "badge", true, 20, null, "New, Hot, etc.", 51, 3, 1, 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemSettingTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "SectionItemSettingId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
+                table: "SectionItemFieldValueTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "LanguageId", "SectionItemFieldValueId", "Status", "UpdatedAt", "UpdatedBy", "Value" },
                 values: new object[,]
                 {
-                    { 5, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Açılır menüdeki bağlantı", 1, 3, 1, "Açılır Menü Linki", null, null },
-                    { 6, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link in dropdown menu", 2, 3, 1, "Dropdown Link", null, null },
-                    { 302, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori içindeki bağlantı", 1, 31, 1, "Mega Menü Linki", null, null },
-                    { 303, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link within category", 2, 31, 1, "Mega Menu Link", null, null },
-                    { 502, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori altındaki öğe", 1, 51, 1, "Kategori Öğesi", null, null },
-                    { 503, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item under category", 2, 51, 1, "Category Item", null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemFieldSettingTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "Label", "LanguageId", "SectionItemFieldSettingId", "Status", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 11, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Text for the navigation link", "Link Text", 2, 6, 1, null, null },
-                    { 12, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Navigasyon linki için metin", "Link Metni", 1, 6, 1, null, null },
-                    { 13, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link destination", "URL", 2, 7, 1, null, null },
-                    { 14, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link hedefi", "URL", 1, 7, 1, null, null },
-                    { 15, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "FontAwesome icon class", "Icon (Optional)", 2, 8, 1, null, null },
-                    { 16, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "FontAwesome ikon sınıfı", "İkon (Opsiyonel)", 1, 8, 1, null, null },
-                    { 17, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Open link in new browser tab", "Open in New Tab", 2, 9, 1, null, null },
-                    { 18, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Linki yeni tarayıcı sekmesinde aç", "Yeni Sekmede Aç", 1, 9, 1, null, null },
-                    { 3006, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link başlığı", "Başlık", 1, 310, 1, null, null },
-                    { 3007, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link title", "Title", 2, 310, 1, null, null },
-                    { 3008, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link adresi", "URL", 1, 311, 1, null, null },
-                    { 3009, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link address", "URL", 2, 311, 1, null, null },
-                    { 3010, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link ikonu", "İkon", 1, 312, 1, null, null },
-                    { 3011, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link icon", "Icon", 2, 312, 1, null, null },
-                    { 5004, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe başlığı", "Başlık", 1, 510, 1, null, null },
-                    { 5005, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item title", "Title", 2, 510, 1, null, null },
-                    { 5006, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe adresi", "URL", 1, 511, 1, null, null },
-                    { 5007, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item URL", "URL", 2, 511, 1, null, null },
-                    { 5008, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Öğe rozeti", "Rozet", 1, 512, 1, null, null },
-                    { 5009, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item badge", "Badge", 2, 512, 1, null, null }
+                    { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 2, 0, null, null, "PazarAtlası" },
+                    { 2, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 2, 0, null, null, "MarketAtlas" },
+                    { 3, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 3, 0, null, null, "Ana Sayfa" },
+                    { 4, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 3, 0, null, null, "Home" },
+                    { 5, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 6, 0, null, null, "Ürünler" },
+                    { 6, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 6, 0, null, null, "Products" },
+                    { 7, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 9, 0, null, null, "Geniş ürün yelpazemizi keşfedin" },
+                    { 8, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 9, 0, null, null, "Discover our wide range of products" },
+                    { 9, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 11, 0, null, null, "Hizmetler" },
+                    { 10, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 11, 0, null, null, "Services" },
+                    { 11, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 14, 0, null, null, "Profesyonel hizmetlerimiz" },
+                    { 12, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 14, 0, null, null, "Our professional services" },
+                    { 13, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 15, 0, null, null, "Elektronik" },
+                    { 14, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 15, 0, null, null, "Electronics" },
+                    { 15, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 18, 0, null, null, "En son teknoloji ürünleri" },
+                    { 16, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 18, 0, null, null, "Latest technology products" },
+                    { 17, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 21, 0, null, null, "YENİ" },
+                    { 18, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 21, 0, null, null, "NEW" },
+                    { 19, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 23, 0, null, null, "Bilgisayarlar" },
+                    { 20, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 23, 0, null, null, "Computers" },
+                    { 21, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 26, 0, null, null, "Masaüstü ve dizüstü bilgisayarlar" },
+                    { 22, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 26, 0, null, null, "Desktop and laptop computers" },
+                    { 23, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 27, 0, null, null, "Web Tasarım" },
+                    { 24, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 27, 0, null, null, "Web Design" },
+                    { 25, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 30, 0, null, null, "Modern ve kullanıcı dostu web siteleri" },
+                    { 26, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 30, 0, null, null, "Modern and user-friendly websites" },
+                    { 27, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 31, 0, null, null, "Özel Kampanya" },
+                    { 28, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 31, 0, null, null, "Special Campaign" },
+                    { 29, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 34, 0, null, null, "Sınırlı süre özel fırsatlar" },
+                    { 30, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 34, 0, null, null, "Limited time special offers" },
+                    { 31, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 37, 0, null, null, "SICAK" },
+                    { 32, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 37, 0, null, null, "HOT" },
+                    { 33, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 39, 0, null, null, "Yeni Ürünler" },
+                    { 34, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 39, 0, null, null, "New Products" },
+                    { 35, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 42, 0, null, null, "En yeni ürün koleksiyonları" },
+                    { 36, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 42, 0, null, null, "Latest product collections" },
+                    { 37, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 43, 0, null, null, "YENİ" },
+                    { 38, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 43, 0, null, null, "NEW" },
+                    { 39, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 45, 0, null, null, "Popüler Kategoriler" },
+                    { 40, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 45, 0, null, null, "Popular Categories" },
+                    { 41, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 48, 0, null, null, "En popüler ürün kategorileri" },
+                    { 42, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 48, 0, null, null, "Most popular product categories" },
+                    { 43, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 49, 0, null, null, "Kampanyalar" },
+                    { 44, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 49, 0, null, null, "Campaigns" },
+                    { 45, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 52, 0, null, null, "Güncel kampanya ve fırsatlar" },
+                    { 46, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 52, 0, null, null, "Current campaigns and opportunities" },
+                    { 47, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 53, 0, null, null, "En Çok Satan" },
+                    { 48, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 53, 0, null, null, "Best Sellers" },
+                    { 49, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 56, 0, null, null, "Flash Sale" },
+                    { 50, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 56, 0, null, null, "Flash Sale" },
+                    { 51, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 59, 0, null, null, "Sınırlı süre büyük indirimler" },
+                    { 52, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 59, 0, null, null, "Limited time huge discounts" },
+                    { 53, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, 60, 0, null, null, "FLASH" },
+                    { 54, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, 60, 0, null, null, "FLASH" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1730,36 +1361,25 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_SectionItemFields_FieldKey",
+                table: "SectionItemFields",
+                column: "FieldKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SectionItemFields_SectionItemId",
                 table: "SectionItemFields",
                 column: "SectionItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SectionItemFieldSettings_SettingId_FieldKey",
-                table: "SectionItemFieldSettings",
-                columns: new[] { "SectionItemSettingId", "FieldKey" },
+                name: "IX_SectionItemFields_SortOrder",
+                table: "SectionItemFields",
+                column: "SortOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionItemFieldTranslations_FieldId_LanguageId",
+                table: "SectionItemFieldTranslations",
+                columns: new[] { "SectionItemFieldId", "LanguageId" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemFieldSettings_SettingId_SortOrder",
-                table: "SectionItemFieldSettings",
-                columns: new[] { "SectionItemSettingId", "SortOrder" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemFieldSettings_Type",
-                table: "SectionItemFieldSettings",
-                column: "Type");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemFieldSettingTranslations_FieldSettingId_LanguageId",
-                table: "SectionItemFieldSettingTranslations",
-                columns: new[] { "SectionItemFieldSettingId", "LanguageId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemFieldSettingTranslations_LanguageId",
-                table: "SectionItemFieldSettingTranslations",
-                column: "LanguageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SectionItemFieldTranslations_LanguageId",
@@ -1767,9 +1387,20 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 column: "LanguageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SectionItemFieldTranslations_SectionItemFieldId",
-                table: "SectionItemFieldTranslations",
+                name: "IX_SectionItemFieldValues_FieldId",
+                table: "SectionItemFieldValues",
                 column: "SectionItemFieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionItemFieldValueTranslations_LanguageId",
+                table: "SectionItemFieldValueTranslations",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionItemFieldValueTranslations_ValueId_LanguageId",
+                table: "SectionItemFieldValueTranslations",
+                columns: new[] { "SectionItemFieldValueId", "LanguageId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_SectionItems_ParentSectionItemId",
@@ -1782,53 +1413,14 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "SectionId", "SortOrder" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SectionItems_SectionItemSettingId1",
-                table: "SectionItems",
-                column: "SectionItemSettingId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SectionItems_TemplateId",
                 table: "SectionItems",
-                column: "SectionItemSettingId");
+                column: "TemplateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SectionItems_Type",
                 table: "SectionItems",
                 column: "Type");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemSettings_ItemType",
-                table: "SectionItemSettings",
-                column: "ItemType");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemSettings_ParentSettingId",
-                table: "SectionItemSettings",
-                column: "ParentSettingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemSettings_TemplateId_ConfigurationKey",
-                table: "SectionItemSettings",
-                columns: new[] { "TemplateId", "ConfigurationKey" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemSettings_TemplateId1",
-                table: "SectionItemSettings",
-                column: "TemplateId1",
-                unique: true,
-                filter: "[TemplateId1] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemSettingTranslations_LanguageId",
-                table: "SectionItemSettingTranslations",
-                column: "LanguageId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SectionItemSettingTranslations_SettingId_LanguageId",
-                table: "SectionItemSettingTranslations",
-                columns: new[] { "SectionItemSettingId", "LanguageId" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_SectionItemTranslations_LanguageId",
@@ -1912,13 +1504,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "PageTranslations");
 
             migrationBuilder.DropTable(
-                name: "SectionItemFieldSettingTranslations");
-
-            migrationBuilder.DropTable(
                 name: "SectionItemFieldTranslations");
 
             migrationBuilder.DropTable(
-                name: "SectionItemSettingTranslations");
+                name: "SectionItemFieldValueTranslations");
 
             migrationBuilder.DropTable(
                 name: "SectionItemTranslations");
@@ -1936,10 +1525,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "Pages");
 
             migrationBuilder.DropTable(
-                name: "SectionItemFieldSettings");
-
-            migrationBuilder.DropTable(
-                name: "SectionItemFields");
+                name: "SectionItemFieldValues");
 
             migrationBuilder.DropTable(
                 name: "Languages");
@@ -1951,10 +1537,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "Layouts");
 
             migrationBuilder.DropTable(
-                name: "SectionItems");
+                name: "SectionItemFields");
 
             migrationBuilder.DropTable(
-                name: "SectionItemSettings");
+                name: "SectionItems");
 
             migrationBuilder.DropTable(
                 name: "Sections");

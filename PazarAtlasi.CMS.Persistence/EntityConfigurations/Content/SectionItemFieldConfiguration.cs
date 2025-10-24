@@ -33,20 +33,15 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(x => x.OptionsJson)
                 .HasColumnType("nvarchar(max)");
 
-            // Relationships
-            builder.HasOne(x => x.Template)
-                .WithMany(t => t.Fields)
-                .HasForeignKey(x => x.TemplateId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(x => x.Translations)
                 .WithOne(x => x.SectionItemField)
                 .HasForeignKey(x => x.SectionItemFieldId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Indexes
-            builder.HasIndex(x => new { x.TemplateId, x.FieldKey })
-                .HasDatabaseName("IX_SectionItemFields_TemplateId_FieldKey");
+            builder.HasOne(t => t.SectionItem)
+                .WithMany(si => si.SectionItemFields)
+                .HasForeignKey(x => x.SectionItemId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(x => x.FieldKey)
                 .HasDatabaseName("IX_SectionItemFields_FieldKey");
@@ -71,7 +66,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 1,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 1, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "logo_image",
                     FieldName = "Logo Image",
                     Type = SectionItemFieldType.Image,
@@ -86,7 +81,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 2,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 1, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "logo_text",
                     FieldName = "Logo Text",
                     Type = SectionItemFieldType.Text,
@@ -102,7 +97,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 3,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "menu_title",
                     FieldName = "Menu Title",
                     Type = SectionItemFieldType.Text,
@@ -118,7 +113,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 4,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "menu_url",
                     FieldName = "Menu URL",
                     Type = SectionItemFieldType.URL,
@@ -133,7 +128,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 5,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "menu_icon",
                     FieldName = "Menu Icon",
                     Type = SectionItemFieldType.Text,
@@ -149,7 +144,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 6,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "menu_description",
                     FieldName = "Menu Description",
                     Type = SectionItemFieldType.TextArea,
@@ -165,7 +160,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 7,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "featured_image",
                     FieldName = "Featured Image",
                     Type = SectionItemFieldType.Image,
@@ -180,7 +175,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 8,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "is_featured",
                     FieldName = "Is Featured",
                     Type = SectionItemFieldType.Checkbox,
@@ -195,7 +190,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 9,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "badge_text",
                     FieldName = "Badge Text",
                     Type = SectionItemFieldType.Text,
@@ -211,7 +206,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItemField
                 {
                     Id = 10,
-                    TemplateId = 2, // Mega Menu Navbar
+                    SectionItemId = 2, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "badge_color",
                     FieldName = "Badge Color",
                     Type = SectionItemFieldType.MultiSelect,

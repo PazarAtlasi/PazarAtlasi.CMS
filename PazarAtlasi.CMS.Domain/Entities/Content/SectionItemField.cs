@@ -8,10 +8,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     /// </summary>
     public class SectionItemField : Entity<int>
     {
-        /// <summary>
-        /// Template this field belongs to
-        /// </summary>
-        public int TemplateId { get; set; }
+        public int SectionItemId { get; set; }
 
         /// <summary>
         /// Unique key for this field (e.g., "title", "image", "url")
@@ -64,12 +61,12 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public int SortOrder { get; set; } = 0;
 
         // Navigation properties
-        public virtual Template Template { get; set; } = null!;
+        public virtual SectionItem SectionItem { get; set; } = null!;
         
         /// <summary>
         /// Field values created from this field definition
         /// </summary>
-        public virtual ICollection<SectionItemFieldValue> Values { get; set; } = new List<SectionItemFieldValue>();
+        public virtual ICollection<SectionItemFieldValue> SectionItemFieldValues { get; set; } = new List<SectionItemFieldValue>();
         
         /// <summary>
         /// Translations for this field definition (labels, descriptions, etc.)

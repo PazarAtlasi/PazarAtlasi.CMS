@@ -1764,13 +1764,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<bool>("Required")
                         .HasColumnType("bit");
 
+                    b.Property<int>("SectionItemId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TemplateId")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -1787,11 +1787,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasIndex("FieldKey")
                         .HasDatabaseName("IX_SectionItemFields_FieldKey");
 
+                    b.HasIndex("SectionItemId");
+
                     b.HasIndex("SortOrder")
                         .HasDatabaseName("IX_SectionItemFields_SortOrder");
-
-                    b.HasIndex("TemplateId", "FieldKey")
-                        .HasDatabaseName("IX_SectionItemFields_TemplateId_FieldKey");
 
                     b.ToTable("SectionItemFields", (string)null);
 
@@ -1807,9 +1806,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsTranslatable = false,
                             Placeholder = "Upload your logo image",
                             Required = false,
+                            SectionItemId = 1,
                             SortOrder = 1,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 11
                         },
                         new
@@ -1824,9 +1823,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxLength = 100,
                             Placeholder = "Enter logo text",
                             Required = false,
+                            SectionItemId = 1,
                             SortOrder = 2,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 1
                         },
                         new
@@ -1841,9 +1840,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxLength = 50,
                             Placeholder = "Enter menu title",
                             Required = true,
+                            SectionItemId = 2,
                             SortOrder = 3,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 1
                         },
                         new
@@ -1857,9 +1856,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsTranslatable = false,
                             Placeholder = "Enter menu URL (optional for dropdowns)",
                             Required = false,
+                            SectionItemId = 2,
                             SortOrder = 4,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 13
                         },
                         new
@@ -1874,9 +1873,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxLength = 50,
                             Placeholder = "Enter icon class (e.g., fas fa-home)",
                             Required = false,
+                            SectionItemId = 2,
                             SortOrder = 5,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 1
                         },
                         new
@@ -1891,9 +1890,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxLength = 200,
                             Placeholder = "Enter menu description for mega menu",
                             Required = false,
+                            SectionItemId = 2,
                             SortOrder = 6,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 2
                         },
                         new
@@ -1907,9 +1906,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsTranslatable = false,
                             Placeholder = "Upload featured image for mega menu",
                             Required = false,
+                            SectionItemId = 2,
                             SortOrder = 7,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 11
                         },
                         new
@@ -1923,9 +1922,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsTranslatable = false,
                             Placeholder = "Mark as featured item",
                             Required = false,
+                            SectionItemId = 2,
                             SortOrder = 8,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 5
                         },
                         new
@@ -1940,9 +1939,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             MaxLength = 20,
                             Placeholder = "Enter badge text (e.g., NEW, HOT)",
                             Required = false,
+                            SectionItemId = 2,
                             SortOrder = 9,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 1
                         },
                         new
@@ -1957,9 +1956,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             OptionsJson = "[\"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\"]",
                             Placeholder = "Select badge color",
                             Required = false,
+                            SectionItemId = 2,
                             SortOrder = 10,
                             Status = 0,
-                            TemplateId = 2,
                             Type = 15
                         });
                 });
@@ -2290,9 +2289,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<int>("SectionItemFieldId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SectionItemId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -2312,10 +2308,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasIndex("SectionItemFieldId")
                         .HasDatabaseName("IX_SectionItemFieldValues_FieldId");
 
-                    b.HasIndex("SectionItemId", "SectionItemFieldId")
-                        .IsUnique()
-                        .HasDatabaseName("IX_SectionItemFieldValues_SectionItemId_FieldId");
-
                     b.ToTable("SectionItemFieldValues", (string)null);
 
                     b.HasData(
@@ -2325,7 +2317,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 1,
-                            SectionItemId = 1,
                             Status = 0,
                             Value = "/images/logo.png"
                         },
@@ -2335,7 +2326,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 2,
-                            SectionItemId = 1,
                             Status = 0,
                             Value = "PazarAtlası"
                         },
@@ -2345,7 +2335,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 2,
                             Status = 0,
                             Value = "Ana Sayfa"
                         },
@@ -2355,7 +2344,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 2,
                             Status = 0,
                             Value = "/"
                         },
@@ -2365,7 +2353,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 2,
                             Status = 0,
                             Value = "fas fa-home"
                         },
@@ -2375,7 +2362,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 3,
                             Status = 0,
                             Value = "Ürünler"
                         },
@@ -2385,7 +2371,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 3,
                             Status = 0,
                             Value = "/products"
                         },
@@ -2395,7 +2380,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 3,
                             Status = 0,
                             Value = "fas fa-shopping-bag"
                         },
@@ -2405,7 +2389,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 3,
                             Status = 0,
                             Value = "Geniş ürün yelpazemizi keşfedin"
                         },
@@ -2415,7 +2398,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 7,
-                            SectionItemId = 3,
                             Status = 0,
                             Value = "/images/products-featured.jpg"
                         },
@@ -2425,7 +2407,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 4,
                             Status = 0,
                             Value = "Hizmetler"
                         },
@@ -2435,7 +2416,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 4,
                             Status = 0,
                             Value = "/services"
                         },
@@ -2445,7 +2425,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 4,
                             Status = 0,
                             Value = "fas fa-cogs"
                         },
@@ -2455,7 +2434,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 4,
                             Status = 0,
                             Value = "Profesyonel hizmetlerimiz"
                         },
@@ -2465,7 +2443,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "Elektronik"
                         },
@@ -2475,7 +2452,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "/products/electronics"
                         },
@@ -2485,7 +2461,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "fas fa-laptop"
                         },
@@ -2495,7 +2470,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "En son teknoloji ürünleri"
                         },
@@ -2505,7 +2479,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 7,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "/images/electronics-category.jpg"
                         },
@@ -2515,7 +2488,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 8,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "true"
                         },
@@ -2525,7 +2497,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 9,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "YENİ"
                         },
@@ -2535,7 +2506,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 10,
-                            SectionItemId = 7,
                             Status = 0,
                             Value = "success"
                         },
@@ -2545,7 +2515,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 10,
                             Status = 0,
                             Value = "Bilgisayarlar"
                         },
@@ -2555,7 +2524,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 10,
                             Status = 0,
                             Value = "/products/electronics/computers"
                         },
@@ -2565,7 +2533,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 10,
                             Status = 0,
                             Value = "fas fa-desktop"
                         },
@@ -2575,7 +2542,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 10,
                             Status = 0,
                             Value = "Masaüstü ve dizüstü bilgisayarlar"
                         },
@@ -2585,7 +2551,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 16,
                             Status = 0,
                             Value = "Web Tasarım"
                         },
@@ -2595,7 +2560,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 16,
                             Status = 0,
                             Value = "/services/web-design"
                         },
@@ -2605,7 +2569,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 16,
                             Status = 0,
                             Value = "fas fa-paint-brush"
                         },
@@ -2615,7 +2578,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 16,
                             Status = 0,
                             Value = "Modern ve kullanıcı dostu web siteleri"
                         },
@@ -2625,7 +2587,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "Özel Kampanya"
                         },
@@ -2635,7 +2596,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "/special-offers"
                         },
@@ -2645,7 +2605,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "fas fa-fire"
                         },
@@ -2655,7 +2614,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "Sınırlı süre özel fırsatlar"
                         },
@@ -2665,7 +2623,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 7,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "/images/special-offers-banner.jpg"
                         },
@@ -2675,7 +2632,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 8,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "true"
                         },
@@ -2685,7 +2641,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 9,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "SICAK"
                         },
@@ -2695,7 +2650,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 10,
-                            SectionItemId = 20,
                             Status = 0,
                             Value = "danger"
                         },
@@ -2705,7 +2659,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 21,
                             Status = 0,
                             Value = "Yeni Ürünler"
                         },
@@ -2715,7 +2668,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 21,
                             Status = 0,
                             Value = "/products/new"
                         },
@@ -2725,7 +2677,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 21,
                             Status = 0,
                             Value = "fas fa-star"
                         },
@@ -2735,7 +2686,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 21,
                             Status = 0,
                             Value = "En yeni ürün koleksiyonları"
                         },
@@ -2745,7 +2695,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 9,
-                            SectionItemId = 21,
                             Status = 0,
                             Value = "YENİ"
                         },
@@ -2755,7 +2704,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 10,
-                            SectionItemId = 21,
                             Status = 0,
                             Value = "primary"
                         },
@@ -2765,7 +2713,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 22,
                             Status = 0,
                             Value = "Popüler Kategoriler"
                         },
@@ -2775,7 +2722,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 22,
                             Status = 0,
                             Value = "/categories/popular"
                         },
@@ -2785,7 +2731,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 22,
                             Status = 0,
                             Value = "fas fa-fire"
                         },
@@ -2795,7 +2740,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 22,
                             Status = 0,
                             Value = "En popüler ürün kategorileri"
                         },
@@ -2805,7 +2749,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 23,
                             Status = 0,
                             Value = "Kampanyalar"
                         },
@@ -2815,7 +2758,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 23,
                             Status = 0,
                             Value = "/campaigns"
                         },
@@ -2825,7 +2767,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 23,
                             Status = 0,
                             Value = "fas fa-percentage"
                         },
@@ -2835,7 +2776,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 23,
                             Status = 0,
                             Value = "Güncel kampanya ve fırsatlar"
                         },
@@ -2845,7 +2785,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 25,
                             Status = 0,
                             Value = "En Çok Satan"
                         },
@@ -2855,7 +2794,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 25,
                             Status = 0,
                             Value = "/products/bestsellers"
                         },
@@ -2865,7 +2803,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 25,
                             Status = 0,
                             Value = "fas fa-trophy"
                         },
@@ -2875,7 +2812,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 3,
-                            SectionItemId = 28,
                             Status = 0,
                             Value = "Flash Sale"
                         },
@@ -2885,7 +2821,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 4,
-                            SectionItemId = 28,
                             Status = 0,
                             Value = "/flash-sale"
                         },
@@ -2895,7 +2830,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 5,
-                            SectionItemId = 28,
                             Status = 0,
                             Value = "fas fa-bolt"
                         },
@@ -2905,7 +2839,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 6,
-                            SectionItemId = 28,
                             Status = 0,
                             Value = "Sınırlı süre büyük indirimler"
                         },
@@ -2915,7 +2848,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 9,
-                            SectionItemId = 28,
                             Status = 0,
                             Value = "FLASH"
                         },
@@ -2925,7 +2857,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             SectionItemFieldId = 10,
-                            SectionItemId = 28,
                             Status = 0,
                             Value = "warning"
                         });
@@ -6541,13 +6472,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", b =>
                 {
-                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
-                        .WithMany("Fields")
-                        .HasForeignKey("TemplateId")
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItem", "SectionItem")
+                        .WithMany("SectionItemFields")
+                        .HasForeignKey("SectionItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Template");
+                    b.Navigation("SectionItem");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldTranslation", b =>
@@ -6572,18 +6503,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValue", b =>
                 {
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", "SectionItemField")
-                        .WithMany("Values")
+                        .WithMany("SectionItemFieldValues")
                         .HasForeignKey("SectionItemFieldId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItem", "SectionItem")
-                        .WithMany("FieldValues")
-                        .HasForeignKey("SectionItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SectionItem");
 
                     b.Navigation("SectionItemField");
                 });
@@ -6704,16 +6627,16 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItem", b =>
                 {
-                    b.Navigation("FieldValues");
+                    b.Navigation("SectionItemFields");
 
                     b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", b =>
                 {
-                    b.Navigation("Translations");
+                    b.Navigation("SectionItemFieldValues");
 
-                    b.Navigation("Values");
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValue", b =>
@@ -6723,8 +6646,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Template", b =>
                 {
-                    b.Navigation("Fields");
-
                     b.Navigation("SectionItemTypeTemplates");
 
                     b.Navigation("SectionItems");

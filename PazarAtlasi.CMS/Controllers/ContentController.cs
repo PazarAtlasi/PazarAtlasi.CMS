@@ -81,13 +81,13 @@ namespace PazarAtlasi.CMS.Controllers
                 .Include(p => p.PageSections.OrderBy(s => s.SortOrder))
                     .ThenInclude(s => s.Section)
                     .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
-                        .ThenInclude(si => si.FieldValues)
-                        .ThenInclude(fv => fv.SectionItemField)
+                        .ThenInclude(si => si.SectionItemFields)
+                        .ThenInclude(fv => fv.SectionItemFieldValues)
                             .ThenInclude(f => f.Translations)
                 .Include(p => p.PageSections)
                     .ThenInclude(s => s.Section)
                     .ThenInclude(s => s.SectionItems)
-                        .ThenInclude(si => si.FieldValues)
+                        .ThenInclude(si => si.SectionItemFields)
                         .ThenInclude(fv => fv.Translations)
                 .Include(p => p.PageSections)
                     .ThenInclude(s => s.Section)
@@ -142,16 +142,15 @@ namespace PazarAtlasi.CMS.Controllers
                         AllowReorder = si.AllowReorder,
                         AllowRemove = si.AllowRemove,
                         IconClass = si.IconClass,
-                        Fields = si.FieldValues.Select(fv => new SectionItemFieldViewModel
+                        Fields = si.SectionItemFields.Select(fv => new SectionItemFieldViewModel
                         {
                             Id = fv.Id,
                             SectionItemId = fv.SectionItemId,
-                            SectionItemFieldId = fv.SectionItemFieldId,
-                            FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
-                            FieldKey = fv.SectionItemField?.FieldKey ?? "",
-                            FieldValue = fv.Value,
-                            IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
-                            FieldTranslations = fv.SectionItemField?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
+                            FieldType = fv.Type,
+                            FieldKey = fv?.FieldKey ?? "",
+                            FieldValue = fv.DefaultValue,
+                            IsTranslatable = fv?.IsTranslatable ?? false,
+                            FieldTranslations = fv?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
                             {
                                 Id = ft.Id,
                                 SectionItemFieldId = ft.SectionItemFieldId,
@@ -162,13 +161,6 @@ namespace PazarAtlasi.CMS.Controllers
                                 Description = ft.Description,
                                 Placeholder = ft.Placeholder
                             }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
-                            Translations = fv.Translations.Select(vt => new SectionItemFieldValueTranslationViewModel
-                            {
-                                Id = vt.Id,
-                                SectionItemFieldValueId = vt.SectionItemFieldValueId,
-                                LanguageId = vt.LanguageId,
-                                Value = vt.Value
-                            }).ToList()
                         }).ToList(),
                         Translations = si.Translations.Select(sit => new SectionItemTranslationViewModel
                         {
@@ -233,10 +225,10 @@ namespace PazarAtlasi.CMS.Controllers
                         var sectionIds = page.PageSections.Select(t => t.Section).Select(s => s.Id).ToList();
                         var allSectionItems = await _pazarAtlasiDbContext.SectionItems
                             .Include(si => si.Translations)
-                            .Include(si => si.FieldValues)
-                                .ThenInclude(fv => fv.SectionItemField)
+                            .Include(si => si.SectionItemFields)
+                                .ThenInclude(fv => fv.SectionItem)
                                     .ThenInclude(f => f.Translations)
-                            .Include(si => si.FieldValues)
+                            .Include(si => si.SectionItemFields)
                                 .ThenInclude(fv => fv.Translations)
                             .Where(si => sectionIds.Contains(si.SectionId))
                             .OrderBy(si => si.SortOrder)
@@ -685,12 +677,12 @@ namespace PazarAtlasi.CMS.Controllers
                     var pageSection = await _pazarAtlasiDbContext.PageSections
                         .Include(ps => ps.Section)
                         .ThenInclude(s => s.SectionItems)
-                        .ThenInclude(si => si.FieldValues)
-                        .ThenInclude(fv => fv.SectionItemField)
+                        .ThenInclude(si => si.SectionItemFields)
+                        .ThenInclude(fv => fv.SectionItem)
                             .ThenInclude(f => f.Translations)
                 .Include(ps => ps.Section)
                         .ThenInclude(s => s.SectionItems)
-                        .ThenInclude(si => si.FieldValues)
+                        .ThenInclude(si => si.SectionItemFields)
                         .ThenInclude(fv => fv.Translations)
                         .Include(ps => ps.Section)
                         .ThenInclude(s => s.SectionItems)
@@ -726,16 +718,15 @@ namespace PazarAtlasi.CMS.Controllers
                             AllowReorder = si.AllowReorder,
                             AllowRemove = si.AllowRemove,
                             IconClass = si.IconClass,
-                            Fields = si.FieldValues.Select(fv => new SectionItemFieldViewModel
+                            Fields = si.SectionItemFields.Select(fv => new SectionItemFieldViewModel
                             {
                                 Id = fv.Id,
                                 SectionItemId = fv.SectionItemId,
-                                SectionItemFieldId = fv.SectionItemFieldId,
-                                FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
-                                FieldKey = fv.SectionItemField?.FieldKey ?? "",
-                                FieldValue = fv.Value,
-                                IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
-                                FieldTranslations = fv.SectionItemField?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
+                                FieldType = fv?.Type ?? SectionItemFieldType.Text,
+                                FieldKey = fv?.FieldKey ?? "",
+                                FieldValue = fv.DefaultValue,
+                                IsTranslatable = fv?.IsTranslatable ?? false,
+                                FieldTranslations = fv?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
                                 {
                                     Id = ft.Id,
                                     SectionItemFieldId = ft.SectionItemFieldId,
@@ -746,13 +737,6 @@ namespace PazarAtlasi.CMS.Controllers
                                     Description = ft.Description,
                                     Placeholder = ft.Placeholder
                                 }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
-                                Translations = fv.Translations.Select(vt => new SectionItemFieldValueTranslationViewModel
-                                {
-                                    Id = vt.Id,
-                                    SectionItemFieldValueId = vt.SectionItemFieldValueId,
-                                    LanguageId = vt.LanguageId,
-                                    Value = vt.Value
-                                }).ToList()
                             }).ToList(),
                             Translations = si.Translations.Select(t => new SectionItemTranslationViewModel
                             {
@@ -1122,10 +1106,10 @@ namespace PazarAtlasi.CMS.Controllers
                         .Include(s => s.SectionItems)
                             .ThenInclude(si => si.Translations)
                         .Include(s => s.SectionItems)
-                            .ThenInclude(si => si.FieldValues)
-                                .ThenInclude(fv => fv.SectionItemField)
+                            .ThenInclude(si => si.SectionItemFields)
+                                .ThenInclude(fv => fv.SectionItem)
                         .Include(s => s.SectionItems)
-                            .ThenInclude(si => si.FieldValues)
+                            .ThenInclude(si => si.SectionItemFields)
                                 .ThenInclude(fv => fv.Translations)
                         .Include(s => s.Translations)
                         .FirstOrDefaultAsync(s => s.Id == request.Id);
@@ -1146,10 +1130,8 @@ namespace PazarAtlasi.CMS.Controllers
                     foreach (var existingItem in section.SectionItems.ToList())
                     {
                         // Remove field values and their translations
-                        foreach (var fieldValue in existingItem.FieldValues.ToList())
+                        foreach (var fieldValue in existingItem.SectionItemFields.ToList())
                         {
-                            _pazarAtlasiDbContext.SectionItemFieldValueTranslations.RemoveRange(fieldValue.Translations);
-                            _pazarAtlasiDbContext.SectionItemFieldValues.Remove(fieldValue);
                         }
 
                         // Remove item translations
@@ -1773,21 +1755,13 @@ namespace PazarAtlasi.CMS.Controllers
                 MediaType = si.MediaType,
                 SortOrder = si.SortOrder,
                 Status = si.Status,
-                Fields = si.FieldValues?.Select(fv => new SectionItemFieldEditViewModel
+                Fields = si.SectionItemFields?.Select(fv => new SectionItemFieldEditViewModel
                 {
                     Id = fv.Id,
                     SectionItemId = fv.SectionItemId,
-                    SectionItemFieldId = fv.SectionItemFieldId,
-                    FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
-                    FieldKey = fv.SectionItemField?.FieldKey ?? "",
-                    FieldValue = fv.Value,
-                    Translations = fv.Translations?.Select(ft => new SectionItemFieldValueTranslationEditViewModel
-                    {
-                        Id = ft.Id,
-                        SectionItemFieldValueId = ft.SectionItemFieldValueId,
-                        LanguageId = ft.LanguageId,
-                        Value = ft.Value
-                    }).ToList() ?? new List<SectionItemFieldValueTranslationEditViewModel>()
+                    FieldType = fv?.Type ?? SectionItemFieldType.Text,
+                    FieldKey = fv?.FieldKey ?? "",
+                    FieldValue = fv.DefaultValue,
                 }).ToList() ?? new List<SectionItemFieldEditViewModel>(),
                 Translations = si.Translations?.Select(sit => new SectionItemTranslationEditViewModel
                 {
@@ -1866,7 +1840,7 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         // Find the field definition by FieldKey from template
                         var fieldDefinition = await _pazarAtlasiDbContext.SectionItemFields
-                            .FirstOrDefaultAsync(f => f.TemplateId == itemRequest.TemplateId && 
+                            .FirstOrDefaultAsync(f => f.SectionItem.TemplateId == itemRequest.TemplateId && 
                                                      f.FieldKey == fieldRequest.FieldKey && 
                                                      !f.IsDeleted);
 
@@ -1879,7 +1853,6 @@ namespace PazarAtlasi.CMS.Controllers
                         // Create the field value
                         var fieldValue = new SectionItemFieldValue
                         {
-                            SectionItemId = newItem.Id,
                             SectionItemFieldId = fieldDefinition.Id,
                             Value = fieldRequest.FieldValue ?? string.Empty,
                             CreatedAt = DateTime.UtcNow,
@@ -1984,23 +1957,18 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Get template configuration as SectionItemViewModel (ready for UI)
+        /// Get template configuration as SectionItemViewModel with proper child structure
+        /// Fields are only inside Items, not at template level
+        /// SectionItemları çekip onların child yapısını doğru şekilde oluşturur
         /// </summary>
         public async Task<SectionItemViewModel?> GetConfigurationAsync(int templateId, string templateKey)
         {
-            // Get the template with its fields and translations
+            // Get the template
             var template = await _pazarAtlasiDbContext.Templates
                 .FirstOrDefaultAsync(t => t.Id == templateId && t.TemplateKey == templateKey && t.IsActive);
 
             if (template == null)
                 return null;
-
-            // Get template fields
-            var fields = await _pazarAtlasiDbContext.SectionItemFields
-                .Include(f => f.Translations)
-                .Where(f => f.TemplateId == templateId && !f.IsDeleted)
-                .OrderBy(f => f.SortOrder)
-                .ToListAsync();
 
             // Get available languages
             var availableLanguages = await _pazarAtlasiDbContext.Languages
@@ -2016,14 +1984,44 @@ namespace PazarAtlasi.CMS.Controllers
                 .ThenBy(l => l.Name)
                 .ToListAsync();
 
-            return CreateDefaultSectionItemViewModel(template, fields, availableLanguages);
+            // Get ALL section items that use this template (with full hierarchy)
+            var allSectionItems = await _pazarAtlasiDbContext.SectionItems
+                .Include(si => si.SectionItemFields)
+                        .ThenInclude(f => f.Translations)
+                .Include(si => si.Translations)
+                .Where(si => si.TemplateId == templateId && !si.IsDeleted)
+                .OrderBy(si => si.SortOrder)
+                .ToListAsync();
+
+            // If no existing section items, create a default one from template fields
+            if (!allSectionItems.Any())
+            {
+                return await CreateDefaultSectionItemFromTemplate(template, availableLanguages);
+            }
+
+            // Get root level section items (items without parent) and build hierarchy
+            var rootSectionItems = allSectionItems
+                .Where(si => si.ParentSectionItemId == null)
+                .Select(item => MapToSectionItemViewModel(item, allSectionItems, availableLanguages))
+                .ToList();
+
+            // Return the first root item as example (or create a new one based on the first existing item)
+            return rootSectionItems.Skip(1).FirstOrDefault();
         }
 
         /// <summary>
         /// Create default SectionItemViewModel from template configuration
         /// </summary>
-        private SectionItemViewModel CreateDefaultSectionItemViewModel(Template template, List<SectionItemField> fields, List<LanguageViewModel> availableLanguages)
+        private async Task<SectionItemViewModel> CreateDefaultSectionItemFromTemplate(Template template, List<LanguageViewModel> availableLanguages)
         {
+            // Get template fields
+            var fields = await _pazarAtlasiDbContext.SectionItemFields
+                .Include(f => f.Translations)
+                .Include(f => f.SectionItem)
+                .Where(f => f.SectionItem.TemplateId == template.Id && !f.IsDeleted)
+                .OrderBy(f => f.SortOrder)
+                .ToListAsync();
+
             var viewModel = new SectionItemViewModel
             {
                 Id = 0, // New item
@@ -2046,6 +2044,69 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
+        /// Map SectionItem to SectionItemViewModel with proper child hierarchy
+        /// </summary>
+        private SectionItemViewModel MapToSectionItemViewModel(SectionItem sectionItem, List<SectionItem> allSectionItems, List<LanguageViewModel> availableLanguages)
+        {
+            // Get child items for this section item
+            var childItems = allSectionItems
+                .Where(si => si.ParentSectionItemId == sectionItem.Id)
+                .Select(child => MapToSectionItemViewModel(child, allSectionItems, availableLanguages))
+                .ToList();
+
+            return new SectionItemViewModel
+            {
+                Id = sectionItem.Id,
+                SectionId = sectionItem.SectionId,
+                ParentSectionItemId = sectionItem.ParentSectionItemId,
+                TemplateId = sectionItem.TemplateId,
+                TemplateKey = sectionItem.Template?.TemplateKey ?? "",
+                TemplateType = sectionItem.Template?.TemplateType ?? TemplateType.Default,
+                Type = sectionItem.Type,
+                MediaType = sectionItem.MediaType,
+                SortOrder = sectionItem.SortOrder,
+                Status = sectionItem.Status,
+                Title = sectionItem.Title,
+                Description = sectionItem.Description,
+                AllowReorder = sectionItem.AllowReorder,
+                AllowRemove = sectionItem.AllowRemove,
+                IconClass = sectionItem.IconClass,
+                AvailableLanguages = availableLanguages,
+                Fields = sectionItem.SectionItemFields?.Select(fv => new SectionItemFieldViewModel
+                {
+                    Id = fv.Id,
+                    SectionItemId = fv.SectionItemId,
+                    FieldType = fv?.Type ?? SectionItemFieldType.Text,
+                    FieldKey = fv?.FieldKey ?? "",
+                    FieldValue = fv.DefaultValue,
+                    IsTranslatable = fv?.IsTranslatable ?? false,
+                    FieldTranslations = fv?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
+                    {
+                        Id = ft.Id,
+                        SectionItemFieldId = ft.SectionItemFieldId,
+                        LanguageId = ft.LanguageId,
+                        LanguageCode = availableLanguages.FirstOrDefault(l => l.Id == ft.LanguageId)?.Code ?? "",
+                        LanguageName = availableLanguages.FirstOrDefault(l => l.Id == ft.LanguageId)?.Name ?? "",
+                        Label = ft.Label,
+                        Description = ft.Description,
+                        Placeholder = ft.Placeholder
+                    }).ToList() ?? new List<SectionItemFieldTranslationViewModel>()
+                }).ToList() ?? new List<SectionItemFieldViewModel>(),
+                ChildItems = childItems, // Recursive child items
+                Translations = sectionItem.Translations?.Select(sit => new SectionItemTranslationViewModel
+                {
+                    Id = sit.Id,
+                    LanguageId = sit.LanguageId,
+                    LanguageName = availableLanguages.FirstOrDefault(l => l.Id == sit.LanguageId)?.Name ?? "",
+                    LanguageCode = availableLanguages.FirstOrDefault(l => l.Id == sit.LanguageId)?.Code ?? "",
+                    Name = sit.Name,
+                    Title = sit.Title,
+                    Description = sit.Description
+                }).ToList() ?? new List<SectionItemTranslationViewModel>()
+            };
+        }
+
+        /// <summary>
         /// Map SectionItemField to SectionItemFieldViewModel
         /// </summary>
         private SectionItemFieldViewModel MapToSectionItemFieldViewModel(SectionItemField field, List<LanguageViewModel> availableLanguages)
@@ -2054,7 +2115,6 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 Id = 0, // New field value
                 SectionItemId = 0, // Will be set when item is saved
-                SectionItemFieldId = field.Id,
                 FieldType = field.Type,
                 FieldKey = field.FieldKey,
                 FieldValue = field.DefaultValue ?? "",

@@ -12,7 +12,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         public int SectionId { get; set; }
 
-        public int? ParentId { get; set; }
+        public int? ParentSectionItemId { get; set; }
 
         public TemplateType TemplateType { get; set; } // Template type for rendering behavior
 
@@ -70,6 +70,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         // Helper properties
         public bool IsNew => Id == 0;
 
-        public bool IsNested => ParentId.HasValue;
+        public bool IsNested => ParentSectionItemId.HasValue;
     }
 }

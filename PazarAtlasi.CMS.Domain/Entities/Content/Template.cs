@@ -21,8 +21,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         // Navigation properties
         public virtual ICollection<SectionItem> SectionItems { get; set; } = new List<SectionItem>();
         
-        public virtual ICollection<SectionItemField> Fields { get; set; } = new List<SectionItemField>();
-
         public virtual ICollection<SectionTypeTemplate> SectionTypeTemplates { get; set; } = new List<SectionTypeTemplate>();
 
         public virtual ICollection<SectionItemTypeTemplate> SectionItemTypeTemplates { get; set; } = new List<SectionItemTypeTemplate>();

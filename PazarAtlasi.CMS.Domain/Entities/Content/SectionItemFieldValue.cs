@@ -9,11 +9,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     public class SectionItemFieldValue : Entity<int>
     {
         /// <summary>
-        /// Reference to the section item this value belongs to
-        /// </summary>
-        public int SectionItemId { get; set; }
-
-        /// <summary>
         /// Reference to the field definition
         /// </summary>
         public int SectionItemFieldId { get; set; }
@@ -29,9 +24,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// </summary>
         public string? JsonValue { get; set; }
 
-        // Navigation properties
-        public virtual SectionItem SectionItem { get; set; } = null!;
         public virtual SectionItemField SectionItemField { get; set; } = null!;
+
         public virtual ICollection<SectionItemFieldValueTranslation> Translations { get; set; } = new List<SectionItemFieldValueTranslation>();
     }
 }

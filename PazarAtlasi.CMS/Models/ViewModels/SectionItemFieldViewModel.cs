@@ -18,11 +18,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int SectionItemId { get; set; }
         
         /// <summary>
-        /// Field Setting ID (reference to SectionItemFieldSetting)
-        /// </summary>
-        public int SectionItemFieldId { get; set; }
-        
-        /// <summary>
         /// Field type (from SectionItemFieldSetting)
         /// </summary>
         public SectionItemFieldType FieldType { get; set; }
