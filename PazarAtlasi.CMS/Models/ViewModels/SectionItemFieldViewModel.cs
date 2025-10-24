@@ -37,7 +37,18 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         /// </summary>
         public string FieldValue { get; set; } = string.Empty;
         
-        // Translations (for translatable fields)
+        // Field definition properties (from SectionItemField)
+        /// <summary>
+        /// Field definition translations (labels, descriptions, etc.)
+        /// </summary>
+        public List<SectionItemFieldTranslationViewModel> FieldTranslations { get; set; } = new();
+        
+        /// <summary>
+        /// Whether this field supports multiple languages for values
+        /// </summary>
+        public bool IsTranslatable { get; set; } = false;
+        
+        // Value translations (for translatable field values)
         public List<SectionItemFieldValueTranslationViewModel> Translations { get; set; } = new();
         
         // Helper properties

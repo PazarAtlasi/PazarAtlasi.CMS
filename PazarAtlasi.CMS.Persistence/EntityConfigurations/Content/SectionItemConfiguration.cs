@@ -23,10 +23,30 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(si => si.CreatedBy).HasColumnName("CreatedBy");
             builder.Property(si => si.UpdatedBy).HasColumnName("UpdatedBy");
 
-            // Setting relationship
+            // New properties
+            builder.Property(si => si.Title)
+                .HasColumnName("Title")
+                .HasMaxLength(200);
+
+            builder.Property(si => si.Description)
+                .HasColumnName("Description")
+                .HasMaxLength(500);
+
+            builder.Property(si => si.AllowReorder)
+                .HasColumnName("AllowReorder")
+                .HasDefaultValue(true);
+
+            builder.Property(si => si.AllowRemove)
+                .HasColumnName("AllowRemove")
+                .HasDefaultValue(true);
+
+            builder.Property(si => si.IconClass)
+                .HasColumnName("IconClass")
+                .HasMaxLength(100);
+
+            // Template relationship
             builder.Property(si => si.TemplateId)
-                .HasColumnName("SectionItemSettingId")
-                .IsRequired();
+                .HasColumnName("TemplateId");
 
             // Relationships
             builder.HasOne(si => si.Section)
@@ -42,6 +62,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.HasMany(si => si.Translations)
                    .WithOne(sit => sit.SectionItem)
                    .HasForeignKey(sit => sit.SectionItemId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(si => si.FieldValues)
+                   .WithOne(fv => fv.SectionItem)
+                   .HasForeignKey(fv => fv.SectionItemId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             // Indexes
@@ -62,6 +87,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 1, // Placeholder - will need proper config
                     Type = SectionItemType.Text,
                     SortOrder = 1,
+                    Title = "Hero Title",
+                    Description = "Main hero section title",
+                    AllowReorder = true,
+                    AllowRemove = true,
+                    IconClass = "fas fa-heading",
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -73,6 +103,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 1, // Placeholder
                     Type = SectionItemType.Paragraph,
                     SortOrder = 2,
+                    Title = "Hero Description",
+                    Description = "Hero section description text",
+                    AllowReorder = true,
+                    AllowRemove = true,
+                    IconClass = "fas fa-paragraph",
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false

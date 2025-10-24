@@ -26,6 +26,31 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public int SortOrder { get; set; } = 0;
 
+        /// <summary>
+        /// Display title for this item (from template or custom)
+        /// </summary>
+        public string? Title { get; set; }
+
+        /// <summary>
+        /// Description for this item (from template or custom)
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Whether this item can be reordered
+        /// </summary>
+        public bool AllowReorder { get; set; } = true;
+
+        /// <summary>
+        /// Whether this item can be removed dynamically
+        /// </summary>
+        public bool AllowRemove { get; set; } = true;
+
+        /// <summary>
+        /// Icon class for UI display
+        /// </summary>
+        public string? IconClass { get; set; }
+
         // Navigation properties
         public virtual Section Section { get; set; }
 

@@ -1,0 +1,169 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SectionItemFieldViewModel
+
+@{
+    var level = ViewBag.Level as int? ?? 0;
+    var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
+    
+    // Check if this field has value translations (not field definition translations)
+    var hasValueTranslations = Model.Translations?.Any() == true;
+    
+    // Get field label from field definition translations
+    var currentLanguageId = ViewBag.CurrentLanguageId as int? ?? 1; // Default to language ID 1
+    var fieldTranslation = Model.FieldTranslations?.FirstOrDefault(t => t.LanguageId == currentLanguageId) 
+                          ?? Model.FieldTranslations?.FirstOrDefault();
+    var fieldLabel = fieldTranslation?.Label ?? Model.FieldKey;
+    var fieldDescription = fieldTranslation?.Description;
+    var fieldPlaceholder = fieldTranslation?.Placeholder;
+}
+
+<div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@Model.IsTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@((int)Model.FieldType)">
+    @if (Model.IsTranslatable && availableLanguages.Any())
+    {
+        <!-- Multi-language field with tabs -->
+        <div class="mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1">
+                @fieldLabel
+                <span class="ml-1 text-xs text-purple-500">(Multi-language)</span>
+            </label>
+            @if (!string.IsNullOrEmpty(fieldDescription))
+            {
+                <p class="text-xs text-slate-500 mb-2">@fieldDescription</p>
+            }
+
+            <!-- Language tabs -->
+            <div class="border-b border-slate-200 mb-2">
+                <nav class="-mb-px flex space-x-2" aria-label="Language tabs">
+                    @foreach (var language in availableLanguages.Take(3))
+                    {
+                        <button type="button"
+                            class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
+                            data-language="@language.Code" data-language-id="@language.Id"
+                            onclick="SectionModal.switchItemLanguageTab(this)">
+                            @language.Code.ToUpper()
+                            @if (language.IsDefault)
+                            {
+                                <span class="ml-1 text-xs">●</span>
+                            }
+                        </button>
+                    }
+                </nav>
+            </div>
+
+            <!-- Language content panels -->
+            <div class="language-panels">
+                @foreach (var language in availableLanguages.Take(3))
+                {
+                    var translation = Model.Translations?.FirstOrDefault(t => t.LanguageId == language.Id);
+                    var langValue = translation?.Value ?? Model.FieldValue;
+                    
+                    <div class="language-panel @(language.IsDefault ? "" : "hidden")" data-language="@language.Code">
+                        @{
+                            await RenderFieldInput(Model.FieldType, langValue, $"{Model.FieldKey} ({language.Name})", Model.FieldKey, language.Code, language.Id);
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Single language field (non-translatable) -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">
+                @fieldLabel
+            </label>
+            @if (!string.IsNullOrEmpty(fieldDescription))
+            {
+                <p class="text-xs text-slate-500 mb-2">@fieldDescription</p>
+            }
+
+            @{
+                await RenderFieldInput(Model.FieldType, Model.FieldValue, fieldPlaceholder ?? fieldLabel, Model.FieldKey, null, null);
+            }
+        </div>
+    }
+</div>
+
+@{
+    async Task RenderFieldInput(PazarAtlasi.CMS.Domain.Common.SectionItemFieldType fieldType, string value, string placeholder, string fieldKey, string languageCode, int? languageId)
+    {
+        var inputAttributes = new Dictionary<string, object>
+        {
+            ["data-field-key"] = fieldKey,
+            ["class"] = "w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        };
+
+        if (!string.IsNullOrEmpty(languageCode))
+        {
+            inputAttributes["data-language-code"] = languageCode;
+            inputAttributes["data-language-id"] = languageId;
+        }
+
+        switch (fieldType.ToString().ToLower())
+        {
+            case "text":
+                inputAttributes["type"] = "text";
+                inputAttributes["placeholder"] = placeholder;
+                inputAttributes["value"] = value;
+                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+
+            case "textarea":
+                inputAttributes["rows"] = "3";
+                inputAttributes["placeholder"] = placeholder;
+                <textarea @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\"")))>@value</textarea>
+                break;
+
+            case "url":
+                inputAttributes["type"] = "url";
+                inputAttributes["placeholder"] = placeholder;
+                inputAttributes["value"] = value;
+                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+
+            case "image":
+                <div class="image-upload-container">
+                    <input type="hidden" class="image-path-input" value="@value" data-field-key="@fieldKey" />
+                    <div class="flex items-center space-x-2">
+                        <input type="file" class="hidden" accept="image/*"/>
+                        <button type="button"
+                            class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
+                            <i class="fas fa-upload mr-2"></i> Upload Image
+                        </button>
+                        @if (!string.IsNullOrEmpty(value))
+                        {
+                            <span class="text-xs text-green-600"><i class="fas fa-check mr-1"></i> Uploaded</span>
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(value))
+                    {
+                        <img src="@value" class="mt-2 max-h-20 rounded" alt="Preview" />
+                    }
+                </div>
+                break;
+
+            case "number":
+                inputAttributes["type"] = "number";
+                inputAttributes["placeholder"] = placeholder;
+                inputAttributes["value"] = value;
+                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+
+            case "checkbox":
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" 
+                        class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                        checked="@(value == "true" || value == "True")" data-field-key="@fieldKey" />
+                    <span class="text-sm text-slate-600">@placeholder</span>
+                </label>
+                break;
+
+            default:
+                inputAttributes["type"] = "text";
+                inputAttributes["placeholder"] = placeholder;
+                inputAttributes["value"] = value;
+                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+        }
+    }
+}

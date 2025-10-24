@@ -1,7 +1,5 @@
-@using PazarAtlasi.CMS.Application.Dtos
 @model PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel
 @{
-    var itemConfig = Model.SectionItemConfiguration;
     var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
 }
 
@@ -13,7 +11,7 @@
 
     <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-200">
         <div class="flex items-center">
-            @if (itemConfig?.UIConfiguration?.ShowReorder == true)
+            @if (Model.AllowReorder)
             {
                 <div class="drag-handle cursor-move mr-3 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded">
                     <i class="fas fa-grip-vertical"></i>
@@ -21,11 +19,15 @@
             }
             <div>
                 <h5 class="text-sm font-semibold text-slate-800 item-number">
-                    @(itemConfig?.Translations?.FirstOrDefault()?.Title ?? Model.Type.ToString()) #@Model.SortOrder
+                    @if (!string.IsNullOrEmpty(Model.IconClass))
+                    {
+                        <i class="@Model.IconClass mr-2"></i>
+                    }
+                    @(Model.Title ?? Model.Type.ToString()) #@Model.SortOrder
                 </h5>
-                @if (!string.IsNullOrEmpty(itemConfig?.Translations?.FirstOrDefault()?.Description))
+                @if (!string.IsNullOrEmpty(Model.Description))
                 {
-                    <p class="text-xs text-slate-500 mt-0.5">@itemConfig.Translations.FirstOrDefault()?.Description</p>
+                    <p class="text-xs text-slate-500 mt-0.5">@Model.Description</p>
                 }
             </div>
         </div>
@@ -33,7 +35,7 @@
             <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
                 <i class="fas fa-check-circle mr-1"></i>Active
             </span>
-            @if (itemConfig?.AllowDynamicSectionItems == true)
+            @if (Model.AllowRemove)
             {
                 <button type="button" onclick="this.closest('.section-item-card').remove(); updateItemNumbers();"
                         class="text-red-600 hover:text-red-800 text-sm p-2 hover:bg-red-50 rounded transition-colors"
@@ -46,12 +48,13 @@
 
     <!-- Render fields for this item -->
     <div class="space-y-3">
-        @if (itemConfig?.Fields != null && itemConfig.Fields.Any())
+        @if (Model.Fields != null && Model.Fields.Any())
         {
-            @foreach (var field in itemConfig.Fields)
+            @foreach (var field in Model.Fields)
             {
                 ViewBag.Level = 0;
-                @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
+                ViewBag.AvailableLanguages = availableLanguages;
+                @await Html.PartialAsync("~/Views/Content/_SectionItemFieldValue.cshtml", field)
             }
         }
         else
@@ -63,10 +66,9 @@
         }
 
         <!-- Recursively render nested items -->
-        @if (Model.ChildItems?.Any() == true && itemConfig?.ChildSectionItemSettings?.Any() == true)
+        @if (Model.ChildItems?.Any() == true)
         {
             ViewBag.ParentItem = Model;
-            ViewBag.NestedConfigs = itemConfig.ChildSectionItemSettings;
             ViewBag.Level = 1;
 
             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")

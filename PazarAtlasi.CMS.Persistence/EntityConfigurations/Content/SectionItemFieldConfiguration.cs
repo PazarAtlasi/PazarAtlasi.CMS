@@ -34,9 +34,14 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             // Relationships
             builder.HasOne(x => x.Template)
-                .WithMany()
+                .WithMany(t => t.Fields)
                 .HasForeignKey(x => x.TemplateId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.Translations)
+                .WithOne(x => x.SectionItemField)
+                .HasForeignKey(x => x.SectionItemFieldId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Indexes
             builder.HasIndex(x => new { x.TemplateId, x.FieldKey })

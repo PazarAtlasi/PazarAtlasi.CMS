@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PazarAtlasi.CMS.Persistence.Context;
 
@@ -11,9 +12,11 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    partial class PazarAtlasiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251024213453_RefactorSectionItemFields")]
+    partial class RefactorSectionItemFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1363,7 +1366,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<bool>("IsTranslatable")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MaxLength")
+                    b.Property<int>("MaxLength")
                         .HasColumnType("int");
 
                     b.Property<string>("OptionsJson")
@@ -1382,7 +1385,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("TemplateId")
+                    b.Property<int?>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TemplateId1")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -1402,69 +1408,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasIndex("SortOrder")
                         .HasDatabaseName("IX_SectionItemFields_SortOrder");
 
+                    b.HasIndex("TemplateId1");
+
                     b.HasIndex("TemplateId", "FieldKey")
                         .HasDatabaseName("IX_SectionItemFields_TemplateId_FieldKey");
 
                     b.ToTable("SectionItemFields", (string)null);
-                });
-
-            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Placeholder")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("SectionItemFieldId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LanguageId")
-                        .HasDatabaseName("IX_SectionItemFieldTranslations_LanguageId");
-
-                    b.HasIndex("SectionItemFieldId", "LanguageId")
-                        .IsUnique()
-                        .HasDatabaseName("IX_SectionItemFieldTranslations_FieldId_LanguageId");
-
-                    b.ToTable("SectionItemFieldTranslations", (string)null);
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValue", b =>
@@ -4590,31 +4539,15 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", b =>
                 {
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
-                        .WithMany("Fields")
+                        .WithMany()
                         .HasForeignKey("TemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", null)
+                        .WithMany("SectionItemFields")
+                        .HasForeignKey("TemplateId1");
 
                     b.Navigation("Template");
-                });
-
-            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldTranslation", b =>
-                {
-                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", "SectionItemField")
-                        .WithMany("Translations")
-                        .HasForeignKey("SectionItemFieldId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Language");
-
-                    b.Navigation("SectionItemField");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValue", b =>
@@ -4759,8 +4692,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", b =>
                 {
-                    b.Navigation("Translations");
-
                     b.Navigation("Values");
                 });
 
@@ -4771,7 +4702,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Template", b =>
                 {
-                    b.Navigation("Fields");
+                    b.Navigation("SectionItemFields");
 
                     b.Navigation("SectionItemTypeTemplates");
 

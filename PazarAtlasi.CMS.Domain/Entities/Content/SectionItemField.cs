@@ -3,15 +3,15 @@ using PazarAtlasi.CMS.Domain.Common;
 namespace PazarAtlasi.CMS.Domain.Entities.Content
 {
     /// <summary>
-    /// Defines a field structure for section items
-    /// Contains field definition, type, validation rules, etc.
+    /// Represents a field definition for templates (metadata only, no values)
+    /// Defines what fields are available for section items created from a template
     /// </summary>
     public class SectionItemField : Entity<int>
     {
         /// <summary>
-        /// Template this field belongs to (optional, can be null for custom fields)
+        /// Template this field belongs to
         /// </summary>
-        public int? TemplateId { get; set; }
+        public int TemplateId { get; set; }
 
         /// <summary>
         /// Unique key for this field (e.g., "title", "image", "url")
@@ -34,9 +34,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public bool Required { get; set; } = false;
 
         /// <summary>
-        /// Maximum length for text fields (0 = no limit)
+        /// Maximum length for text fields
         /// </summary>
-        public int MaxLength { get; set; } = 0;
+        public int? MaxLength { get; set; }
 
         /// <summary>
         /// Placeholder text for the field
@@ -49,12 +49,12 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public string? DefaultValue { get; set; }
 
         /// <summary>
-        /// Whether this field supports multi-language input
+        /// Whether this field supports multiple languages
         /// </summary>
         public bool IsTranslatable { get; set; } = false;
 
         /// <summary>
-        /// JSON configuration for field options (e.g., select options, validation rules)
+        /// JSON string containing options for select/radio fields
         /// </summary>
         public string? OptionsJson { get; set; }
 
@@ -64,11 +64,16 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public int SortOrder { get; set; } = 0;
 
         // Navigation properties
-        public virtual Template? Template { get; set; }
+        public virtual Template Template { get; set; } = null!;
         
         /// <summary>
-        /// Values for this field across different section items
+        /// Field values created from this field definition
         /// </summary>
         public virtual ICollection<SectionItemFieldValue> Values { get; set; } = new List<SectionItemFieldValue>();
+        
+        /// <summary>
+        /// Translations for this field definition (labels, descriptions, etc.)
+        /// </summary>
+        public virtual ICollection<SectionItemFieldTranslation> Translations { get; set; } = new List<SectionItemFieldTranslation>();
     }
 }

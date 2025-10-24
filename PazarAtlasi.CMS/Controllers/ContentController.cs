@@ -86,6 +86,7 @@ namespace PazarAtlasi.CMS.Controllers
                     .ThenInclude(s => s.SectionItems.OrderBy(si => si.SortOrder))
                         .ThenInclude(si => si.FieldValues)
                         .ThenInclude(fv => fv.SectionItemField)
+                            .ThenInclude(f => f.Translations)
                 .Include(p => p.PageSections)
                     .ThenInclude(s => s.Section)
                     .ThenInclude(s => s.SectionItems)
@@ -139,6 +140,11 @@ namespace PazarAtlasi.CMS.Controllers
                         Type = si.Type,
                         SortOrder = si.SortOrder,
                         Status = si.Status,
+                        Title = si.Title,
+                        Description = si.Description,
+                        AllowReorder = si.AllowReorder,
+                        AllowRemove = si.AllowRemove,
+                        IconClass = si.IconClass,
                         Fields = si.FieldValues.Select(fv => new SectionItemFieldViewModel
                         {
                             Id = fv.Id,
@@ -147,12 +153,24 @@ namespace PazarAtlasi.CMS.Controllers
                             FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
                             FieldKey = fv.SectionItemField?.FieldKey ?? "",
                             FieldValue = fv.Value,
-                            Translations = fv.Translations.Select(ft => new SectionItemFieldValueTranslationViewModel
+                            IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
+                            FieldTranslations = fv.SectionItemField?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
                             {
                                 Id = ft.Id,
-                                SectionItemFieldValueId = ft.SectionItemFieldValueId,
+                                SectionItemFieldId = ft.SectionItemFieldId,
                                 LanguageId = ft.LanguageId,
-                                Value = ft.Value
+                                LanguageCode = ft.Language?.Code ?? "",
+                                LanguageName = ft.Language?.Name ?? "",
+                                Label = ft.Label,
+                                Description = ft.Description,
+                                Placeholder = ft.Placeholder
+                            }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
+                            Translations = fv.Translations.Select(vt => new SectionItemFieldValueTranslationViewModel
+                            {
+                                Id = vt.Id,
+                                SectionItemFieldValueId = vt.SectionItemFieldValueId,
+                                LanguageId = vt.LanguageId,
+                                Value = vt.Value
                             }).ToList()
                         }).ToList(),
                         Translations = si.Translations.Select(sit => new SectionItemTranslationViewModel
@@ -220,6 +238,7 @@ namespace PazarAtlasi.CMS.Controllers
                             .Include(si => si.Translations)
                             .Include(si => si.FieldValues)
                                 .ThenInclude(fv => fv.SectionItemField)
+                                    .ThenInclude(f => f.Translations)
                             .Include(si => si.FieldValues)
                                 .ThenInclude(fv => fv.Translations)
                             .Where(si => sectionIds.Contains(si.SectionId))
@@ -671,6 +690,7 @@ namespace PazarAtlasi.CMS.Controllers
                         .ThenInclude(s => s.SectionItems)
                         .ThenInclude(si => si.FieldValues)
                         .ThenInclude(fv => fv.SectionItemField)
+                            .ThenInclude(f => f.Translations)
                 .Include(ps => ps.Section)
                         .ThenInclude(s => s.SectionItems)
                         .ThenInclude(si => si.FieldValues)
@@ -704,6 +724,11 @@ namespace PazarAtlasi.CMS.Controllers
                             MediaType = si.MediaType,
                             SortOrder = si.SortOrder,
                             Status = si.Status,
+                            Title = si.Title,
+                            Description = si.Description,
+                            AllowReorder = si.AllowReorder,
+                            AllowRemove = si.AllowRemove,
+                            IconClass = si.IconClass,
                             Fields = si.FieldValues.Select(fv => new SectionItemFieldViewModel
                             {
                                 Id = fv.Id,
@@ -712,12 +737,24 @@ namespace PazarAtlasi.CMS.Controllers
                                 FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
                                 FieldKey = fv.SectionItemField?.FieldKey ?? "",
                                 FieldValue = fv.Value,
-                                Translations = fv.Translations.Select(ft => new SectionItemFieldValueTranslationViewModel
+                                IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
+                                FieldTranslations = fv.SectionItemField?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
                                 {
                                     Id = ft.Id,
-                                    SectionItemFieldValueId = ft.SectionItemFieldValueId,
+                                    SectionItemFieldId = ft.SectionItemFieldId,
                                     LanguageId = ft.LanguageId,
-                                    Value = ft.Value
+                                    LanguageCode = ft.Language?.Code ?? "",
+                                    LanguageName = ft.Language?.Name ?? "",
+                                    Label = ft.Label,
+                                    Description = ft.Description,
+                                    Placeholder = ft.Placeholder
+                                }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
+                                Translations = fv.Translations.Select(vt => new SectionItemFieldValueTranslationViewModel
+                                {
+                                    Id = vt.Id,
+                                    SectionItemFieldValueId = vt.SectionItemFieldValueId,
+                                    LanguageId = vt.LanguageId,
+                                    Value = vt.Value
                                 }).ToList()
                             }).ToList(),
                             Translations = si.Translations.Select(t => new SectionItemTranslationViewModel
@@ -1811,6 +1848,11 @@ namespace PazarAtlasi.CMS.Controllers
                 SortOrder = sortOrder,
                 Type = itemConfig.ItemType,
                 Status = Status.Active,
+                Title = itemConfig.Translations?.FirstOrDefault()?.Title ?? itemConfig.ItemType.ToString(),
+                Description = itemConfig.Translations?.FirstOrDefault()?.Description,
+                AllowReorder = itemConfig.UIConfiguration?.ShowReorder ?? true,
+                AllowRemove = itemConfig.AllowDynamicSectionItems,
+                IconClass = itemConfig.UIConfiguration?.IconClass,
                 Fields = new List<SectionItemFieldViewModel>(),
                 ChildItems = new List<SectionItemViewModel>()
             };
@@ -1874,6 +1916,11 @@ namespace PazarAtlasi.CMS.Controllers
                     MediaType = itemRequest.MediaType,
                     SortOrder = itemRequest.SortOrder,
                     Status = itemRequest.Status,
+                    Title = itemRequest.Type.ToString(), // Default title
+                    Description = null,
+                    AllowReorder = true,
+                    AllowRemove = true,
+                    IconClass = "fas fa-cube", // Default icon
                     CreatedAt = DateTime.UtcNow,
                     IsDeleted = false
                 };

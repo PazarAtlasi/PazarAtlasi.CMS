@@ -9,9 +9,12 @@
     var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new
     List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
 
-    // Get default language label or use FieldKey
-    var fieldLabel = Model.Translations?.FirstOrDefault()?.Label ?? Model.FieldKey;
-    var fieldDescription = Model.Translations?.FirstOrDefault()?.Description;
+    // Get current language or default language label
+    var currentLanguageId = ViewBag.CurrentLanguageId as int? ?? 1; // Default to language ID 1
+    var fieldTranslation = Model.Translations?.FirstOrDefault(t => t.LanguageId == currentLanguageId) 
+                          ?? Model.Translations?.FirstOrDefault();
+    var fieldLabel = fieldTranslation?.Label ?? Model.FieldKey;
+    var fieldDescription = fieldTranslation?.Description;
 }
 
 <div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@isTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@((int)Model.Type)">

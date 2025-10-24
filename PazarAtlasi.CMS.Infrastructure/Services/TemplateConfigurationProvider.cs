@@ -30,15 +30,17 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
         /// </summary>
         public async Task<TemplateSettingDto?> GetConfigurationAsync(int templateId, string templateKey)
         {
-            // Get the template with its fields
+            // Get the template with its fields and translations
             var template = await _context.Templates
                 .FirstOrDefaultAsync(t => t.Id == templateId && t.TemplateKey == templateKey && t.IsActive);
 
             if (template == null)
                 return null;
 
-            // Get fields for this template
+            // Get fields for this template with their translations
             var fields = await _context.SectionItemFields
+                .Include(f => f.Translations)
+                    .ThenInclude(t => t.Language)
                 .Where(f => f.TemplateId == templateId && !f.IsDeleted)
                 .OrderBy(f => f.SortOrder)
                 .ToListAsync();
@@ -94,6 +96,25 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 }
             }
 
+            // Map translations from database
+            var translations = field.Translations?.Select(t => new SectionItemFieldTranslationDto
+            {
+                LanguageId = t.LanguageId,
+                Label = t.Label,
+                Description = t.Description
+            }).ToList() ?? new List<SectionItemFieldTranslationDto>();
+
+            // If no translations exist, create a default one
+            if (!translations.Any())
+            {
+                translations.Add(new SectionItemFieldTranslationDto
+                {
+                    LanguageId = 1, // Default language - should be configurable
+                    Label = field.FieldName,
+                    Description = field.FieldName
+                });
+            }
+
             return new SectionItemFieldSettingDto
             {
                 FieldKey = field.FieldKey,
@@ -104,15 +125,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 DefaultValue = field.DefaultValue,
                 IsTranslatable = field.IsTranslatable,
                 Options = options,
-                Translations = new List<SectionItemFieldTranslationDto>
-                {
-                    new SectionItemFieldTranslationDto
-                    {
-                        LanguageId = 1, // Default language
-                        Label = field.FieldName,
-                        Description = field.FieldName
-                    }
-                }
+                Translations = translations
             };
         }
     }

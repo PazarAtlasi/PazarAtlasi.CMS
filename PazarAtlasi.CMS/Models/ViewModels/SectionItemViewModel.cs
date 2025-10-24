@@ -28,6 +28,31 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         public Status Status { get; set; }
 
+        /// <summary>
+        /// Display title for this item
+        /// </summary>
+        public string? Title { get; set; }
+
+        /// <summary>
+        /// Description for this item
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Whether this item can be reordered
+        /// </summary>
+        public bool AllowReorder { get; set; } = true;
+
+        /// <summary>
+        /// Whether this item can be removed dynamically
+        /// </summary>
+        public bool AllowRemove { get; set; } = true;
+
+        /// <summary>
+        /// Icon class for UI display
+        /// </summary>
+        public string? IconClass { get; set; }
+
         public List<SectionItemFieldViewModel> Fields { get; set; } = new();
         
         public List<SectionItemViewModel> ChildItems { get; set; } = new();
