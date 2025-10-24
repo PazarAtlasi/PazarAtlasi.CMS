@@ -156,6 +156,18 @@ const ContentServices = (function () {
   }
 
   /**
+   * Get template configuration with example items
+   */
+  function getTemplateConfiguration(templateId, templateKey = "") {
+    return $.ajax({
+      url: `${config.baseUrl}/GetTemplateConfiguration`,
+      type: "GET",
+      data: { templateId, templateKey },
+      dataType: "json",
+    });
+  }
+
+  /**
    * Get available templates by section type
    */
   function getTemplatesBySectionType(sectionType) {
@@ -404,6 +416,7 @@ const ContentServices = (function () {
 
     // Section services
     getSectionModal,
+    getTemplateConfiguration,
     getTemplatesBySectionType,
     getNewSectionItemCard,
     getNewNestedItemCard,

@@ -26,7 +26,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
         }
 
         /// <summary>
-        /// Get template configuration from database asynchronously
+        /// Get template configuration with example section items (for UI rendering and field definitions)
         /// </summary>
         public async Task<TemplateSettingDto?> GetConfigurationAsync(int templateId, string templateKey)
         {
@@ -45,13 +45,26 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 .OrderBy(f => f.SortOrder)
                 .ToListAsync();
 
-            return MapToTemplateConfiguration(template, fields);
+            // Get example section items that use this template (for demonstration)
+            var exampleSectionItems = await _context.SectionItems
+                .Include(si => si.FieldValues)
+                    .ThenInclude(fv => fv.SectionItemField)
+                        .ThenInclude(f => f.Translations)
+                .Include(si => si.FieldValues)
+                    .ThenInclude(fv => fv.Translations)
+                .Include(si => si.Translations)
+                .Where(si => si.TemplateId == templateId && !si.IsDeleted)
+                .OrderBy(si => si.SortOrder)
+                .Take(5) // Limit to 5 examples
+                .ToListAsync();
+
+            return MapToTemplateConfigurationWithExamples(template, fields, exampleSectionItems);
         }
 
         /// <summary>
-        /// Map Template entity to TemplateConfiguration DTO
+        /// Map Template entity to TemplateConfiguration DTO with example section items
         /// </summary>
-        private TemplateSettingDto MapToTemplateConfiguration(Template template, List<SectionItemField> fields)
+        private TemplateSettingDto MapToTemplateConfigurationWithExamples(Template template, List<SectionItemField> fields, List<SectionItem> exampleItems)
         {
             var config = new TemplateSettingDto
             {
@@ -71,7 +84,9 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                         ShowReorder = true,
                         AddButtonText = "Add Section Item"
                     }
-                }
+                },
+                // NEW: Add example section items
+                ExampleItems = exampleItems.Select(item => MapToSectionItemDto(item, new List<SectionItem>())).ToList()
             };
 
             return config;
@@ -126,6 +141,56 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 IsTranslatable = field.IsTranslatable,
                 Options = options,
                 Translations = translations
+            };
+        }
+
+
+        /// <summary>
+        /// Map SectionItem to SectionItemDto with nested structure
+        /// </summary>
+        private SectionItemDto MapToSectionItemDto(SectionItem item, List<SectionItem> allSectionItems)
+        {
+            // Get child items
+            var childItems = allSectionItems
+                .Where(si => si.ParentSectionItemId == item.Id)
+                .Select(child => MapToSectionItemDto(child, allSectionItems))
+                .ToList();
+
+            // Map field values
+            var fieldValues = item.FieldValues?.Select(fv => new SectionItemFieldValueDto
+            {
+                FieldKey = fv.SectionItemField?.FieldKey ?? "",
+                FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
+                Value = fv.Value,
+                IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
+                FieldLabel = fv.SectionItemField?.Translations?.FirstOrDefault()?.Label ?? fv.SectionItemField?.FieldName ?? "",
+                Translations = fv.Translations?.Select(t => new SectionItemFieldValueTranslationDto
+                {
+                    LanguageId = t.LanguageId,
+                    Value = t.Value
+                }).ToList() ?? new List<SectionItemFieldValueTranslationDto>()
+            }).ToList() ?? new List<SectionItemFieldValueDto>();
+
+            return new SectionItemDto
+            {
+                Id = item.Id,
+                ParentId = item.ParentSectionItemId,
+                Type = item.Type,
+                Title = item.Title ?? "",
+                Description = item.Description ?? "",
+                IconClass = item.IconClass ?? "",
+                SortOrder = item.SortOrder,
+                AllowReorder = item.AllowReorder,
+                AllowRemove = item.AllowRemove,
+                FieldValues = fieldValues,
+                ChildItems = childItems,
+                Translations = item.Translations?.Select(t => new SectionItemTranslationDto
+                {
+                    LanguageId = t.LanguageId,
+                    Name = t.Name ?? "",
+                    Title = t.Title ?? "",
+                    Description = t.Description ?? ""
+                }).ToList() ?? new List<SectionItemTranslationDto>()
             };
         }
     }

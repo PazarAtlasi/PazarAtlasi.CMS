@@ -24,9 +24,9 @@ namespace PazarAtlasi.CMS.Domain.Common
     {
         None,
         Text,
+        TextArea,
         Title,
         Description,
-        TextArea,
         Checkbox,
         Paragraph,
         Number,
@@ -47,6 +47,11 @@ namespace PazarAtlasi.CMS.Domain.Common
     {
         None,
         Logo,
+        Category,
+        SubCategory,
+        CategoryLink,
+        PromoLink,
+        Service,
         FeatureCard,
         Dropdown,
         List,

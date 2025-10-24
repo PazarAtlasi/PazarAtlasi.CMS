@@ -17,6 +17,11 @@ namespace PazarAtlasi.CMS.Application.Dtos
         /// Section item configuration for this template
         /// </summary>
         public SectionItemSettingDto SectionItemSetting { get; set; } = new();
+
+        /// <summary>
+        /// Example section items that use this template (for demonstration)
+        /// </summary>
+        public List<SectionItemDto> ExampleItems { get; set; } = new();
     }
 
     /// <summary>
@@ -152,5 +157,82 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public string AddButtonText { get; set; } = "Add Item";
         
         public string? IconClass { get; set; }
+    }
+
+    // NEW DTOs for actual section data (not just configuration)
+
+    /// <summary>
+    /// Section with all its nested items and field values (for UI rendering)
+    /// </summary>
+    public class SectionWithItemsDto
+    {
+        public int SectionId { get; set; }
+        public SectionType SectionType { get; set; }
+        public string SectionName { get; set; } = string.Empty;
+        public List<SectionItemDto> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Section item with actual field values and nested structure
+    /// </summary>
+    public class SectionItemDto
+    {
+        public int Id { get; set; }
+        public int? ParentId { get; set; }
+        public SectionItemType Type { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string IconClass { get; set; } = string.Empty;
+        public int SortOrder { get; set; }
+        public bool AllowReorder { get; set; }
+        public bool AllowRemove { get; set; }
+        
+        /// <summary>
+        /// Actual field values for this item
+        /// </summary>
+        public List<SectionItemFieldValueDto> FieldValues { get; set; } = new();
+        
+        /// <summary>
+        /// Nested child items
+        /// </summary>
+        public List<SectionItemDto> ChildItems { get; set; } = new();
+        
+        /// <summary>
+        /// Item translations
+        /// </summary>
+        public List<SectionItemTranslationDto> Translations { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Field value with translations
+    /// </summary>
+    public class SectionItemFieldValueDto
+    {
+        public string FieldKey { get; set; } = string.Empty;
+        public SectionItemFieldType FieldType { get; set; }
+        public string Value { get; set; } = string.Empty;
+        public bool IsTranslatable { get; set; }
+        public string FieldLabel { get; set; } = string.Empty;
+        public List<SectionItemFieldValueTranslationDto> Translations { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Field value translation
+    /// </summary>
+    public class SectionItemFieldValueTranslationDto
+    {
+        public int LanguageId { get; set; }
+        public string Value { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Section item translation
+    /// </summary>
+    public class SectionItemTranslationDto
+    {
+        public int LanguageId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 }
