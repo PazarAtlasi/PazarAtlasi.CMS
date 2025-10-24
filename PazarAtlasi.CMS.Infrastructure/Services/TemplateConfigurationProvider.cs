@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PazarAtlasi.CMS.Application.Dtos;
 using PazarAtlasi.CMS.Domain.Entities.Content;
+using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Persistence.Context;
 using System.Text.Json;
 
@@ -8,7 +9,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
 {
     /// <summary>
     /// SOLID: Single Responsibility - Provides template configurations from database
-    /// Now reads configuration from SectionItemSetting and SectionItemFieldSetting entities
+    /// Simplified version that reads from SectionItemField entities
     /// </summary>
     public interface ITemplateConfigurationProvider
     {
@@ -29,103 +30,63 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
         /// </summary>
         public async Task<TemplateSettingDto?> GetConfigurationAsync(int templateId, string templateKey)
         {
-            // First get the template
+            // Get the template with its fields
             var template = await _context.Templates
                 .FirstOrDefaultAsync(t => t.Id == templateId && t.TemplateKey == templateKey && t.IsActive);
 
             if (template == null)
                 return null;
 
-            // Then get the SectionItemSettings for this template
-            var sectionItemSetting = await _context.SectionItemSettings
-                .Where(sis => sis.TemplateId == templateId && !sis.IsDeleted)
-                .Include(sis => sis.Fields.OrderBy(f => f.SortOrder))
-                    .ThenInclude(f => f.Translations)
-                .Include(sis => sis.Translations)
-                .Include(sis => sis.ChildSettings) // Nested items
-                    .ThenInclude(cs => cs.Fields.OrderBy(f => f.SortOrder))
-                        .ThenInclude(f => f.Translations)
-                .Include(sis => sis.ChildSettings)
-                    .ThenInclude(cs => cs.Translations)
-                .OrderBy(sis => sis.SortOrder)
-                .FirstOrDefaultAsync();
+            // Get fields for this template
+            var fields = await _context.SectionItemFields
+                .Where(f => f.TemplateId == templateId && !f.IsDeleted)
+                .OrderBy(f => f.SortOrder)
+                .ToListAsync();
 
-            if (sectionItemSetting == null)
-                return null;
-
-            // Use the first one as default (or you can add logic to select specific one)
-
-            return MapToTemplateConfiguration(template, sectionItemSetting);
+            return MapToTemplateConfiguration(template, fields);
         }
-
 
         /// <summary>
         /// Map Template entity to TemplateConfiguration DTO
         /// </summary>
-        private TemplateSettingDto MapToTemplateConfiguration(Template template, SectionItemSetting defaultSectionItemSetting)
+        private TemplateSettingDto MapToTemplateConfiguration(Template template, List<SectionItemField> fields)
         {
             var config = new TemplateSettingDto
             {
                 TemplateId = template.Id,
                 TemplateName = template.Name,
                 TemplateKey = template.TemplateKey,
-                SectionItemSetting = MapToSectionItemSetting(defaultSectionItemSetting)
+                SectionItemSetting = new SectionItemSettingDto
+                {
+                    AllowDynamicSectionItems = true,
+                    ItemType = SectionItemType.None,
+                    Fields = fields.Select(f => MapToSectionItemFieldDto(f)).ToList(),
+                    ChildSectionItemSettings = new List<SectionItemSettingDto>(),
+                    UIConfiguration = new SectionItemUISettingDto
+                    {
+                        Layout = "list",
+                        ShowPreview = true,
+                        ShowReorder = true,
+                        AddButtonText = "Add Section Item"
+                    }
+                }
             };
 
             return config;
         }
 
         /// <summary>
-        /// Recursively map SectionItemSetting to SectionItemConfiguration
+        /// Map SectionItemField to SectionItemFieldDto
         /// </summary>
-        private SectionItemSettingDto MapToSectionItemSetting(SectionItemSetting setting)
-        {
-            var itemConfig = new SectionItemSettingDto
-            {
-                AllowDynamicSectionItems = setting.AllowDynamicSectionItems,
-                ItemType = setting.ItemType,
-                Translations = setting.Translations
-                    .Select(t => new SectionItemSettingTranslationDto
-                    {
-                        LanguageId = t.LanguageId,
-                        Title = t.Title,
-                        Description = t.Description
-                    })
-                    .ToList(),
-                Fields = setting.Fields
-                    .Where(f => !f.IsDeleted)
-                    .OrderBy(f => f.SortOrder)
-                    .Select(f => MapToSectionItemFieldDto(f))
-                    .ToList(),
-                ChildSectionItemSettings = setting.ChildSettings
-                    .Where(cs => !cs.IsDeleted)
-                    .OrderBy(cs => cs.SortOrder)
-                    .Select(cs => MapToSectionItemSetting(cs)) // RECURSIVE
-                    .ToList(),
-                UIConfiguration = new SectionItemUISettingDto()
-                {
-                    Layout = "list",
-                    ShowPreview = true,
-                    ShowReorder = true,
-                    AddButtonText = $"Add {setting.ItemType}"
-                }
-            };
-
-            return itemConfig;
-        }
-
-        /// <summary>
-        /// Map SectionItemFieldSetting to SectionItemFieldDto
-        /// </summary>
-        private SectionItemFieldSettingDto MapToSectionItemFieldDto(SectionItemFieldSetting fieldSetting)
+        private SectionItemFieldSettingDto MapToSectionItemFieldDto(SectionItemField field)
         {
             // Parse options from JSON
             List<string>? options = null;
-            if (!string.IsNullOrEmpty(fieldSetting.OptionsJson))
+            if (!string.IsNullOrEmpty(field.OptionsJson))
             {
                 try
                 {
-                    options = JsonSerializer.Deserialize<List<string>>(fieldSetting.OptionsJson);
+                    options = JsonSerializer.Deserialize<List<string>>(field.OptionsJson);
                 }
                 catch
                 {
@@ -133,24 +94,25 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 }
             }
 
-            return new  SectionItemFieldSettingDto
+            return new SectionItemFieldSettingDto
             {
-                FieldKey = fieldSetting.FieldKey,
-                Type = fieldSetting.Type,
-                Required = fieldSetting.Required,
-                MaxLength = fieldSetting.MaxLength,
-                Placeholder = fieldSetting.Placeholder,
-                DefaultValue = fieldSetting.DefaultValue,
-                IsTranslatable = fieldSetting.IsTranslatable,
+                FieldKey = field.FieldKey,
+                Type = field.Type,
+                Required = field.Required,
+                MaxLength = field.MaxLength,
+                Placeholder = field.Placeholder,
+                DefaultValue = field.DefaultValue,
+                IsTranslatable = field.IsTranslatable,
                 Options = options,
-                Translations = fieldSetting.Translations
-                    .Select(t => new SectionItemFieldTranslationDto
+                Translations = new List<SectionItemFieldTranslationDto>
+                {
+                    new SectionItemFieldTranslationDto
                     {
-                        LanguageId = t.LanguageId,
-                        Label = t.Label,
-                        Description = t.Description
-                    })
-                    .ToList()
+                        LanguageId = 1, // Default language
+                        Label = field.FieldName,
+                        Description = field.FieldName
+                    }
+                }
             };
         }
     }

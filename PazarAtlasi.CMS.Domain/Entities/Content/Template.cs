@@ -19,9 +19,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public int SortOrder { get; set; } = 0;
         
         // Navigation properties
-        public virtual SectionItemSetting? SectionItemSetting { get; set; }
-        
         public virtual ICollection<SectionItem> SectionItems { get; set; } = new List<SectionItem>();
+        
+        public virtual ICollection<SectionItemField> SectionItemFields { get; set; } = new List<SectionItemField>();
 
         public virtual ICollection<SectionTypeTemplate> SectionTypeTemplates { get; set; } = new List<SectionTypeTemplate>();
 

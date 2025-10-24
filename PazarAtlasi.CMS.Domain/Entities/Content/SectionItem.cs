@@ -14,8 +14,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public int? ParentSectionItemId { get; set; }
 
         /// <summary>
-        /// Configuration template used to create this item
-        /// Defines field structure, validation rules, UI behavior, etc.
+        /// Template used to create this item (optional)
         /// </summary>
         public int? TemplateId { get; set; }
 
@@ -32,12 +31,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public virtual SectionItem? ParentSectionItem { get; set; }
 
-        /// <summary>
-        /// Configuration template that defines this item's structure
-        /// </summary>
-        public virtual Template Template { get; set; } = null!;
+        public virtual Template? Template { get; set; }
 
-        public virtual ICollection<SectionItemField> Fields { get; set; } = new List<SectionItemField>();
+        public virtual ICollection<SectionItemFieldValue> FieldValues { get; set; } = new List<SectionItemFieldValue>();
 
         public virtual ICollection<SectionItemTranslation> Translations { get; set; } = new List<SectionItemTranslation>();
     }

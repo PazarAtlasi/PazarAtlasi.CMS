@@ -36,7 +36,9 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<SectionItemField> SectionItemFields { get; set; }
 
-        public DbSet<SectionItemFieldTranslation> SectionItemFieldTranslations { get; set; }
+        public DbSet<SectionItemFieldValue> SectionItemFieldValues { get; set; }
+
+        public DbSet<SectionItemFieldValueTranslation> SectionItemFieldValueTranslations { get; set; }
 
         public DbSet<SectionItemTranslation> SectionItemTranslations { get; set; }
         
@@ -46,13 +48,7 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<Template> Templates { get; set; }
 
-        public DbSet<SectionItemSetting> SectionItemSettings { get; set; }
 
-        public DbSet<SectionItemFieldSetting> SectionItemFieldSettings { get; set; }
-
-        public DbSet<SectionItemSettingTranslation> SectionItemSettingTranslations { get; set; }
-
-        public DbSet<SectionItemFieldSettingTranslation> SectionItemFieldSettingTranslations { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

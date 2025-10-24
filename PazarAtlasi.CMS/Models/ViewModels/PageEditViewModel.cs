@@ -126,27 +126,31 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         public int SectionItemId { get; set; }
         
+        public int SectionItemFieldId { get; set; }
+        
         public SectionItemFieldType FieldType { get; set; }
         
         public string FieldKey { get; set; } = string.Empty;
         
         public string FieldValue { get; set; } = string.Empty;
         
-        // Field translations
-        public List<SectionItemFieldTranslationEditViewModel> Translations { get; set; } = new();
+        // Field value translations
+        public List<SectionItemFieldValueTranslationEditViewModel> Translations { get; set; } = new();
     }
 
-    public class SectionItemFieldTranslationEditViewModel
+    public class SectionItemFieldValueTranslationEditViewModel
     {
         public int Id { get; set; }
         
-        public int SectionItemFieldId { get; set; }
+        public int SectionItemFieldValueId { get; set; }
         
         public int LanguageId { get; set; }
         
         public string? LanguageName { get; set; }
         
         public string? LanguageCode { get; set; }
+        
+        public string Value { get; set; } = string.Empty;
         
         public string FieldValue { get; set; } = string.Empty;
     }

@@ -1,42 +1,63 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PazarAtlasi.CMS.Domain.Entities.Content;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 {
-    public class SectionItemFieldConfigurationBuilder : IEntityTypeConfiguration<SectionItemField>
+    public class SectionItemFieldConfiguration : IEntityTypeConfiguration<SectionItemField>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<SectionItemField> builder)
+        public void Configure(EntityTypeBuilder<SectionItemField> builder)
         {
             builder.ToTable("SectionItemFields");
-            builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Id).ValueGeneratedOnAdd();
-            
-            builder.Property(e => e.FieldKey)
-                .IsRequired()
-                .HasMaxLength(100);
+            builder.HasKey(x => x.Id);
 
-            builder.Property(e => e.FieldType)
+            builder.Property(x => x.FieldKey)
+                .HasMaxLength(100)
                 .IsRequired();
 
-            builder.Property(e => e.FieldValue)
-                .IsRequired(false);
+            builder.Property(x => x.FieldName)
+                .HasMaxLength(200)
+                .IsRequired();
 
-            builder.HasOne(e => e.SectionItem)
-                .WithMany(si => si.Fields)
-                .HasForeignKey(e => e.SectionItemId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(x => x.Type)
+                .IsRequired();
 
-            builder.Property(e => e.IsDeleted)
+            builder.Property(x => x.Placeholder)
+                .HasMaxLength(500);
+
+            builder.Property(x => x.DefaultValue)
+                .HasMaxLength(1000);
+
+            builder.Property(x => x.OptionsJson)
+                .HasColumnType("nvarchar(max)");
+
+            // Relationships
+            builder.HasOne(x => x.Template)
+                .WithMany()
+                .HasForeignKey(x => x.TemplateId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Indexes
+            builder.HasIndex(x => new { x.TemplateId, x.FieldKey })
+                .HasDatabaseName("IX_SectionItemFields_TemplateId_FieldKey");
+
+            builder.HasIndex(x => x.FieldKey)
+                .HasDatabaseName("IX_SectionItemFields_FieldKey");
+
+            builder.HasIndex(x => x.SortOrder)
+                .HasDatabaseName("IX_SectionItemFields_SortOrder");
+
+            // Base entity configuration
+            builder.Property(x => x.CreatedAt)
+                .IsRequired();
+
+            builder.Property(x => x.UpdatedAt);
+
+            builder.Property(x => x.IsDeleted)
                 .HasDefaultValue(false);
 
-            builder.Property(e => e.Status)
-                .HasDefaultValue(Domain.Common.Status.Draft);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }
