@@ -12,8 +12,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
     /// </summary>
     public interface ITemplateConfigurationProvider
     {
-        Task<TemplateConfiguration?> GetConfigurationAsync(int templateId, string templateKey);
-        TemplateConfiguration? GetConfiguration(int templateId, string templateKey);
+        Task<TemplateSettingDto?> GetConfigurationAsync(int templateId, string templateKey);
     }
 
     public class TemplateConfigurationProvider : ITemplateConfigurationProvider
@@ -28,74 +27,49 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
         /// <summary>
         /// Get template configuration from database asynchronously
         /// </summary>
-        public async Task<TemplateConfiguration?> GetConfigurationAsync(int templateId, string templateKey)
+        public async Task<TemplateSettingDto?> GetConfigurationAsync(int templateId, string templateKey)
         {
+            // First get the template
             var template = await _context.Templates
-                .Include(t => t.SectionItemSettings.Where(s => s.ParentSettingId == null)) // Only root level settings
-                    .ThenInclude(sis => sis.Fields.OrderBy(f => f.SortOrder))
-                        .ThenInclude(f => f.Translations)
-                .Include(t => t.SectionItemSettings.Where(s => s.ParentSettingId == null))
-                    .ThenInclude(sis => sis.Translations)
-                .Include(t => t.SectionItemSettings.Where(s => s.ParentSettingId == null))
-                    .ThenInclude(sis => sis.ChildSettings) // Nested items
-                        .ThenInclude(cs => cs.Fields.OrderBy(f => f.SortOrder))
-                            .ThenInclude(f => f.Translations)
-                .Include(t => t.SectionItemSettings.Where(s => s.ParentSettingId == null))
-                    .ThenInclude(sis => sis.ChildSettings)
-                        .ThenInclude(cs => cs.Translations)
                 .FirstOrDefaultAsync(t => t.Id == templateId && t.TemplateKey == templateKey && t.IsActive);
 
             if (template == null)
                 return null;
 
-            return MapToTemplateConfiguration(template);
+            // Then get the SectionItemSettings for this template
+            var sectionItemSetting = await _context.SectionItemSettings
+                .Where(sis => sis.TemplateId == templateId && !sis.IsDeleted)
+                .Include(sis => sis.Fields.OrderBy(f => f.SortOrder))
+                    .ThenInclude(f => f.Translations)
+                .Include(sis => sis.Translations)
+                .Include(sis => sis.ChildSettings) // Nested items
+                    .ThenInclude(cs => cs.Fields.OrderBy(f => f.SortOrder))
+                        .ThenInclude(f => f.Translations)
+                .Include(sis => sis.ChildSettings)
+                    .ThenInclude(cs => cs.Translations)
+                .OrderBy(sis => sis.SortOrder)
+                .FirstOrDefaultAsync();
+
+            if (sectionItemSetting == null)
+                return null;
+
+            // Use the first one as default (or you can add logic to select specific one)
+
+            return MapToTemplateConfiguration(template, sectionItemSetting);
         }
 
-        /// <summary>
-        /// Get template configuration from database synchronously (for backward compatibility)
-        /// </summary>
-        public TemplateConfiguration? GetConfiguration(int templateId, string templateKey)
-        {
-            return GetConfigurationAsync(templateId, templateKey).GetAwaiter().GetResult();
-        }
 
         /// <summary>
         /// Map Template entity to TemplateConfiguration DTO
         /// </summary>
-        private TemplateConfiguration MapToTemplateConfiguration(Template template)
+        private TemplateSettingDto MapToTemplateConfiguration(Template template, SectionItemSetting defaultSectionItemSetting)
         {
-            var config = new TemplateConfiguration
+            var config = new TemplateSettingDto
             {
                 TemplateId = template.Id,
                 TemplateName = template.Name,
                 TemplateKey = template.TemplateKey,
-                SectionConfiguration = new SectionConfiguration
-                {
-                    MinSectionItemCount = template.SectionItemSettings
-                        .Where(s => s.ParentSettingId == null)
-                        .Min(s => (int?)s.MinItems) ?? 0,
-                    MaxSectionItemCount = template.SectionItemSettings
-                        .Where(s => s.ParentSettingId == null)
-                        .Max(s => s.MaxItems),
-                    DefaultSectionCount = template.SectionItemSettings
-                        .Where(s => s.ParentSettingId == null)
-                        .Sum(s => s.DefaultItemCount),
-                    AllowDynamicSectionItems = template.SectionItemSettings
-                        .Where(s => s.ParentSettingId == null)
-                        .Any(s => s.AllowDynamicSectionItems),
-                    SectionItems = template.SectionItemSettings
-                        .Where(s => s.ParentSettingId == null && !s.IsDeleted)
-                        .OrderBy(s => s.SortOrder)
-                        .Select(sis => MapToSectionItemConfiguration(sis))
-                        .ToList(),
-                    SectionUIConfiguration = new SectionUIConfiguration
-                    {
-                        Layout = "list",
-                        ShowPreview = true,
-                        ShowReorder = true,
-                        AddButtonText = "Add Section Item"
-                    }
-                }
+                SectionItemSetting = MapToSectionItemSetting(defaultSectionItemSetting)
             };
 
             return config;
@@ -104,31 +78,14 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
         /// <summary>
         /// Recursively map SectionItemSetting to SectionItemConfiguration
         /// </summary>
-        private SectionItemConfiguration MapToSectionItemConfiguration(SectionItemSetting setting)
+        private SectionItemSettingDto MapToSectionItemSetting(SectionItemSetting setting)
         {
-            // Parse UI configuration from JSON
-            ItemUIConfiguration? uiConfig = null;
-            if (!string.IsNullOrEmpty(setting.UIConfigurationJson))
+            var itemConfig = new SectionItemSettingDto
             {
-                try
-                {
-                    uiConfig = JsonSerializer.Deserialize<ItemUIConfiguration>(setting.UIConfigurationJson);
-                }
-                catch
-                {
-                    uiConfig = new ItemUIConfiguration();
-                }
-            }
-
-            var itemConfig = new SectionItemConfiguration
-            {
-                MinItems = setting.MinItems,
-                MaxItems = setting.MaxItems,
-                DefaultItemCount = setting.DefaultItemCount,
                 AllowDynamicSectionItems = setting.AllowDynamicSectionItems,
                 ItemType = setting.ItemType,
                 Translations = setting.Translations
-                    .Select(t => new SectionItemTranslationDto
+                    .Select(t => new SectionItemSettingTranslationDto
                     {
                         LanguageId = t.LanguageId,
                         Title = t.Title,
@@ -140,12 +97,12 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     .OrderBy(f => f.SortOrder)
                     .Select(f => MapToSectionItemFieldDto(f))
                     .ToList(),
-                SectionItems = setting.ChildSettings
+                ChildSectionItemSettings = setting.ChildSettings
                     .Where(cs => !cs.IsDeleted)
                     .OrderBy(cs => cs.SortOrder)
-                    .Select(cs => MapToSectionItemConfiguration(cs)) // RECURSIVE
+                    .Select(cs => MapToSectionItemSetting(cs)) // RECURSIVE
                     .ToList(),
-                UIConfiguration = uiConfig ?? new ItemUIConfiguration
+                UIConfiguration = new SectionItemUISettingDto()
                 {
                     Layout = "list",
                     ShowPreview = true,
@@ -160,7 +117,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
         /// <summary>
         /// Map SectionItemFieldSetting to SectionItemFieldDto
         /// </summary>
-        private SectionItemFieldDto MapToSectionItemFieldDto(SectionItemFieldSetting fieldSetting)
+        private SectionItemFieldSettingDto MapToSectionItemFieldDto(SectionItemFieldSetting fieldSetting)
         {
             // Parse options from JSON
             List<string>? options = null;
@@ -176,7 +133,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                 }
             }
 
-            return new SectionItemFieldDto
+            return new  SectionItemFieldSettingDto
             {
                 FieldKey = fieldSetting.FieldKey,
                 Type = fieldSetting.Type,

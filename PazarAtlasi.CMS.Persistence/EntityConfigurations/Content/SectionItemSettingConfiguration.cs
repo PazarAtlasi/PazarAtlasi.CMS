@@ -30,25 +30,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 .IsRequired()
                 .HasConversion<int>();
 
-            builder.Property(sis => sis.MinItems)
-                .HasColumnName("MinItems")
-                .HasDefaultValue(0);
-
-            builder.Property(sis => sis.MaxItems)
-                .HasColumnName("MaxItems");
-
-            builder.Property(sis => sis.DefaultItemCount)
-                .HasColumnName("DefaultItemCount")
-                .HasDefaultValue(1);
-
-            builder.Property(sis => sis.AllowDynamicSectionItems)
-                .HasColumnName("AllowDynamicSectionItems")
-                .HasDefaultValue(true);
-
-            builder.Property(sis => sis.UIConfigurationJson)
-                .HasColumnName("UIConfigurationJson")
-                .HasColumnType("nvarchar(max)");
-
             builder.Property(sis => sis.SortOrder)
                 .HasColumnName("SortOrder")
                 .HasDefaultValue(0);
@@ -98,11 +79,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 .HasForeignKey(t => t.SectionItemSettingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(sis => sis.SectionItems)
-                .WithOne(si => si.Setting)
-                .HasForeignKey(si => si.SectionItemSettingId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Indexes
             builder.HasIndex(sis => new { sis.TemplateId, sis.ConfigurationKey })
                 .HasDatabaseName("IX_SectionItemSettings_TemplateId_ConfigurationKey")
@@ -117,7 +93,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             // Query Filter
             builder.HasQueryFilter(sis => !sis.IsDeleted);
 
-            // Seed Data - All Template Configurations
+            // Note: SectionSettingId will be added after SectionSetting seed data is created
             SeedNavbarSimpleConfigurations(builder);
             SeedNavbarMegaMenuConfigurations(builder);
             SeedNavbarServiceTabsConfigurations(builder);
@@ -144,12 +120,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 1, // navbar-simple
                     ConfigurationKey = "logo",
                     ItemType = SectionItemType.Logo,
-                    MinItems = 1,
-                    MaxItems = 1,
                     SortOrder = 1,
-                    DefaultItemCount = 1,
                     AllowDynamicSectionItems = false,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":false,""IconClass"":""fa-image""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -164,12 +136,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 1, // navbar-simple
                     ConfigurationKey = "menu",
                     ItemType = SectionItemType.Menu,
-                    MinItems = 3,
-                    MaxItems = 8,
                     SortOrder = 2,
-                    DefaultItemCount = 3,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Menu Item"",""IconClass"":""fa-bars""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -185,12 +153,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     ParentSettingId = 2, // menu
                     ConfigurationKey = "dropdown-link",
                     ItemType = SectionItemType.Link,
-                    MinItems = 1,
-                    MaxItems = 10,
                     SortOrder = 3,
-                    DefaultItemCount = 3,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Dropdown Link"",""IconClass"":""fa-link""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -208,12 +172,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 9, // carousel
                     ConfigurationKey = "slide",
                     ItemType = SectionItemType.Image,
-                    MinItems = 3,
-                    MaxItems = 10,
                     SortOrder = 4,
-                    DefaultItemCount = 5,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""grid"",""Columns"":3,""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Slide"",""IconClass"":""fa-images""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -231,12 +191,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 5, // default
                     ConfigurationKey = "content-item",
                     ItemType = SectionItemType.Text,
-                    MinItems = 1,
                     SortOrder = 5,
-                    MaxItems = null,
-                    DefaultItemCount = 3,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Item"",""IconClass"":""fa-file-alt""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -254,12 +210,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 2,
                     ConfigurationKey = "mega-menu-category",
                     ItemType = SectionItemType.Menu,
-                    MinItems = 3,
                     SortOrder = 6,
-                    MaxItems = 6,
-                    DefaultItemCount = 3,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""grid"",""Columns"":2,""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Category"",""IconClass"":""fa-th-large""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -272,12 +224,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     ParentSettingId = 30,
                     ConfigurationKey = "mega-menu-link",
                     ItemType = SectionItemType.Link,
-                    MinItems = 2,
                     SortOrder = 7,
-                    MaxItems = 15,
-                    DefaultItemCount = 3,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Link"",""IconClass"":""fa-link""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -295,12 +243,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 3,
                     ConfigurationKey = "service-tab",
                     ItemType = SectionItemType.Menu,
-                    MinItems = 3,
-                    MaxItems = 6,
                     SortOrder = 8,
-                    DefaultItemCount = 4,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Tab"",""IconClass"":""fa-folder-open""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -318,12 +262,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 4,
                     ConfigurationKey = "category",
                     ItemType = SectionItemType.Menu,
-                    MinItems = 3,
-                    MaxItems = 8,
                     SortOrder = 9,
-                    DefaultItemCount = 3,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Category"",""IconClass"":""fa-tags""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -336,12 +276,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     ParentSettingId = 50,
                     ConfigurationKey = "category-item",
                     ItemType = SectionItemType.Link,
-                    MinItems = 1,
-                    MaxItems = 12,
                     SortOrder = 10,
-                    DefaultItemCount = 3,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Item"",""IconClass"":""fa-link""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -359,12 +295,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 6,
                     ConfigurationKey = "step",
                     ItemType = SectionItemType.Text,
-                    MinItems = 2,
-                    MaxItems = 10,
                     SortOrder = 11,
-                    DefaultItemCount = 4,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Step"",""IconClass"":""fa-list-ol""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -382,12 +314,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 7,
                     ConfigurationKey = "grid-item",
                     ItemType = SectionItemType.Text,
-                    MinItems = 3,
-                    MaxItems = 12,
                     SortOrder = 12,
-                    DefaultItemCount = 6,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""grid"",""Columns"":3,""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Grid Item"",""IconClass"":""fa-th""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -405,12 +333,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 8,
                     ConfigurationKey = "masonry-image",
                     ItemType = SectionItemType.Image,
-                    MinItems = 4,
-                    MaxItems = 20,
                     SortOrder = 13,
-                    DefaultItemCount = 8,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""grid"",""Columns"":4,""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Image"",""IconClass"":""fa-images""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -428,12 +352,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 10,
                     ConfigurationKey = "list-item",
                     ItemType = SectionItemType.Text,
-                    MinItems = 3,
-                    MaxItems = 15,
                     SortOrder = 14,
-                    DefaultItemCount = 5,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add List Item"",""IconClass"":""fa-list""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -451,12 +371,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 11,
                     ConfigurationKey = "single-item",
                     ItemType = SectionItemType.Text,
-                    MinItems = 1,
                     SortOrder = 15,
-                    MaxItems = 1,
-                    DefaultItemCount = 1,
                     AllowDynamicSectionItems = false,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":false,""AddButtonText"":"""",""IconClass"":""fa-star""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -474,12 +390,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 12,
                     ConfigurationKey = "multi-item",
                     ItemType = SectionItemType.Text,
-                    MinItems = 2,
-                    MaxItems = 8,
                     SortOrder = 16,
-                    DefaultItemCount = 4,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""grid"",""Columns"":2,""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Item"",""IconClass"":""fa-th-large""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -497,12 +409,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 13,
                     ConfigurationKey = "panel",
                     ItemType = SectionItemType.Text,
-                    MinItems = 3,
                     SortOrder = 17,
-                    MaxItems = 10,
-                    DefaultItemCount = 5,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Panel"",""IconClass"":""fa-bars""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
@@ -520,12 +428,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     TemplateId = 14,
                     ConfigurationKey = "tab",
                     ItemType = SectionItemType.Text,
-                    MinItems = 2,
-                    MaxItems = 8,
                     SortOrder = 18,
-                    DefaultItemCount = 4,
                     AllowDynamicSectionItems = true,
-                    UIConfigurationJson = @"{""Layout"":""list"",""ShowPreview"":true,""ShowReorder"":true,""AddButtonText"":""Add Tab"",""IconClass"":""fa-folder""}",
                     CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false

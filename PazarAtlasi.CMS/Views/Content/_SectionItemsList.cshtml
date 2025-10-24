@@ -4,35 +4,27 @@
 
 @{
     var config = Model.Configuration;
-    var sectionConfig = config?.SectionConfiguration;
+    var sectionItemConfig = config?.SectionItemSetting;
 }
 
-@if (sectionConfig != null && sectionConfig.SectionItems != null && sectionConfig.SectionItems.Any())
+@if (sectionItemConfig != null)
 {
     <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
         <h4 class="font-medium text-slate-800 mb-4 flex items-center">
-            <i class="fas fa-@(sectionConfig.SectionUIConfiguration?.IconClass ?? "images") mr-2 text-blue-600"></i>
+            <i class="fas fa-@(sectionItemConfig.UIConfiguration?.IconClass ?? "images") mr-2 text-blue-600"></i>
             Section Items
             <span id="itemsCountBadge" class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
                 @Model.SectionItems.Count item@(Model.SectionItems.Count != 1 ? "s" : "")
             </span>
-            @if (sectionConfig.MinSectionItemCount > 0)
-            {
-                <span class="ml-2 text-xs text-slate-500">(Min: @sectionConfig.MinSectionItemCount)</span>
-            }
-            @if (sectionConfig.MaxSectionItemCount > 0)
-            {
-                <span class="ml-2 text-xs text-slate-500">(Max: @sectionConfig.MaxSectionItemCount)</span>
-            }
         </h4>
 
         <!-- NEW: Render section items grouped by their configuration -->
-        <div id="itemsGrid" class="@GetLayoutClass(sectionConfig.SectionUIConfiguration?.Layout, sectionConfig.SectionUIConfiguration?.Columns ?? 1)">
+        <div id="itemsGrid" class="@GetLayoutClass(sectionItemConfig.UIConfiguration?.Layout, sectionItemConfig.UIConfiguration?.Columns ?? 1)">
             @foreach (var item in Model.SectionItems)
             {
                 <!-- Find the matching item configuration for this item's type -->
-                var itemConfig = sectionConfig.SectionItems.FirstOrDefault(ic => ic.ItemType == item.Type);
-                
+                var itemConfig = sectionItemConfig.ChildSectionItemSettings.FirstOrDefault(ic => ic.ItemType == item.Type);
+
                 @if (itemConfig != null)
                 {
                     <div class="section-item-card border border-slate-200 rounded-lg p-4 bg-white" data-item-id="@item.Id" data-item-type="@item.Type">
@@ -59,7 +51,7 @@
 
                         <!-- Render fields for this item -->
                         <div class="space-y-3">
-                            @foreach (var field in itemConfig.Fields ?? new List<SectionItemFieldDto>())
+                            @foreach (var field in itemConfig.Fields ?? new List<SectionItemFieldSettingDto>())
                             {
                                 ViewBag.Field = field;
                                 ViewBag.Item = item;
@@ -71,13 +63,13 @@
                             }
 
                             <!-- NEW: Recursively render nested items -->
-                            @if (item.ChildItems?.Any() == true && itemConfig.SectionItems?.Any() == true)
+                            @if (item.ChildItems?.Any() == true && itemConfig.ChildSectionItemSettings?.Any() == true)
                             {
                                 ViewBag.ParentItem = item;
-                                ViewBag.NestedConfigs = itemConfig.SectionItems;
+                                ViewBag.NestedConfigs = itemConfig.ChildSectionItemSettings;
                                 ViewBag.Level = 1;
                                 ViewBag.AvailableLanguages = ViewBag.AvailableLanguages;
-                                
+
                                 @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
                             }
                         </div>
@@ -87,36 +79,28 @@
         </div>
 
         <!-- Add section item button with type selection -->
-        @if (sectionConfig.AllowDynamicSectionItems && sectionConfig.SectionItems?.Any() == true)
+        @if (sectionItemConfig.AllowDynamicSectionItems && sectionItemConfig.ChildSectionItemSettings?.Any() == true)
         {
             <div class="mt-4">
-                @if (sectionConfig.SectionItems.Count == 1)
+                @if (sectionItemConfig.ChildSectionItemSettings.Count == 1)
                 {
                     // If only one item type, add directly
-                    var singleConfig = sectionConfig.SectionItems.First();
+                    var singleConfig = sectionItemConfig.ChildSectionItemSettings.First();
                     var currentTypeCount = Model.SectionItems.Count(i => i.Type == singleConfig.ItemType);
-                    var canAddMore = singleConfig.MaxItems == null || currentTypeCount < singleConfig.MaxItems;
-                    
-                    @if (canAddMore)
-                    {
-                        <button type="button" 
-                                onclick="SectionModal.addSectionItemByType('@Model.TemplateId', '@singleConfig.ItemType', @Model.SectionId)"
-                                class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
-                            <i class="fas fa-plus mr-2"></i> @(singleConfig.UIConfiguration?.AddButtonText ?? $"Add {singleConfig.ItemType}")
-                            @if (singleConfig.MaxItems != null)
-                            {
-                                <span class="ml-2 text-xs">(@currentTypeCount/@singleConfig.MaxItems)</span>
-                            }
-                        </button>
-                    }
+
+                    <button type="button"
+                            onclick="SectionModal.addSectionItemByType('@Model.TemplateId', '@singleConfig.ItemType', @Model.SectionId)"
+                            class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
+                        <i class="fas fa-plus mr-2"></i> @(singleConfig.UIConfiguration?.AddButtonText ?? $"Add {singleConfig.ItemType}")
+                    </button>
                 }
                 else
                 {
                     // Multiple item types - show selection modal
-                    <button type="button" 
+                    <button type="button"
                             onclick="SectionModal.showItemTypeSelectionModal(@Model.TemplateId, @Model.SectionId, 0)"
                             class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
-                        <i class="fas fa-plus mr-2"></i> @(sectionConfig.SectionUIConfiguration?.AddButtonText ?? "Add Section Item")
+                        <i class="fas fa-plus mr-2"></i> @(sectionItemConfig.UIConfiguration?.AddButtonText ?? "Add Section Item")
                     </button>
                 }
             </div>
@@ -125,12 +109,12 @@
 
     <!-- Store template configuration for JavaScript -->
     <script type="application/json" id="templateConfiguration">
-        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(config, new JsonSerializerOptions 
-        { 
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(config, new JsonSerializerOptions
+        {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
         }))
-    </script>
+</script>
 }
 else
 {

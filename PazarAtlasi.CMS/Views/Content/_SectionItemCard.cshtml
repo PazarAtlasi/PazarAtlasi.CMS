@@ -7,6 +7,7 @@
 
 <div class="section-item-card border-2 border-slate-300 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
      data-item-id="@Model.Id"
+     data-template-id ="@Model.TemplateId"
      data-item-type="@((int)Model.Type)"
      data-level="@(ViewBag.Level ?? 0)">
 
@@ -62,10 +63,10 @@
         }
 
         <!-- Recursively render nested items -->
-        @if (Model.ChildItems?.Any() == true && itemConfig?.SectionItems?.Any() == true)
+        @if (Model.ChildItems?.Any() == true && itemConfig?.ChildSectionItemSettings?.Any() == true)
         {
             ViewBag.ParentItem = Model;
-            ViewBag.NestedConfigs = itemConfig.SectionItems;
+            ViewBag.NestedConfigs = itemConfig.ChildSectionItemSettings;
             ViewBag.Level = 1;
 
             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")

@@ -12,7 +12,6 @@ using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
 using PazarAtlasi.CMS.Application.Dtos;
 using PazarAtlasi.CMS.Infrastructure.Services;
-using SectionItemConfiguration = PazarAtlasi.CMS.Application.Dtos.SectionItemConfiguration;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -815,7 +814,7 @@ namespace PazarAtlasi.CMS.Controllers
 
                 // Get configuration from database via TemplateConfigurationProvider
                 var configuration = await _templateConfigurationProvider.GetConfigurationAsync(template.Id, template.TemplateKey);
-                if (configuration == null || configuration.SectionConfiguration?.SectionItems == null || !configuration.SectionConfiguration.SectionItems.Any())
+                if (configuration == null || configuration.SectionItemSetting == null)
                 {
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
                 }
@@ -837,10 +836,10 @@ namespace PazarAtlasi.CMS.Controllers
                 ViewBag.AvailableLanguages = availableLanguages;
 
                 // Get the first item configuration (we'll create one item from this template's first config)
-                var firstItemConfig = configuration.SectionConfiguration.SectionItems.First();
+                var firstItemConfig = configuration.SectionItemSetting;
 
                 // Create a single item with a temporary ID (negative number to indicate it's a new/temp item)
-                var item = CreateDefaultSectionItem(firstItemConfig, sectionId, currentCount + 1);
+                var item = CreateDefaultSectionItem(firstItemConfig, sectionId, currentCount + 1, templateId);
 
                 // Set ViewBag for the partial view
                 item.SectionItemConfiguration = firstItemConfig;
@@ -1092,8 +1091,6 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
-                Console.WriteLine($"Received section request: {System.Text.Json.JsonSerializer.Serialize(request)}");
-
                 if (request.Id > 0)
                 {
                     // Update existing section
@@ -1789,12 +1786,13 @@ namespace PazarAtlasi.CMS.Controllers
         /// <summary>
         /// NEW: Helper method to create default section item from SectionItemConfiguration (recursive)
         /// </summary>
-        private SectionItemViewModel CreateDefaultSectionItem(SectionItemConfiguration itemConfig, int sectionId, int sortOrder)
+        private SectionItemViewModel CreateDefaultSectionItem(SectionItemSettingDto itemConfig, int sectionId, int sortOrder, int templateId)
         {
             var item = new SectionItemViewModel
             {
                 Id = 0,
                 SectionId = sectionId,
+                TemplateId = templateId, // This will be used for section items, not sections
                 SortOrder = sortOrder,
                 Type = itemConfig.ItemType,
                 Status = Status.Active,
@@ -1822,18 +1820,13 @@ namespace PazarAtlasi.CMS.Controllers
 
             // NEW: Recursively create nested items if configured
             // SectionItemConfiguration can have nested SectionItems (recursive structure)
-            if (itemConfig.SectionItems != null && itemConfig.SectionItems.Any())
+            if (itemConfig.ChildSectionItemSettings != null && itemConfig.ChildSectionItemSettings.Any())
             {
-                foreach (var nestedConfig in itemConfig.SectionItems)
+                foreach (var nestedConfig in itemConfig.ChildSectionItemSettings)
                 {
-                    var nestedDefaultCount = Math.Max(0, nestedConfig.DefaultItemCount);
-
-                    for (int j = 0; j < nestedDefaultCount; j++)
-                    {
-                        // Recursive call to create nested items
-                        var nestedItem = CreateDefaultSectionItem(nestedConfig, 0, j + 1);
-                        item.ChildItems.Add(nestedItem);
-                    }
+                    // Recursive call to create nested items
+                    var nestedItem = CreateDefaultSectionItem(nestedConfig, sectionId, sortOrder, templateId);
+                    item.ChildItems.Add(nestedItem);
                 }
             }
 
@@ -1850,8 +1843,8 @@ namespace PazarAtlasi.CMS.Controllers
 
             foreach (var itemRequest in itemRequests)
             {
-                Console.WriteLine($"Processing item: {itemRequest.TempId} (Parent: {parentItemId})");
                 Console.WriteLine($"Item type: {itemRequest.Type}");
+                Console.WriteLine($"Item templateId: {itemRequest.TemplateId}");
                 Console.WriteLine($"Item fields count: {itemRequest.Fields?.Count ?? 0}");
                 Console.WriteLine($"Item translations count: {itemRequest.Translations?.Count ?? 0}");
                 Console.WriteLine($"Nested items count: {itemRequest.NestedItems?.Count ?? 0}");
@@ -1860,6 +1853,7 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     SectionId = sectionId,
                     ParentSectionItemId = parentItemId, // Set parent relationship
+                    TemplateId = itemRequest.TemplateId.Value,
                     Type = itemRequest.Type,
                     MediaType = itemRequest.MediaType,
                     SortOrder = itemRequest.SortOrder,
@@ -1878,7 +1872,7 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     foreach (var fieldRequest in itemRequest.Fields)
                     {
-                        var fieldType = fieldRequest.FieldType;                   
+                        var fieldType = fieldRequest.FieldType;
 
                         // Create the field
                         var field = new SectionItemField

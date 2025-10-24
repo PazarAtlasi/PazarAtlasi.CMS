@@ -12,7 +12,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int ItemId { get; set; }
         public int ParentItemId { get; set; }
         public bool IsNested { get; set; }
-        public TemplateConfiguration? Configuration { get; set; }
+        public TemplateSettingDto? Configuration { get; set; }
         public SectionItemViewModel? Item { get; set; }
     }
 }

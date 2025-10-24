@@ -17,7 +17,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// Configuration template used to create this item
         /// Defines field structure, validation rules, UI behavior, etc.
         /// </summary>
-        public int SectionItemSettingId { get; set; }
+        public int TemplateId { get; set; }
 
         public SectionItemType Type { get; set; } = SectionItemType.None;
 
@@ -35,7 +35,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// <summary>
         /// Configuration template that defines this item's structure
         /// </summary>
-        public virtual SectionItemSetting Setting { get; set; } = null!;
+        public virtual Template Template { get; set; } = null!;
 
         public virtual ICollection<SectionItemField> Fields { get; set; } = new List<SectionItemField>();
 

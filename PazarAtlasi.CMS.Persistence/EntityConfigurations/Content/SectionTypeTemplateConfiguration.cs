@@ -18,7 +18,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.HasIndex(st => new { st.SectionType, st.TemplateId }).IsUnique();
 
             builder.HasOne(st => st.Template)
-                .WithMany(t => t.SectionTemplates)
+                .WithMany(t => t.SectionTypeTemplates)
                 .HasForeignKey(st => st.TemplateId)
                 .OnDelete(DeleteBehavior.Cascade);
 

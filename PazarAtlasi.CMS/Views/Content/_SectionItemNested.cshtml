@@ -2,20 +2,20 @@
 @using PazarAtlasi.CMS.Models.ViewModels
 @{
     var parentItem = ViewBag.ParentItem as SectionItemViewModel;
-    var nestedConfigs = ViewBag.NestedConfigs as List<SectionItemConfiguration>;
+    var nestedConfigs = ViewBag.NestedConfigs as List<SectionItemSettingDto>;
     var level = ViewBag.Level as int? ?? 1;
     var availableLanguages = ViewBag.AvailableLanguages as List<LanguageViewModel> ?? new List<LanguageViewModel>();
-    
+
     // Define colors and indentation based on nesting level
-    var levelColors = new[] 
-    { 
+    var levelColors = new[]
+    {
         ("purple", "purple-50", "purple-200", "purple-600", "purple-100", "purple-700"),
         ("indigo", "indigo-50", "indigo-200", "indigo-600", "indigo-100", "indigo-700"),
         ("blue", "blue-50", "blue-200", "blue-600", "blue-100", "blue-700")
     };
     var colorIndex = Math.Min(level - 1, levelColors.Length - 1);
     var (colorName, bgColor, borderColor, iconColor, buttonBg, buttonHover) = levelColors[colorIndex];
-    
+
     var marginLeft = level * 4; // ml-4, ml-8, ml-12, etc.
 }
 
@@ -28,7 +28,7 @@
                 Nested Items (@parentItem.ChildItems.Count) - Level @level
             </h5>
         </div>
-        
+
         <div class="space-y-2 ml-@(marginLeft) pl-3 border-l-2 border-@(borderColor)">
             @foreach (var childItem in parentItem.ChildItems)
             {
@@ -36,11 +36,11 @@
 
                 // Find matching configuration for this child item's type
                 var childConfig = nestedConfigs.FirstOrDefault(nc => nc.ItemType == childItem.Type);
-                
+
                 @if (childConfig != null)
                 {
-                    <div class="nested-item-card bg-@(bgColor) border border-@(borderColor) rounded p-3" 
-                         data-nested-id="@childItem.Id" 
+                    <div class="nested-item-card bg-@(bgColor) border border-@(borderColor) rounded p-3"
+                         data-nested-id="@childItem.Id"
                          data-nested-type="@((int)childItem.Type)"
                          data-level="@level">
                         <div class="flex items-center justify-between mb-2">
@@ -57,10 +57,10 @@
                                 </button>
                             }
                         </div>
-                        
+
                         <!-- Render fields for this nested item -->
                         <div class="nested-field-list space-y-2">
-                            @foreach (var field in childConfig.Fields ?? new List<SectionItemFieldDto>())
+                            @foreach (var field in childConfig.Fields ?? new List<SectionItemFieldSettingDto>())
                             {
                                 ViewBag.Field = field;
                                 ViewBag.Item = childItem;
@@ -72,37 +72,28 @@
                                 @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
                             }
                         </div>
-                        
+
                         <!-- RECURSIVE: Render deeper nested items if they exist -->
-                        @if (childItem.ChildItems != null && childItem.ChildItems.Any() && 
-                             childConfig.SectionItems != null && childConfig.SectionItems.Any())
+                        @if (childItem.ChildItems != null && childItem.ChildItems.Any() &&
+                                    childConfig.ChildSectionItemSettings != null && childConfig.ChildSectionItemSettings.Any())
                         {
                             ViewBag.ParentItem = childItem;
-                            ViewBag.NestedConfigs = childConfig.SectionItems;
+                            ViewBag.NestedConfigs = childConfig.ChildSectionItemSettings;
                             ViewBag.Level = level + 1;
-                            
+
                             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
                         }
                     </div>
-                    
+
                     <!-- Add button for this nested item type -->
                     @if (childConfig.AllowDynamicSectionItems)
                     {
-                        var currentCount = parentItem.ChildItems.Count(ci => ci.Type == childConfig.ItemType);
-                        var canAddMore = childConfig.MaxItems == null || currentCount < childConfig.MaxItems;
-                        
-                        @if (canAddMore)
-                        {
-                            <button type="button" 
-                                    onclick="SectionModal.addNestedItemByType('@parentItem.Id', '@childConfig.ItemType', @level)"
-                                    class="w-full mt-2 px-2 py-1 bg-white hover:bg-@(buttonBg) text-@(iconColor) hover:text-@(iconColor) rounded text-xs transition-colors border-2 border-@(borderColor)">
-                                <i class="fas fa-plus mr-1"></i> @(childConfig.UIConfiguration?.AddButtonText ?? $"Add {childConfig.ItemType}")
-                                @if (childConfig.MaxItems != null)
-                                {
-                                    <span class="ml-2">(@currentCount/@childConfig.MaxItems)</span>
-                                }
-                            </button>
-                        }
+                        <button type="button"
+                                onclick="SectionModal.addNestedItemByType('@parentItem.Id', '@childConfig.ItemType', @level)"
+                                class="w-full mt-2 px-2 py-1 bg-white hover:bg-@(buttonBg) text-@(iconColor) hover:text-@(iconColor) rounded text-xs transition-colors border-2 border-@(borderColor)">
+                            <i class="fas fa-plus mr-1"></i> @(childConfig.UIConfiguration?.AddButtonText ?? $"Add {childConfig.ItemType}")
+
+                        </button>
                     }
                 }
             }

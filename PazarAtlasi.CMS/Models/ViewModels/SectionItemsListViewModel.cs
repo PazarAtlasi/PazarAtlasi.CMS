@@ -10,7 +10,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     {
         public int TemplateId { get; set; }
         public int SectionId { get; set; }
-        public TemplateConfiguration? Configuration { get; set; }
+        public TemplateSettingDto? Configuration { get; set; }
         public List<SectionItemViewModel> SectionItems { get; set; } = new();
     }
 }

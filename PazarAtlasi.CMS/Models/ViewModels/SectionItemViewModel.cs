@@ -14,6 +14,8 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
         public int? ParentId { get; set; }
 
+        public int? TemplateId { get; set; }
+
         public SectionType SectionType { get; set; }
         
         public SectionItemType Type { get; set; }
@@ -30,7 +32,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         public List<SectionItemViewModel> ChildItems { get; set; } = new();
 
-        public SectionItemConfiguration SectionItemConfiguration { get; set; } = new();
+        public SectionItemSettingDto SectionItemConfiguration { get; set; } = new();
 
         // Translations
         public List<SectionItemTranslationViewModel> Translations { get; set; } = new();

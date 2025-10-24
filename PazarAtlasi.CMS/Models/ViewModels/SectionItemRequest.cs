@@ -11,6 +11,8 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
         public int SectionId { get; set; }
         
+        public int? TemplateId { get; set; }
+
         public SectionItemType Type { get; set; }
         
         public MediaType MediaType { get; set; }

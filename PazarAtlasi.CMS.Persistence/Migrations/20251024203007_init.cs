@@ -240,13 +240,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     TemplateId = table.Column<int>(type: "int", nullable: false),
                     ConfigurationKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ItemType = table.Column<int>(type: "int", nullable: false),
-                    MinItems = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    MaxItems = table.Column<int>(type: "int", nullable: true),
-                    DefaultItemCount = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    AllowDynamicSectionItems = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    UIConfigurationJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AllowDynamicSectionItems = table.Column<bool>(type: "bit", nullable: false),
                     SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ParentSettingId = table.Column<int>(type: "int", nullable: true),
+                    TemplateId1 = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -269,6 +266,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         principalTable: "Templates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectionItemSettings_Templates_TemplateId1",
+                        column: x => x.TemplateId1,
+                        principalTable: "Templates",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -477,6 +479,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     MediaType = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     LinkedPageId = table.Column<int>(type: "int", nullable: true),
                     SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    SectionItemSettingId1 = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -488,11 +491,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_SectionItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SectionItems_SectionItemSettings_SectionItemSettingId",
-                        column: x => x.SectionItemSettingId,
+                        name: "FK_SectionItems_SectionItemSettings_SectionItemSettingId1",
+                        column: x => x.SectionItemSettingId1,
                         principalTable: "SectionItemSettings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SectionItems_SectionItems_ParentSectionItemId",
                         column: x => x.ParentSectionItemId,
@@ -504,6 +506,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         principalTable: "Sections",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectionItems_Templates_SectionItemSettingId",
+                        column: x => x.SectionItemSettingId,
+                        principalTable: "Templates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -796,39 +804,41 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemSettings",
-                columns: new[] { "Id", "ConfigurationKey", "CreatedAt", "CreatedBy", "DefaultItemCount", "ItemType", "MaxItems", "MinItems", "ParentSettingId", "SortOrder", "Status", "TemplateId", "UIConfigurationJson", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, "logo", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 1, 1, 1, 1, null, 1, 1, 1, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"IconClass\":\"fa-image\"}", null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemSettings",
-                columns: new[] { "Id", "AllowDynamicSectionItems", "ConfigurationKey", "CreatedAt", "CreatedBy", "DefaultItemCount", "ItemType", "MaxItems", "MinItems", "ParentSettingId", "SortOrder", "Status", "TemplateId", "UIConfigurationJson", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AllowDynamicSectionItems", "ConfigurationKey", "CreatedAt", "CreatedBy", "ItemType", "ParentSettingId", "SortOrder", "Status", "TemplateId", "TemplateId1", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 2, true, "menu", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 3, 21, 8, 3, null, 2, 1, 1, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Menu Item\",\"IconClass\":\"fa-bars\"}", null, null },
-                    { 10, true, "slide", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 5, 10, 10, 3, null, 4, 1, 9, "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Slide\",\"IconClass\":\"fa-images\"}", null, null },
-                    { 20, true, "content-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 3, 6, null, 1, null, 5, 1, 5, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-file-alt\"}", null, null },
-                    { 30, true, "mega-menu-category", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 3, 21, 6, 3, null, 6, 1, 2, "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-th-large\"}", null, null },
-                    { 40, true, "service-tab", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 4, 21, 6, 3, null, 8, 1, 3, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder-open\"}", null, null },
-                    { 50, true, "category", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 3, 21, 8, 3, null, 9, 1, 4, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-tags\"}", null, null },
-                    { 60, true, "step", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 4, 6, 10, 2, null, 11, 1, 6, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Step\",\"IconClass\":\"fa-list-ol\"}", null, null },
-                    { 70, true, "grid-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, 6, 12, 3, null, 12, 1, 7, "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Grid Item\",\"IconClass\":\"fa-th\"}", null, null },
-                    { 80, true, "masonry-image", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 8, 10, 20, 4, null, 13, 1, 8, "{\"Layout\":\"grid\",\"Columns\":4,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Image\",\"IconClass\":\"fa-images\"}", null, null },
-                    { 90, true, "list-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 5, 6, 15, 3, null, 14, 1, 10, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add List Item\",\"IconClass\":\"fa-list\"}", null, null }
+                    { 1, false, "logo", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 1, null, 1, 1, 1, null, null, null },
+                    { 2, true, "menu", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 2, 1, 1, null, null, null },
+                    { 10, true, "slide", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 10, null, 4, 1, 9, null, null, null },
+                    { 20, true, "content-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 5, 1, 5, null, null, null },
+                    { 30, true, "mega-menu-category", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 6, 1, 2, null, null, null },
+                    { 40, true, "service-tab", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 8, 1, 3, null, null, null },
+                    { 50, true, "category", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 21, null, 9, 1, 4, null, null, null },
+                    { 60, true, "step", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 11, 1, 6, null, null, null },
+                    { 70, true, "grid-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 12, 1, 7, null, null, null },
+                    { 80, true, "masonry-image", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 10, null, 13, 1, 8, null, null, null },
+                    { 90, true, "list-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 14, 1, 10, null, null, null },
+                    { 101, false, "single-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 15, 1, 11, null, null, null },
+                    { 110, true, "multi-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 16, 1, 12, null, null, null },
+                    { 120, true, "panel", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 17, 1, 13, null, null, null },
+                    { 130, true, "tab", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 6, null, 18, 1, 14, null, null, null }
                 });
 
             migrationBuilder.InsertData(
-                table: "SectionItemSettings",
-                columns: new[] { "Id", "ConfigurationKey", "CreatedAt", "CreatedBy", "DefaultItemCount", "ItemType", "MaxItems", "MinItems", "ParentSettingId", "SortOrder", "Status", "TemplateId", "UIConfigurationJson", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 101, "single-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 1, 6, 1, 1, null, 15, 1, 11, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"AddButtonText\":\"\",\"IconClass\":\"fa-star\"}", null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemSettings",
-                columns: new[] { "Id", "AllowDynamicSectionItems", "ConfigurationKey", "CreatedAt", "CreatedBy", "DefaultItemCount", "ItemType", "MaxItems", "MinItems", "ParentSettingId", "SortOrder", "Status", "TemplateId", "UIConfigurationJson", "UpdatedAt", "UpdatedBy" },
+                table: "SectionItems",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "LinkedPageId", "ParentSectionItemId", "SectionId", "SectionItemSettingId1", "SortOrder", "Status", "SectionItemSettingId", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 110, true, "multi-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 4, 6, 8, 2, null, 16, 1, 12, "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-th-large\"}", null, null },
-                    { 120, true, "panel", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 5, 6, 10, 3, null, 17, 1, 13, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Panel\",\"IconClass\":\"fa-bars\"}", null, null },
-                    { 130, true, "tab", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 4, 6, 8, 2, null, 18, 1, 14, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder\"}", null, null }
+                    { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, null, 1, 1, 1, 6, null, null },
+                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, null, 2, 1, 1, 9, null, null },
+                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, null, 3, 1, 1, 5, null, null },
+                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, null, 1, 1, 1, 10, null, null },
+                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, null, 2, 1, 1, 10, null, null },
+                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, null, 3, 1, 1, 10, null, null },
+                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3, null, 1, 1, 1, 6, null, null },
+                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3, null, 2, 1, 1, 15, null, null },
+                    { 9, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4, null, 1, 1, 1, 6, null, null },
+                    { 10, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4, null, 2, 1, 1, 18, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1396,29 +1406,31 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemSettings",
-                columns: new[] { "Id", "AllowDynamicSectionItems", "ConfigurationKey", "CreatedAt", "CreatedBy", "DefaultItemCount", "ItemType", "MaxItems", "MinItems", "ParentSettingId", "SortOrder", "Status", "TemplateId", "UIConfigurationJson", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AllowDynamicSectionItems", "ConfigurationKey", "CreatedAt", "CreatedBy", "ItemType", "ParentSettingId", "SortOrder", "Status", "TemplateId", "TemplateId1", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 3, true, "dropdown-link", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 3, 7, 10, 1, 2, 3, 1, 1, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Dropdown Link\",\"IconClass\":\"fa-link\"}", null, null },
-                    { 31, true, "mega-menu-link", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 3, 7, 15, 2, 30, 7, 1, 2, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Link\",\"IconClass\":\"fa-link\"}", null, null },
-                    { 51, true, "category-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 3, 7, 12, 1, 50, 10, 1, 4, "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-link\"}", null, null }
+                    { 3, true, "dropdown-link", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 7, 2, 3, 1, 1, null, null, null },
+                    { 31, true, "mega-menu-link", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 7, 30, 7, 1, 2, null, null, null },
+                    { 51, true, "category-item", new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 7, 50, 10, 1, 4, null, null, null }
                 });
 
             migrationBuilder.InsertData(
-                table: "SectionItems",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "LinkedPageId", "ParentSectionItemId", "SectionId", "SectionItemSettingId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                table: "SectionItemTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, 1, 1, 1, 6, null, null },
-                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, 1, 2, 1, 9, null, null },
-                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1, 1, 3, 1, 5, null, null },
-                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, 1, 1, 1, 10, null, null },
-                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, 1, 2, 1, 10, null, null },
-                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2, 1, 3, 1, 10, null, null },
-                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3, 1, 1, 1, 6, null, null },
-                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3, 1, 2, 1, 15, null, null },
-                    { 9, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4, 1, 1, 1, 6, null, null },
-                    { 10, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4, 1, 2, 1, 18, null, null }
+                    { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En kaliteli ürünleri keşfedin", 1, "Hoş Geldiniz", 1, 1, "Pazar Atlası'na Hoş Geldiniz", null, null },
+                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Discover the highest quality products", 2, "Welcome", 1, 1, "Welcome to Pazar Atlası", null, null },
+                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Binlerce ürün arasından size en uygun olanları bulun. Hızlı teslimat, güvenli ödeme ve mükemmel müşteri hizmetiyle yanınızdayız.", 1, "Alt Başlık", 2, 1, "Kalite ve Güvenin Adresi", null, null },
+                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Find the most suitable products for you among thousands of products. We are with you with fast delivery, secure payment and excellent customer service.", 2, "Subtitle", 2, 1, "Address of Quality and Trust", null, null },
+                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tüm ürünleri görüntülemek için tıklayın", 1, "Keşfet", 3, 1, "Ürünleri Keşfet", null, null },
+                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Click to view all products", 2, "Explore", 3, 1, "Explore Products", null, null },
+                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yüksek performanslı, şık tasarımlı laptop", 1, "Öne Çıkan Ürün 1", 4, 1, "Premium Laptop", null, null },
+                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, "Featured Product 1", 4, 1, "Premium Laptop", null, null },
+                    { 9, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yeni ürünler ve kampanyalardan haberdar olmak için e-posta listemize katılın", 1, "Bülten", 7, 1, "Haberdar Olun", null, null },
+                    { 10, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Join our email list to stay informed about new products and campaigns", 2, "Newsletter", 7, 1, "Stay Informed", null, null },
+                    { 11, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En güncel haberler ve makaleler", 1, "Blog", 9, 1, "Blog Yazıları", null, null },
+                    { 12, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest news and articles", 2, "Blog", 9, 1, "Blog Posts", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1591,25 +1603,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     { 303, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link within category", 2, 31, 1, "Mega Menu Link", null, null },
                     { 502, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kategori altındaki öğe", 1, 51, 1, "Kategori Öğesi", null, null },
                     { 503, new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Item under category", 2, 51, 1, "Category Item", null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionItemTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En kaliteli ürünleri keşfedin", 1, "Hoş Geldiniz", 1, 1, "Pazar Atlası'na Hoş Geldiniz", null, null },
-                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Discover the highest quality products", 2, "Welcome", 1, 1, "Welcome to Pazar Atlası", null, null },
-                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Binlerce ürün arasından size en uygun olanları bulun. Hızlı teslimat, güvenli ödeme ve mükemmel müşteri hizmetiyle yanınızdayız.", 1, "Alt Başlık", 2, 1, "Kalite ve Güvenin Adresi", null, null },
-                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Find the most suitable products for you among thousands of products. We are with you with fast delivery, secure payment and excellent customer service.", 2, "Subtitle", 2, 1, "Address of Quality and Trust", null, null },
-                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tüm ürünleri görüntülemek için tıklayın", 1, "Keşfet", 3, 1, "Ürünleri Keşfet", null, null },
-                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Click to view all products", 2, "Explore", 3, 1, "Explore Products", null, null },
-                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yüksek performanslı, şık tasarımlı laptop", 1, "Öne Çıkan Ürün 1", 4, 1, "Premium Laptop", null, null },
-                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, "Featured Product 1", 4, 1, "Premium Laptop", null, null },
-                    { 9, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yeni ürünler ve kampanyalardan haberdar olmak için e-posta listemize katılın", 1, "Bülten", 7, 1, "Haberdar Olun", null, null },
-                    { 10, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Join our email list to stay informed about new products and campaigns", 2, "Newsletter", 7, 1, "Stay Informed", null, null },
-                    { 11, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En güncel haberler ve makaleler", 1, "Blog", 9, 1, "Blog Yazıları", null, null },
-                    { 12, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest news and articles", 2, "Blog", 9, 1, "Blog Posts", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1789,7 +1782,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "SectionId", "SortOrder" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SectionItems_SectionItemSettingId",
+                name: "IX_SectionItems_SectionItemSettingId1",
+                table: "SectionItems",
+                column: "SectionItemSettingId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionItems_TemplateId",
                 table: "SectionItems",
                 column: "SectionItemSettingId");
 
@@ -1813,6 +1811,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 table: "SectionItemSettings",
                 columns: new[] { "TemplateId", "ConfigurationKey" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionItemSettings_TemplateId1",
+                table: "SectionItemSettings",
+                column: "TemplateId1",
+                unique: true,
+                filter: "[TemplateId1] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SectionItemSettingTranslations_LanguageId",

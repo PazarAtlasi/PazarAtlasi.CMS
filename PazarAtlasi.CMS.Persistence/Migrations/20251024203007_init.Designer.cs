@@ -12,7 +12,7 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    [Migration("20251021220915_init")]
+    [Migration("20251024203007_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -1109,9 +1109,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("SectionId");
 
-                    b.Property<int>("SectionItemSettingId")
-                        .HasColumnType("int")
-                        .HasColumnName("SectionItemSettingId");
+                    b.Property<int?>("SectionItemSettingId")
+                        .HasColumnType("int");
 
                     b.Property<int>("SortOrder")
                         .ValueGeneratedOnAdd()
@@ -1124,6 +1123,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0)
                         .HasColumnName("Status");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int")
+                        .HasColumnName("SectionItemSettingId");
 
                     b.Property<int>("Type")
                         .ValueGeneratedOnAdd()
@@ -1143,8 +1146,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasIndex("ParentSectionItemId");
 
-                    b.HasIndex("SectionItemSettingId")
-                        .HasDatabaseName("IX_SectionItems_SectionItemSettingId");
+                    b.HasIndex("SectionItemSettingId");
+
+                    b.HasIndex("TemplateId")
+                        .HasDatabaseName("IX_SectionItems_TemplateId");
 
                     b.HasIndex("Type")
                         .HasDatabaseName("IX_SectionItems_Type");
@@ -1152,7 +1157,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasIndex("SectionId", "SortOrder")
                         .HasDatabaseName("IX_SectionItems_SectionId_SortOrder");
 
-                    b.ToTable("SectionItems", (string)null);
+                    b.ToTable("SectionItems", null, t =>
+                        {
+                            t.Property("SectionItemSettingId")
+                                .HasColumnName("SectionItemSettingId1");
+                        });
 
                     b.HasData(
                         new
@@ -1162,9 +1171,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 1,
-                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 6
                         },
                         new
@@ -1174,9 +1183,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 1,
-                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 9
                         },
                         new
@@ -1186,9 +1195,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 1,
-                            SectionItemSettingId = 1,
                             SortOrder = 3,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 5
                         },
                         new
@@ -1198,9 +1207,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 2,
-                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 10
                         },
                         new
@@ -1210,9 +1219,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 2,
-                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 10
                         },
                         new
@@ -1222,9 +1231,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 2,
-                            SectionItemSettingId = 1,
                             SortOrder = 3,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 10
                         },
                         new
@@ -1234,9 +1243,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 3,
-                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 6
                         },
                         new
@@ -1246,9 +1255,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 3,
-                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 15
                         },
                         new
@@ -1258,9 +1267,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 4,
-                            SectionItemSettingId = 1,
                             SortOrder = 1,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 6
                         },
                         new
@@ -1270,9 +1279,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             SectionId = 4,
-                            SectionItemSettingId = 1,
                             SortOrder = 2,
                             Status = 1,
+                            TemplateId = 1,
                             Type = 18
                         });
                 });
@@ -3778,10 +3787,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AllowDynamicSectionItems")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true)
-                        .HasColumnName("AllowDynamicSectionItems");
+                        .HasColumnType("bit");
 
                     b.Property<string>("ConfigurationKey")
                         .IsRequired()
@@ -3797,12 +3803,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("CreatedBy");
 
-                    b.Property<int>("DefaultItemCount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1)
-                        .HasColumnName("DefaultItemCount");
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -3812,16 +3812,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("int")
                         .HasColumnName("ItemType");
-
-                    b.Property<int?>("MaxItems")
-                        .HasColumnType("int")
-                        .HasColumnName("MaxItems");
-
-                    b.Property<int>("MinItems")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("MinItems");
 
                     b.Property<int?>("ParentSettingId")
                         .HasColumnType("int")
@@ -3843,9 +3833,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("TemplateId");
 
-                    b.Property<string>("UIConfigurationJson")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UIConfigurationJson");
+                    b.Property<int?>("TemplateId1")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -3863,6 +3852,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasIndex("ParentSettingId")
                         .HasDatabaseName("IX_SectionItemSettings_ParentSettingId");
 
+                    b.HasIndex("TemplateId1")
+                        .IsUnique()
+                        .HasFilter("[TemplateId1] IS NOT NULL");
+
                     b.HasIndex("TemplateId", "ConfigurationKey")
                         .IsUnique()
                         .HasDatabaseName("IX_SectionItemSettings_TemplateId_ConfigurationKey");
@@ -3876,15 +3869,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = false,
                             ConfigurationKey = "logo",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 1,
                             IsDeleted = false,
                             ItemType = 1,
-                            MaxItems = 1,
-                            MinItems = 1,
                             SortOrder = 1,
                             Status = 1,
-                            TemplateId = 1,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"IconClass\":\"fa-image\"}"
+                            TemplateId = 1
                         },
                         new
                         {
@@ -3892,15 +3881,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "menu",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 3,
                             IsDeleted = false,
                             ItemType = 21,
-                            MaxItems = 8,
-                            MinItems = 3,
                             SortOrder = 2,
                             Status = 1,
-                            TemplateId = 1,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Menu Item\",\"IconClass\":\"fa-bars\"}"
+                            TemplateId = 1
                         },
                         new
                         {
@@ -3908,16 +3893,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "dropdown-link",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 3,
                             IsDeleted = false,
                             ItemType = 7,
-                            MaxItems = 10,
-                            MinItems = 1,
                             ParentSettingId = 2,
                             SortOrder = 3,
                             Status = 1,
-                            TemplateId = 1,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Dropdown Link\",\"IconClass\":\"fa-link\"}"
+                            TemplateId = 1
                         },
                         new
                         {
@@ -3925,15 +3906,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "mega-menu-category",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 3,
                             IsDeleted = false,
                             ItemType = 21,
-                            MaxItems = 6,
-                            MinItems = 3,
                             SortOrder = 6,
                             Status = 1,
-                            TemplateId = 2,
-                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-th-large\"}"
+                            TemplateId = 2
                         },
                         new
                         {
@@ -3941,16 +3918,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "mega-menu-link",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 3,
                             IsDeleted = false,
                             ItemType = 7,
-                            MaxItems = 15,
-                            MinItems = 2,
                             ParentSettingId = 30,
                             SortOrder = 7,
                             Status = 1,
-                            TemplateId = 2,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Link\",\"IconClass\":\"fa-link\"}"
+                            TemplateId = 2
                         },
                         new
                         {
@@ -3958,15 +3931,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "service-tab",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 4,
                             IsDeleted = false,
                             ItemType = 21,
-                            MaxItems = 6,
-                            MinItems = 3,
                             SortOrder = 8,
                             Status = 1,
-                            TemplateId = 3,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder-open\"}"
+                            TemplateId = 3
                         },
                         new
                         {
@@ -3974,15 +3943,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "category",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 3,
                             IsDeleted = false,
                             ItemType = 21,
-                            MaxItems = 8,
-                            MinItems = 3,
                             SortOrder = 9,
                             Status = 1,
-                            TemplateId = 4,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Category\",\"IconClass\":\"fa-tags\"}"
+                            TemplateId = 4
                         },
                         new
                         {
@@ -3990,16 +3955,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "category-item",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 3,
                             IsDeleted = false,
                             ItemType = 7,
-                            MaxItems = 12,
-                            MinItems = 1,
                             ParentSettingId = 50,
                             SortOrder = 10,
                             Status = 1,
-                            TemplateId = 4,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-link\"}"
+                            TemplateId = 4
                         },
                         new
                         {
@@ -4007,15 +3968,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "slide",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 5,
                             IsDeleted = false,
                             ItemType = 10,
-                            MaxItems = 10,
-                            MinItems = 3,
                             SortOrder = 4,
                             Status = 1,
-                            TemplateId = 9,
-                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Slide\",\"IconClass\":\"fa-images\"}"
+                            TemplateId = 9
                         },
                         new
                         {
@@ -4023,14 +3980,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "content-item",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 3,
                             IsDeleted = false,
                             ItemType = 6,
-                            MinItems = 1,
                             SortOrder = 5,
                             Status = 1,
-                            TemplateId = 5,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-file-alt\"}"
+                            TemplateId = 5
                         },
                         new
                         {
@@ -4038,15 +3992,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "step",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 4,
                             IsDeleted = false,
                             ItemType = 6,
-                            MaxItems = 10,
-                            MinItems = 2,
                             SortOrder = 11,
                             Status = 1,
-                            TemplateId = 6,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Step\",\"IconClass\":\"fa-list-ol\"}"
+                            TemplateId = 6
                         },
                         new
                         {
@@ -4054,15 +4004,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "grid-item",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 6,
                             IsDeleted = false,
                             ItemType = 6,
-                            MaxItems = 12,
-                            MinItems = 3,
                             SortOrder = 12,
                             Status = 1,
-                            TemplateId = 7,
-                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":3,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Grid Item\",\"IconClass\":\"fa-th\"}"
+                            TemplateId = 7
                         },
                         new
                         {
@@ -4070,15 +4016,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "masonry-image",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 8,
                             IsDeleted = false,
                             ItemType = 10,
-                            MaxItems = 20,
-                            MinItems = 4,
                             SortOrder = 13,
                             Status = 1,
-                            TemplateId = 8,
-                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":4,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Image\",\"IconClass\":\"fa-images\"}"
+                            TemplateId = 8
                         },
                         new
                         {
@@ -4086,15 +4028,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "list-item",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 5,
                             IsDeleted = false,
                             ItemType = 6,
-                            MaxItems = 15,
-                            MinItems = 3,
                             SortOrder = 14,
                             Status = 1,
-                            TemplateId = 10,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add List Item\",\"IconClass\":\"fa-list\"}"
+                            TemplateId = 10
                         },
                         new
                         {
@@ -4102,15 +4040,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = false,
                             ConfigurationKey = "single-item",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 1,
                             IsDeleted = false,
                             ItemType = 6,
-                            MaxItems = 1,
-                            MinItems = 1,
                             SortOrder = 15,
                             Status = 1,
-                            TemplateId = 11,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":false,\"AddButtonText\":\"\",\"IconClass\":\"fa-star\"}"
+                            TemplateId = 11
                         },
                         new
                         {
@@ -4118,15 +4052,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "multi-item",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 4,
                             IsDeleted = false,
                             ItemType = 6,
-                            MaxItems = 8,
-                            MinItems = 2,
                             SortOrder = 16,
                             Status = 1,
-                            TemplateId = 12,
-                            UIConfigurationJson = "{\"Layout\":\"grid\",\"Columns\":2,\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Item\",\"IconClass\":\"fa-th-large\"}"
+                            TemplateId = 12
                         },
                         new
                         {
@@ -4134,15 +4064,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "panel",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 5,
                             IsDeleted = false,
                             ItemType = 6,
-                            MaxItems = 10,
-                            MinItems = 3,
                             SortOrder = 17,
                             Status = 1,
-                            TemplateId = 13,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Panel\",\"IconClass\":\"fa-bars\"}"
+                            TemplateId = 13
                         },
                         new
                         {
@@ -4150,15 +4076,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             AllowDynamicSectionItems = true,
                             ConfigurationKey = "tab",
                             CreatedAt = new DateTime(2024, 10, 21, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultItemCount = 4,
                             IsDeleted = false,
                             ItemType = 6,
-                            MaxItems = 8,
-                            MinItems = 2,
                             SortOrder = 18,
                             Status = 1,
-                            TemplateId = 14,
-                            UIConfigurationJson = "{\"Layout\":\"list\",\"ShowPreview\":true,\"ShowReorder\":true,\"AddButtonText\":\"Add Tab\",\"IconClass\":\"fa-folder\"}"
+                            TemplateId = 14
                         });
                 });
 
@@ -7627,9 +7549,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", "Setting")
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", null)
                         .WithMany("SectionItems")
-                        .HasForeignKey("SectionItemSettingId")
+                        .HasForeignKey("SectionItemSettingId");
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
+                        .WithMany("SectionItems")
+                        .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -7637,7 +7563,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.Navigation("Section");
 
-                    b.Navigation("Setting");
+                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", b =>
@@ -7708,10 +7634,14 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
-                        .WithMany("SectionItemSettings")
+                        .WithMany()
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", null)
+                        .WithOne("SectionItemSetting")
+                        .HasForeignKey("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemSetting", "TemplateId1");
 
                     b.Navigation("ParentSetting");
 
@@ -7793,7 +7723,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasForeignKey("SectionId");
 
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
-                        .WithMany("SectionTemplates")
+                        .WithMany("SectionTypeTemplates")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -7862,11 +7792,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Template", b =>
                 {
-                    b.Navigation("SectionItemSettings");
+                    b.Navigation("SectionItemSetting");
 
                     b.Navigation("SectionItemTypeTemplates");
 
-                    b.Navigation("SectionTemplates");
+                    b.Navigation("SectionItems");
+
+                    b.Navigation("SectionTypeTemplates");
                 });
 #pragma warning restore 612, 618
         }

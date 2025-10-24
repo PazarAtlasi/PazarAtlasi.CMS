@@ -24,29 +24,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public SectionItemType ItemType { get; set; }
 
         /// <summary>
-        /// Minimum number of items allowed
-        /// </summary>
-        public int MinItems { get; set; } = 0;
-
-        /// <summary>
-        /// Maximum number of items allowed (null = unlimited)
-        /// </summary>
-        public int? MaxItems { get; set; }
-
-        /// <summary>
-        /// Default number of items to create
-        /// </summary>
-        public int DefaultItemCount { get; set; } = 1;
-
-        /// <summary>
         /// Whether users can add/remove items dynamically
         /// </summary>
         public bool AllowDynamicSectionItems { get; set; } = true;
-
-        /// <summary>
-        /// JSON configuration for UI behavior (layout, icons, labels, etc.)
-        /// </summary>
-        public string? UIConfigurationJson { get; set; }
 
         /// <summary>
         /// Display order for this configuration
