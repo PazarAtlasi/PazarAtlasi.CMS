@@ -15,7 +15,6 @@ namespace PazarAtlasi.CMS.Infrastructure
         public static IServiceCollection AddInfrastructureServiceRegistrations(this IServiceCollection services)
         {
             services.AddScoped<IMediaUploadService, MediaUploadService>();
-            services.AddScoped<ITemplateConfigurationProvider, TemplateConfigurationProvider>();
             return services;
         }
     }

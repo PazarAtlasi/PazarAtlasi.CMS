@@ -14,6 +14,10 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
         public int? ParentId { get; set; }
 
+        public TemplateType TemplateType { get; set; } // Template type for rendering behavior
+
+        public string TemplateKey { get; set; } = string.Empty; // Unique identifier for template (e.g., "navbar-megamenu", "navbar-simple")
+
         public int? TemplateId { get; set; }
 
         public SectionType SectionType { get; set; }
@@ -56,8 +60,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public List<SectionItemFieldViewModel> Fields { get; set; } = new();
         
         public List<SectionItemViewModel> ChildItems { get; set; } = new();
-
-        public SectionItemSettingDto SectionItemConfiguration { get; set; } = new();
 
         // Translations
         public List<SectionItemTranslationViewModel> Translations { get; set; } = new();

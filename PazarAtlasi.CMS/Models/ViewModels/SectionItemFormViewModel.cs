@@ -1,5 +1,4 @@
 using PazarAtlasi.CMS.Application.Dtos;
-using PazarAtlasi.CMS.Application.Dtos;
 
 namespace PazarAtlasi.CMS.Models.ViewModels
 {
@@ -12,7 +11,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int ItemId { get; set; }
         public int ParentItemId { get; set; }
         public bool IsNested { get; set; }
-        public TemplateSettingDto? Configuration { get; set; }
         public SectionItemViewModel? Item { get; set; }
     }
 }

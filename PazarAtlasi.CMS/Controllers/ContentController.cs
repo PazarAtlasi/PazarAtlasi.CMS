@@ -19,16 +19,13 @@ namespace PazarAtlasi.CMS.Controllers
     {
         private readonly PazarAtlasiDbContext _pazarAtlasiDbContext;
         private readonly IMediaUploadService _mediaUploadService;
-        private readonly ITemplateConfigurationProvider _templateConfigurationProvider;
 
         public ContentController(
             PazarAtlasiDbContext pazarAtlasiDbContext,
-            IMediaUploadService mediaUploadService,
-            ITemplateConfigurationProvider templateConfigurationProvider)
+            IMediaUploadService mediaUploadService)
         {
             _pazarAtlasiDbContext = pazarAtlasiDbContext;
             _mediaUploadService = mediaUploadService;
-            _templateConfigurationProvider = templateConfigurationProvider;
         }
 
         /// <summary>
@@ -860,39 +857,18 @@ namespace PazarAtlasi.CMS.Controllers
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found.</p></div>", "text/html");
                 }
 
-                // Get configuration from database via TemplateConfigurationProvider
-                var configuration = await _templateConfigurationProvider.GetConfigurationAsync(template.Id, template.TemplateKey);
-                if (configuration == null || configuration.SectionItemSetting == null)
+                // Get SectionItemViewModel directly from TemplateConfigurationProvider (no more mapping needed!)
+                var sectionItemViewModel = await GetConfigurationAsync(template.Id, template.TemplateKey);
+                if (sectionItemViewModel == null)
                 {
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
                 }
 
-                // Get available languages
-                var availableLanguages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .Select(l => new LanguageViewModel
-                    {
-                        Id = l.Id,
-                        Name = l.Name,
-                        Code = l.Code,
-                        IsDefault = l.IsDefault
-                    })
-                    .OrderByDescending(l => l.IsDefault)
-                    .ThenBy(l => l.Name)
-                    .ToListAsync();
+                // Set section-specific properties
+                sectionItemViewModel.SectionId = sectionId;
+                sectionItemViewModel.SortOrder = currentCount + 1;
 
-                ViewBag.AvailableLanguages = availableLanguages;
-
-                // Get the first item configuration (we'll create one item from this template's first config)
-                var firstItemConfig = configuration.SectionItemSetting;
-
-                // Create a single item with a temporary ID (negative number to indicate it's a new/temp item)
-                var item = CreateDefaultSectionItem(firstItemConfig, sectionId, currentCount + 1, templateId);
-
-                // Set ViewBag for the partial view
-                item.SectionItemConfiguration = firstItemConfig;
-
-                return PartialView("~/Views/Content/_SectionItemCard.cshtml", item);
+                return PartialView("~/Views/Content/_SectionItemCard.cshtml", sectionItemViewModel);
             }
             catch (Exception ex)
             {
@@ -1835,61 +1811,6 @@ namespace PazarAtlasi.CMS.Controllers
             return childItems.Select(child => MapSingleSectionItemToViewModel(child, allItems)).ToList();
         }
 
-        /// <summary>
-        /// NEW: Helper method to create default section item from SectionItemConfiguration (recursive)
-        /// </summary>
-        private SectionItemViewModel CreateDefaultSectionItem(SectionItemSettingDto itemConfig, int sectionId, int sortOrder, int templateId)
-        {
-            var item = new SectionItemViewModel
-            {
-                Id = 0,
-                SectionId = sectionId,
-                TemplateId = templateId, // This will be used for section items, not sections
-                SortOrder = sortOrder,
-                Type = itemConfig.ItemType,
-                Status = Status.Active,
-                Title = itemConfig.Translations?.FirstOrDefault()?.Title ?? itemConfig.ItemType.ToString(),
-                Description = itemConfig.Translations?.FirstOrDefault()?.Description,
-                AllowReorder = itemConfig.UIConfiguration?.ShowReorder ?? true,
-                AllowRemove = itemConfig.AllowDynamicSectionItems,
-                IconClass = itemConfig.UIConfiguration?.IconClass,
-                Fields = new List<SectionItemFieldViewModel>(),
-                ChildItems = new List<SectionItemViewModel>()
-            };
-
-            // Add default field values from field configuration
-            if (itemConfig.Fields != null)
-            {
-                foreach (var field in itemConfig.Fields)
-                {
-                    var fieldViewModel = new SectionItemFieldViewModel
-                    {
-                        Id = 0,
-                        SectionItemId = 0,
-                        SectionItemFieldId = 0, // Will be set when we find the actual field setting
-                        FieldKey = field.FieldKey,
-                        FieldType = field.Type,
-                        FieldValue = field.DefaultValue ?? string.Empty,
-                        Translations = new List<SectionItemFieldValueTranslationViewModel>()
-                    };
-                    item.Fields.Add(fieldViewModel);
-                }
-            }
-
-            // NEW: Recursively create nested items if configured
-            // SectionItemConfiguration can have nested SectionItems (recursive structure)
-            if (itemConfig.ChildSectionItemSettings != null && itemConfig.ChildSectionItemSettings.Any())
-            {
-                foreach (var nestedConfig in itemConfig.ChildSectionItemSettings)
-                {
-                    // Recursive call to create nested items
-                    var nestedItem = CreateDefaultSectionItem(nestedConfig, sectionId, sortOrder, templateId);
-                    item.ChildItems.Add(nestedItem);
-                }
-            }
-
-            return item;
-        }
 
         /// <summary>
         /// Process section items and their nested items recursively
@@ -2060,6 +1981,97 @@ namespace PazarAtlasi.CMS.Controllers
                     IsDefault = l.IsDefault
                 })
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get template configuration as SectionItemViewModel (ready for UI)
+        /// </summary>
+        public async Task<SectionItemViewModel?> GetConfigurationAsync(int templateId, string templateKey)
+        {
+            // Get the template with its fields and translations
+            var template = await _pazarAtlasiDbContext.Templates
+                .FirstOrDefaultAsync(t => t.Id == templateId && t.TemplateKey == templateKey && t.IsActive);
+
+            if (template == null)
+                return null;
+
+            // Get template fields
+            var fields = await _pazarAtlasiDbContext.SectionItemFields
+                .Include(f => f.Translations)
+                .Where(f => f.TemplateId == templateId && !f.IsDeleted)
+                .OrderBy(f => f.SortOrder)
+                .ToListAsync();
+
+            // Get available languages
+            var availableLanguages = await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .OrderByDescending(l => l.IsDefault)
+                .ThenBy(l => l.Name)
+                .ToListAsync();
+
+            return CreateDefaultSectionItemViewModel(template, fields, availableLanguages);
+        }
+
+        /// <summary>
+        /// Create default SectionItemViewModel from template configuration
+        /// </summary>
+        private SectionItemViewModel CreateDefaultSectionItemViewModel(Template template, List<SectionItemField> fields, List<LanguageViewModel> availableLanguages)
+        {
+            var viewModel = new SectionItemViewModel
+            {
+                Id = 0, // New item
+                TemplateId = template.Id,
+                TemplateKey = template.TemplateKey,
+                TemplateType = template.TemplateType,
+                Type = SectionItemType.None,
+                MediaType = MediaType.None,
+                SortOrder = 1,
+                Status = Status.Active,
+                AllowReorder = true,
+                AllowRemove = true,
+                AvailableLanguages = availableLanguages,
+                Fields = fields.Select(f => MapToSectionItemFieldViewModel(f, availableLanguages)).ToList(),
+                ChildItems = new List<SectionItemViewModel>(),
+                Translations = new List<SectionItemTranslationViewModel>()
+            };
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Map SectionItemField to SectionItemFieldViewModel
+        /// </summary>
+        private SectionItemFieldViewModel MapToSectionItemFieldViewModel(SectionItemField field, List<LanguageViewModel> availableLanguages)
+        {
+            return new SectionItemFieldViewModel
+            {
+                Id = 0, // New field value
+                SectionItemId = 0, // Will be set when item is saved
+                SectionItemFieldId = field.Id,
+                FieldType = field.Type,
+                FieldKey = field.FieldKey,
+                FieldValue = field.DefaultValue ?? "",
+                IsTranslatable = field.IsTranslatable,
+                FieldTranslations = field.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
+                {
+                    Id = ft.Id,
+                    SectionItemFieldId = ft.SectionItemFieldId,
+                    LanguageId = ft.LanguageId,
+                    LanguageCode = availableLanguages.FirstOrDefault(l => l.Id == ft.LanguageId)?.Code ?? "",
+                    LanguageName = availableLanguages.FirstOrDefault(l => l.Id == ft.LanguageId)?.Name ?? "",
+                    Label = ft.Label ?? field.FieldName,
+                    Description = ft.Description ?? "",
+                    Placeholder = ft.Placeholder ?? field.Placeholder ?? ""
+                }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
+                Translations = new List<SectionItemFieldValueTranslationViewModel>() // Empty for new item
+            };
         }
 
         #endregion Helper Methods

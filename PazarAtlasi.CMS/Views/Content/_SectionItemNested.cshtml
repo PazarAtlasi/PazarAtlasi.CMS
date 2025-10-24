@@ -1,8 +1,9 @@
 @using PazarAtlasi.CMS.Application.Dtos
 @using PazarAtlasi.CMS.Models.ViewModels
+@model PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel
+
 @{
     var parentItem = ViewBag.ParentItem as SectionItemViewModel;
-    var nestedConfigs = ViewBag.NestedConfigs as List<SectionItemSettingDto>;
     var level = ViewBag.Level as int? ?? 1;
     var availableLanguages = ViewBag.AvailableLanguages as List<LanguageViewModel> ?? new List<LanguageViewModel>();
 
@@ -19,7 +20,7 @@
     var marginLeft = level * 4; // ml-4, ml-8, ml-12, etc.
 }
 
-@if (parentItem?.ChildItems != null && parentItem.ChildItems.Any() && nestedConfigs != null && nestedConfigs.Any())
+@if (parentItem?.ChildItems != null && parentItem.ChildItems.Any())
 {
     <div class="mt-4 pt-4 border-t border-slate-200">
         <div class="flex items-center justify-between mb-3">
@@ -35,7 +36,7 @@
                 ViewBag.AvailableLanguages = availableLanguages;
 
                 // Find matching configuration for this child item's type
-                var childConfig = nestedConfigs.FirstOrDefault(nc => nc.ItemType == childItem.Type);
+                var childConfig = Model.ChildItems.FirstOrDefault(nc => nc.Type == childItem.Type);
 
                 @if (childConfig != null)
                 {
@@ -48,7 +49,7 @@
                                 <i class="fas fa-link mr-1"></i>
                                 @(childConfig.Translations?.FirstOrDefault()?.Title ?? childItem.Type.ToString()) #@childItem.SortOrder
                             </span>
-                            @if (childConfig.AllowDynamicSectionItems)
+                            @if (childConfig.AllowReorder)
                             {
                                 <button type="button" onclick="this.closest('.nested-item-card').remove();"
                                         class="text-red-500 hover:text-red-700 text-xs"
@@ -60,25 +61,24 @@
 
                         <!-- Render fields for this nested item -->
                         <div class="nested-field-list space-y-2">
-                            @foreach (var field in childConfig.Fields ?? new List<SectionItemFieldSettingDto>())
+                            @foreach (var field in childConfig.Fields ?? new List<SectionItemFieldViewModel>())
                             {
                                 ViewBag.Field = field;
                                 ViewBag.Item = childItem;
                                 ViewBag.ParentItemId = parentItem.Id;
                                 ViewBag.Level = level;
                                 var fieldViewModel = childItem.Fields?.FirstOrDefault(f => f.FieldKey == field.FieldKey);
-                                ViewBag.Value = fieldViewModel?.FieldValue ?? field.DefaultValue ?? "";
+                                ViewBag.Value = fieldViewModel?.FieldValue;
 
                                 @await Html.PartialAsync("~/Views/Content/_SectionItemField.cshtml", field)
                             }
                         </div>
 
                         <!-- RECURSIVE: Render deeper nested items if they exist -->
-                        @if (childItem.ChildItems != null && childItem.ChildItems.Any() &&
-                                    childConfig.ChildSectionItemSettings != null && childConfig.ChildSectionItemSettings.Any())
+                        @if (childItem.ChildItems != null && childItem.ChildItems.Any())
                         {
                             ViewBag.ParentItem = childItem;
-                            ViewBag.NestedConfigs = childConfig.ChildSectionItemSettings;
+                            ViewBag.ChildItems = childConfig.ChildItems;
                             ViewBag.Level = level + 1;
 
                             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
@@ -86,12 +86,12 @@
                     </div>
 
                     <!-- Add button for this nested item type -->
-                    @if (childConfig.AllowDynamicSectionItems)
+                    @if (childConfig.AllowReorder)
                     {
                         <button type="button"
-                                onclick="SectionModal.addNestedItemByType('@parentItem.Id', '@childConfig.ItemType', @level)"
+                                onclick="SectionModal.addNestedItemByType('@parentItem.Id', '@childConfig.Type', @level)"
                                 class="w-full mt-2 px-2 py-1 bg-white hover:bg-@(buttonBg) text-@(iconColor) hover:text-@(iconColor) rounded text-xs transition-colors border-2 border-@(borderColor)">
-                            <i class="fas fa-plus mr-1"></i> @(childConfig.UIConfiguration?.AddButtonText ?? $"Add {childConfig.ItemType}")
+                            <i class="fas fa-plus mr-1"></i> @($"Add {childConfig.Type.ToString()}")
 
                         </button>
                     }
