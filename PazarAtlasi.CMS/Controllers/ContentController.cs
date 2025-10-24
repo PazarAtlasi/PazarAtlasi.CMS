@@ -1853,7 +1853,7 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     SectionId = sectionId,
                     ParentSectionItemId = parentItemId, // Set parent relationship
-                    TemplateId = itemRequest.TemplateId.Value,
+                    TemplateId = itemRequest.TemplateId,
                     Type = itemRequest.Type,
                     MediaType = itemRequest.MediaType,
                     SortOrder = itemRequest.SortOrder,
@@ -1862,8 +1862,16 @@ namespace PazarAtlasi.CMS.Controllers
                     IsDeleted = false
                 };
 
-                _pazarAtlasiDbContext.SectionItems.Add(newItem);
-                await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
+                try
+                {
+
+                    _pazarAtlasiDbContext.SectionItems.Add(newItem);
+                    await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
+                }
+                catch (Exception ex)
+                {
+
+                }
 
                 Console.WriteLine($"Created item with ID: {newItem.Id}");
 

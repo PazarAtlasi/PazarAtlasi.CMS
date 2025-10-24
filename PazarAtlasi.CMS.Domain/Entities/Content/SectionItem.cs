@@ -17,7 +17,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// Configuration template used to create this item
         /// Defines field structure, validation rules, UI behavior, etc.
         /// </summary>
-        public int TemplateId { get; set; }
+        public int? TemplateId { get; set; }
 
         public SectionItemType Type { get; set; } = SectionItemType.None;
 
