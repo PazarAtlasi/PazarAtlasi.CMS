@@ -5,6 +5,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class SectionItemTranslationRequest
     {
         public int Id { get; set; }
+        public int SectionItemId { get; set; }
         public int LanguageId { get; set; }
         public string LanguageCode { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

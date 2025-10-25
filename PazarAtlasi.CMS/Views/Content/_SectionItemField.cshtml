@@ -9,8 +9,8 @@
     
     // Get field label from field definition translations
     var currentLanguageId = ViewBag.CurrentLanguageId as int? ?? 1; // Default to language ID 1
-    var fieldTranslation = Model.FieldTranslations?.FirstOrDefault(t => t.LanguageId == currentLanguageId) 
-                          ?? Model.FieldTranslations?.FirstOrDefault();
+    var fieldTranslation = Model.Translations?.FirstOrDefault(t => t.LanguageId == currentLanguageId) 
+                          ?? Model.Translations?.FirstOrDefault();
     var fieldLabel = fieldTranslation?.Label ?? Model.FieldKey;
     var fieldDescription = fieldTranslation?.Description;
     var fieldPlaceholder = fieldTranslation?.Placeholder;

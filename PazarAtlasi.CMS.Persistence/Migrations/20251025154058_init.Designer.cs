@@ -12,8 +12,8 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    [Migration("20251025001028_initss")]
-    partial class initss
+    [Migration("20251025154058_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1115,9 +1115,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-                    b.Property<int?>("LinkedPageId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MediaType")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -1126,10 +1123,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.Property<int?>("ParentSectionItemId")
                         .HasColumnType("int");
-
-                    b.Property<int>("SectionId")
-                        .HasColumnType("int")
-                        .HasColumnName("SectionId");
 
                     b.Property<int>("SortOrder")
                         .ValueGeneratedOnAdd()
@@ -1176,9 +1169,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.HasIndex("Type")
                         .HasDatabaseName("IX_SectionItems_Type");
 
-                    b.HasIndex("SectionId", "SortOrder")
-                        .HasDatabaseName("IX_SectionItems_SectionId_SortOrder");
-
                     b.ToTable("SectionItems", (string)null);
 
                     b.HasData(
@@ -1192,7 +1182,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IconClass = "fas fa-image",
                             IsDeleted = false,
                             MediaType = 0,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1209,7 +1198,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IconClass = "fas fa-home",
                             IsDeleted = false,
                             MediaType = 0,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1226,7 +1214,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IconClass = "fas fa-shopping-bag",
                             IsDeleted = false,
                             MediaType = 0,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -1243,7 +1230,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IconClass = "fas fa-cogs",
                             IsDeleted = false,
                             MediaType = 0,
-                            SectionId = 1,
                             SortOrder = 4,
                             Status = 1,
                             TemplateId = 2,
@@ -1260,7 +1246,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IconClass = "fas fa-info-circle",
                             IsDeleted = false,
                             MediaType = 0,
-                            SectionId = 1,
                             SortOrder = 5,
                             Status = 1,
                             TemplateId = 2,
@@ -1277,7 +1262,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IconClass = "fas fa-envelope",
                             IsDeleted = false,
                             MediaType = 0,
-                            SectionId = 1,
                             SortOrder = 6,
                             Status = 1,
                             TemplateId = 2,
@@ -1295,7 +1279,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 3,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1313,7 +1296,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 3,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1331,7 +1313,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 3,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -1349,7 +1330,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 7,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1367,7 +1347,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 7,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1385,7 +1364,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 7,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -1403,7 +1381,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 8,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1421,7 +1398,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 8,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1439,7 +1415,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 8,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -1457,7 +1432,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 4,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1475,7 +1449,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 4,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1493,7 +1466,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 4,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -1511,7 +1483,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 4,
-                            SectionId = 1,
                             SortOrder = 4,
                             Status = 1,
                             TemplateId = 2,
@@ -1529,7 +1500,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 3,
-                            SectionId = 1,
                             SortOrder = 4,
                             Status = 1,
                             TemplateId = 2,
@@ -1547,7 +1517,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 2,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1565,7 +1534,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 2,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1583,7 +1551,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 2,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -1601,7 +1568,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 2,
-                            SectionId = 1,
                             SortOrder = 4,
                             Status = 1,
                             TemplateId = 2,
@@ -1619,7 +1585,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 22,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1637,7 +1602,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 22,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1655,7 +1619,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 22,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -1673,7 +1636,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 23,
-                            SectionId = 1,
                             SortOrder = 1,
                             Status = 1,
                             TemplateId = 2,
@@ -1691,7 +1653,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 23,
-                            SectionId = 1,
                             SortOrder = 2,
                             Status = 1,
                             TemplateId = 2,
@@ -1709,7 +1670,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             IsDeleted = false,
                             MediaType = 0,
                             ParentSectionItemId = 23,
-                            SectionId = 1,
                             SortOrder = 3,
                             Status = 1,
                             TemplateId = 2,
@@ -2339,7 +2299,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<string>("JsonValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SectionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SectionItemFieldId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SectionItemId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -2358,561 +2324,14 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SectionId");
+
                     b.HasIndex("SectionItemFieldId")
                         .HasDatabaseName("IX_SectionItemFieldValues_FieldId");
 
-                    b.ToTable("SectionItemFieldValues", (string)null);
+                    b.HasIndex("SectionItemId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 1,
-                            Status = 0,
-                            Value = "/images/logo.png"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 2,
-                            Status = 0,
-                            Value = "PazarAtlası"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Ana Sayfa"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-home"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Ürünler"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/products"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-shopping-bag"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "Geniş ürün yelpazemizi keşfedin"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 7,
-                            Status = 0,
-                            Value = "/images/products-featured.jpg"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Hizmetler"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/services"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-cogs"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "Profesyonel hizmetlerimiz"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Elektronik"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/products/electronics"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-laptop"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "En son teknoloji ürünleri"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 7,
-                            Status = 0,
-                            Value = "/images/electronics-category.jpg"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 8,
-                            Status = 0,
-                            Value = "true"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 9,
-                            Status = 0,
-                            Value = "YENİ"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 10,
-                            Status = 0,
-                            Value = "success"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Bilgisayarlar"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/products/electronics/computers"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-desktop"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "Masaüstü ve dizüstü bilgisayarlar"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Web Tasarım"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/services/web-design"
-                        },
-                        new
-                        {
-                            Id = 29,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-paint-brush"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "Modern ve kullanıcı dostu web siteleri"
-                        },
-                        new
-                        {
-                            Id = 31,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Özel Kampanya"
-                        },
-                        new
-                        {
-                            Id = 32,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/special-offers"
-                        },
-                        new
-                        {
-                            Id = 33,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-fire"
-                        },
-                        new
-                        {
-                            Id = 34,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "Sınırlı süre özel fırsatlar"
-                        },
-                        new
-                        {
-                            Id = 35,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 7,
-                            Status = 0,
-                            Value = "/images/special-offers-banner.jpg"
-                        },
-                        new
-                        {
-                            Id = 36,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 8,
-                            Status = 0,
-                            Value = "true"
-                        },
-                        new
-                        {
-                            Id = 37,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 9,
-                            Status = 0,
-                            Value = "SICAK"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 10,
-                            Status = 0,
-                            Value = "danger"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Yeni Ürünler"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/products/new"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-star"
-                        },
-                        new
-                        {
-                            Id = 42,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "En yeni ürün koleksiyonları"
-                        },
-                        new
-                        {
-                            Id = 43,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 9,
-                            Status = 0,
-                            Value = "YENİ"
-                        },
-                        new
-                        {
-                            Id = 44,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 10,
-                            Status = 0,
-                            Value = "primary"
-                        },
-                        new
-                        {
-                            Id = 45,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Popüler Kategoriler"
-                        },
-                        new
-                        {
-                            Id = 46,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/categories/popular"
-                        },
-                        new
-                        {
-                            Id = 47,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-fire"
-                        },
-                        new
-                        {
-                            Id = 48,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "En popüler ürün kategorileri"
-                        },
-                        new
-                        {
-                            Id = 49,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Kampanyalar"
-                        },
-                        new
-                        {
-                            Id = 50,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/campaigns"
-                        },
-                        new
-                        {
-                            Id = 51,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-percentage"
-                        },
-                        new
-                        {
-                            Id = 52,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "Güncel kampanya ve fırsatlar"
-                        },
-                        new
-                        {
-                            Id = 53,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "En Çok Satan"
-                        },
-                        new
-                        {
-                            Id = 54,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/products/bestsellers"
-                        },
-                        new
-                        {
-                            Id = 55,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-trophy"
-                        },
-                        new
-                        {
-                            Id = 56,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 3,
-                            Status = 0,
-                            Value = "Flash Sale"
-                        },
-                        new
-                        {
-                            Id = 57,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 4,
-                            Status = 0,
-                            Value = "/flash-sale"
-                        },
-                        new
-                        {
-                            Id = 58,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 5,
-                            Status = 0,
-                            Value = "fas fa-bolt"
-                        },
-                        new
-                        {
-                            Id = 59,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 6,
-                            Status = 0,
-                            Value = "Sınırlı süre büyük indirimler"
-                        },
-                        new
-                        {
-                            Id = 60,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 9,
-                            Status = 0,
-                            Value = "FLASH"
-                        },
-                        new
-                        {
-                            Id = 61,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            SectionItemFieldId = 10,
-                            Status = 0,
-                            Value = "warning"
-                        });
+                    b.ToTable("SectionItemFieldValues", (string)null);
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValueTranslation", b =>
@@ -2967,548 +2386,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDatabaseName("IX_SectionItemFieldValueTranslations_ValueId_LanguageId");
 
                     b.ToTable("SectionItemFieldValueTranslations", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 2,
-                            Status = 0,
-                            Value = "PazarAtlası"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 2,
-                            Status = 0,
-                            Value = "MarketAtlas"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 3,
-                            Status = 0,
-                            Value = "Ana Sayfa"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 3,
-                            Status = 0,
-                            Value = "Home"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 6,
-                            Status = 0,
-                            Value = "Ürünler"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 6,
-                            Status = 0,
-                            Value = "Products"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 9,
-                            Status = 0,
-                            Value = "Geniş ürün yelpazemizi keşfedin"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 9,
-                            Status = 0,
-                            Value = "Discover our wide range of products"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 11,
-                            Status = 0,
-                            Value = "Hizmetler"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 11,
-                            Status = 0,
-                            Value = "Services"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 14,
-                            Status = 0,
-                            Value = "Profesyonel hizmetlerimiz"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 14,
-                            Status = 0,
-                            Value = "Our professional services"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 15,
-                            Status = 0,
-                            Value = "Elektronik"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 15,
-                            Status = 0,
-                            Value = "Electronics"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 18,
-                            Status = 0,
-                            Value = "En son teknoloji ürünleri"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 18,
-                            Status = 0,
-                            Value = "Latest technology products"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 21,
-                            Status = 0,
-                            Value = "YENİ"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 21,
-                            Status = 0,
-                            Value = "NEW"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 23,
-                            Status = 0,
-                            Value = "Bilgisayarlar"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 23,
-                            Status = 0,
-                            Value = "Computers"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 26,
-                            Status = 0,
-                            Value = "Masaüstü ve dizüstü bilgisayarlar"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 26,
-                            Status = 0,
-                            Value = "Desktop and laptop computers"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 27,
-                            Status = 0,
-                            Value = "Web Tasarım"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 27,
-                            Status = 0,
-                            Value = "Web Design"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 30,
-                            Status = 0,
-                            Value = "Modern ve kullanıcı dostu web siteleri"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 30,
-                            Status = 0,
-                            Value = "Modern and user-friendly websites"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 31,
-                            Status = 0,
-                            Value = "Özel Kampanya"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 31,
-                            Status = 0,
-                            Value = "Special Campaign"
-                        },
-                        new
-                        {
-                            Id = 29,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 34,
-                            Status = 0,
-                            Value = "Sınırlı süre özel fırsatlar"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 34,
-                            Status = 0,
-                            Value = "Limited time special offers"
-                        },
-                        new
-                        {
-                            Id = 31,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 37,
-                            Status = 0,
-                            Value = "SICAK"
-                        },
-                        new
-                        {
-                            Id = 32,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 37,
-                            Status = 0,
-                            Value = "HOT"
-                        },
-                        new
-                        {
-                            Id = 33,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 39,
-                            Status = 0,
-                            Value = "Yeni Ürünler"
-                        },
-                        new
-                        {
-                            Id = 34,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 39,
-                            Status = 0,
-                            Value = "New Products"
-                        },
-                        new
-                        {
-                            Id = 35,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 42,
-                            Status = 0,
-                            Value = "En yeni ürün koleksiyonları"
-                        },
-                        new
-                        {
-                            Id = 36,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 42,
-                            Status = 0,
-                            Value = "Latest product collections"
-                        },
-                        new
-                        {
-                            Id = 37,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 43,
-                            Status = 0,
-                            Value = "YENİ"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 43,
-                            Status = 0,
-                            Value = "NEW"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 45,
-                            Status = 0,
-                            Value = "Popüler Kategoriler"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 45,
-                            Status = 0,
-                            Value = "Popular Categories"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 48,
-                            Status = 0,
-                            Value = "En popüler ürün kategorileri"
-                        },
-                        new
-                        {
-                            Id = 42,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 48,
-                            Status = 0,
-                            Value = "Most popular product categories"
-                        },
-                        new
-                        {
-                            Id = 43,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 49,
-                            Status = 0,
-                            Value = "Kampanyalar"
-                        },
-                        new
-                        {
-                            Id = 44,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 49,
-                            Status = 0,
-                            Value = "Campaigns"
-                        },
-                        new
-                        {
-                            Id = 45,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 52,
-                            Status = 0,
-                            Value = "Güncel kampanya ve fırsatlar"
-                        },
-                        new
-                        {
-                            Id = 46,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 52,
-                            Status = 0,
-                            Value = "Current campaigns and opportunities"
-                        },
-                        new
-                        {
-                            Id = 47,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 53,
-                            Status = 0,
-                            Value = "En Çok Satan"
-                        },
-                        new
-                        {
-                            Id = 48,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 53,
-                            Status = 0,
-                            Value = "Best Sellers"
-                        },
-                        new
-                        {
-                            Id = 49,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 56,
-                            Status = 0,
-                            Value = "Flash Sale"
-                        },
-                        new
-                        {
-                            Id = 50,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 56,
-                            Status = 0,
-                            Value = "Flash Sale"
-                        },
-                        new
-                        {
-                            Id = 51,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 59,
-                            Status = 0,
-                            Value = "Sınırlı süre büyük indirimler"
-                        },
-                        new
-                        {
-                            Id = 52,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 59,
-                            Status = 0,
-                            Value = "Limited time huge discounts"
-                        },
-                        new
-                        {
-                            Id = 53,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            SectionItemFieldValueId = 60,
-                            Status = 0,
-                            Value = "FLASH"
-                        },
-                        new
-                        {
-                            Id = 54,
-                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            SectionItemFieldValueId = 60,
-                            Status = 0,
-                            Value = "FLASH"
-                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemTranslation", b =>
@@ -6505,20 +5382,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ParentSectionItemId");
 
-                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Section", "Section")
-                        .WithMany("SectionItems")
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Template", "Template")
                         .WithMany("SectionItems")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentSectionItem");
-
-                    b.Navigation("Section");
 
                     b.Navigation("Template");
                 });
@@ -6555,11 +5424,25 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValue", b =>
                 {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Section", "Section")
+                        .WithMany("SectionItemFieldValues")
+                        .HasForeignKey("SectionId")
+                        .IsRequired();
+
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemField", "SectionItemField")
                         .WithMany("SectionItemFieldValues")
                         .HasForeignKey("SectionItemFieldId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItem", "SectionItem")
+                        .WithMany("SectionItemFieldValues")
+                        .HasForeignKey("SectionItemId")
+                        .IsRequired();
+
+                    b.Navigation("Section");
+
+                    b.Navigation("SectionItem");
 
                     b.Navigation("SectionItemField");
                 });
@@ -6671,7 +5554,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Section", b =>
                 {
-                    b.Navigation("SectionItems");
+                    b.Navigation("SectionItemFieldValues");
 
                     b.Navigation("SectionTemplates");
 
@@ -6680,6 +5563,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItem", b =>
                 {
+                    b.Navigation("SectionItemFieldValues");
+
                     b.Navigation("SectionItemFields");
 
                     b.Navigation("Translations");

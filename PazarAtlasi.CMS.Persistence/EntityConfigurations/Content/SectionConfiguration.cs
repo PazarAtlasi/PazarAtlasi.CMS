@@ -23,11 +23,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(s => s.CreatedBy).HasColumnName("CreatedBy");
             builder.Property(s => s.UpdatedBy).HasColumnName("UpdatedBy");
 
-            builder.HasMany(s => s.SectionItems)
-                   .WithOne(si => si.Section)
-                   .HasForeignKey(si => si.SectionId)
-                   .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(s => s.Translations)
                    .WithOne(st => st.Section)
                    .HasForeignKey(st => st.SectionId)

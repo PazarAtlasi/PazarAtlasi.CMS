@@ -9,8 +9,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 {
     public class SectionItem : Entity<int>
     {
-        public int SectionId { get; set; }
-
         public int? ParentSectionItemId { get; set; }
 
         /// <summary>
@@ -22,8 +20,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public MediaType MediaType { get; set; }
         
-        public int? LinkedPageId { get; set; } // Reference to linked page
-
         public int SortOrder { get; set; } = 0;
 
         /// <summary>
@@ -50,9 +46,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// Icon class for UI display
         /// </summary>
         public string? IconClass { get; set; }
-
-        // Navigation properties
-        public virtual Section Section { get; set; }
 
         public virtual SectionItem? ParentSectionItem { get; set; }
 

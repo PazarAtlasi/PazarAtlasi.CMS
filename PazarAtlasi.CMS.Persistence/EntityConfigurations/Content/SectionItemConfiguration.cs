@@ -12,7 +12,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.ToTable("SectionItems").HasKey(si => si.Id);
 
             builder.Property(si => si.Id).HasColumnName("Id").IsRequired();
-            builder.Property(si => si.SectionId).HasColumnName("SectionId").IsRequired();
             builder.Property(si => si.Type).HasColumnName("Type").HasDefaultValue(SectionItemType.None);
             builder.Property(si => si.MediaType).HasColumnName("MediaType").HasDefaultValue(MediaType.None);
             builder.Property(si => si.SortOrder).HasColumnName("SortOrder").HasDefaultValue(0);
@@ -48,12 +47,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(si => si.TemplateId)
                 .HasColumnName("TemplateId");
 
-            // Relationships
-            builder.HasOne(si => si.Section)
-                   .WithMany(s => s.SectionItems)
-                   .HasForeignKey(si => si.SectionId)
-                   .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne(si => si.Template)
                    .WithMany(c => c.SectionItems)
                    .HasForeignKey(si => si.TemplateId)
@@ -69,8 +62,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                    .HasForeignKey(fv => fv.SectionItemId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            // Indexes
-            builder.HasIndex(si => new { si.SectionId, si.SortOrder }).HasDatabaseName("IX_SectionItems_SectionId_SortOrder");
             builder.HasIndex(si => si.Type).HasDatabaseName("IX_SectionItems_Type");
             builder.HasIndex(si => si.TemplateId).HasDatabaseName("IX_SectionItems_TemplateId");
 
@@ -83,7 +74,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 1,
-                    SectionId = 1, // Assuming section ID 1 is a navbar section
                     ParentSectionItemId = null,
                     TemplateId = 2, // Mega Menu Navbar Template
                     Type = SectionItemType.Logo,
@@ -102,7 +92,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 2,
-                    SectionId = 1,
                     ParentSectionItemId = null,
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -119,7 +108,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 3,
-                    SectionId = 1,
                     ParentSectionItemId = null,
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -136,7 +124,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 4,
-                    SectionId = 1,
                     ParentSectionItemId = null,
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -153,7 +140,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 5,
-                    SectionId = 1,
                     ParentSectionItemId = null,
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -170,7 +156,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 6,
-                    SectionId = 1,
                     ParentSectionItemId = null,
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -189,7 +174,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 7,
-                    SectionId = 1,
                     ParentSectionItemId = 3, // Under "Ürünler"
                     TemplateId = 2,
                     Type = SectionItemType.Category,
@@ -206,7 +190,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 8,
-                    SectionId = 1,
                     ParentSectionItemId = 3, // Under "Ürünler"
                     TemplateId = 2,
                     Type = SectionItemType.Category,
@@ -223,7 +206,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 9,
-                    SectionId = 1,
                     ParentSectionItemId = 3, // Under "Ürünler"
                     TemplateId = 2,
                     Type = SectionItemType.Category,
@@ -242,7 +224,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 10,
-                    SectionId = 1,
                     ParentSectionItemId = 7, // Under "Elektronik"
                     TemplateId = 2,
                     Type = SectionItemType.SubCategory,
@@ -259,7 +240,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 11,
-                    SectionId = 1,
                     ParentSectionItemId = 7, // Under "Elektronik"
                     TemplateId = 2,
                     Type = SectionItemType.SubCategory,
@@ -276,7 +256,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 12,
-                    SectionId = 1,
                     ParentSectionItemId = 7, // Under "Elektronik"
                     TemplateId = 2,
                     Type = SectionItemType.SubCategory,
@@ -295,7 +274,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 13,
-                    SectionId = 1,
                     ParentSectionItemId = 8, // Under "Giyim"
                     TemplateId = 2,
                     Type = SectionItemType.SubCategory,
@@ -312,7 +290,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 14,
-                    SectionId = 1,
                     ParentSectionItemId = 8, // Under "Giyim"
                     TemplateId = 2,
                     Type = SectionItemType.SubCategory,
@@ -329,7 +306,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 15,
-                    SectionId = 1,
                     ParentSectionItemId = 8, // Under "Giyim"
                     TemplateId = 2,
                     Type = SectionItemType.SubCategory,
@@ -348,7 +324,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 16,
-                    SectionId = 1,
                     ParentSectionItemId = 4, // Under "Hizmetler"
                     TemplateId = 2,
                     Type = SectionItemType.Service,
@@ -365,7 +340,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 17,
-                    SectionId = 1,
                     ParentSectionItemId = 4, // Under "Hizmetler"
                     TemplateId = 2,
                     Type = SectionItemType.Service,
@@ -382,7 +356,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 18,
-                    SectionId = 1,
                     ParentSectionItemId = 4, // Under "Hizmetler"
                     TemplateId = 2,
                     Type = SectionItemType.Service,
@@ -399,7 +372,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 19,
-                    SectionId = 1,
                     ParentSectionItemId = 4, // Under "Hizmetler"
                     TemplateId = 2,
                     Type = SectionItemType.Service,
@@ -418,7 +390,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 20,
-                    SectionId = 1,
                     ParentSectionItemId = 3, // Under "Ürünler"
                     TemplateId = 2,
                     Type = SectionItemType.FeatureCard,
@@ -437,7 +408,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 21,
-                    SectionId = 1,
                     ParentSectionItemId = 2, // Under "Ana Sayfa"
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -454,7 +424,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 22,
-                    SectionId = 1,
                     ParentSectionItemId = 2, // Under "Ana Sayfa"
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -471,7 +440,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 23,
-                    SectionId = 1,
                     ParentSectionItemId = 2, // Under "Ana Sayfa"
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -488,7 +456,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 24,
-                    SectionId = 1,
                     ParentSectionItemId = 2, // Under "Ana Sayfa"
                     TemplateId = 2,
                     Type = SectionItemType.Menu,
@@ -507,7 +474,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 25,
-                    SectionId = 1,
                     ParentSectionItemId = 22, // Under "Popüler Kategoriler"
                     TemplateId = 2,
                     Type = SectionItemType.CategoryLink,
@@ -524,7 +490,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 26,
-                    SectionId = 1,
                     ParentSectionItemId = 22, // Under "Popüler Kategoriler"
                     TemplateId = 2,
                     Type = SectionItemType.CategoryLink,
@@ -541,7 +506,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 27,
-                    SectionId = 1,
                     ParentSectionItemId = 22, // Under "Popüler Kategoriler"
                     TemplateId = 2,
                     Type = SectionItemType.CategoryLink,
@@ -560,7 +524,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 28,
-                    SectionId = 1,
                     ParentSectionItemId = 23, // Under "Kampanyalar"
                     TemplateId = 2,
                     Type = SectionItemType.PromoLink,
@@ -577,7 +540,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 29,
-                    SectionId = 1,
                     ParentSectionItemId = 23, // Under "Kampanyalar"
                     TemplateId = 2,
                     Type = SectionItemType.PromoLink,
@@ -594,7 +556,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new SectionItem
                 {
                     Id = 30,
-                    SectionId = 1,
                     ParentSectionItemId = 23, // Under "Kampanyalar"
                     TemplateId = 2,
                     Type = SectionItemType.PromoLink,
