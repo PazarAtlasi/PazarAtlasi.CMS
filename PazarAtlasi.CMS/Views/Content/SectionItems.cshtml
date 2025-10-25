@@ -1,0 +1,202 @@
+@model List<PazarAtlasi.CMS.Application.Dtos.SectionItemDto>
+
+@{
+    ViewData["Title"] = "Section Items";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-list-ul mr-2"></i>
+                        Section Items
+                    </h3>
+                    <a href="@Url.Action("SectionItemCreate", "Content")" class="btn btn-primary">
+                        <i class="fas fa-plus mr-1"></i>
+                        Yeni Section Item
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    }
+
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Type</th>
+                                        <th>Template</th>
+                                        <th>Parent</th>
+                                        <th>Sort Order</th>
+                                        <th>Translations</th>
+                                        <th>Fields</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <span class="badge badge-secondary">@item.Id</span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if (!string.IsNullOrEmpty(item.IconClass))
+                                                    {
+                                                        <i class="@item.IconClass mr-2"></i>
+                                                    }
+                                                    <div>
+                                                        <strong>@(item.Title ?? "No Title")</strong>
+                                                        @if (!string.IsNullOrEmpty(item.Key))
+                                                        {
+                                                            <br>
+                                                            <small class="text-muted">Key: @item.Key</small>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-info">@item.Type</span>
+                                                <br>
+                                                <small class="text-muted">@item.MediaType</small>
+                                            </td>
+                                            <td>
+                                                @if (item.TemplateId.HasValue)
+                                                {
+                                                    <span class="badge badge-success">@item.TemplateName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No Template</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.ParentSectionItemId.HasValue)
+                                                {
+                                                    <span class="badge badge-warning">Parent Item</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Root Item</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-light">@item.SortOrder</span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    @foreach (var translation in item.Translations.Take(3))
+                                                    {
+                                                        <span class="badge badge-outline-primary" title="@translation.LanguageName">
+                                                            @translation.LanguageCode
+                                                        </span>
+                                                    }
+                                                    @if (item.Translations.Count > 3)
+                                                    {
+                                                        <span class="badge badge-outline-secondary">+@(item.Translations.Count - 3)</span>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-outline-info">@item.Fields.Count Fields</span>
+                                                @if (item.FieldValues.Any())
+                                                {
+                                                    <br>
+                                                    <span class="badge badge-outline-success">@item.FieldValues.Count Values</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="@Url.Action("SectionItemEdit", "Content", new { id = item.Id })" 
+                                                       class="btn btn-sm btn-outline-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-info" 
+                                                            onclick="viewSectionItem(@item.Id)" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-list-ul fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Section Items Found</h4>
+                            <p class="text-muted">Start by creating your first section item.</p>
+                            <a href="@Url.Action("SectionItemCreate", "Content")" class="btn btn-primary">
+                                <i class="fas fa-plus mr-1"></i>
+                                Create First Section Item
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section Item Details Modal -->
+<div class="modal fade" id="sectionItemModal" tabindex="-1" role="dialog" aria-labelledby="sectionItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sectionItemModalLabel">Section Item Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="sectionItemModalBody">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function viewSectionItem(id) {
+            // This would typically make an AJAX call to get detailed information
+            // For now, we'll just show a placeholder
+            document.getElementById('sectionItemModalBody').innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                    <p>Loading section item details...</p>
+                </div>
+            `;
+            $('#sectionItemModal').modal('show');
+        }
+    </script>
+}

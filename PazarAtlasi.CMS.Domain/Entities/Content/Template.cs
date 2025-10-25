@@ -4,10 +4,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 {
     public class Template : Entity<int>
     {
-        public string Name { get; set; } = string.Empty;
-        
-        public string? Description { get; set; }
-        
         public TemplateType TemplateType { get; set; } // Template type for rendering behavior
         
         public string TemplateKey { get; set; } = string.Empty; // Unique identifier for template (e.g., "navbar-megamenu", "navbar-simple")
@@ -24,5 +20,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public virtual ICollection<SectionTypeTemplate> SectionTypeTemplates { get; set; } = new List<SectionTypeTemplate>();
 
         public virtual ICollection<SectionItemTypeTemplate> SectionItemTypeTemplates { get; set; } = new List<SectionItemTypeTemplate>();
+
+        public virtual ICollection<TemplateTranslation> Translations { get; set; } = new List<TemplateTranslation>();
     }
 }

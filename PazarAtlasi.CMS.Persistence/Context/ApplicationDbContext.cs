@@ -48,6 +48,8 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<Template> Templates { get; set; }
 
+        public DbSet<TemplateTranslation> TemplateTranslations { get; set; }
+
 
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

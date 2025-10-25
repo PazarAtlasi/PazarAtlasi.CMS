@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PazarAtlasi.CMS.Persistence.Context;
 
@@ -11,9 +12,11 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    partial class PazarAtlasiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251025224134_intssa")]
+    partial class intssa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -5196,6 +5199,12 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("LanguageId");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("Name");
+
                     b.Property<int>("SectionItemId")
                         .HasColumnType("int")
                         .HasColumnName("SectionItemId");
@@ -5207,7 +5216,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnName("Status");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
                         .HasColumnName("Title");
@@ -5238,6 +5246,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "En kaliteli ürünleri keşfedin",
                             IsDeleted = false,
                             LanguageId = 1,
+                            Name = "Hoş Geldiniz",
                             SectionItemId = 1,
                             Status = 1,
                             Title = "Pazar Atlası'na Hoş Geldiniz"
@@ -5249,6 +5258,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Discover the highest quality products",
                             IsDeleted = false,
                             LanguageId = 2,
+                            Name = "Welcome",
                             SectionItemId = 1,
                             Status = 1,
                             Title = "Welcome to Pazar Atlası"
@@ -5260,6 +5270,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Binlerce ürün arasından size en uygun olanları bulun. Hızlı teslimat, güvenli ödeme ve mükemmel müşteri hizmetiyle yanınızdayız.",
                             IsDeleted = false,
                             LanguageId = 1,
+                            Name = "Alt Başlık",
                             SectionItemId = 2,
                             Status = 1,
                             Title = "Kalite ve Güvenin Adresi"
@@ -5271,6 +5282,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Find the most suitable products for you among thousands of products. We are with you with fast delivery, secure payment and excellent customer service.",
                             IsDeleted = false,
                             LanguageId = 2,
+                            Name = "Subtitle",
                             SectionItemId = 2,
                             Status = 1,
                             Title = "Address of Quality and Trust"
@@ -5282,6 +5294,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Tüm ürünleri görüntülemek için tıklayın",
                             IsDeleted = false,
                             LanguageId = 1,
+                            Name = "Keşfet",
                             SectionItemId = 3,
                             Status = 1,
                             Title = "Ürünleri Keşfet"
@@ -5293,6 +5306,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Click to view all products",
                             IsDeleted = false,
                             LanguageId = 2,
+                            Name = "Explore",
                             SectionItemId = 3,
                             Status = 1,
                             Title = "Explore Products"
@@ -5304,6 +5318,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Yüksek performanslı, şık tasarımlı laptop",
                             IsDeleted = false,
                             LanguageId = 1,
+                            Name = "Öne Çıkan Ürün 1",
                             SectionItemId = 4,
                             Status = 1,
                             Title = "Premium Laptop"
@@ -5315,6 +5330,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "High performance, stylish design laptop",
                             IsDeleted = false,
                             LanguageId = 2,
+                            Name = "Featured Product 1",
                             SectionItemId = 4,
                             Status = 1,
                             Title = "Premium Laptop"
@@ -5326,6 +5342,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Yeni ürünler ve kampanyalardan haberdar olmak için e-posta listemize katılın",
                             IsDeleted = false,
                             LanguageId = 1,
+                            Name = "Bülten",
                             SectionItemId = 7,
                             Status = 1,
                             Title = "Haberdar Olun"
@@ -5337,6 +5354,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Join our email list to stay informed about new products and campaigns",
                             IsDeleted = false,
                             LanguageId = 2,
+                            Name = "Newsletter",
                             SectionItemId = 7,
                             Status = 1,
                             Title = "Stay Informed"
@@ -5348,6 +5366,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "En güncel haberler ve makaleler",
                             IsDeleted = false,
                             LanguageId = 1,
+                            Name = "Blog",
                             SectionItemId = 9,
                             Status = 1,
                             Title = "Blog Yazıları"
@@ -5359,6 +5378,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Description = "Latest news and articles",
                             IsDeleted = false,
                             LanguageId = 2,
+                            Name = "Blog",
                             SectionItemId = 9,
                             Status = 1,
                             Title = "Blog Posts"
@@ -8062,470 +8082,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("TemplateTranslations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Sade ve temiz tasarımlı navigasyon çubuğu şablonu",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Basit Navbar",
-                            Status = 0,
-                            TemplateId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Clean and simple navigation bar template",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Simple Navbar",
-                            Status = 0,
-                            TemplateId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Sauberes und einfaches Navigationsleisten-Template",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Einfache Navbar",
-                            Status = 0,
-                            TemplateId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Geniş kategoriler ve alt menülerle mega menü şablonu",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Mega Menü Navbar",
-                            Status = 0,
-                            TemplateId = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Mega menu template with wide categories and submenus",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Mega Menu Navbar",
-                            Status = 0,
-                            TemplateId = 2
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Mega-Menü-Template mit breiten Kategorien und Untermenüs",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Mega-Menü Navbar",
-                            Status = 0,
-                            TemplateId = 2
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Hizmet kategorilerini sekme şeklinde gösteren navbar şablonu",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Hizmet Sekmeli Navbar",
-                            Status = 0,
-                            TemplateId = 3
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Navbar template displaying service categories as tabs",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Service Tabs Navbar",
-                            Status = 0,
-                            TemplateId = 3
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Navbar-Template, das Servicekategorien als Tabs anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Service-Tabs Navbar",
-                            Status = 0,
-                            TemplateId = 3
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İçerikleri kategorilere göre düzenleyen navbar şablonu",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Kategorili Navbar",
-                            Status = 0,
-                            TemplateId = 4
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Navbar template organizing content by categories",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Categorized Navbar",
-                            Status = 0,
-                            TemplateId = 4
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Navbar-Template, das Inhalte nach Kategorien organisiert",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Kategorisierte Navbar",
-                            Status = 0,
-                            TemplateId = 4
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Temel ve esnek kullanım için varsayılan şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Varsayılan Şablon",
-                            Status = 0,
-                            TemplateId = 5
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Default template for basic and flexible usage",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Default Template",
-                            Status = 0,
-                            TemplateId = 5
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Standard-Template für grundlegende und flexible Verwendung",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Standard-Template",
-                            Status = 0,
-                            TemplateId = 5
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İçerikleri sıralı bir şekilde gösteren şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Sıralı Şablon",
-                            Status = 0,
-                            TemplateId = 6
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template displaying content in sequential order",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Sequential Template",
-                            Status = 0,
-                            TemplateId = 6
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das Inhalte in sequenzieller Reihenfolge anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Sequenzielles Template",
-                            Status = 0,
-                            TemplateId = 6
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İçerikleri ızgara düzeninde gösteren şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Izgara Şablonu",
-                            Status = 0,
-                            TemplateId = 7
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template displaying content in grid layout",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Grid Template",
-                            Status = 0,
-                            TemplateId = 7
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das Inhalte im Raster-Layout anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Raster-Template",
-                            Status = 0,
-                            TemplateId = 7
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Pinterest tarzı duvar düzeninde içerik gösteren şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Masonry Şablonu",
-                            Status = 0,
-                            TemplateId = 8
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template displaying content in Pinterest-style wall layout",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Masonry Template",
-                            Status = 0,
-                            TemplateId = 8
-                        },
-                        new
-                        {
-                            Id = 24,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das Inhalte im Pinterest-Stil Wand-Layout anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Masonry-Template",
-                            Status = 0,
-                            TemplateId = 8
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İçerikleri kaydırmalı karusel şeklinde gösteren şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Karusel Şablonu",
-                            Status = 0,
-                            TemplateId = 9
-                        },
-                        new
-                        {
-                            Id = 26,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template displaying content in scrollable carousel format",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Carousel Template",
-                            Status = 0,
-                            TemplateId = 9
-                        },
-                        new
-                        {
-                            Id = 27,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das Inhalte im scrollbaren Karussell-Format anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Karusell-Template",
-                            Status = 0,
-                            TemplateId = 9
-                        },
-                        new
-                        {
-                            Id = 28,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İçerikleri liste halinde düzenli şekilde gösteren şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Liste Şablonu",
-                            Status = 0,
-                            TemplateId = 10
-                        },
-                        new
-                        {
-                            Id = 29,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template displaying content in organized list format",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "List Template",
-                            Status = 0,
-                            TemplateId = 10
-                        },
-                        new
-                        {
-                            Id = 30,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das Inhalte im organisierten Listenformat anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Listen-Template",
-                            Status = 0,
-                            TemplateId = 10
-                        },
-                        new
-                        {
-                            Id = 31,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Tek bir içerik öğesini vurgulayan şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Tek Öğe Şablonu",
-                            Status = 0,
-                            TemplateId = 11
-                        },
-                        new
-                        {
-                            Id = 32,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template highlighting a single content item",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Single Item Template",
-                            Status = 0,
-                            TemplateId = 11
-                        },
-                        new
-                        {
-                            Id = 33,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das einen einzelnen Inhaltsartikel hervorhebt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Einzelartikel-Template",
-                            Status = 0,
-                            TemplateId = 11
-                        },
-                        new
-                        {
-                            Id = 34,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Birden fazla içerik öğesini düzenli şekilde gösteren şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Çoklu Öğe Şablonu",
-                            Status = 0,
-                            TemplateId = 12
-                        },
-                        new
-                        {
-                            Id = 35,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template displaying multiple content items in organized manner",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Multi Item Template",
-                            Status = 0,
-                            TemplateId = 12
-                        },
-                        new
-                        {
-                            Id = 36,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das mehrere Inhaltsartikel organisiert anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Mehrfachartikel-Template",
-                            Status = 0,
-                            TemplateId = 12
-                        },
-                        new
-                        {
-                            Id = 37,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İçerikleri açılır-kapanır akordeon şeklinde gösteren şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Akordeon Şablonu",
-                            Status = 0,
-                            TemplateId = 13
-                        },
-                        new
-                        {
-                            Id = 38,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template displaying content in expandable accordion format",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Accordion Template",
-                            Status = 0,
-                            TemplateId = 13
-                        },
-                        new
-                        {
-                            Id = 39,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das Inhalte im erweiterbaren Akkordeon-Format anzeigt",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Akkordeon-Template",
-                            Status = 0,
-                            TemplateId = 13
-                        },
-                        new
-                        {
-                            Id = 40,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İçerikleri sekmeler halinde organize eden şablon",
-                            IsDeleted = false,
-                            LanguageId = 1,
-                            Name = "Sekme Şablonu",
-                            Status = 0,
-                            TemplateId = 14
-                        },
-                        new
-                        {
-                            Id = 41,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template organizing content into tabs",
-                            IsDeleted = false,
-                            LanguageId = 2,
-                            Name = "Tabs Template",
-                            Status = 0,
-                            TemplateId = 14
-                        },
-                        new
-                        {
-                            Id = 42,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Template, das Inhalte in Tabs organisiert",
-                            IsDeleted = false,
-                            LanguageId = 3,
-                            Name = "Tabs-Template",
-                            Status = 0,
-                            TemplateId = 14
-                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.LayoutSection", b =>

@@ -1,0 +1,255 @@
+@using PazarAtlasi.CMS.Models.ViewModels
+@model PazarAtlasi.CMS.Application.Dtos.SectionItemUpdateDto
+
+@{
+    ViewData["Title"] = "Create Section Item";
+    var availableLanguages = ViewBag.AvailableLanguages as List<LanguageViewModel>;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create New Section Item
+                    </h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    }
+
+                    <form asp-action="SectionItemCreate" method="post">
+                        <div class="row">
+                            <!-- Basic Information -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Basic Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label asp-for="Type" class="form-label">Type <span class="text-danger">*</span></label>
+                                            <select asp-for="Type" class="form-control" asp-items="@(new SelectList(ViewBag.SectionItemTypes))" required>
+                                                <option value="">Select Type</option>
+                                            </select>
+                                            <span asp-validation-for="Type" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="MediaType" class="form-label">Media Type <span class="text-danger">*</span></label>
+                                            <select asp-for="MediaType" class="form-control" asp-items="@(new SelectList(ViewBag.MediaTypes))" required>
+                                                <option value="">Select Media Type</option>
+                                            </select>
+                                            <span asp-validation-for="MediaType" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="TemplateId" class="form-label">Template</label>
+                                            <select asp-for="TemplateId" class="form-control">
+                                                <option value="">No Template</option>
+                                                @foreach (var template in ViewBag.Templates)
+                                                {
+                                                    <option value="@template.Id">
+                                                        @(template.Translations.FirstOrDefault()?.Name ?? template.TemplateKey)
+                                                    </option>
+                                                }
+                                            </select>
+                                            <small class="form-text text-muted">Select a template to inherit field definitions</small>
+                                            <span asp-validation-for="TemplateId" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="ParentSectionItemId" class="form-label">Parent Section Item</label>
+                                            <select asp-for="ParentSectionItemId" class="form-control">
+                                                <option value="">No Parent (Root Item)</option>
+                                                @foreach (var parentItem in ViewBag.ParentSectionItems)
+                                                {
+                                                    <option value="@parentItem.Id">
+                                                        @(parentItem.Translations.FirstOrDefault()?.Title ?? parentItem.Title ?? $"Item {parentItem.Id}")
+                                                    </option>
+                                                }
+                                            </select>
+                                            <small class="form-text text-muted">Select a parent item to create a nested structure</small>
+                                            <span asp-validation-for="ParentSectionItemId" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="SortOrder" class="form-label">Sort Order</label>
+                                            <input asp-for="SortOrder" class="form-control" type="number" value="0" />
+                                            <small class="form-text text-muted">Lower numbers appear first</small>
+                                            <span asp-validation-for="SortOrder" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="Key" class="form-label">Key</label>
+                                            <input asp-for="Key" class="form-control" placeholder="Unique key for this item" />
+                                            <small class="form-text text-muted">Optional unique identifier</small>
+                                            <span asp-validation-for="Key" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="IconClass" class="form-label">Icon Class</label>
+                                            <input asp-for="IconClass" class="form-control" placeholder="e.g., fas fa-home" />
+                                            <small class="form-text text-muted">FontAwesome icon class (optional)</small>
+                                            <span asp-validation-for="IconClass" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Settings -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Settings</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input asp-for="AllowReorder" class="form-check-input" type="checkbox" checked />
+                                            <label asp-for="AllowReorder" class="form-check-label">
+                                                Allow Reorder
+                                            </label>
+                                            <small class="form-text text-muted">Allow this item to be reordered in the UI</small>
+                                        </div>
+
+                                        <div class="form-check">
+                                            <input asp-for="AllowRemove" class="form-check-input" type="checkbox" checked />
+                                            <label asp-for="AllowRemove" class="form-check-label">
+                                                Allow Remove
+                                            </label>
+                                            <small class="form-text text-muted">Allow this item to be removed from the UI</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Template Preview -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Template Preview</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="templatePreview">
+                                            <p class="text-muted">Select a template to see its configuration</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Translations -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Translations</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            @for (int i = 0; i < Model.Translations.Count; i++)
+                                            {
+                                                var translation = Model.Translations[i];
+                                                var language = availableLanguages.FirstOrDefault(l => l.Id == translation.LanguageId);
+                                                
+                                                <div class="col-md-4 mb-3">
+                                                    <div class="card border">
+                                                        <div class="card-header bg-light">
+                                                            <h6 class="card-title mb-0">
+                                                                <i class="fas fa-language mr-1"></i>
+                                                                @(language?.Name ?? "Unknown Language")
+                                                                <small class="text-muted">(@(language?.Code ?? "N/A"))</small>
+                                                            </h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <input type="hidden" asp-for="Translations[i].Id" />
+                                                            <input type="hidden" asp-for="Translations[i].SectionItemId" />
+                                                            <input type="hidden" asp-for="Translations[i].LanguageId" />
+
+                                                            <div class="form-group">
+                                                                <label asp-for="Translations[i].Title" class="form-label">Title</label>
+                                                                <input asp-for="Translations[i].Title" class="form-control" placeholder="Enter title in @(language?.Name ?? "this language")" />
+                                                                <span asp-validation-for="Translations[i].Title" class="text-danger"></span>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label asp-for="Translations[i].Description" class="form-label">Description</label>
+                                                                <textarea asp-for="Translations[i].Description" class="form-control" rows="3" placeholder="Enter description in @(language?.Name ?? "this language")"></textarea>
+                                                                <span asp-validation-for="Translations[i].Description" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <a href="@Url.Action("SectionItems", "Content")" class="btn btn-secondary">
+                                                <i class="fas fa-arrow-left mr-1"></i>
+                                                Back to List
+                                            </a>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save mr-1"></i>
+                                                Create Section Item
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Template selection change handler
+        document.getElementById('TemplateId').addEventListener('change', function() {
+            const templateId = this.value;
+            const previewDiv = document.getElementById('templatePreview');
+            
+            if (templateId) {
+                // This would typically make an AJAX call to get template details
+                previewDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Template selected. Field definitions will be loaded after creation.
+                    </div>
+                `;
+            } else {
+                previewDiv.innerHTML = '<p class="text-muted">Select a template to see its configuration</p>';
+            }
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const type = document.getElementById('Type').value;
+            const mediaType = document.getElementById('MediaType').value;
+            
+            if (!type || !mediaType) {
+                e.preventDefault();
+                alert('Please select both Type and Media Type.');
+                return false;
+            }
+        });
+    </script>
+}
