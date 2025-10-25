@@ -15,9 +15,13 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
         public void Configure(EntityTypeBuilder<Domain.Entities.Content.PageSection> builder)
         {
             builder.ToTable("PageSections").HasKey(ps => ps.Id);
+
             builder.Property(ps => ps.Id).HasColumnName("Id").IsRequired();
+
             builder.Property(ps => ps.PageId).HasColumnName("PageId").IsRequired();
+
             builder.Property(ps => ps.SectionId).HasColumnName("SectionId").IsRequired();
+
             builder.Property(ps => ps.SortOrder).HasColumnName("SortOrder").IsRequired().HasDefaultValue(0);
             // Relationships
             builder.HasOne(ps => ps.Page)

@@ -8,6 +8,10 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     /// </summary>
     public class SectionItemFieldValue : Entity<int>
     {
+        public int SectionId { get; set; }
+
+        public int SectionItemId { get; set; }
+
         /// <summary>
         /// Reference to the field definition
         /// </summary>
@@ -23,6 +27,10 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// JSON data for complex field types (arrays, objects, etc.)
         /// </summary>
         public string? JsonValue { get; set; }
+
+        public virtual SectionItem SectionItem { get; set; } = null!;
+
+        public virtual Section Section { get; set; } = null!;
 
         public virtual SectionItemField SectionItemField { get; set; } = null!;
 

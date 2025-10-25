@@ -25,6 +25,16 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 .HasForeignKey(x => x.SectionItemFieldId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(x => x.SectionItem)
+                .WithMany(x => x.SectionItemFieldValues)
+                .HasForeignKey(x => x.SectionItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(x => x.Section)
+                .WithMany(x => x.SectionItemFieldValues)
+                .HasForeignKey(x => x.SectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Indexes
             builder.HasIndex(x => x.SectionItemFieldId)
                 .HasDatabaseName("IX_SectionItemFieldValues_FieldId");
