@@ -62,12 +62,12 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         // Navigation properties
         public virtual SectionItem SectionItem { get; set; } = null!;
-        
+
         /// <summary>
         /// Field values created from this field definition
         /// </summary>
         public virtual ICollection<SectionItemFieldValue> SectionItemFieldValues { get; set; } = new List<SectionItemFieldValue>();
-        
+
         /// <summary>
         /// Translations for this field definition (labels, descriptions, etc.)
         /// </summary>

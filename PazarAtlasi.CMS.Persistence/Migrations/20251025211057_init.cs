@@ -243,6 +243,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     MediaType = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Key = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     AllowReorder = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     AllowRemove = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
@@ -732,19 +733,17 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItems",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "IconClass", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Main brand logo and text", "fas fa-image", null, 1, 1, 2, "Brand Logo", 1, null, null });
-
-            migrationBuilder.InsertData(
-                table: "SectionItems",
-                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "Key", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 2, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Homepage menu with quick access links", "fas fa-home", null, 2, 1, 2, "Ana Sayfa", 26, null, null },
-                    { 3, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Products mega menu with categories", "fas fa-shopping-bag", null, 3, 1, 2, "Ürünler", 26, null, null },
-                    { 4, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Services dropdown menu", "fas fa-cogs", null, 4, 1, 2, "Hizmetler", 26, null, null },
-                    { 5, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "About us menu item", "fas fa-info-circle", null, 5, 1, 2, "Hakkımızda", 26, null, null },
-                    { 6, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Contact menu item", "fas fa-envelope", null, 6, 1, 2, "İletişim", 26, null, null }
+                    { 1, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "About us mega menu", "fas fa-info-circle", "navbar.about", null, 1, 1, 2, "About", 26, null, null },
+                    { 12, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Services menu with tabs", "fas fa-cogs", null, null, 2, 1, 3, "Services", 26, null, null },
+                    { 43, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Solutions menu", "fas fa-lightbulb", null, null, 3, 1, 4, "Solutions", 26, null, null },
+                    { 69, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Blog mega menu", "fas fa-blog", null, null, 4, 1, 2, "Blog", 26, null, null },
+                    { 79, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Career opportunities", "fas fa-briefcase", null, null, 5, 1, 1, "Careers", 12, null, null },
+                    { 80, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Data center status", "fas fa-server", null, null, 6, 1, 1, "Data Center", 12, null, null },
+                    { 81, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Contact information", "fas fa-envelope", null, null, 7, 1, 1, "Contact", 8, null, null },
+                    { 84, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Customer references", "fas fa-handshake", null, null, 8, 1, 1, "References", 12, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1035,16 +1034,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "logo_image", "Logo Image", false, null, null, "Upload your logo image", false, 1, 1, 0, 11, null, null },
-                    { 2, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "logo_text", "Logo Text", true, 100, null, "Enter logo text", false, 1, 2, 0, 1, null, null },
-                    { 3, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "menu_title", "Menu Title", true, 50, null, "Enter menu title", true, 2, 3, 0, 1, null, null },
-                    { 4, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "menu_url", "Menu URL", false, null, null, "Enter menu URL (optional for dropdowns)", false, 2, 4, 0, 13, null, null },
-                    { 5, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "menu_icon", "Menu Icon", false, 50, null, "Enter icon class (e.g., fas fa-home)", false, 2, 5, 0, 1, null, null },
-                    { 6, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "menu_description", "Menu Description", true, 200, null, "Enter menu description for mega menu", false, 2, 6, 0, 2, null, null },
-                    { 7, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "featured_image", "Featured Image", false, null, null, "Upload featured image for mega menu", false, 2, 7, 0, 11, null, null },
-                    { 8, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "false", "is_featured", "Is Featured", false, null, null, "Mark as featured item", false, 2, 8, 0, 5, null, null },
-                    { 9, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "badge_text", "Badge Text", true, 20, null, "Enter badge text (e.g., NEW, HOT)", false, 2, 9, 0, 1, null, null },
-                    { 10, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "primary", "badge_color", "Badge Color", false, null, "[\"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\"]", "Select badge color", false, 2, 10, 0, 15, null, null }
+                    { 1, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "label", true, 100, null, "Enter menu label", true, 1, 1, 0, 1, null, null },
+                    { 2, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "type", "TYPE", false, null, null, "Menu type.", false, 1, 2, 0, 1, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1053,32 +1044,32 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 values: new object[,]
                 {
                     { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En kaliteli ürünleri keşfedin", 1, "Hoş Geldiniz", 1, 1, "Pazar Atlası'na Hoş Geldiniz", null, null },
-                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Discover the highest quality products", 2, "Welcome", 1, 1, "Welcome to Pazar Atlası", null, null },
-                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Binlerce ürün arasından size en uygun olanları bulun. Hızlı teslimat, güvenli ödeme ve mükemmel müşteri hizmetiyle yanınızdayız.", 1, "Alt Başlık", 2, 1, "Kalite ve Güvenin Adresi", null, null },
-                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Find the most suitable products for you among thousands of products. We are with you with fast delivery, secure payment and excellent customer service.", 2, "Subtitle", 2, 1, "Address of Quality and Trust", null, null },
-                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tüm ürünleri görüntülemek için tıklayın", 1, "Keşfet", 3, 1, "Ürünleri Keşfet", null, null },
-                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Click to view all products", 2, "Explore", 3, 1, "Explore Products", null, null },
-                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yüksek performanslı, şık tasarımlı laptop", 1, "Öne Çıkan Ürün 1", 4, 1, "Premium Laptop", null, null },
-                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, "Featured Product 1", 4, 1, "Premium Laptop", null, null }
+                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Discover the highest quality products", 2, "Welcome", 1, 1, "Welcome to Pazar Atlası", null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "SectionItems",
-                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "Key", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 7, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Electronics category with featured products", "fas fa-laptop", 3, 1, 1, 2, "Elektronik", 2, null, null },
-                    { 8, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Fashion category with seasonal collections", "fas fa-tshirt", 3, 2, 1, 2, "Giyim", 2, null, null },
-                    { 9, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Home and lifestyle products", "fas fa-home", 3, 3, 1, 2, "Ev & Yaşam", 2, null, null },
-                    { 16, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Professional web design services", "fas fa-paint-brush", 4, 1, 1, 2, "Web Tasarım", 6, null, null },
-                    { 17, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "E-commerce solutions and development", "fas fa-shopping-cart", 4, 2, 1, 2, "E-Ticaret", 6, null, null },
-                    { 18, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Digital marketing and SEO services", "fas fa-chart-line", 4, 3, 1, 2, "Dijital Pazarlama", 6, null, null },
-                    { 19, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "24/7 technical support services", "fas fa-life-ring", 4, 4, 1, 2, "Teknik Destek", 6, null, null },
-                    { 20, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Limited time special offers and deals", "fas fa-fire", 3, 4, 1, 2, "Özel Kampanya", 7, null, null },
-                    { 21, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest product arrivals and new releases", "fas fa-star", 2, 1, 1, 2, "Yeni Ürünler", 26, null, null },
-                    { 22, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Most popular product categories", "fas fa-fire", 2, 2, 1, 2, "Popüler Kategoriler", 26, null, null },
-                    { 23, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Current promotions and special offers", "fas fa-percentage", 2, 3, 1, 2, "Kampanyalar", 26, null, null },
-                    { 24, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Customer reviews and testimonials", "fas fa-comments", 2, 4, 1, 2, "Müşteri Yorumları", 26, null, null }
+                    { 2, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Content", "fas fa-building", "navbar.content", 1, 1, 1, 2, "content", 11, null, null },
+                    { 8, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Company features", "fas fa-star", null, 1, 3, 1, 2, "Features", 7, null, null },
+                    { 13, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Managed services", "fas fa-server", null, 12, 1, 1, 3, "Managed", 6, null, null },
+                    { 14, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud services", "fas fa-cloud", null, 12, 2, 1, 3, "Cloud", 6, null, null },
+                    { 15, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Security services", "fas fa-shield-alt", null, 12, 3, 1, 3, "Security", 6, null, null },
+                    { 16, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Database services", "fas fa-database", null, 12, 4, 1, 3, "Database", 6, null, null },
+                    { 17, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Monitoring services", "fas fa-chart-line", null, 12, 5, 1, 3, "Monitoring", 6, null, null },
+                    { 18, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Premium services", "fas fa-crown", null, 12, 6, 1, 3, "Premium", 6, null, null },
+                    { 44, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Software solutions", "fas fa-code", null, 43, 1, 1, 4, "Software", 2, null, null },
+                    { 45, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "DevOps solutions", "fas fa-server", null, 43, 2, 1, 4, "DevOps", 2, null, null },
+                    { 46, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Hosting solutions", "fas fa-database", null, 43, 3, 1, 4, "Hosting", 2, null, null },
+                    { 47, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud solutions", "fas fa-cloud", null, 43, 4, 1, 4, "Cloud", 2, null, null },
+                    { 48, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Security solutions", "fas fa-shield-alt", null, 43, 5, 1, 4, "Security", 2, null, null },
+                    { 70, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Blog description", "fas fa-info", null, 69, 1, 1, 2, "Description", 11, null, null },
+                    { 71, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Blog categories", "fas fa-tags", null, 69, 2, 1, 2, "Categories", 9, null, null },
+                    { 76, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Featured blog posts", "fas fa-star", null, 69, 3, 1, 2, "Featured Posts", 7, null, null },
+                    { 82, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Email contact", "fas fa-envelope", null, 81, 1, 1, 2, "Email", 11, null, null },
+                    { 83, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Office address", "fas fa-map-marker-alt", null, 81, 2, 1, 2, "Address", 11, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1086,26 +1077,10 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "Label", "LanguageId", "Placeholder", "SectionItemFieldId", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar için logo resmi yükleyin", "Logo Resmi", 1, "Logo resminizi yükleyin", 1, 0, null, null },
-                    { 2, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Logo yerine gösterilecek metin", "Logo Metni", 1, "Logo metnini girin", 2, 0, null, null },
-                    { 3, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesinin başlığı", "Menü Başlığı", 1, "Menü başlığını girin", 3, 0, null, null },
-                    { 4, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesinin yönlendirileceği URL", "Menü URL'si", 1, "Menü URL'sini girin (dropdown'lar için opsiyonel)", 4, 0, null, null },
-                    { 5, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesi için ikon sınıfı", "Menü İkonu", 1, "İkon sınıfını girin (örn: fas fa-home)", 5, 0, null, null },
-                    { 6, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Mega menü için açıklama metni", "Menü Açıklaması", 1, "Mega menü açıklamasını girin", 6, 0, null, null },
-                    { 7, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Mega menü için öne çıkan resim", "Öne Çıkan Resim", 1, "Öne çıkan resim yükleyin", 7, 0, null, null },
-                    { 8, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Bu öğeyi öne çıkan olarak işaretle", "Öne Çıkan", 1, "Öne çıkan öğe olarak işaretle", 8, 0, null, null },
-                    { 9, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü öğesi için rozet metni", "Rozet Metni", 1, "Rozet metnini girin (örn: YENİ, POPÜLER)", 9, 0, null, null },
-                    { 10, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Rozet için renk seçimi", "Rozet Rengi", 1, "Rozet rengini seçin", 10, 0, null, null },
-                    { 11, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Upload logo image for navbar", "Logo Image", 2, "Upload your logo image", 1, 0, null, null },
-                    { 12, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Text to display instead of logo", "Logo Text", 2, "Enter logo text", 2, 0, null, null },
-                    { 13, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Title of the menu item", "Menu Title", 2, "Enter menu title", 3, 0, null, null },
-                    { 14, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "URL where the menu item should redirect", "Menu URL", 2, "Enter menu URL (optional for dropdowns)", 4, 0, null, null },
-                    { 15, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Icon class for the menu item", "Menu Icon", 2, "Enter icon class (e.g., fas fa-home)", 5, 0, null, null },
-                    { 16, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Description text for mega menu", "Menu Description", 2, "Enter mega menu description", 6, 0, null, null },
-                    { 17, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Featured image for mega menu", "Featured Image", 2, "Upload featured image", 7, 0, null, null },
-                    { 18, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Mark this item as featured", "Is Featured", 2, "Mark as featured item", 8, 0, null, null },
-                    { 19, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Badge text for menu item", "Badge Text", 2, "Enter badge text (e.g., NEW, HOT)", 9, 0, null, null },
-                    { 20, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Color selection for badge", "Badge Color", 2, "Select badge color", 10, 0, null, null }
+                    { 1, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Label açıklaması.", "Label çevirisi giriniz.", 1, "Label giriniz.", 1, 0, null, null },
+                    { 2, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menu title", "Title", 2, "Enter menu title", 1, 0, null, null },
+                    { 3, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menü URL'si", "URL", 1, "URL girin (dropdown'lar için opsiyonel)", 2, 0, null, null },
+                    { 4, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Menu URL", "URL", 2, "Enter URL (optional for dropdowns)", 2, 0, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1113,9 +1088,168 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 11, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "false", "is_featured", "Is Featured", false, null, null, "Mark as featured item", false, 21, 8, 0, 5, null, null },
-                    { 12, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "badge_text", "Badge Text", true, 20, null, "Enter badge text (e.g., NEW, HOT)", false, 21, 9, 0, 1, null, null },
-                    { 13, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "primary", "badge_color", "Badge Color", false, null, "[\"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\"]", "Select badge color", false, 21, 10, 0, 15, null, null }
+                    { 12, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "tab_label", "Tab Label", true, 50, null, "Enter tab label", true, 13, 1, 0, 1, null, null },
+                    { 13, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "tab_icon", "Tab Icon", false, 50, null, "Enter icon class", false, 13, 2, 0, 1, null, null },
+                    { 14, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "false", "is_premium", "Is Premium", false, null, null, null, false, 18, 3, 0, 5, null, null },
+                    { 18, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "category_label", "Category Label", true, 50, null, "Enter category label", true, 44, 1, 0, 1, null, null },
+                    { 19, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "category_icon", "Category Icon", false, 50, null, "Enter icon class", false, 44, 2, 0, 1, null, null },
+                    { 20, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "blue", "category_color", "Category Color", false, null, "[\"blue\", \"indigo\", \"purple\", \"green\", \"red\", \"yellow\"]", null, false, 44, 3, 0, 15, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Binlerce ürün arasından size en uygun olanları bulun. Hızlı teslimat, güvenli ödeme ve mükemmel müşteri hizmetiyle yanınızdayız.", 1, "Alt Başlık", 2, 1, "Kalite ve Güvenin Adresi", null, null },
+                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Find the most suitable products for you among thousands of products. We are with you with fast delivery, secure payment and excellent customer service.", 2, "Subtitle", 2, 1, "Address of Quality and Trust", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItems",
+                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "Key", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 3, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "description", "fas fa-link", "navbar.description", 2, 2, 1, 2, "description", 9, null, null },
+                    { 4, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-bullseye", "navbar.quicklinks", 2, 1, 1, 2, "quick links", 12, null, null },
+                    { 6, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-briefcase", null, 2, 3, 1, 2, "features", 12, null, null },
+                    { 9, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Years of experience", "fas fa-calendar-alt", null, 8, 1, 1, 2, "Experience", 7, null, null },
+                    { 10, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Professional team", "fas fa-certificate", null, 8, 2, 1, 2, "Certified Team", 7, null, null },
+                    { 11, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Successful projects", "fas fa-project-diagram", null, 8, 3, 1, 2, "Projects", 7, null, null },
+                    { 19, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Multi-cloud management", "fas fa-cloud", null, 13, 1, 1, 2, "Multi-Cloud", 6, null, null },
+                    { 20, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Hybrid cloud solutions", "fas fa-sync-alt", null, 13, 2, 1, 2, "Hybrid Cloud", 6, null, null },
+                    { 21, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "24/7 monitoring", "fas fa-desktop", null, 13, 3, 1, 2, "Monitoring", 6, null, null },
+                    { 22, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Container orchestration", "fas fa-cube", null, 13, 4, 1, 2, "Container", 6, null, null },
+                    { 23, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Public cloud infrastructure", "fas fa-globe", null, 14, 1, 1, 2, "Public Cloud", 6, null, null },
+                    { 24, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud migration", "fas fa-sync-alt", null, 14, 2, 1, 2, "Migration", 6, null, null },
+                    { 25, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cost optimization", "fas fa-chart-pie", null, 14, 3, 1, 2, "Optimization", 6, null, null },
+                    { 26, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud consulting", "fas fa-cloud", null, 14, 4, 1, 2, "Consulting", 6, null, null },
+                    { 27, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud security solutions", "fas fa-shield-alt", null, 15, 1, 1, 2, "Cloud Security", 6, null, null },
+                    { 28, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Zero trust architecture", "fas fa-shield-alt", null, 15, 2, 1, 2, "Zero Trust", 6, null, null },
+                    { 29, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Managed security services", "fas fa-shield-alt", null, 15, 3, 1, 2, "Managed Security", 6, null, null },
+                    { 30, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Data protection services", "fas fa-lock", null, 15, 4, 1, 2, "Data Protection", 6, null, null },
+                    { 31, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Database management", "fas fa-database", null, 16, 1, 1, 2, "Database Management", 6, null, null },
+                    { 32, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Data migration services", "fas fa-sync-alt", null, 16, 2, 1, 2, "Data Migration", 6, null, null },
+                    { 33, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Performance optimization", "fas fa-tachometer-alt", null, 16, 3, 1, 2, "Performance", 6, null, null },
+                    { 34, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Backup and recovery", "fas fa-save", null, 16, 4, 1, 2, "Backup & Recovery", 6, null, null },
+                    { 35, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Performance monitoring", "fas fa-chart-line", null, 17, 1, 1, 2, "Performance Monitoring", 6, null, null },
+                    { 36, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "System health monitoring", "fas fa-heartbeat", null, 17, 2, 1, 2, "System Health", 6, null, null },
+                    { 37, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cost optimization", "fas fa-chart-pie", null, 17, 3, 1, 2, "Cost Optimization", 6, null, null },
+                    { 38, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Capacity planning", "fas fa-chart-area", null, 17, 4, 1, 2, "Capacity Planning", 6, null, null },
+                    { 39, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Premium consulting", "fas fa-crown", null, 18, 1, 1, 2, "Premium Consulting", 6, null, null },
+                    { 40, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "CTO as a service", "fas fa-user-tie", null, 18, 2, 1, 2, "CTO as Service", 6, null, null },
+                    { 41, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Digital transformation", "fas fa-sync-alt", null, 18, 3, 1, 2, "Digital Transformation", 6, null, null },
+                    { 42, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Strategic planning", "fas fa-chess", null, 18, 4, 1, 2, "Strategic Planning", 6, null, null },
+                    { 49, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Custom software development", "fas fa-laptop-code", null, 44, 1, 1, 2, "Custom Development", 6, null, null },
+                    { 50, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Web application development", "fas fa-globe", null, 44, 2, 1, 2, "Web Applications", 6, null, null },
+                    { 51, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Mobile app development", "fas fa-mobile-alt", null, 44, 3, 1, 2, "Mobile Applications", 6, null, null },
+                    { 52, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "API development services", "fas fa-plug", null, 44, 4, 1, 2, "API Development", 6, null, null },
+                    { 53, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "CI/CD pipelines", "fas fa-code-branch", null, 45, 1, 1, 2, "CI/CD", 6, null, null },
+                    { 54, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Kubernetes management", "fas fa-dharmachakra", null, 45, 2, 1, 2, "Kubernetes", 6, null, null },
+                    { 55, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "IaC solutions", "fas fa-file-code", null, 45, 3, 1, 2, "Infrastructure as Code", 6, null, null },
+                    { 56, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "DevOps monitoring", "fas fa-chart-line", null, 45, 4, 1, 2, "Monitoring", 6, null, null },
+                    { 57, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "VPS hosting services", "fas fa-server", null, 46, 1, 1, 2, "VPS Hosting", 6, null, null },
+                    { 58, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Database hosting", "fas fa-database", null, 46, 2, 1, 2, "Database Hosting", 6, null, null },
+                    { 59, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Disaster recovery", "fas fa-life-ring", null, 46, 3, 1, 2, "Disaster Recovery", 6, null, null },
+                    { 60, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Web hosting services", "fas fa-globe", null, 46, 4, 1, 2, "Web Hosting", 6, null, null },
+                    { 61, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Microsoft Azure solutions", "fab fa-microsoft", null, 47, 1, 1, 2, "Azure", 6, null, null },
+                    { 62, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Amazon Web Services", "fab fa-aws", null, 47, 2, 1, 2, "AWS", 6, null, null },
+                    { 63, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud migration", "fas fa-sync-alt", null, 47, 3, 1, 2, "Migration", 6, null, null },
+                    { 64, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud optimization", "fas fa-chart-pie", null, 47, 4, 1, 2, "Optimization", 6, null, null },
+                    { 65, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Network security", "fas fa-network-wired", null, 48, 1, 1, 2, "Network Security", 6, null, null },
+                    { 66, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Application security", "fas fa-shield-alt", null, 48, 2, 1, 2, "Application Security", 6, null, null },
+                    { 67, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Data security", "fas fa-lock", null, 48, 3, 1, 2, "Data Security", 6, null, null },
+                    { 68, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Security auditing", "fas fa-search", null, 48, 4, 1, 2, "Security Audit", 6, null, null },
+                    { 72, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-cloud", null, 71, 1, 1, 2, "Cloud Trends", 12, null, null },
+                    { 73, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-cogs", null, 71, 2, 1, 2, "DevOps Practices", 12, null, null },
+                    { 74, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-lightbulb", null, 71, 3, 1, 2, "Software Innovation", 12, null, null },
+                    { 75, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-user-tie", null, 71, 4, 1, 2, "Tech Leadership", 12, null, null },
+                    { 77, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Best practices guide", "fas fa-dharmachakra", null, 76, 1, 1, 2, "Kubernetes Guide", 27, null, null },
+                    { 78, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Migration strategies", "fab fa-microsoft", null, 76, 2, 1, 2, "Azure Migration", 27, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemFieldTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "Label", "LanguageId", "Placeholder", "SectionItemFieldId", "Status", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 25, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Servis sekmesi etiketi", "Sekme Etiketi", 1, "Sekme etiketini girin", 12, 0, null, null },
+                    { 26, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Service tab label", "Tab Label", 2, "Enter tab label", 12, 0, null, null },
+                    { 27, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sekme ikon sınıfı", "Sekme İkonu", 1, "İkon sınıfını girin", 13, 0, null, null },
+                    { 28, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tab icon class", "Tab Icon", 2, "Enter icon class", 13, 0, null, null },
+                    { 29, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Premium servis işareti", "Premium mi?", 1, "Premium olarak işaretle", 14, 0, null, null },
+                    { 30, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Premium service marker", "Is Premium", 2, "Mark as premium", 14, 0, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 3, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description_title", "Description Title", true, 200, null, "Enter description title", true, 3, 1, 0, 1, null, null },
+                    { 4, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description_text", "Description Text", true, 500, null, "Enter description text", true, 3, 2, 0, 2, null, null },
+                    { 5, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "link_text", "Link Text", true, 50, null, "Enter link text", false, 3, 3, 0, 1, null, null },
+                    { 6, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "link_url", "Link URL", false, null, null, "Enter link URL", false, 3, 4, 0, 13, null, null },
+                    { 7, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "quicklinks.title", "Quicklink Title", true, 100, null, "Enter section title", true, 4, 1, 0, 1, null, null },
+                    { 15, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "service_title", "Service Title", true, 100, null, "Enter service title", true, 19, 1, 0, 1, null, null },
+                    { 16, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "service_description", "Service Description", true, 300, null, "Enter service description", true, 19, 2, 0, 2, null, null },
+                    { 17, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "service_icon", "Service Icon", false, 50, null, "Enter icon class", false, 19, 3, 0, 1, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tüm ürünleri görüntülemek için tıklayın", 1, "Keşfet", 3, 1, "Ürünleri Keşfet", null, null },
+                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Click to view all products", 2, "Explore", 3, 1, "Explore Products", null, null },
+                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yüksek performanslı, şık tasarımlı laptop", 1, "Öne Çıkan Ürün 1", 4, 1, "Premium Laptop", null, null },
+                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, "Featured Product 1", 4, 1, "Premium Laptop", null, null },
+                    { 11, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En güncel haberler ve makaleler", 1, "Blog", 9, 1, "Blog Yazıları", null, null },
+                    { 12, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest news and articles", 2, "Blog", 9, 1, "Blog Posts", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItems",
+                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "Key", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 5, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-users", null, 4, 2, 1, 2, "Team", 12, null, null },
+                    { 7, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-newspaper", null, 3, 4, 1, 2, "Press", 12, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemFieldTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "Label", "LanguageId", "Placeholder", "SectionItemFieldId", "Status", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 5, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Açıklama bölümü başlığı", "Açıklama Başlığı", 1, "Açıklama başlığını girin", 3, 0, null, null },
+                    { 6, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Description section title", "Description Title", 2, "Enter description title", 3, 0, null, null },
+                    { 7, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Açıklama içeriği", "Açıklama Metni", 1, "Açıklama metnini girin", 4, 0, null, null },
+                    { 8, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Description content", "Description Text", 2, "Enter description text", 4, 0, null, null },
+                    { 9, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link buton metni", "Link Metni", 1, "Link metnini girin", 5, 0, null, null },
+                    { 10, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link button text", "Link Text", 2, "Enter link text", 5, 0, null, null },
+                    { 11, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link hedef URL'si", "Link URL'si", 1, "Link URL'sini girin", 6, 0, null, null },
+                    { 12, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link target URL", "Link URL", 2, "Enter link URL", 6, 0, null, null },
+                    { 13, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Bölüm başlığı", "Bölüm Başlığı", 1, "Bölüm başlığını girin", 7, 0, null, null },
+                    { 14, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Section title", "Section Title", 2, "Enter section title", 7, 0, null, null },
+                    { 31, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Servis öğesi başlığı", "Servis Başlığı", 1, "Servis başlığını girin", 15, 0, null, null },
+                    { 32, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Service item title", "Service Title", 2, "Enter service title", 15, 0, null, null },
+                    { 33, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Servis öğesi açıklaması", "Servis Açıklaması", 1, "Servis açıklamasını girin", 16, 0, null, null },
+                    { 34, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Service item description", "Service Description", 2, "Enter service description", 16, 0, null, null },
+                    { 35, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Servis ikon sınıfı", "Servis İkonu", 1, "İkon sınıfını girin", 17, 0, null, null },
+                    { 36, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Service icon class", "Service Icon", 2, "Enter icon class", 17, 0, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 8, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "quicklink.links.missionVision.text", "Link Text", true, 100, null, "Enter link text", true, 5, 1, 0, 1, null, null },
+                    { 9, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "quicklink.links.missionVision.link", "Link URL", false, null, null, "Enter link URL", true, 5, 2, 0, 13, null, null },
+                    { 10, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "quicklink.links.team.text", "Feature Title", true, 100, null, "Enter feature title", true, 5, 1, 0, 1, null, null },
+                    { 11, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "quicklink.links.missionVision.link", "Feature Description", true, 300, null, "mission vision", true, 5, 2, 0, 13, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1124,28 +1258,22 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 values: new object[,]
                 {
                     { 9, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yeni ürünler ve kampanyalardan haberdar olmak için e-posta listemize katılın", 1, "Bülten", 7, 1, "Haberdar Olun", null, null },
-                    { 10, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Join our email list to stay informed about new products and campaigns", 2, "Newsletter", 7, 1, "Stay Informed", null, null },
-                    { 11, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En güncel haberler ve makaleler", 1, "Blog", 9, 1, "Blog Yazıları", null, null },
-                    { 12, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest news and articles", 2, "Blog", 9, 1, "Blog Posts", null, null }
+                    { 10, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Join our email list to stay informed about new products and campaigns", 2, "Newsletter", 7, 1, "Stay Informed", null, null }
                 });
 
             migrationBuilder.InsertData(
-                table: "SectionItems",
-                columns: new[] { "Id", "AllowRemove", "AllowReorder", "CreatedAt", "CreatedBy", "Description", "IconClass", "ParentSectionItemId", "SortOrder", "Status", "TemplateId", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                table: "SectionItemFieldTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "Label", "LanguageId", "Placeholder", "SectionItemFieldId", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 10, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Desktop and laptop computers", "fas fa-desktop", 7, 1, 1, 2, "Bilgisayarlar", 3, null, null },
-                    { 11, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Smartphones and accessories", "fas fa-mobile-alt", 7, 2, 1, 2, "Telefonlar", 3, null, null },
-                    { 12, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Audio and video equipment", "fas fa-headphones", 7, 3, 1, 2, "Ses & Görüntü", 3, null, null },
-                    { 13, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Women's fashion and accessories", "fas fa-female", 8, 1, 1, 2, "Kadın", 3, null, null },
-                    { 14, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Men's fashion and accessories", "fas fa-male", 8, 2, 1, 2, "Erkek", 3, null, null },
-                    { 15, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Children's clothing and accessories", "fas fa-child", 8, 3, 1, 2, "Çocuk", 3, null, null },
-                    { 25, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Best selling products across all categories", "fas fa-trophy", 22, 1, 1, 2, "En Çok Satan", 4, null, null },
-                    { 26, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Trending products and viral items", "fas fa-trending-up", 22, 2, 1, 2, "Trend Ürünler", 4, null, null },
-                    { 27, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Editor's choice and curated collections", "fas fa-heart", 22, 3, 1, 2, "Editörün Seçimi", 4, null, null },
-                    { 28, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Limited time flash sales with huge discounts", "fas fa-bolt", 23, 1, 1, 2, "Flash Sale", 5, null, null },
-                    { 29, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Seasonal discounts and clearance sales", "fas fa-snowflake", 23, 2, 1, 2, "Sezon İndirimi", 5, null, null },
-                    { 30, true, true, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Free shipping campaigns and offers", "fas fa-shipping-fast", 23, 3, 1, 2, "Ücretsiz Kargo", 5, null, null }
+                    { 15, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link öğesi metni", "Link Metni", 1, "Link metnini girin", 8, 0, null, null },
+                    { 16, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link item text", "Link Text", 2, "Enter link text", 8, 0, null, null },
+                    { 17, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link hedef adresi", "Link URL'si", 1, "Link URL'sini girin", 9, 0, null, null },
+                    { 18, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Link target address", "Link URL", 2, "Enter link URL", 9, 0, null, null },
+                    { 19, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Özellik kartı başlığı", "Özellik Başlığı", 1, "Özellik başlığını girin", 10, 0, null, null },
+                    { 20, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Feature card title", "Feature Title", 2, "Enter feature title", 10, 0, null, null },
+                    { 21, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Özellik kartı açıklaması", "Özellik Açıklaması", 1, "Özellik açıklamasını girin", 11, 0, null, null },
+                    { 22, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Feature card description", "Feature Description", 2, "Enter feature description", 11, 0, null, null }
                 });
 
             migrationBuilder.CreateIndex(

@@ -35,10 +35,7 @@
             {
                 ViewBag.AvailableLanguages = availableLanguages;
 
-                // Find matching configuration for this child item's type
-                var childConfig = Model.ChildItems.FirstOrDefault(nc => nc.Type == childItem.Type);
-
-                @if (childConfig != null)
+                @if (childItem != null)
                 {
                     <div class="nested-item-card bg-@(bgColor) border border-@(borderColor) rounded p-3"
                          data-nested-id="@childItem.Id"
@@ -47,9 +44,9 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-medium text-slate-600">
                                 <i class="fas fa-link mr-1"></i>
-                                @(childConfig.Translations?.FirstOrDefault()?.Title ?? childItem.Type.ToString()) #@childItem.SortOrder
+                                @(childItem.Translations?.FirstOrDefault()?.Title ?? childItem.Type.ToString()) #@childItem.SortOrder
                             </span>
-                            @if (childConfig.AllowReorder)
+                            @if (childItem.AllowReorder)
                             {
                                 <button type="button" onclick="this.closest('.nested-item-card').remove();"
                                         class="text-red-500 hover:text-red-700 text-xs"
@@ -61,7 +58,7 @@
 
                         <!-- Render fields for this nested item -->
                         <div class="nested-field-list space-y-2">
-                            @foreach (var field in childConfig.Fields ?? new List<SectionItemFieldViewModel>())
+                            @foreach (var field in childItem.Fields ?? new List<SectionItemFieldViewModel>())
                             {
                                 ViewBag.Field = field;
                                 ViewBag.Item = childItem;
@@ -78,7 +75,7 @@
                         @if (childItem.ChildItems != null && childItem.ChildItems.Any())
                         {
                             ViewBag.ParentItem = childItem;
-                            ViewBag.ChildItems = childConfig.ChildItems;
+                            ViewBag.ChildItems = childItem.ChildItems;
                             ViewBag.Level = level + 1;
 
                             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
@@ -86,12 +83,12 @@
                     </div>
 
                     <!-- Add button for this nested item type -->
-                    @if (childConfig.AllowReorder)
+                    @if (childItem.AllowReorder)
                     {
                         <button type="button"
-                                onclick="SectionModal.addNestedItemByType('@parentItem.Id', '@childConfig.Type', @level)"
+                                onclick="SectionModal.addNestedItemByType('@parentItem.Id', '@childItem.Type', @level)"
                                 class="w-full mt-2 px-2 py-1 bg-white hover:bg-@(buttonBg) text-@(iconColor) hover:text-@(iconColor) rounded text-xs transition-colors border-2 border-@(borderColor)">
-                            <i class="fas fa-plus mr-1"></i> @($"Add {childConfig.Type.ToString()}")
+                            <i class="fas fa-plus mr-1"></i> @($"Add {childItem.Type.ToString()}")
 
                         </button>
                     }

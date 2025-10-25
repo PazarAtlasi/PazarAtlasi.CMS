@@ -27,6 +27,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// </summary>
         public string? Title { get; set; }
 
+        public string? Key { get; set; }
+
         /// <summary>
         /// Description for this item (from template or custom)
         /// </summary>
