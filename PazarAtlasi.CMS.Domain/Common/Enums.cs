@@ -47,8 +47,13 @@ namespace PazarAtlasi.CMS.Domain.Common
     {
         None,
         Logo,
+        Container,
+        Tab,
         Category,
+        ServiceCard,
         SubCategory,
+        BlogPost,
+        ContactInfo,
         CategoryLink,
         PromoLink,
         Service,

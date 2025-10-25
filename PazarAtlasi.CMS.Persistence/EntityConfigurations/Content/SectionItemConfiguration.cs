@@ -74,9 +74,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.HasQueryFilter(si => !si.IsDeleted);
 
             builder.SeedHeaderMenuItems();
-            builder.SeedServicesMenu();
-            builder.SeedSolutionsMenu();
-            builder.SeedOtherMenus();
         }
     }
 }

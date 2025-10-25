@@ -55,7 +55,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             // Seed Data
             builder.SeedCommonFieldTranslations();
-            builder.SeedServiceFieldTranslations();
         }
     }
 }
