@@ -71,6 +71,61 @@ const SectionModal = (function () {
       if (sectionTypeSelect) {
         currentSection.type = parseInt(sectionTypeSelect.value) || 0;
       }
+
+      // If editing existing section (id > 0), show items grid and load templates
+      if (currentSection.id > 0) {
+        const itemsGridContainer = document.getElementById(
+          "itemsGridContainer"
+        );
+        const addItemButtonContainer = document.getElementById(
+          "addItemButtonContainer"
+        );
+
+        // Check if there are existing items
+        const existingItems = document.querySelectorAll(
+          ".section-item-card"
+        );
+
+        if (existingItems.length > 0) {
+          // Show items grid if there are existing items
+          if (itemsGridContainer) {
+            itemsGridContainer.classList.remove("hidden");
+          }
+          // Update items count badge
+          updateItemsCountBadge();
+        }
+
+        // Show add item button if section type is selected
+        if (currentSection.type > 0) {
+          if (addItemButtonContainer) {
+            addItemButtonContainer.classList.remove("hidden");
+          }
+
+          // Load available templates for this section type
+          try {
+            const result =
+              await ContentServices.getTemplatesBySectionType(
+                currentSection.type
+              );
+            if (
+              result.success &&
+              result.templates &&
+              result.templates.length > 0
+            ) {
+              currentSection.availableTemplates = result.templates;
+              console.log(
+                "Available templates loaded for edit mode:",
+                result.templates
+              );
+            }
+          } catch (error) {
+            console.error(
+              "Error loading templates for edit mode:",
+              error
+            );
+          }
+        }
+      }
     } catch (error) {
       console.error("Error loading section modal:", error);
       alert("Error loading modal. Please try again.");
@@ -1455,3 +1510,27 @@ const SectionModal = (function () {
 
 // Make globally available
 window.SectionModal = SectionModal;
+
+// Global functions for page sections partial
+function editSectionItems(sectionId) {
+  const pageId = window.currentPageId || 1; // Get from global or default
+  SectionModal.show(sectionId, pageId);
+}
+
+function removeItem(button) {
+  const itemCard = button.closest(".section-item-card");
+  if (
+    itemCard &&
+    confirm("Are you sure you want to remove this item?")
+  ) {
+    itemCard.remove();
+
+    // Update item numbers and count badge
+    if (typeof SectionModal !== "undefined") {
+      SectionModal.updateItemNumbers();
+      SectionModal.updateItemsCountBadge();
+    } else if (typeof updateItemNumbers === "function") {
+      updateItemNumbers();
+    }
+  }
+}

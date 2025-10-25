@@ -290,7 +290,11 @@ async function createNewSection() {
   // Get the page ID
   const pageId = document.querySelector('input[name="Id"]').value;
 
-  window.SectionModal.show(0, parseInt(pageId));
+  if (typeof SectionModal !== "undefined" && SectionModal.show) {
+    SectionModal.show(0, parseInt(pageId));
+  } else {
+    console.error("SectionModal not available");
+  }
 }
 
 async function showReusableSections() {
@@ -542,21 +546,17 @@ async function deletePage() {
 }
 
 async function addSectionItem(sectionId) {
-  safeSectionModalCall(() => {
+  try {
     // For editing an existing section to add items to it
-    window.SectionModal.show(sectionId, 0);
-  });
-}
-
-async function editSectionItem(itemId) {
-  safeSectionModalCall(() => {
-    // Implementation will depend on your SectionModal API
-    if (typeof window.SectionModal.showItemModal === "function") {
-      window.SectionModal.showItemModal(itemId, 0);
+    if (typeof SectionModal !== "undefined" && SectionModal.show) {
+      const pageId = window.currentPageId || 1;
+      SectionModal.show(sectionId, pageId);
     } else {
-      console.warn("SectionModal.showItemModal not available");
+      console.warn("SectionModal not available");
     }
-  });
+  } catch (error) {
+    console.error("Error opening section modal:", error);
+  }
 }
 
 // SEO Preview Updates
