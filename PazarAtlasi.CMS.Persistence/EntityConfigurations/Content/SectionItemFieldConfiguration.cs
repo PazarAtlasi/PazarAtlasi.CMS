@@ -221,7 +221,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 },
                 new SectionItemField
                 {
-                    Id = 8,
+                    Id = 11,
                     SectionItemId = 21, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "is_featured",
                     FieldName = "Is Featured",
@@ -236,7 +236,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 },
                 new SectionItemField
                 {
-                    Id = 9,
+                    Id = 12,
                     SectionItemId = 21, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "badge_text",
                     FieldName = "Badge Text",
@@ -252,7 +252,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 },
                 new SectionItemField
                 {
-                    Id = 10,
+                    Id = 13,
                     SectionItemId = 21, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
                     FieldKey = "badge_color",
                     FieldName = "Badge Color",

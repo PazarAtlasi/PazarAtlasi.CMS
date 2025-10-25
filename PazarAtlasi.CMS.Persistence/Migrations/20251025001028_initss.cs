@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initss : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -1170,6 +1170,16 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     { 59, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, 0, null, null, "Sınırlı süre büyük indirimler" },
                     { 60, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, 0, null, null, "FLASH" },
                     { 61, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, 0, null, null, "warning" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionItemFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 11, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "false", "is_featured", "Is Featured", false, null, null, "Mark as featured item", false, 21, 8, 0, 5, null, null },
+                    { 12, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "", "badge_text", "Badge Text", true, 20, null, "Enter badge text (e.g., NEW, HOT)", false, 21, 9, 0, 1, null, null },
+                    { 13, new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "primary", "badge_color", "Badge Color", false, null, "[\"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\"]", "Select badge color", false, 21, 10, 0, 15, null, null }
                 });
 
             migrationBuilder.InsertData(

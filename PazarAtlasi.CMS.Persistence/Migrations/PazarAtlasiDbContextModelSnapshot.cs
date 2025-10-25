@@ -1960,6 +1960,56 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             SortOrder = 10,
                             Status = 0,
                             Type = 15
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultValue = "false",
+                            FieldKey = "is_featured",
+                            FieldName = "Is Featured",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            Placeholder = "Mark as featured item",
+                            Required = false,
+                            SectionItemId = 21,
+                            SortOrder = 8,
+                            Status = 0,
+                            Type = 5
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultValue = "",
+                            FieldKey = "badge_text",
+                            FieldName = "Badge Text",
+                            IsDeleted = false,
+                            IsTranslatable = true,
+                            MaxLength = 20,
+                            Placeholder = "Enter badge text (e.g., NEW, HOT)",
+                            Required = false,
+                            SectionItemId = 21,
+                            SortOrder = 9,
+                            Status = 0,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultValue = "primary",
+                            FieldKey = "badge_color",
+                            FieldName = "Badge Color",
+                            IsDeleted = false,
+                            IsTranslatable = false,
+                            OptionsJson = "[\"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\"]",
+                            Placeholder = "Select badge color",
+                            Required = false,
+                            SectionItemId = 21,
+                            SortOrder = 10,
+                            Status = 0,
+                            Type = 15
                         });
                 });
 

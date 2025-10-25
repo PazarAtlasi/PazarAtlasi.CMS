@@ -852,6 +852,17 @@ namespace PazarAtlasi.CMS.Controllers
                 sectionItemViewModel.SectionId = sectionId;
                 sectionItemViewModel.SortOrder = currentCount + 1;
 
+                ViewBag.AvailableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .ToListAsync();
+
                 return PartialView("~/Views/Content/_SectionItemCard.cshtml", sectionItemViewModel);
             }
             catch (Exception ex)
