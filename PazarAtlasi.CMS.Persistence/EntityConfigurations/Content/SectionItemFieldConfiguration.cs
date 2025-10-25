@@ -218,6 +218,53 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                     SortOrder = 10,
                     CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),
                     IsDeleted = false
+                },
+                new SectionItemField
+                {
+                    Id = 8,
+                    SectionItemId = 21, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
+                    FieldKey = "is_featured",
+                    FieldName = "Is Featured",
+                    Type = SectionItemFieldType.Checkbox,
+                    Required = false,
+                    Placeholder = "Mark as featured item",
+                    DefaultValue = "false",
+                    IsTranslatable = false,
+                    SortOrder = 8,
+                    CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),
+                    IsDeleted = false
+                },
+                new SectionItemField
+                {
+                    Id = 9,
+                    SectionItemId = 21, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
+                    FieldKey = "badge_text",
+                    FieldName = "Badge Text",
+                    Type = SectionItemFieldType.Text,
+                    Required = false,
+                    MaxLength = 20,
+                    Placeholder = "Enter badge text (e.g., NEW, HOT)",
+                    DefaultValue = "",
+                    IsTranslatable = true,
+                    SortOrder = 9,
+                    CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),
+                    IsDeleted = false
+                },
+                new SectionItemField
+                {
+                    Id = 10,
+                    SectionItemId = 21, // Assuming SectionItem with ID 2 corresponds to Mega Menu Navbar
+                    FieldKey = "badge_color",
+                    FieldName = "Badge Color",
+                    Type = SectionItemFieldType.MultiSelect,
+                    Required = false,
+                    Placeholder = "Select badge color",
+                    DefaultValue = "primary",
+                    OptionsJson = @"[""primary"", ""secondary"", ""success"", ""danger"", ""warning"", ""info""]",
+                    IsTranslatable = false,
+                    SortOrder = 10,
+                    CreatedAt = new DateTime(2024, 10, 14, 10, 0, 0),
+                    IsDeleted = false
                 }
             );
         }
