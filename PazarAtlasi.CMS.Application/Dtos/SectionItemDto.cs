@@ -17,6 +17,8 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public bool AllowReorder { get; set; }
         public bool AllowRemove { get; set; }
         public string? IconClass { get; set; }
+        public bool IsChild { get; set; } = false;
+        public string? ParentTitle { get; set; }
         public List<SectionItemTranslationDto> Translations { get; set; } = new List<SectionItemTranslationDto>();
         public List<SectionItemFieldDto> Fields { get; set; } = new List<SectionItemFieldDto>();
         public List<SectionItemFieldValueDto> FieldValues { get; set; } = new List<SectionItemFieldValueDto>();

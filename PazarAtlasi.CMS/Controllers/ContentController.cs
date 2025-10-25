@@ -2453,7 +2453,39 @@ namespace PazarAtlasi.CMS.Controllers
                 .ThenBy(si => si.CreatedAt)
                 .ToListAsync();
 
-            var sectionItemDtos = sectionItems.Select(si => new SectionItemDto
+            // Group items by parent-child relationship
+            var rootItems = sectionItems.Where(si => si.ParentSectionItemId == null).OrderBy(si => si.SortOrder).ToList();
+            var childItems = sectionItems.Where(si => si.ParentSectionItemId != null).ToList();
+
+            // Create a flat list with proper hierarchy
+            var hierarchicalItems = new List<SectionItemDto>();
+            
+            foreach (var rootItem in rootItems)
+            {
+                // Add root item
+                var rootDto = MapSectionItemToDto(rootItem);
+                hierarchicalItems.Add(rootDto);
+                
+                // Add child items
+                var children = childItems.Where(ci => ci.ParentSectionItemId == rootItem.Id).OrderBy(ci => ci.SortOrder).ToList();
+                foreach (var child in children)
+                {
+                    var childDto = MapSectionItemToDto(child);
+                    childDto.IsChild = true; // Mark as child for styling
+                    childDto.ParentTitle = rootItem.Translations.FirstOrDefault()?.Title ?? rootItem.Title ?? $"Item {rootItem.Id}";
+                    hierarchicalItems.Add(childDto);
+                }
+            }
+
+            return View(hierarchicalItems);
+        }
+
+        /// <summary>
+        /// Map SectionItem to DTO
+        /// </summary>
+        private SectionItemDto MapSectionItemToDto(SectionItem si)
+        {
+            return new SectionItemDto
             {
                 Id = si.Id,
                 ParentSectionItemId = si.ParentSectionItemId,
@@ -2462,9 +2494,9 @@ namespace PazarAtlasi.CMS.Controllers
                 Type = si.Type,
                 MediaType = si.MediaType,
                 SortOrder = si.SortOrder,
-                Title = si.Title,
+                Title = si.Translations.FirstOrDefault()?.Title ?? si.Title,
                 Key = si.Key,
-                Description = si.Description,
+                Description = si.Translations.FirstOrDefault()?.Description ?? si.Description,
                 AllowReorder = si.AllowReorder,
                 AllowRemove = si.AllowRemove,
                 IconClass = si.IconClass,
@@ -2473,8 +2505,8 @@ namespace PazarAtlasi.CMS.Controllers
                     Id = t.Id,
                     SectionItemId = t.SectionItemId,
                     LanguageId = t.LanguageId,
-                    LanguageName = t.Language.Name,
-                    LanguageCode = t.Language.Code,
+                    LanguageName = t.Language?.Name ?? "Unknown",
+                    LanguageCode = t.Language?.Code ?? "N/A",
                     Title = t.Title,
                     Description = t.Description
                 }).ToList(),
@@ -2483,11 +2515,11 @@ namespace PazarAtlasi.CMS.Controllers
                     Id = f.Id,
                     SectionItemId = f.SectionItemId,
                     FieldKey = f.FieldKey,
-                    FieldName = f.FieldName,
+                    FieldName = f.Translations.FirstOrDefault()?.Label ?? f.FieldKey,
                     Type = f.Type,
                     Required = f.Required,
                     MaxLength = f.MaxLength,
-                    Placeholder = f.Placeholder,
+                    Placeholder = f.Translations.FirstOrDefault()?.Placeholder ?? f.Placeholder,
                     DefaultValue = f.DefaultValue,
                     IsTranslatable = f.IsTranslatable,
                     OptionsJson = f.OptionsJson,
@@ -2497,8 +2529,8 @@ namespace PazarAtlasi.CMS.Controllers
                         Id = ft.Id,
                         SectionItemFieldId = ft.SectionItemFieldId,
                         LanguageId = ft.LanguageId,
-                        LanguageName = ft.Language.Name,
-                        LanguageCode = ft.Language.Code,
+                        LanguageName = ft.Language?.Name ?? "Unknown",
+                        LanguageCode = ft.Language?.Code ?? "N/A",
                         Label = ft.Label,
                         Description = ft.Description,
                         Placeholder = ft.Placeholder
@@ -2517,15 +2549,13 @@ namespace PazarAtlasi.CMS.Controllers
                         Id = fvt.Id,
                         SectionItemFieldValueId = fvt.SectionItemFieldValueId,
                         LanguageId = fvt.LanguageId,
-                        LanguageName = fvt.Language.Name,
-                        LanguageCode = fvt.Language.Code,
+                        LanguageName = fvt.Language?.Name ?? "Unknown",
+                        LanguageCode = fvt.Language?.Code ?? "N/A",
                         Value = fvt.Value,
                         JsonValue = fvt.JsonValue
                     }).ToList()
                 }).ToList()
-            }).ToList();
-
-            return View(sectionItemDtos);
+            };
         }
 
         /// <summary>
