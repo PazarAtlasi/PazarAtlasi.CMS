@@ -254,6 +254,7 @@ const SectionModal = (function () {
       );
 
       sectionItems.push({
+        Id: itemData.id,
         SortOrder: index + 1,
         Type: itemData.type,
         TemplateId: itemData.templateId,
@@ -473,6 +474,7 @@ const SectionModal = (function () {
           );
 
           nestedItems.push({
+            Id: nestedData.id,
             SortOrder: index + 1,
             Type: nestedData.type,
             TemplateId: nestedData.templateId,
@@ -486,6 +488,7 @@ const SectionModal = (function () {
     }
 
     return {
+      id: parseInt(itemId) || 0,
       type: itemType,
       templateId: templateId,
       fields: fields,

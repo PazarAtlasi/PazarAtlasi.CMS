@@ -1906,16 +1906,74 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         try
                         {
-                            // Create the field value
-                            var fieldValue = new SectionItemFieldValue
-                            {
-                                SectionItemFieldId = fieldRequest.Id,
-                                Value = fieldRequest.FieldValue ?? string.Empty,
-                                CreatedAt = DateTime.UtcNow,
-                                IsDeleted = false
-                            };
+                            SectionItemFieldValue fieldValue;
 
-                            _pazarAtlasiDbContext.SectionItemFieldValues.Add(fieldValue);
+                            if (fieldRequest.Id > 0)
+                            {
+                                // Update existing field value
+                                fieldValue = await _pazarAtlasiDbContext.SectionItemFieldValues
+                                    .Include(fv => fv.Translations)
+                                    .FirstOrDefaultAsync(fv => fv.SectionItemFieldId == fieldRequest.Id);
+
+                                if (fieldValue != null)
+                                {
+                                    // Update existing field value
+                                    fieldValue.Value = fieldRequest.FieldValue ?? string.Empty;
+                                    fieldValue.UpdatedAt = DateTime.UtcNow;
+
+                                    // Remove existing translations
+                                    _pazarAtlasiDbContext.SectionItemFieldValueTranslations.RemoveRange(fieldValue.Translations);
+                                }
+                                else
+                                {
+                                    // Field value not found, create new one
+                                    // We need to find the SectionItemField by FieldKey to get the correct SectionItemFieldId
+                                    var sectionItemField = await _pazarAtlasiDbContext.SectionItemFields
+                                        .FirstOrDefaultAsync(f => f.Id == fieldRequest.Id && !f.IsDeleted);
+
+                                    if (sectionItemField == null)
+                                    {
+                                        Console.WriteLine($"SectionItemField not found for FieldKey: {fieldRequest.FieldKey}");
+                                        continue;
+                                    }
+
+                                    fieldValue = new SectionItemFieldValue
+                                    {
+                                        SectionId = sectionId,
+                                        SectionItemId = itemRequest.Id,
+                                        SectionItemFieldId = sectionItemField.Id,
+                                        Value = fieldRequest.FieldValue ?? string.Empty,
+                                        CreatedAt = DateTime.UtcNow,
+                                        IsDeleted = false
+                                    };
+                                    _pazarAtlasiDbContext.SectionItemFieldValues.Add(fieldValue);
+                                }
+                            }
+                            else
+                            {
+                                // Create new field value
+                                // We need to find the SectionItemField by FieldKey to get the correct SectionItemFieldId
+                                var sectionItemField = await _pazarAtlasiDbContext.SectionItemFields
+                                    .FirstOrDefaultAsync(f => f.FieldKey == fieldRequest.FieldKey && !f.IsDeleted);
+
+                                if (sectionItemField == null)
+                                {
+                                    Console.WriteLine($"SectionItemField not found for FieldKey: {fieldRequest.FieldKey}");
+                                    continue;
+                                }
+
+                                fieldValue = new SectionItemFieldValue
+                                {
+                                    SectionId = sectionId,
+                                    SectionItemId = itemRequest.Id,
+                                    SectionItemFieldId = sectionItemField.Id,
+                                    Value = fieldRequest.FieldValue ?? string.Empty,
+                                    CreatedAt = DateTime.UtcNow,
+                                    IsDeleted = false
+                                };
+                                _pazarAtlasiDbContext.SectionItemFieldValues.Add(fieldValue);
+                            }
+
                             await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get field value ID
 
                             // Process field value translations if they exist
@@ -1935,10 +1993,29 @@ namespace PazarAtlasi.CMS.Controllers
                         }
                         catch (Exception ex)
                         {
-
+                            // Log error but continue processing
+                            Console.WriteLine($"Error processing field {fieldRequest.FieldKey}: {ex.Message}");
                         }
                     }
 
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                }
+
+                // Process section item translations
+                if (itemRequest.Translations != null && itemRequest.Translations.Any())
+                {
+                    var itemTranslations = itemRequest.Translations.Select(t => new SectionItemTranslation
+                    {
+                        SectionItemId = itemRequest.Id,
+                        LanguageId = t.LanguageId,
+                        Name = t.Name,
+                        Title = t.Title,
+                        Description = t.Description,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    }).ToList();
+
+                    _pazarAtlasiDbContext.SectionItemTranslations.AddRange(itemTranslations);
                     await _pazarAtlasiDbContext.SaveChangesAsync();
                 }
 
