@@ -841,18 +841,7 @@ namespace PazarAtlasi.CMS.Controllers
                     return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template not found.</p></div>", "text/html");
                 }
 
-                // Get SectionItemViewModel directly from TemplateConfigurationProvider (no more mapping needed!)
-                var sectionItemViewModel = await GetConfigurationAsync(template.Id, template.TemplateKey);
-                if (sectionItemViewModel == null)
-                {
-                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
-                }
-
-                // Set section-specific properties
-                sectionItemViewModel.SectionId = sectionId;
-                sectionItemViewModel.SortOrder = currentCount + 1;
-
-                ViewBag.AvailableLanguages = await _pazarAtlasiDbContext.Languages
+                var availableLanguages = await _pazarAtlasiDbContext.Languages
                     .Where(l => !l.IsDeleted)
                     .Select(l => new LanguageViewModel
                     {
@@ -862,6 +851,21 @@ namespace PazarAtlasi.CMS.Controllers
                         IsDefault = l.IsDefault
                     })
                     .ToListAsync();
+
+                ViewBag.AvailableLanguages = availableLanguages;
+
+                // Get SectionItemViewModel directly from TemplateConfigurationProvider (no more mapping needed!)
+                var sectionItemViewModel = await GetConfigurationAsync(template.Id, template.TemplateKey, availableLanguages);
+                if (sectionItemViewModel == null)
+                {
+                    return Content("<div class='bg-red-50 border border-red-200 rounded-lg p-4'><p class='text-red-600'>Template configuration not found.</p></div>", "text/html");
+                }
+
+                // Set section-specific properties
+                sectionItemViewModel.SectionId = sectionId;
+                sectionItemViewModel.SortOrder = currentCount + 1;
+
+                
 
                 return PartialView("~/Views/Content/_SectionItemCard.cshtml", sectionItemViewModel);
             }
@@ -1193,6 +1197,15 @@ namespace PazarAtlasi.CMS.Controllers
                     };
 
                     _pazarAtlasiDbContext.Sections.Add(newSection);
+                    _pazarAtlasiDbContext.PageSections.Add(new PageSection
+                    {
+                        PageId = request.PageId,
+                        SectionId = newSection.Id,
+                        SortOrder = request.SortOrder,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    });
+
                     await _pazarAtlasiDbContext.SaveChangesAsync();
 
                     // Add section items
@@ -1807,12 +1820,6 @@ namespace PazarAtlasi.CMS.Controllers
 
             foreach (var itemRequest in itemRequests)
             {
-                Console.WriteLine($"Item type: {itemRequest.Type}");
-                Console.WriteLine($"Item templateId: {itemRequest.TemplateId}");
-                Console.WriteLine($"Item fields count: {itemRequest.Fields?.Count ?? 0}");
-                Console.WriteLine($"Item translations count: {itemRequest.Translations?.Count ?? 0}");
-                Console.WriteLine($"Nested items count: {itemRequest.NestedItems?.Count ?? 0}");
-
                 var newItem = new SectionItem
                 {
                     SectionId = sectionId,
@@ -1831,18 +1838,8 @@ namespace PazarAtlasi.CMS.Controllers
                     IsDeleted = false
                 };
 
-                try
-                {
-
-                    _pazarAtlasiDbContext.SectionItems.Add(newItem);
-                    await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
-                }
-                catch (Exception ex)
-                {
-
-                }
-
-                Console.WriteLine($"Created item with ID: {newItem.Id}");
+                _pazarAtlasiDbContext.SectionItems.Add(newItem);
+                await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get ID
 
                 // Process field values (both translatable and non-translatable)
                 if (itemRequest.Fields != null && itemRequest.Fields.Any())
@@ -1851,13 +1848,12 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         // Find the field definition by FieldKey from template
                         var fieldDefinition = await _pazarAtlasiDbContext.SectionItemFields
-                            .FirstOrDefaultAsync(f => f.SectionItem.TemplateId == itemRequest.TemplateId && 
-                                                     f.FieldKey == fieldRequest.FieldKey && 
+                            .FirstOrDefaultAsync(f => f.SectionItem.TemplateId == itemRequest.TemplateId &&
+                                                     f.FieldKey == fieldRequest.FieldKey &&
                                                      !f.IsDeleted);
 
                         if (fieldDefinition == null)
                         {
-                            Console.WriteLine($"Warning: Field definition not found for key '{fieldRequest.FieldKey}' in Template {itemRequest.TemplateId}");
                             continue;
                         }
 
@@ -1890,13 +1886,11 @@ namespace PazarAtlasi.CMS.Controllers
                     }
 
                     await _pazarAtlasiDbContext.SaveChangesAsync();
-                    Console.WriteLine($"Added {itemRequest.Fields.Count} field values for item {newItem.Id}");
                 }
 
                 // Process nested items recursively
                 if (itemRequest.NestedItems != null && itemRequest.NestedItems.Any())
                 {
-                    Console.WriteLine($"Processing {itemRequest.NestedItems.Count} nested items for parent {newItem.Id}");
                     await ProcessSectionItems(itemRequest.NestedItems, sectionId, newItem.Id);
                 }
             }
@@ -1972,7 +1966,7 @@ namespace PazarAtlasi.CMS.Controllers
         /// Fields are only inside Items, not at template level
         /// SectionItemları çekip onların child yapısını doğru şekilde oluşturur
         /// </summary>
-        public async Task<SectionItemViewModel?> GetConfigurationAsync(int templateId, string templateKey)
+        public async Task<SectionItemViewModel?> GetConfigurationAsync(int templateId, string templateKey, List<LanguageViewModel> availableLanguages)
         {
             // Get the template
             var template = await _pazarAtlasiDbContext.Templates
@@ -1980,20 +1974,6 @@ namespace PazarAtlasi.CMS.Controllers
 
             if (template == null)
                 return null;
-
-            // Get available languages
-            var availableLanguages = await _pazarAtlasiDbContext.Languages
-                .Where(l => !l.IsDeleted)
-                .Select(l => new LanguageViewModel
-                {
-                    Id = l.Id,
-                    Name = l.Name,
-                    Code = l.Code,
-                    IsDefault = l.IsDefault
-                })
-                .OrderByDescending(l => l.IsDefault)
-                .ThenBy(l => l.Name)
-                .ToListAsync();
 
             // Get ALL section items that use this template (without field includes for performance)
             var allSectionItems = await _pazarAtlasiDbContext.SectionItems
