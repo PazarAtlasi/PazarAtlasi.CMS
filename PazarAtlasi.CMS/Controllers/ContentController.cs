@@ -1197,6 +1197,8 @@ namespace PazarAtlasi.CMS.Controllers
                     };
 
                     _pazarAtlasiDbContext.Sections.Add(newSection);
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+
                     _pazarAtlasiDbContext.PageSections.Add(new PageSection
                     {
                         PageId = request.PageId,
@@ -1846,42 +1848,38 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     foreach (var fieldRequest in itemRequest.Fields)
                     {
-                        // Find the field definition by FieldKey from template
-                        var fieldDefinition = await _pazarAtlasiDbContext.SectionItemFields
-                            .FirstOrDefaultAsync(f => f.SectionItem.TemplateId == itemRequest.TemplateId &&
-                                                     f.FieldKey == fieldRequest.FieldKey &&
-                                                     !f.IsDeleted);
-
-                        if (fieldDefinition == null)
+                        try
                         {
-                            continue;
-                        }
-
-                        // Create the field value
-                        var fieldValue = new SectionItemFieldValue
-                        {
-                            SectionItemFieldId = fieldDefinition.Id,
-                            Value = fieldRequest.FieldValue ?? string.Empty,
-                            CreatedAt = DateTime.UtcNow,
-                            IsDeleted = false
-                        };
-
-                        _pazarAtlasiDbContext.SectionItemFieldValues.Add(fieldValue);
-                        await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get field value ID
-
-                        // Process field value translations if they exist
-                        if (fieldRequest.Translations != null && fieldRequest.Translations.Any())
-                        {
-                            var fieldValueTranslations = fieldRequest.Translations.Select(t => new SectionItemFieldValueTranslation
+                            // Create the field value
+                            var fieldValue = new SectionItemFieldValue
                             {
-                                SectionItemFieldValueId = fieldValue.Id,
-                                LanguageId = t.LanguageId,
-                                Value = t.Value ?? string.Empty,
+                                SectionItemFieldId = fieldRequest.Id,
+                                Value = fieldRequest.FieldValue ?? string.Empty,
                                 CreatedAt = DateTime.UtcNow,
                                 IsDeleted = false
-                            }).ToList();
+                            };
 
-                            _pazarAtlasiDbContext.SectionItemFieldValueTranslations.AddRange(fieldValueTranslations);
+                            _pazarAtlasiDbContext.SectionItemFieldValues.Add(fieldValue);
+                            await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get field value ID
+
+                            // Process field value translations if they exist
+                            if (fieldRequest.Translations != null && fieldRequest.Translations.Any())
+                            {
+                                var fieldValueTranslations = fieldRequest.Translations.Select(t => new SectionItemFieldValueTranslation
+                                {
+                                    SectionItemFieldValueId = fieldValue.Id,
+                                    LanguageId = t.LanguageId,
+                                    Value = t.Value ?? string.Empty,
+                                    CreatedAt = DateTime.UtcNow,
+                                    IsDeleted = false
+                                }).ToList();
+
+                                _pazarAtlasiDbContext.SectionItemFieldValueTranslations.AddRange(fieldValueTranslations);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
                         }
                     }
 

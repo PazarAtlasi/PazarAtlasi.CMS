@@ -16,7 +16,7 @@
     var fieldPlaceholder = fieldTranslation?.Placeholder;
 }
 
-<div class="field-container" data-field-name="@Model.FieldKey" data-translatable="@Model.IsTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@((int)Model.FieldType)">
+<div class="field-container" data-field-id="@Model.Id" data-field-name="@Model.FieldKey" data-translatable="@Model.IsTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@((int)Model.FieldType)">
     @if (Model.IsTranslatable && availableLanguages.Any())
     {
         <!-- Multi-language field with tabs -->
@@ -89,6 +89,7 @@
     {
         var inputAttributes = new Dictionary<string, object>
         {
+            ["data-field-id"] = Model.Id,
             ["data-field-key"] = fieldKey,
             ["class"] = "w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         };
@@ -123,7 +124,7 @@
 
             case "image":
                 <div class="image-upload-container">
-                    <input type="hidden" class="image-path-input" value="@value" data-field-key="@fieldKey" />
+                    <input type="hidden" class="image-path-input" value="@value" data-field-id="@Model.Id" data-field-key="@fieldKey" />
                     <div class="flex items-center space-x-2">
                         <input type="file" class="hidden" accept="image/*"/>
                         <button type="button"
@@ -153,7 +154,7 @@
                 <label class="flex items-center space-x-2">
                     <input type="checkbox" 
                         class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                        checked="@(value == "true" || value == "True")" data-field-key="@fieldKey" />
+                        checked="@(value == "true" || value == "True")" data-field-id="@Model.Id" data-field-key="@fieldKey" />
                     <span class="text-sm text-slate-600">@placeholder</span>
                 </label>
                 break;

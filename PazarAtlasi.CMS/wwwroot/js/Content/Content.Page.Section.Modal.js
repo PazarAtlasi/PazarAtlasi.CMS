@@ -373,12 +373,13 @@ const SectionModal = (function () {
     );
 
     directFieldContainers.forEach((container) => {
+      const fieldId = container.dataset.fieldId;
       const fieldKey = container.dataset.fieldName;
       const isTranslatable =
         container.dataset.translatable === "true";
 
       console.log(
-        `Processing field: ${fieldKey}, translatable: ${isTranslatable}`
+        `Processing field: ${fieldKey} (ID: ${fieldId}), translatable: ${isTranslatable}`
       );
 
       if (!isTranslatable) {
@@ -390,12 +391,13 @@ const SectionModal = (function () {
 
         if (fieldKey) {
           fields.push({
+            Id: parseInt(fieldId) || 0,
             FieldKey: fieldKey,
             FieldValue: fieldValue,
             FieldType: getFieldTypeFromContainer(container),
           });
           console.log(
-            `  Non-translatable field: ${fieldKey} = ${fieldValue}, type: ${getFieldTypeFromContainer(
+            `  Non-translatable field: ${fieldKey} (ID: ${fieldId}) = ${fieldValue}, type: ${getFieldTypeFromContainer(
               container
             )}`
           );
@@ -434,7 +436,7 @@ const SectionModal = (function () {
             }
 
             console.log(
-              `  Translatable field [${languageCode}]: ${fieldKey} = ${fieldValue}`
+              `  Translatable field [${languageCode}]: ${fieldKey} (ID: ${fieldId}) = ${fieldValue}`
             );
           }
         });
@@ -442,6 +444,7 @@ const SectionModal = (function () {
         // Add field with embedded translations
         if (fieldTranslations.length > 0) {
           fields.push({
+            Id: parseInt(fieldId) || 0,
             FieldKey: fieldKey,
             FieldValue: defaultValue,
             FieldType: getFieldTypeFromContainer(container),
