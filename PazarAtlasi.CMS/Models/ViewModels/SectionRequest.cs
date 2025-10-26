@@ -9,7 +9,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     {
         public int Id { get; set; }
 
-        public int PageId { get; set; }
+        public int? PageId { get; set; }
         
         public object? TemplateConfiguration { get; set; } // Will be deserialized from JSON
         

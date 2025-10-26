@@ -1121,6 +1121,9 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
+                // Handle case where PageId is null or 0 (for reusable sections)
+                bool isReusableSection = request.PageId == null || request.PageId == 0;
+
                 if (request.Id > 0)
                 {
                     // Update existing section
@@ -1207,16 +1210,20 @@ namespace PazarAtlasi.CMS.Controllers
                     _pazarAtlasiDbContext.Sections.Add(newSection);
                     await _pazarAtlasiDbContext.SaveChangesAsync();
 
-                    _pazarAtlasiDbContext.PageSections.Add(new PageSection
+                    // Only add to PageSection if PageId is provided (not for reusable sections)
+                    if (!isReusableSection)
                     {
-                        PageId = request.PageId,
-                        SectionId = newSection.Id,
-                        SortOrder = request.SortOrder,
-                        CreatedAt = DateTime.UtcNow,
-                        IsDeleted = false
-                    });
+                        _pazarAtlasiDbContext.PageSections.Add(new PageSection
+                        {
+                            PageId = request.PageId.Value,
+                            SectionId = newSection.Id,
+                            SortOrder = request.SortOrder,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        });
 
-                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                        await _pazarAtlasiDbContext.SaveChangesAsync();
+                    }
 
                     // Add section translations
                     if (request.Translations != null)
@@ -1241,7 +1248,11 @@ namespace PazarAtlasi.CMS.Controllers
                     await ProcessSectionItems(request.SectionItems, newSection.Id);
 
                     
-                    return Json(new { success = true, message = "Section created successfully.", sectionId = newSection.Id });
+                    string successMessage = isReusableSection 
+                        ? "Reusable section created successfully." 
+                        : "Section created successfully.";
+                    
+                    return Json(new { success = true, message = successMessage, sectionId = newSection.Id });
                 }
             }
             catch (Exception ex)
