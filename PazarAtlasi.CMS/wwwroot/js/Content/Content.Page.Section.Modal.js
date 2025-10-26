@@ -202,11 +202,11 @@ const SectionModal = (function () {
   async function save() {
     console.log("Starting section save...");
 
-    // Validate
-    if (!currentSection.pageId) {
-      alert("Please select a page");
-      return;
-    }
+    // Validate - pageId is optional for reusable sections
+    // if (!currentSection.pageId) {
+    //   alert("Please select a page");
+    //   return;
+    // }
 
     if (!currentSection.type) {
       alert("Please select a section type");
@@ -234,7 +234,7 @@ const SectionModal = (function () {
 
       const sectionData = {
         Id: currentSection.id,
-        PageId: currentSection.pageId,
+        PageId: currentSection.pageId || null, // null for reusable sections
         Type: currentSection.type,
         Status: parseInt(
           document.getElementById("modalSectionStatus").value
