@@ -1379,6 +1379,7 @@ const SectionModal = (function () {
 
     // UI management
     updateItemNumbers,
+    updateItemsCountBadge,
 
     // NEW: Type-based item management
     addSectionItemByType,
@@ -1414,14 +1415,24 @@ function removeItem(button) {
       "SwalHelper is not available, falling back to confirm"
     );
     if (confirm("Bu öğeyi silmek istediğinizden emin misiniz?")) {
-      itemCard.remove();
+      try {
+        itemCard.remove();
 
-      // Update item numbers and count badge
-      if (typeof SectionModal !== "undefined") {
-        SectionModal.updateItemNumbers();
-        SectionModal.updateItemsCountBadge();
-      } else if (typeof updateItemNumbers === "function") {
-        updateItemNumbers();
+        // Update item numbers and count badge safely
+        if (typeof SectionModal !== "undefined") {
+          if (typeof SectionModal.updateItemNumbers === "function") {
+            SectionModal.updateItemNumbers();
+          }
+          if (
+            typeof SectionModal.updateItemsCountBadge === "function"
+          ) {
+            SectionModal.updateItemsCountBadge();
+          }
+        } else if (typeof updateItemNumbers === "function") {
+          updateItemNumbers();
+        }
+      } catch (error) {
+        console.error("Error during item removal:", error);
       }
     }
     return;
@@ -1439,30 +1450,55 @@ function removeItem(button) {
       confirmButtonText: '<i class="fas fa-trash mr-2"></i>Evet, Sil',
       cancelButtonText: '<i class="fas fa-times mr-2"></i>İptal',
     }
-  ).then((result) => {
-    if (result.isConfirmed) {
-      // Show loading
-      SwalHelper.loading(
-        "Siliniyor...",
-        "Öğe siliniyor, lütfen bekleyin..."
-      );
+  )
+    .then((result) => {
+      if (result.isConfirmed) {
+        // Show loading
+        SwalHelper.loading(
+          "Siliniyor...",
+          "Öğe siliniyor, lütfen bekleyin..."
+        );
 
-      // Simulate removal delay for better UX
-      setTimeout(() => {
-        itemCard.remove();
+        // Simulate removal delay for better UX
+        setTimeout(() => {
+          try {
+            itemCard.remove();
 
-        // Update item numbers and count badge
-        if (typeof SectionModal !== "undefined") {
-          SectionModal.updateItemNumbers();
-          SectionModal.updateItemsCountBadge();
-        } else if (typeof updateItemNumbers === "function") {
-          updateItemNumbers();
-        }
+            // Update item numbers and count badge safely
+            if (typeof SectionModal !== "undefined") {
+              if (
+                typeof SectionModal.updateItemNumbers === "function"
+              ) {
+                SectionModal.updateItemNumbers();
+              }
+              if (
+                typeof SectionModal.updateItemsCountBadge ===
+                "function"
+              ) {
+                SectionModal.updateItemsCountBadge();
+              }
+            } else if (typeof updateItemNumbers === "function") {
+              updateItemNumbers();
+            }
 
-        // Close loading and show success
-        Swal.close();
-        SwalHelper.toast("Öğe başarıyla silindi", "success");
-      }, 800);
-    }
-  });
+            // Close loading and show success
+            Swal.close();
+            SwalHelper.toast("Öğe başarıyla silindi", "success");
+          } catch (error) {
+            console.error("Error during item removal:", error);
+            // Always close loading even if there's an error
+            Swal.close();
+            SwalHelper.error(
+              "Hata",
+              "Öğe silinirken bir hata oluştu."
+            );
+          }
+        }, 800);
+      }
+    })
+    .catch((error) => {
+      console.error("Error in SwalHelper.confirmDelete:", error);
+      // Close any open loading dialog
+      Swal.close();
+    });
 }
