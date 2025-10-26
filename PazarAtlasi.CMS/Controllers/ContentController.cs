@@ -674,28 +674,8 @@ namespace PazarAtlasi.CMS.Controllers
 
                 if (id > 0)
                 {
+                    // Load section with basic info and translations
                     var pageSection = await _pazarAtlasiDbContext.PageSections
-                        .Include(ps => ps.Section)
-                            .ThenInclude(s => s.SectionItemValues)
-                            .ThenInclude(siv => siv.SectionItem)
-                            .ThenInclude(si => si.SectionItemFields)
-                            .ThenInclude(f => f.Translations)
-                        .Include(ps => ps.Section)
-                            .ThenInclude(s => s.SectionItemValues)
-                            .ThenInclude(siv => siv.SectionItem)
-                            .ThenInclude(si => si.SectionItemFieldValues)
-                            .ThenInclude(fv => fv.SectionItemField)
-                        .Include(ps => ps.Section)
-                            .ThenInclude(s => s.SectionItemValues)
-                            .ThenInclude(siv => siv.SectionItem)
-                            .ThenInclude(si => si.SectionItemFieldValues)
-                            .ThenInclude(fv => fv.Translations)
-                            .ThenInclude(t => t.Language)
-                        .Include(ps => ps.Section)
-                            .ThenInclude(s => s.SectionItemValues)
-                            .ThenInclude(siv => siv.SectionItem)
-                            .ThenInclude(si => si.Translations)
-                            .ThenInclude(t => t.Language)
                         .Include(ps => ps.Section)
                             .ThenInclude(s => s.Translations)
                             .ThenInclude(t => t.Language)
@@ -708,6 +688,39 @@ namespace PazarAtlasi.CMS.Controllers
                         return Json(new { success = false, message = "Section not found." });
                     }
 
+                    // Get SectionItemValues for this section (only root items)
+                    var sectionItemValues = await _pazarAtlasiDbContext.SectionItemValues
+                        .Include(siv => siv.SectionItem)
+                            .ThenInclude(si => si.SectionItemFields)
+                            .ThenInclude(f => f.Translations)
+                        .Include(siv => siv.SectionItem)
+                            .ThenInclude(si => si.Translations)
+                            .ThenInclude(t => t.Language)
+                        .Where(siv => siv.SectionId == section.Id && !siv.IsDeleted)
+                        .OrderBy(siv => siv.SectionItem.SortOrder)
+                        .ToListAsync();
+
+                    // Get all child section items recursively
+                    var rootSectionItemIds = sectionItemValues.Select(siv => siv.SectionItemId).ToList();
+                    var allSectionItems = await GetAllChildSectionItemsRecursively(rootSectionItemIds);
+
+                    // Get all field IDs from all section items (root + children)
+                    var fieldIds = allSectionItems
+                        .SelectMany(si => si.SectionItemFields)
+                        .Select(f => f.Id)
+                        .ToList();
+
+                    // Get all SectionItemFieldValues for these fields
+                    var fieldValues = await _pazarAtlasiDbContext.SectionItemFieldValues
+                        .Include(fv => fv.SectionItemField)
+                        .Include(fv => fv.Translations)
+                            .ThenInclude(t => t.Language)
+                        .Where(fv => fieldIds.Contains(fv.SectionItemFieldId) && fv.SectionId == section.Id && !fv.IsDeleted)
+                        .ToListAsync();
+
+                    // Build nested structure and map to view models
+                    var sectionItems = BuildNestedSectionItemViewModelsOptimized(sectionItemValues, allSectionItems, fieldValues);
+
                     model = new SectionViewModel
                     {
                         Id = section.Id,
@@ -716,49 +729,7 @@ namespace PazarAtlasi.CMS.Controllers
                         SortOrder = section.SortOrder,
                         Configure = section.Configure,
                         Status = section.Status,
-                        SectionItems = section.SectionItemValues
-                            .Select(siv => new SectionItemViewModel
-                            {
-                                Id = siv.SectionItem.Id,
-                                Type = siv.SectionItem.Type,
-                                MediaType = siv.SectionItem.MediaType,
-                                SortOrder = siv.SectionItem.SortOrder,
-                                Status = siv.SectionItem.Status,
-                                Title = siv.SectionItem.Title,
-                                Description = siv.SectionItem.Description,
-                                AllowReorder = siv.SectionItem.AllowReorder,
-                                AllowRemove = siv.SectionItem.AllowRemove,
-                                IconClass = siv.SectionItem.IconClass,
-                                Fields = siv.SectionItem.SectionItemFieldValues.Select(fv => new SectionItemFieldViewModel
-                                {
-                                    Id = fv.Id,
-                                    SectionItemId = fv.SectionItemId,
-                                    FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
-                                    FieldKey = fv.SectionItemField?.FieldKey ?? "",
-                                    FieldValue = fv.Value,
-                                    IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
-                                    Translations = fv.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
-                                    {
-                                        Id = ft.Id,
-                                        SectionItemFieldId = ft.SectionItemFieldValueId,
-                                        LanguageId = ft.LanguageId,
-                                        LanguageCode = ft.Language?.Code ?? "",
-                                        LanguageName = ft.Language?.Name ?? "",
-                                        Label = ft.Value,
-                                        Description = ft.Value,
-                                        Placeholder = ft.Value
-                                    }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
-                                }).ToList(),
-                                Translations = siv.SectionItem.Translations.Select(t => new SectionItemTranslationViewModel
-                                {
-                                    Id = t.Id,
-                                    LanguageId = t.LanguageId,
-                                    LanguageName = t.Language?.Name,
-                                    LanguageCode = t.Language?.Code,
-                                    Title = t.Title,
-                                    Description = t.Description
-                                }).ToList()
-                            }).ToList(),
+                        SectionItems = sectionItems,
                         Translations = section.Translations.Select(st => new SectionTranslationViewModel
                         {
                             Id = st.Id,
@@ -773,7 +744,6 @@ namespace PazarAtlasi.CMS.Controllers
                 }
                 else
                 {
-
                     model = new SectionViewModel
                     {
                         Id = 0,
@@ -2116,6 +2086,295 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 return Content($"<div class='text-red-500'>Error: {ex.Message}</div>");
             }
+        }
+
+        /// <summary>
+        /// Build nested section item view models from SectionItemValues and FieldValues (Optimized)
+        /// </summary>
+        private List<SectionItemViewModel> BuildNestedSectionItemViewModelsOptimized(
+            List<SectionItemValue> sectionItemValues, 
+            List<SectionItem> allSectionItems,
+            List<SectionItemFieldValue> fieldValues)
+        {
+            var result = new List<SectionItemViewModel>();
+
+            // Get root items (items without parent)
+            var rootItems = sectionItemValues.Where(siv => siv.SectionItem.ParentSectionItemId == null).ToList();
+
+            foreach (var rootItemValue in rootItems)
+            {
+                var rootViewModel = BuildSectionItemViewModelOptimized(rootItemValue.SectionItem, allSectionItems, fieldValues, rootItemValue.SectionId);
+                result.Add(rootViewModel);
+            }
+
+            return result.OrderBy(r => r.SortOrder).ToList();
+        }
+
+        /// <summary>
+        /// Build nested section item view models from SectionItemValues and FieldValues (Legacy)
+        /// </summary>
+        private List<SectionItemViewModel> BuildNestedSectionItemViewModels(
+            List<SectionItemValue> sectionItemValues, 
+            List<SectionItemFieldValue> fieldValues)
+        {
+            var result = new List<SectionItemViewModel>();
+
+            // Get root items (items without parent)
+            var rootItems = sectionItemValues.Where(siv => siv.SectionItem.ParentSectionItemId == null).ToList();
+
+            foreach (var rootItemValue in rootItems)
+            {
+                var rootViewModel = BuildSectionItemViewModel(rootItemValue, sectionItemValues, fieldValues);
+                result.Add(rootViewModel);
+            }
+
+            return result.OrderBy(r => r.SortOrder).ToList();
+        }
+
+        /// <summary>
+        /// Build a single section item view model with its children recursively (Optimized)
+        /// </summary>
+        private SectionItemViewModel BuildSectionItemViewModelOptimized(
+            SectionItem sectionItem,
+            List<SectionItem> allSectionItems,
+            List<SectionItemFieldValue> allFieldValues,
+            int sectionId)
+        {
+            // Get field values for this specific section item
+            var itemFieldValues = allFieldValues.Where(fv => fv.SectionItemId == sectionItem.Id).ToList();
+
+            // Build field view models
+            var fieldViewModels = new List<SectionItemFieldViewModel>();
+
+            // Get all fields defined for this section item (from template)
+            foreach (var field in sectionItem.SectionItemFields)
+            {
+                // Find existing field value for this field
+                var existingFieldValue = itemFieldValues.FirstOrDefault(fv => fv.SectionItemFieldId == field.Id);
+
+                var fieldViewModel = new SectionItemFieldViewModel
+                {
+                    Id = existingFieldValue?.Id ?? 0,
+                    SectionItemId = sectionItem.Id,
+                    FieldType = field.Type,
+                    FieldKey = field.FieldKey,
+                    FieldValue = existingFieldValue?.Value ?? field.DefaultValue ?? "",
+                    IsTranslatable = field.IsTranslatable,
+                    Translations = new List<SectionItemFieldTranslationViewModel>()
+                };
+
+                // Add field translations
+                if (existingFieldValue != null && existingFieldValue.Translations.Any())
+                {
+                    fieldViewModel.Translations = existingFieldValue.Translations.Select(ft => new SectionItemFieldTranslationViewModel
+                    {
+                        Id = ft.Id,
+                        SectionItemFieldId = ft.SectionItemFieldValueId,
+                        LanguageId = ft.LanguageId,
+                        LanguageCode = ft.Language?.Code ?? "",
+                        LanguageName = ft.Language?.Name ?? "",
+                        Label = ft.Value,
+                        Description = ft.Value,
+                        Placeholder = ft.Value
+                    }).ToList();
+                }
+                else
+                {
+                    // Use field template translations as placeholders
+                    fieldViewModel.Translations = field.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
+                    {
+                        Id = 0,
+                        SectionItemFieldId = 0,
+                        LanguageId = ft.LanguageId,
+                        LanguageCode = ft.Language?.Code ?? "",
+                        LanguageName = ft.Language?.Name ?? "",
+                        Label = ft.Label ?? field.FieldName,
+                        Description = ft.Description ?? "",
+                        Placeholder = ft.Placeholder ?? field.Placeholder ?? ""
+                    }).ToList() ?? new List<SectionItemFieldTranslationViewModel>();
+                }
+
+                fieldViewModels.Add(fieldViewModel);
+            }
+
+            // Build child items recursively
+            var childItems = allSectionItems.Where(si => si.ParentSectionItemId == sectionItem.Id).ToList();
+            var childViewModels = new List<SectionItemViewModel>();
+
+            foreach (var childItem in childItems)
+            {
+                var childViewModel = BuildSectionItemViewModelOptimized(childItem, allSectionItems, allFieldValues, sectionId);
+                childViewModels.Add(childViewModel);
+            }
+
+            // Create the main view model
+            var viewModel = new SectionItemViewModel
+            {
+                Id = sectionItem.Id,
+                SectionId = sectionId,
+                Type = sectionItem.Type,
+                MediaType = sectionItem.MediaType,
+                SortOrder = sectionItem.SortOrder,
+                Status = sectionItem.Status,
+                Title = sectionItem.Title,
+                Description = sectionItem.Description,
+                AllowReorder = sectionItem.AllowReorder,
+                AllowRemove = sectionItem.AllowRemove,
+                IconClass = sectionItem.IconClass,
+                TemplateId = sectionItem.TemplateId,
+                Fields = fieldViewModels,
+                ChildItems = childViewModels.OrderBy(c => c.SortOrder).ToList(),
+                Translations = sectionItem.Translations.Select(t => new SectionItemTranslationViewModel
+                {
+                    Id = t.Id,
+                    LanguageId = t.LanguageId,
+                    LanguageName = t.Language?.Name,
+                    LanguageCode = t.Language?.Code,
+                    Title = t.Title,
+                    Description = t.Description
+                }).ToList()
+            };
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Build a single section item view model with its children recursively (Legacy)
+        /// </summary>
+        private SectionItemViewModel BuildSectionItemViewModel(
+            SectionItemValue sectionItemValue, 
+            List<SectionItemValue> allSectionItemValues, 
+            List<SectionItemFieldValue> allFieldValues)
+        {
+            var sectionItem = sectionItemValue.SectionItem;
+
+            // Get field values for this specific section item
+            var itemFieldValues = allFieldValues.Where(fv => fv.SectionItemId == sectionItem.Id).ToList();
+
+            // Build field view models
+            var fieldViewModels = new List<SectionItemFieldViewModel>();
+
+            // Get all fields defined for this section item (from template)
+            foreach (var field in sectionItem.SectionItemFields)
+            {
+                // Find existing field value for this field
+                var existingFieldValue = itemFieldValues.FirstOrDefault(fv => fv.SectionItemFieldId == field.Id);
+
+                var fieldViewModel = new SectionItemFieldViewModel
+                {
+                    Id = existingFieldValue?.Id ?? 0,
+                    SectionItemId = sectionItem.Id,
+                    FieldType = field.Type,
+                    FieldKey = field.FieldKey,
+                    FieldValue = existingFieldValue?.Value ?? field.DefaultValue ?? "",
+                    IsTranslatable = field.IsTranslatable,
+                    Translations = new List<SectionItemFieldTranslationViewModel>()
+                };
+
+                // Add field translations
+                if (existingFieldValue != null && existingFieldValue.Translations.Any())
+                {
+                    fieldViewModel.Translations = existingFieldValue.Translations.Select(ft => new SectionItemFieldTranslationViewModel
+                    {
+                        Id = ft.Id,
+                        SectionItemFieldId = ft.SectionItemFieldValueId,
+                        LanguageId = ft.LanguageId,
+                        LanguageCode = ft.Language?.Code ?? "",
+                        LanguageName = ft.Language?.Name ?? "",
+                        Label = ft.Value,
+                        Description = ft.Value,
+                        Placeholder = ft.Value
+                    }).ToList();
+                }
+                else
+                {
+                    // Use field template translations as placeholders
+                    fieldViewModel.Translations = field.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
+                    {
+                        Id = 0,
+                        SectionItemFieldId = 0,
+                        LanguageId = ft.LanguageId,
+                        LanguageCode = ft.Language?.Code ?? "",
+                        LanguageName = ft.Language?.Name ?? "",
+                        Label = ft.Label ?? field.FieldName,
+                        Description = ft.Description ?? "",
+                        Placeholder = ft.Placeholder ?? field.Placeholder ?? ""
+                    }).ToList() ?? new List<SectionItemFieldTranslationViewModel>();
+                }
+
+                fieldViewModels.Add(fieldViewModel);
+            }
+
+            // Build child items recursively
+            var childItemValues = allSectionItemValues.Where(siv => siv.SectionItem.ParentSectionItemId == sectionItem.Id).ToList();
+            var childViewModels = new List<SectionItemViewModel>();
+
+            foreach (var childItemValue in childItemValues)
+            {
+                var childViewModel = BuildSectionItemViewModel(childItemValue, allSectionItemValues, allFieldValues);
+                childViewModels.Add(childViewModel);
+            }
+
+            // Create the main view model
+            var viewModel = new SectionItemViewModel
+            {
+                Id = sectionItem.Id,
+                SectionId = sectionItemValue.SectionId,
+                Type = sectionItem.Type,
+                MediaType = sectionItem.MediaType,
+                SortOrder = sectionItem.SortOrder,
+                Status = sectionItem.Status,
+                Title = sectionItem.Title,
+                Description = sectionItem.Description,
+                AllowReorder = sectionItem.AllowReorder,
+                AllowRemove = sectionItem.AllowRemove,
+                IconClass = sectionItem.IconClass,
+                TemplateId = sectionItem.TemplateId,
+                Fields = fieldViewModels,
+                ChildItems = childViewModels.OrderBy(c => c.SortOrder).ToList(),
+                Translations = sectionItem.Translations.Select(t => new SectionItemTranslationViewModel
+                {
+                    Id = t.Id,
+                    LanguageId = t.LanguageId,
+                    LanguageName = t.Language?.Name,
+                    LanguageCode = t.Language?.Code,
+                    Title = t.Title,
+                    Description = t.Description
+                }).ToList()
+            };
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// Get all child section items recursively for given root section item IDs
+        /// </summary>
+        private async Task<List<SectionItem>> GetAllChildSectionItemsRecursively(List<int> rootSectionItemIds)
+        {
+            var allSectionItems = new List<SectionItem>();
+            var currentLevelIds = rootSectionItemIds.ToList();
+
+            while (currentLevelIds.Any())
+            {
+                // Get section items for current level
+                var currentLevelItems = await _pazarAtlasiDbContext.SectionItems
+                    .Include(si => si.SectionItemFields)
+                        .ThenInclude(f => f.Translations)
+                    .Include(si => si.Translations)
+                        .ThenInclude(t => t.Language)
+                    .Where(si => currentLevelIds.Contains(si.Id) && !si.IsDeleted)
+                    .ToListAsync();
+
+                allSectionItems.AddRange(currentLevelItems);
+
+                // Get child IDs for next level
+                currentLevelIds = await _pazarAtlasiDbContext.SectionItems
+                    .Where(si => currentLevelItems.Select(cli => cli.Id).Contains(si.ParentSectionItemId ?? 0) && !si.IsDeleted)
+                    .Select(si => si.Id)
+                    .ToListAsync();
+            }
+
+            return allSectionItems;
         }
 
         /// <summary>
