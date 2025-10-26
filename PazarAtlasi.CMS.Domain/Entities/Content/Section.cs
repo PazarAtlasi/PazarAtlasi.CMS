@@ -19,6 +19,8 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public virtual ICollection<SectionItemFieldValue> SectionItemFieldValues { get; set; } = new List<SectionItemFieldValue>();
 
+        public virtual ICollection<SectionItemValue> SectionItemValues { get; set; } = new List<SectionItemValue>();
+
         public virtual ICollection<SectionTranslation> Translations { get; set; } = new List<SectionTranslation>();
         
         public virtual ICollection<SectionTypeTemplate> SectionTemplates { get; set; } = new List<SectionTypeTemplate>();

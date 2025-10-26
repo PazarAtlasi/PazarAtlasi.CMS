@@ -5410,6 +5410,65 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.ToTable("SectionItemTypeTemplate");
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("CreatedBy");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<int>("SectionId")
+                        .HasColumnType("int")
+                        .HasColumnName("SectionId");
+
+                    b.Property<int>("SectionItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("SectionItemId");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("Status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SectionId")
+                        .HasDatabaseName("IX_SectionItemValues_SectionId");
+
+                    b.HasIndex("SectionItemId")
+                        .HasDatabaseName("IX_SectionItemValues_SectionItemId");
+
+                    b.HasIndex("SectionId", "SectionItemId")
+                        .HasDatabaseName("IX_SectionItemValues_SectionId_SectionItemId");
+
+                    b.ToTable("SectionItemValues", (string)null);
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTranslation", b =>
                 {
                     b.Property<int>("Id")
@@ -8733,6 +8792,25 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("Template");
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionItemValue", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Section", "Section")
+                        .WithMany("SectionItemValues")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.SectionItem", "SectionItem")
+                        .WithMany("SectionItemValues")
+                        .HasForeignKey("SectionItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Section");
+
+                    b.Navigation("SectionItem");
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.SectionTranslation", b =>
                 {
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Content.Language", "Language")
@@ -8812,6 +8890,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 {
                     b.Navigation("SectionItemFieldValues");
 
+                    b.Navigation("SectionItemValues");
+
                     b.Navigation("SectionTemplates");
 
                     b.Navigation("Translations");
@@ -8822,6 +8902,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("SectionItemFieldValues");
 
                     b.Navigation("SectionItemFields");
+
+                    b.Navigation("SectionItemValues");
 
                     b.Navigation("Translations");
                 });

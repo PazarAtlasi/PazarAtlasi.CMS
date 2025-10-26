@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class ints : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -104,8 +104,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     TemplateType = table.Column<int>(type: "int", nullable: false),
                     TemplateKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ConfigurationSchema = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -332,6 +330,40 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TemplateTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TemplateId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TemplateTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TemplateTranslations_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TemplateTranslations_Templates_TemplateId",
+                        column: x => x.TemplateId,
+                        principalTable: "Templates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PageSections",
                 columns: table => new
                 {
@@ -473,8 +505,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SectionItemId = table.Column<int>(type: "int", nullable: false),
                     LanguageId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
@@ -496,6 +527,38 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         name: "FK_SectionItemTranslations_SectionItems_SectionItemId",
                         column: x => x.SectionItemId,
                         principalTable: "SectionItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SectionItemValues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SectionId = table.Column<int>(type: "int", nullable: false),
+                    SectionItemId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SectionItemValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SectionItemValues_SectionItems_SectionItemId",
+                        column: x => x.SectionItemId,
+                        principalTable: "SectionItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectionItemValues_Sections_SectionId",
+                        column: x => x.SectionId,
+                        principalTable: "Sections",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -671,23 +734,23 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Templates",
-                columns: new[] { "Id", "ConfigurationSchema", "CreatedAt", "CreatedBy", "Description", "IsActive", "IsDeleted", "Name", "SortOrder", "Status", "TemplateKey", "TemplateType", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "ConfigurationSchema", "CreatedAt", "CreatedBy", "IsActive", "IsDeleted", "SortOrder", "Status", "TemplateKey", "TemplateType", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "A simple horizontal navigation bar with basic menu items", true, false, "Simple Navbar", 1, 0, "navbar-simple", 1, null, null },
-                    { 2, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#1a1a1a\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"megaMenuColumns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":4,\"default\":3},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"showImages\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Advanced navbar with dropdown mega menus and rich content", true, false, "Mega Menu Navbar", 2, 0, "navbar-megamenu", 11, null, null },
-                    { 3, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#2d3748\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"pills\"},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar with tabbed service navigation and interactive content", true, false, "Service Tabs Navbar", 3, 0, "navbar-servicetabs", 10, null, null },
-                    { 4, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#4a5568\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"categoryStyle\":{\"type\":\"string\",\"enum\":[\"sidebar\",\"dropdown\",\"tabs\"],\"default\":\"sidebar\"},\"showCategoryIcons\":{\"type\":\"boolean\",\"default\":true},\"itemsPerCategory\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":8,\"default\":4}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar with categorized menu items and filtered content display", true, false, "Categorized Navbar", 4, 0, "navbar-categorized", 6, null, null },
-                    { 5, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"padding\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Standard template for any section type", true, false, "Default Template", 5, 0, "default", 1, null, null },
-                    { 6, "{\"type\":\"object\",\"properties\":{\"direction\":{\"type\":\"string\",\"enum\":[\"horizontal\",\"vertical\"],\"default\":\"vertical\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showNumbers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Items displayed in sequential order", true, false, "Sequential Layout", 6, 0, "sequential", 2, null, null },
-                    { 7, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":6,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"showExcerpts\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Content displayed in a responsive grid layout", true, false, "Grid Layout", 7, 0, "grid", 3, null, null },
-                    { 8, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":5,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"imageAspectRatio\":{\"type\":\"string\",\"enum\":[\"auto\",\"square\",\"landscape\",\"portrait\"],\"default\":\"auto\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Pinterest-style masonry layout for varied content sizes", true, false, "Masonry Layout", 8, 0, "masonry", 4, null, null },
-                    { 9, "{\"type\":\"object\",\"properties\":{\"autoPlay\":{\"type\":\"boolean\",\"default\":true},\"interval\":{\"type\":\"integer\",\"minimum\":2000,\"maximum\":10000,\"default\":5000},\"showIndicators\":{\"type\":\"boolean\",\"default\":true},\"showArrows\":{\"type\":\"boolean\",\"default\":true},\"transitionEffect\":{\"type\":\"string\",\"enum\":[\"fade\",\"slide\",\"zoom\"],\"default\":\"slide\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Sliding carousel with navigation controls", true, false, "Carousel", 9, 0, "carousel", 5, null, null },
-                    { 10, "{\"type\":\"object\",\"properties\":{\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"iconPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"right\"],\"default\":\"left\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"compact\",\"comfortable\",\"spacious\"],\"default\":\"comfortable\"},\"showDividers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Simple list layout with optional icons", true, false, "List Layout", 10, 0, "list", 6, null, null },
-                    { 11, "{\"type\":\"object\",\"properties\":{\"alignment\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"center\"},\"showImage\":{\"type\":\"boolean\",\"default\":true},\"imageSize\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showDescription\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Display single item with focus", true, false, "Single Item", 11, 0, "single-item", 7, null, null },
-                    { 12, "{\"type\":\"object\",\"properties\":{\"itemsPerRow\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":6,\"default\":3},\"showTitles\":{\"type\":\"boolean\",\"default\":true},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"equalHeight\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Display multiple items in organized layout", true, false, "Multi Item", 12, 0, "multi-item", 8, null, null },
-                    { 13, "{\"type\":\"object\",\"properties\":{\"allowMultiple\":{\"type\":\"boolean\",\"default\":false},\"defaultOpen\":{\"type\":\"integer\",\"minimum\":0,\"default\":0},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Collapsible accordion layout", true, false, "Accordion", 13, 0, "accordion", 9, null, null },
-                    { 14, "{\"type\":\"object\",\"properties\":{\"tabPosition\":{\"type\":\"string\",\"enum\":[\"top\",\"bottom\",\"left\",\"right\"],\"default\":\"top\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"underline\"},\"showIcons\":{\"type\":\"boolean\",\"default\":false},\"defaultTab\":{\"type\":\"integer\",\"minimum\":0,\"default\":0}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tabbed content layout", true, false, "Tabs", 14, 0, "tabs", 10, null, null }
+                    { 1, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 1, 0, "navbar-simple", 1, null, null },
+                    { 2, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#1a1a1a\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"megaMenuColumns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":4,\"default\":3},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"showImages\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 2, 0, "navbar-megamenu", 11, null, null },
+                    { 3, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#2d3748\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"pills\"},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 3, 0, "navbar-servicetabs", 10, null, null },
+                    { 4, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#4a5568\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"categoryStyle\":{\"type\":\"string\",\"enum\":[\"sidebar\",\"dropdown\",\"tabs\"],\"default\":\"sidebar\"},\"showCategoryIcons\":{\"type\":\"boolean\",\"default\":true},\"itemsPerCategory\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":8,\"default\":4}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 4, 0, "navbar-categorized", 6, null, null },
+                    { 5, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"padding\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 5, 0, "default", 1, null, null },
+                    { 6, "{\"type\":\"object\",\"properties\":{\"direction\":{\"type\":\"string\",\"enum\":[\"horizontal\",\"vertical\"],\"default\":\"vertical\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showNumbers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 6, 0, "sequential", 2, null, null },
+                    { 7, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":6,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"showExcerpts\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 7, 0, "grid", 3, null, null },
+                    { 8, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":5,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"imageAspectRatio\":{\"type\":\"string\",\"enum\":[\"auto\",\"square\",\"landscape\",\"portrait\"],\"default\":\"auto\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 8, 0, "masonry", 4, null, null },
+                    { 9, "{\"type\":\"object\",\"properties\":{\"autoPlay\":{\"type\":\"boolean\",\"default\":true},\"interval\":{\"type\":\"integer\",\"minimum\":2000,\"maximum\":10000,\"default\":5000},\"showIndicators\":{\"type\":\"boolean\",\"default\":true},\"showArrows\":{\"type\":\"boolean\",\"default\":true},\"transitionEffect\":{\"type\":\"string\",\"enum\":[\"fade\",\"slide\",\"zoom\"],\"default\":\"slide\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 9, 0, "carousel", 5, null, null },
+                    { 10, "{\"type\":\"object\",\"properties\":{\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"iconPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"right\"],\"default\":\"left\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"compact\",\"comfortable\",\"spacious\"],\"default\":\"comfortable\"},\"showDividers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 10, 0, "list", 6, null, null },
+                    { 11, "{\"type\":\"object\",\"properties\":{\"alignment\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"center\"},\"showImage\":{\"type\":\"boolean\",\"default\":true},\"imageSize\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showDescription\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 11, 0, "single-item", 7, null, null },
+                    { 12, "{\"type\":\"object\",\"properties\":{\"itemsPerRow\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":6,\"default\":3},\"showTitles\":{\"type\":\"boolean\",\"default\":true},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"equalHeight\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 12, 0, "multi-item", 8, null, null },
+                    { 13, "{\"type\":\"object\",\"properties\":{\"allowMultiple\":{\"type\":\"boolean\",\"default\":false},\"defaultOpen\":{\"type\":\"integer\",\"minimum\":0,\"default\":0},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 13, 0, "accordion", 9, null, null },
+                    { 14, "{\"type\":\"object\",\"properties\":{\"tabPosition\":{\"type\":\"string\",\"enum\":[\"top\",\"bottom\",\"left\",\"right\"],\"default\":\"top\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"underline\"},\"showIcons\":{\"type\":\"boolean\",\"default\":false},\"defaultTab\":{\"type\":\"integer\",\"minimum\":0,\"default\":0}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 14, 0, "tabs", 10, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -737,8 +800,8 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 values: new object[,]
                 {
                     { 1, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "About us mega menu", "fas fa-info-circle", "navbar.about", null, 1, 1, 2, "About", 31, null, null },
-                    { 12, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Services menu with tabs", "fas fa-cogs", "navbar.services", null, 2, 1, 2, "Services", 31, null, null },
-                    { 23, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Solutions menu with categories", "fas fa-puzzle-piece", "navbar.solutions", null, 3, 1, 2, "Solutions", 31, null, null },
+                    { 12, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Services menu with tabs", "fas fa-cogs", "navbar.services", null, 2, 1, 3, "Services", 31, null, null },
+                    { 23, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Solutions menu with categories", "fas fa-puzzle-piece", "navbar.solutions", null, 3, 1, 4, "Solutions", 31, null, null },
                     { 33, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Blog mega menu", "fas fa-blog", "navbar.blog", null, 4, 1, 2, "Blog", 31, null, null },
                     { 43, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Career opportunities", "fas fa-briefcase", "navbar.careers", null, 5, 1, 2, "Careers", 17, null, null },
                     { 44, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "System status and data center", "fas fa-server", "navbar.datacenter", null, 6, 1, 2, "Data Center", 17, null, null },
@@ -1007,6 +1070,55 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "TemplateTranslations",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "IsDeleted", "LanguageId", "Name", "Status", "TemplateId", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Sade ve temiz tasarımlı navigasyon çubuğu şablonu", false, 1, "Basit Navbar", 0, 1, null, null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Clean and simple navigation bar template", false, 2, "Simple Navbar", 0, 1, null, null },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Sauberes und einfaches Navigationsleisten-Template", false, 3, "Einfache Navbar", 0, 1, null, null },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Geniş kategoriler ve alt menülerle mega menü şablonu", false, 1, "Mega Menü Navbar", 0, 2, null, null },
+                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Mega menu template with wide categories and submenus", false, 2, "Mega Menu Navbar", 0, 2, null, null },
+                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Mega-Menü-Template mit breiten Kategorien und Untermenüs", false, 3, "Mega-Menü Navbar", 0, 2, null, null },
+                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Hizmet kategorilerini sekme şeklinde gösteren navbar şablonu", false, 1, "Hizmet Sekmeli Navbar", 0, 3, null, null },
+                    { 8, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar template displaying service categories as tabs", false, 2, "Service Tabs Navbar", 0, 3, null, null },
+                    { 9, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar-Template, das Servicekategorien als Tabs anzeigt", false, 3, "Service-Tabs Navbar", 0, 3, null, null },
+                    { 10, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerikleri kategorilere göre düzenleyen navbar şablonu", false, 1, "Kategorili Navbar", 0, 4, null, null },
+                    { 11, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar template organizing content by categories", false, 2, "Categorized Navbar", 0, 4, null, null },
+                    { 12, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Navbar-Template, das Inhalte nach Kategorien organisiert", false, 3, "Kategorisierte Navbar", 0, 4, null, null },
+                    { 13, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Temel ve esnek kullanım için varsayılan şablon", false, 1, "Varsayılan Şablon", 0, 5, null, null },
+                    { 14, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Default template for basic and flexible usage", false, 2, "Default Template", 0, 5, null, null },
+                    { 15, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Standard-Template für grundlegende und flexible Verwendung", false, 3, "Standard-Template", 0, 5, null, null },
+                    { 16, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerikleri sıralı bir şekilde gösteren şablon", false, 1, "Sıralı Şablon", 0, 6, null, null },
+                    { 17, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template displaying content in sequential order", false, 2, "Sequential Template", 0, 6, null, null },
+                    { 18, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das Inhalte in sequenzieller Reihenfolge anzeigt", false, 3, "Sequenzielles Template", 0, 6, null, null },
+                    { 19, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerikleri ızgara düzeninde gösteren şablon", false, 1, "Izgara Şablonu", 0, 7, null, null },
+                    { 20, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template displaying content in grid layout", false, 2, "Grid Template", 0, 7, null, null },
+                    { 21, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das Inhalte im Raster-Layout anzeigt", false, 3, "Raster-Template", 0, 7, null, null },
+                    { 22, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Pinterest tarzı duvar düzeninde içerik gösteren şablon", false, 1, "Masonry Şablonu", 0, 8, null, null },
+                    { 23, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template displaying content in Pinterest-style wall layout", false, 2, "Masonry Template", 0, 8, null, null },
+                    { 24, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das Inhalte im Pinterest-Stil Wand-Layout anzeigt", false, 3, "Masonry-Template", 0, 8, null, null },
+                    { 25, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerikleri kaydırmalı karusel şeklinde gösteren şablon", false, 1, "Karusel Şablonu", 0, 9, null, null },
+                    { 26, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template displaying content in scrollable carousel format", false, 2, "Carousel Template", 0, 9, null, null },
+                    { 27, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das Inhalte im scrollbaren Karussell-Format anzeigt", false, 3, "Karusell-Template", 0, 9, null, null },
+                    { 28, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerikleri liste halinde düzenli şekilde gösteren şablon", false, 1, "Liste Şablonu", 0, 10, null, null },
+                    { 29, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template displaying content in organized list format", false, 2, "List Template", 0, 10, null, null },
+                    { 30, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das Inhalte im organisierten Listenformat anzeigt", false, 3, "Listen-Template", 0, 10, null, null },
+                    { 31, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Tek bir içerik öğesini vurgulayan şablon", false, 1, "Tek Öğe Şablonu", 0, 11, null, null },
+                    { 32, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template highlighting a single content item", false, 2, "Single Item Template", 0, 11, null, null },
+                    { 33, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das einen einzelnen Inhaltsartikel hervorhebt", false, 3, "Einzelartikel-Template", 0, 11, null, null },
+                    { 34, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Birden fazla içerik öğesini düzenli şekilde gösteren şablon", false, 1, "Çoklu Öğe Şablonu", 0, 12, null, null },
+                    { 35, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template displaying multiple content items in organized manner", false, 2, "Multi Item Template", 0, 12, null, null },
+                    { 36, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das mehrere Inhaltsartikel organisiert anzeigt", false, 3, "Mehrfachartikel-Template", 0, 12, null, null },
+                    { 37, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerikleri açılır-kapanır akordeon şeklinde gösteren şablon", false, 1, "Akordeon Şablonu", 0, 13, null, null },
+                    { 38, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template displaying content in expandable accordion format", false, 2, "Accordion Template", 0, 13, null, null },
+                    { 39, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das Inhalte im erweiterbaren Akkordeon-Format anzeigt", false, 3, "Akkordeon-Template", 0, 13, null, null },
+                    { 40, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "İçerikleri sekmeler halinde organize eden şablon", false, 1, "Sekme Şablonu", 0, 14, null, null },
+                    { 41, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template organizing content into tabs", false, 2, "Tabs Template", 0, 14, null, null },
+                    { 42, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Template, das Inhalte in Tabs organisiert", false, 3, "Tabs-Template", 0, 14, null, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "PageSEOParameters",
                 columns: new[] { "Id", "Author", "CanonicalURL", "CreatedAt", "CreatedBy", "Description", "MetaDescription", "MetaKeywords", "MetaTitle", "PageId", "Status", "SubDescription", "Title", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
@@ -1057,11 +1169,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En kaliteli ürünleri keşfedin", 1, "Hoş Geldiniz", 1, 1, "Pazar Atlası'na Hoş Geldiniz", null, null },
-                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Discover the highest quality products", 2, "Welcome", 1, 1, "Welcome to Pazar Atlası", null, null }
+                    { 1, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En kaliteli ürünleri keşfedin", 1, 1, 1, "Pazar Atlası'na Hoş Geldiniz", null, null },
+                    { 2, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Discover the highest quality products", 2, 1, 1, "Welcome to Pazar Atlası", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1072,17 +1184,17 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     { 2, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "About description section", "fas fa-building", "menus.about.description", 1, 1, 1, 2, "Description", 16, null, null },
                     { 3, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Quick navigation links", "fas fa-link", "menus.about.quickLinks", 1, 2, 1, 2, "Quick Links", 14, null, null },
                     { 8, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Company features", "fas fa-star", "menus.about.features", 1, 3, 1, 2, "Features", 12, null, null },
-                    { 13, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Managed services tab", "fas fa-server", "menus.services.tabs.managed", 12, 1, 1, 2, "Managed", 3, null, null },
-                    { 14, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud services tab", "fas fa-cloud", "menus.services.tabs.cloud", 12, 2, 1, 2, "Cloud", 3, null, null },
-                    { 15, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Security services tab", "fas fa-shield-alt", "menus.services.tabs.security", 12, 3, 1, 2, "Security", 3, null, null },
-                    { 16, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Database services tab", "fas fa-database", "menus.services.tabs.database", 12, 4, 1, 2, "Database", 3, null, null },
-                    { 17, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Monitoring services tab", "fas fa-chart-line", "menus.services.tabs.monitoring", 12, 5, 1, 2, "Monitoring", 3, null, null },
-                    { 18, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Premium services tab", "fas fa-crown", "menus.services.tabs.premium", 12, 6, 1, 2, "Premium", 3, null, null },
-                    { 24, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Software solutions", "fas fa-code", "menus.solutions.categories.software", 23, 1, 1, 2, "Software", 4, null, null },
-                    { 25, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "DevOps solutions", "fas fa-server", "menus.solutions.categories.devops", 23, 2, 1, 2, "DevOps", 4, null, null },
-                    { 26, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Hosting solutions", "fas fa-database", "menus.solutions.categories.hosting", 23, 3, 1, 2, "Hosting", 4, null, null },
-                    { 27, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud solutions", "fas fa-cloud", "menus.solutions.categories.cloud", 23, 4, 1, 2, "Cloud", 4, null, null },
-                    { 28, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Security solutions", "fas fa-shield-alt", "menus.solutions.categories.security", 23, 5, 1, 2, "Security", 4, null, null },
+                    { 13, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Managed services tab", "fas fa-server", "menus.services.tabs.managed", 12, 1, 1, 3, "Managed", 3, null, null },
+                    { 14, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud services tab", "fas fa-cloud", "menus.services.tabs.cloud", 12, 2, 1, 3, "Cloud", 3, null, null },
+                    { 15, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Security services tab", "fas fa-shield-alt", "menus.services.tabs.security", 12, 3, 1, 3, "Security", 3, null, null },
+                    { 16, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Database services tab", "fas fa-database", "menus.services.tabs.database", 12, 4, 1, 3, "Database", 3, null, null },
+                    { 17, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Monitoring services tab", "fas fa-chart-line", "menus.services.tabs.monitoring", 12, 5, 1, 3, "Monitoring", 3, null, null },
+                    { 18, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Premium services tab", "fas fa-crown", "menus.services.tabs.premium", 12, 6, 1, 3, "Premium", 3, null, null },
+                    { 24, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Software solutions", "fas fa-code", "menus.solutions.categories.software", 23, 1, 1, 4, "Software", 4, null, null },
+                    { 25, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "DevOps solutions", "fas fa-server", "menus.solutions.categories.devops", 23, 2, 1, 4, "DevOps", 4, null, null },
+                    { 26, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Hosting solutions", "fas fa-database", "menus.solutions.categories.hosting", 23, 3, 1, 4, "Hosting", 4, null, null },
+                    { 27, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Cloud solutions", "fas fa-cloud", "menus.solutions.categories.cloud", 23, 4, 1, 4, "Cloud", 4, null, null },
+                    { 28, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Security solutions", "fas fa-shield-alt", "menus.solutions.categories.security", 23, 5, 1, 4, "Security", 4, null, null },
                     { 34, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Blog section description", "fas fa-newspaper", "menus.blog.description", 33, 1, 1, 2, "Blog Description", 16, null, null },
                     { 35, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Blog categories", "fas fa-tags", "menus.blog.categories", 33, 2, 1, 2, "Categories", 14, null, null },
                     { 40, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Featured blog posts", "fas fa-star", "menus.blog.featuredPosts", 33, 3, 1, 2, "Featured Posts", 14, null, null },
@@ -1177,13 +1289,13 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Binlerce ürün arasından size en uygun olanları bulun. Hızlı teslimat, güvenli ödeme ve mükemmel müşteri hizmetiyle yanınızdayız.", 1, "Alt Başlık", 2, 1, "Kalite ve Güvenin Adresi", null, null },
-                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Find the most suitable products for you among thousands of products. We are with you with fast delivery, secure payment and excellent customer service.", 2, "Subtitle", 2, 1, "Address of Quality and Trust", null, null },
-                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tüm ürünleri görüntülemek için tıklayın", 1, "Keşfet", 3, 1, "Ürünleri Keşfet", null, null },
-                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Click to view all products", 2, "Explore", 3, 1, "Explore Products", null, null }
+                    { 3, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Binlerce ürün arasından size en uygun olanları bulun. Hızlı teslimat, güvenli ödeme ve mükemmel müşteri hizmetiyle yanınızdayız.", 1, 2, 1, "Kalite ve Güvenin Adresi", null, null },
+                    { 4, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Find the most suitable products for you among thousands of products. We are with you with fast delivery, secure payment and excellent customer service.", 2, 2, 1, "Address of Quality and Trust", null, null },
+                    { 5, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tüm ürünleri görüntülemek için tıklayın", 1, 3, 1, "Ürünleri Keşfet", null, null },
+                    { 6, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Click to view all products", 2, 3, 1, "Explore Products", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1198,14 +1310,14 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     { 9, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Years of experience", "fas fa-clock", "menus.about.features.items.experience", 8, 1, 1, 2, "Experience", 12, null, null },
                     { 10, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Professional certified team", "fas fa-certificate", "menus.about.features.items.certifiedTeam", 8, 2, 1, 2, "Certified Team", 12, null, null },
                     { 11, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Successful projects completed", "fas fa-project-diagram", "menus.about.features.items.projects", 8, 3, 1, 2, "Projects", 12, null, null },
-                    { 19, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Multi-cloud management services", "fas fa-cloud", "menus.services.tabContent.managed.multiCloud", 13, 1, 1, 2, "Multi-Cloud", 5, null, null },
-                    { 20, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Hybrid cloud solutions", "fas fa-sync", "menus.services.tabContent.managed.hybridCloud", 13, 2, 1, 2, "Hybrid Cloud", 5, null, null },
-                    { 21, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "24/7 system monitoring", "fas fa-desktop", "menus.services.tabContent.managed.monitoring", 13, 3, 1, 2, "Monitoring", 5, null, null },
-                    { 22, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Container orchestration", "fas fa-cube", "menus.services.tabContent.managed.container", 13, 4, 1, 2, "Container", 5, null, null },
-                    { 29, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tailored software solutions", "fas fa-wrench", "menus.solutions.categoryContent.software.items.custom", 24, 1, 1, 2, "Custom Software", 5, null, null },
-                    { 30, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Modern web applications", "fas fa-globe", "menus.solutions.categoryContent.software.items.web", 24, 2, 1, 2, "Web Applications", 5, null, null },
-                    { 31, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "iOS and Android applications", "fas fa-mobile-alt", "menus.solutions.categoryContent.software.items.mobile", 24, 3, 1, 2, "Mobile Apps", 5, null, null },
-                    { 32, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "RESTful API services", "fas fa-plug", "menus.solutions.categoryContent.software.items.api", 24, 4, 1, 2, "API Development", 5, null, null },
+                    { 19, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Multi-cloud management services", "fas fa-cloud", "menus.services.tabContent.managed.multiCloud", 13, 1, 1, 3, "Multi-Cloud", 5, null, null },
+                    { 20, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Hybrid cloud solutions", "fas fa-sync", "menus.services.tabContent.managed.hybridCloud", 13, 2, 1, 3, "Hybrid Cloud", 5, null, null },
+                    { 21, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "24/7 system monitoring", "fas fa-desktop", "menus.services.tabContent.managed.monitoring", 13, 3, 1, 3, "Monitoring", 5, null, null },
+                    { 22, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Container orchestration", "fas fa-cube", "menus.services.tabContent.managed.container", 13, 4, 1, 3, "Container", 5, null, null },
+                    { 29, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Tailored software solutions", "fas fa-wrench", "menus.solutions.categoryContent.software.items.custom", 24, 1, 1, 4, "Custom Software", 5, null, null },
+                    { 30, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Modern web applications", "fas fa-globe", "menus.solutions.categoryContent.software.items.web", 24, 2, 1, 4, "Web Applications", 5, null, null },
+                    { 31, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "iOS and Android applications", "fas fa-mobile-alt", "menus.solutions.categoryContent.software.items.mobile", 24, 3, 1, 4, "Mobile Apps", 5, null, null },
+                    { 32, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "RESTful API services", "fas fa-plug", "menus.solutions.categoryContent.software.items.api", 24, 4, 1, 4, "API Development", 5, null, null },
                     { 36, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-cloud", "menus.blog.categories.links.cloudTrends", 35, 1, 1, 2, "Cloud Trends", 17, null, null },
                     { 37, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-code-branch", "menus.blog.categories.links.devopsPractices", 35, 2, 1, 2, "DevOps Practices", 17, null, null },
                     { 38, true, true, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "fas fa-lightbulb", "menus.blog.categories.links.softwareInnovation", 35, 3, 1, 2, "Software Innovation", 17, null, null },
@@ -1315,15 +1427,15 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemTranslations",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "Name", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "LanguageId", "SectionItemId", "Status", "Title", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yüksek performanslı, şık tasarımlı laptop", 1, "Öne Çıkan Ürün 1", 4, 1, "Premium Laptop", null, null },
-                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, "Featured Product 1", 4, 1, "Premium Laptop", null, null },
-                    { 9, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yeni ürünler ve kampanyalardan haberdar olmak için e-posta listemize katılın", 1, "Bülten", 7, 1, "Haberdar Olun", null, null },
-                    { 10, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Join our email list to stay informed about new products and campaigns", 2, "Newsletter", 7, 1, "Stay Informed", null, null },
-                    { 11, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En güncel haberler ve makaleler", 1, "Blog", 9, 1, "Blog Yazıları", null, null },
-                    { 12, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest news and articles", 2, "Blog", 9, 1, "Blog Posts", null, null }
+                    { 7, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yüksek performanslı, şık tasarımlı laptop", 1, 4, 1, "Premium Laptop", null, null },
+                    { 8, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "High performance, stylish design laptop", 2, 4, 1, "Premium Laptop", null, null },
+                    { 9, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Yeni ürünler ve kampanyalardan haberdar olmak için e-posta listemize katılın", 1, 7, 1, "Haberdar Olun", null, null },
+                    { 10, new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Join our email list to stay informed about new products and campaigns", 2, 7, 1, "Stay Informed", null, null },
+                    { 11, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "En güncel haberler ve makaleler", 1, 9, 1, "Blog Yazıları", null, null },
+                    { 12, new DateTime(2024, 1, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Latest news and articles", 2, 9, 1, "Blog Posts", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1562,6 +1674,21 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 column: "TemplateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SectionItemValues_SectionId",
+                table: "SectionItemValues",
+                column: "SectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionItemValues_SectionId_SectionItemId",
+                table: "SectionItemValues",
+                columns: new[] { "SectionId", "SectionItemId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SectionItemValues_SectionItemId",
+                table: "SectionItemValues",
+                column: "SectionItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sections_Type",
                 table: "Sections",
                 column: "Type");
@@ -1603,6 +1730,17 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "IX_Templates_TemplateType_IsActive",
                 table: "Templates",
                 columns: new[] { "TemplateType", "IsActive" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemplateTranslations_LanguageId",
+                table: "TemplateTranslations",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemplateTranslations_TemplateId_LanguageId",
+                table: "TemplateTranslations",
+                columns: new[] { "TemplateId", "LanguageId" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -1633,10 +1771,16 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "SectionItemTypeTemplate");
 
             migrationBuilder.DropTable(
+                name: "SectionItemValues");
+
+            migrationBuilder.DropTable(
                 name: "SectionTranslations");
 
             migrationBuilder.DropTable(
                 name: "SectionTypeTemplates");
+
+            migrationBuilder.DropTable(
+                name: "TemplateTranslations");
 
             migrationBuilder.DropTable(
                 name: "Pages");

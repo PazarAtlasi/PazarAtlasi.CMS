@@ -1168,6 +1168,9 @@ namespace PazarAtlasi.CMS.Controllers
                     // Add new items
                     await ProcessSectionItems(request.SectionItems, section.Id);
 
+                    // Save SectionItemValues for parent section items
+                    await SaveSectionItemValues(request.SectionItems, section.Id);
+
                     // Update section translations
                     if (request.Translations != null)
                     {
@@ -1247,6 +1250,8 @@ namespace PazarAtlasi.CMS.Controllers
                     // Add section items
                     await ProcessSectionItems(request.SectionItems, newSection.Id);
 
+                    // Save SectionItemValues for parent section items
+                    await SaveSectionItemValues(request.SectionItems, newSection.Id);
                     
                     string successMessage = isReusableSection 
                         ? "Reusable section created successfully." 
@@ -2162,6 +2167,41 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 return Content($"<div class='text-red-500'>Error: {ex.Message}</div>");
             }
+        }
+
+        /// <summary>
+        /// Save SectionItemValues for parent section items (not nested ones)
+        /// </summary>
+        private async Task SaveSectionItemValues(List<SectionItemRequest> itemRequests, int sectionId)
+        {
+            if (itemRequests == null || !itemRequests.Any())
+                return;
+
+            // First, remove existing SectionItemValues for this section
+            var existingSectionItemValues = await _pazarAtlasiDbContext.SectionItemValues
+                .Where(siv => siv.SectionId == sectionId)
+                .ToListAsync();
+            
+            _pazarAtlasiDbContext.SectionItemValues.RemoveRange(existingSectionItemValues);
+            await _pazarAtlasiDbContext.SaveChangesAsync();
+
+            // Add new SectionItemValues for parent items only (not nested)
+            foreach (var itemRequest in itemRequests)
+            {
+                // Only save parent items (items that don't have nested structure or are top-level)
+                var sectionItemValue = new SectionItemValue
+                {
+                    SectionId = sectionId,
+                    SectionItemId = itemRequest.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                    Status = Status.Active
+                };
+
+                _pazarAtlasiDbContext.SectionItemValues.Add(sectionItemValue);
+            }
+
+            await _pazarAtlasiDbContext.SaveChangesAsync();
         }
 
         /// <summary>
