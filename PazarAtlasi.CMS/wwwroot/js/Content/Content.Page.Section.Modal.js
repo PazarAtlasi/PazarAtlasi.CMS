@@ -1403,18 +1403,66 @@ function editSectionItems(sectionId) {
 
 function removeItem(button) {
   const itemCard = button.closest(".section-item-card");
-  if (
-    itemCard &&
-    confirm("Are you sure you want to remove this item?")
-  ) {
-    itemCard.remove();
+  if (!itemCard) return;
 
-    // Update item numbers and count badge
-    if (typeof SectionModal !== "undefined") {
-      SectionModal.updateItemNumbers();
-      SectionModal.updateItemsCountBadge();
-    } else if (typeof updateItemNumbers === "function") {
-      updateItemNumbers();
+  // Check if SwalHelper is available
+  if (
+    typeof SwalHelper === "undefined" ||
+    typeof window.SwalHelper === "undefined"
+  ) {
+    console.error(
+      "SwalHelper is not available, falling back to confirm"
+    );
+    if (confirm("Bu öğeyi silmek istediğinizden emin misiniz?")) {
+      itemCard.remove();
+
+      // Update item numbers and count badge
+      if (typeof SectionModal !== "undefined") {
+        SectionModal.updateItemNumbers();
+        SectionModal.updateItemsCountBadge();
+      } else if (typeof updateItemNumbers === "function") {
+        updateItemNumbers();
+      }
     }
+    return;
   }
+
+  // Get item info for better UX
+  const itemTitle =
+    itemCard.querySelector(".item-number")?.textContent || "Bu öğe";
+
+  // Show beautiful confirmation dialog
+  SwalHelper.confirmDelete(
+    "Öğeyi Sil",
+    `"${itemTitle}" öğesini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`,
+    {
+      confirmButtonText: '<i class="fas fa-trash mr-2"></i>Evet, Sil',
+      cancelButtonText: '<i class="fas fa-times mr-2"></i>İptal',
+    }
+  ).then((result) => {
+    if (result.isConfirmed) {
+      // Show loading
+      SwalHelper.loading(
+        "Siliniyor...",
+        "Öğe siliniyor, lütfen bekleyin..."
+      );
+
+      // Simulate removal delay for better UX
+      setTimeout(() => {
+        itemCard.remove();
+
+        // Update item numbers and count badge
+        if (typeof SectionModal !== "undefined") {
+          SectionModal.updateItemNumbers();
+          SectionModal.updateItemsCountBadge();
+        } else if (typeof updateItemNumbers === "function") {
+          updateItemNumbers();
+        }
+
+        // Close loading and show success
+        Swal.close();
+        SwalHelper.toast("Öğe başarıyla silindi", "success");
+      }, 800);
+    }
+  });
 }

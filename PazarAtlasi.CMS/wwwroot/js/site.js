@@ -401,3 +401,339 @@ if (sidebar) {
     }
   });
 }
+
+// ==================== SWEETALERT2 HELPER ====================
+// Global SweetAlert2 helper with beautiful custom styling
+
+window.SwalHelper = {
+  // Default configuration
+  defaultConfig: {
+    customClass: {
+      popup: "swal-custom-popup",
+      title: "swal-custom-title",
+      content: "swal-custom-content",
+      confirmButton: "swal-custom-confirm",
+      cancelButton: "swal-custom-cancel",
+      denyButton: "swal-custom-deny",
+    },
+    buttonsStyling: false,
+    showClass: {
+      popup: "animate__animated animate__fadeInDown animate__faster",
+    },
+    hideClass: {
+      popup: "animate__animated animate__fadeOutUp animate__faster",
+    },
+  },
+
+  // Success alert
+  success: function (title, text = "", options = {}) {
+    return Swal.fire({
+      ...this.defaultConfig,
+      icon: "success",
+      title: title,
+      text: text,
+      confirmButtonText: "Tamam",
+      iconColor: "#10b981",
+      ...options,
+    });
+  },
+
+  // Error alert
+  error: function (title, text = "", options = {}) {
+    return Swal.fire({
+      ...this.defaultConfig,
+      icon: "error",
+      title: title,
+      text: text,
+      confirmButtonText: "Tamam",
+      iconColor: "#ef4444",
+      ...options,
+    });
+  },
+
+  // Warning alert
+  warning: function (title, text = "", options = {}) {
+    return Swal.fire({
+      ...this.defaultConfig,
+      icon: "warning",
+      title: title,
+      text: text,
+      confirmButtonText: "Tamam",
+      iconColor: "#f59e0b",
+      ...options,
+    });
+  },
+
+  // Info alert
+  info: function (title, text = "", options = {}) {
+    return Swal.fire({
+      ...this.defaultConfig,
+      icon: "info",
+      title: title,
+      text: text,
+      confirmButtonText: "Tamam",
+      iconColor: "#3b82f6",
+      ...options,
+    });
+  },
+
+  // Confirmation dialog
+  confirm: function (title, text = "", options = {}) {
+    return Swal.fire({
+      ...this.defaultConfig,
+      icon: "question",
+      title: title,
+      text: text,
+      showCancelButton: true,
+      confirmButtonText: "Evet",
+      cancelButtonText: "Hayır",
+      iconColor: "#8b5cf6",
+      focusCancel: true,
+      reverseButtons: true,
+      ...options,
+    });
+  },
+
+  // Delete confirmation with custom styling
+  confirmDelete: function (
+    title = "Bu öğeyi silmek istediğinizden emin misiniz?",
+    text = "Bu işlem geri alınamaz!",
+    options = {}
+  ) {
+    return Swal.fire({
+      ...this.defaultConfig,
+      icon: "warning",
+      title: title,
+      text: text,
+      showCancelButton: true,
+      confirmButtonText: '<i class="fas fa-trash mr-2"></i>Evet, Sil',
+      cancelButtonText: '<i class="fas fa-times mr-2"></i>İptal',
+      iconColor: "#ef4444",
+      focusCancel: true,
+      reverseButtons: true,
+      customClass: {
+        ...this.defaultConfig.customClass,
+        confirmButton: "swal-custom-confirm swal-delete-confirm",
+        cancelButton: "swal-custom-cancel",
+      },
+      ...options,
+    });
+  },
+
+  // Loading/Processing dialog
+  loading: function (
+    title = "İşleniyor...",
+    text = "Lütfen bekleyin"
+  ) {
+    return Swal.fire({
+      ...this.defaultConfig,
+      title: title,
+      text: text,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+  },
+
+  // Toast notification
+  toast: function (title, icon = "success", position = "top-end") {
+    return Swal.fire({
+      toast: true,
+      position: position,
+      icon: icon,
+      title: title,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        popup: "swal-toast-popup",
+      },
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  },
+};
+
+// Add custom CSS for SweetAlert2
+const swalStyle = document.createElement("style");
+swalStyle.textContent = `
+/* SweetAlert2 Custom Styles */
+.swal-custom-popup {
+  border-radius: 16px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.swal-custom-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.swal-custom-content {
+  font-size: 0.95rem !important;
+  color: #64748b !important;
+  line-height: 1.6 !important;
+}
+
+.swal-custom-confirm {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 12px 24px !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3) !important;
+}
+
+.swal-custom-confirm:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4) !important;
+}
+
+.swal-delete-confirm {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.swal-delete-confirm:hover {
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4) !important;
+}
+
+.swal-custom-cancel {
+  background: #f8fafc !important;
+  color: #64748b !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 12px 24px !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+  transition: all 0.2s ease !important;
+  margin-right: 8px !important;
+}
+
+.swal-custom-cancel:hover {
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+  transform: translateY(-1px) !important;
+}
+
+.swal-custom-deny {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 12px 24px !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.swal-custom-deny:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Toast styles */
+.swal-toast-popup {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+/* Icon animations */
+.swal2-icon {
+  border: none !important;
+}
+
+.swal2-icon.swal2-success {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+}
+
+.swal2-icon.swal2-error {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+.swal2-icon.swal2-info {
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+}
+
+.swal2-icon.swal2-question {
+  border-color: #8b5cf6 !important;
+  color: #8b5cf6 !important;
+}
+
+/* Loading spinner */
+.swal2-loader {
+  border-color: #8b5cf6 transparent #8b5cf6 transparent !important;
+}
+
+/* Progress bar */
+.swal2-timer-progress-bar {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+}
+
+/* Backdrop */
+.swal2-backdrop-show {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Animation classes (requires animate.css or custom animations) */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.animate__animated {
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
+}
+
+.animate__faster {
+  animation-duration: 0.2s;
+}
+
+.animate__fadeInDown {
+  animation-name: fadeInDown;
+}
+
+.animate__fadeOutUp {
+  animation-name: fadeOutUp;
+}
+`;
+document.head.appendChild(swalStyle);

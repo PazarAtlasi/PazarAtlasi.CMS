@@ -56,19 +56,11 @@
                          data-nested-id="@childItem.Id"
                          data-nested-type="@((int)childItem.Type)"
                          data-level="@level">
-                        <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center mb-2">
                             <span class="text-xs font-medium text-slate-600">
                                 <i class="fas fa-link mr-1"></i>
                                 @(childItem.Translations?.FirstOrDefault()?.Title ?? childItem.Type.ToString()) #@childItem.SortOrder
                             </span>
-                            @if (childItem.AllowReorder)
-                            {
-                                <button type="button" onclick="this.closest('.nested-item-card').remove();"
-                                        class="text-red-500 hover:text-red-700 text-xs"
-                                        title="Remove this nested item">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            }
                         </div>
 
                         <!-- Render fields for this nested item -->

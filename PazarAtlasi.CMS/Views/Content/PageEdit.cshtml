@@ -178,11 +178,32 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <!-- Ensure SwalHelper is available before other scripts -->
+    <script>
+        // Wait for SwalHelper to be available
+        function waitForSwalHelper(callback) {
+            if (typeof window.SwalHelper !== 'undefined') {
+                callback();
+            } else {
+                setTimeout(() => waitForSwalHelper(callback), 100);
+            }
+        }
+    </script>
     <script src="~/js/Content/Content.Page.Section.Modal.js"></script>
     <script src="~/js/Content/Content.Page.js"></script>
     <script>
         // Set global page ID for section modal
         window.currentPageId = @Model.Id;
+
+        // Debug: Check if SwalHelper is available
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SwalHelper available:', typeof window.SwalHelper !== 'undefined');
+            console.log('Swal available:', typeof window.Swal !== 'undefined');
+            
+            if (typeof window.SwalHelper === 'undefined') {
+                console.warn('SwalHelper is not available. Remove buttons will use fallback confirm()');
+            }
+        });
 
         // Toggle child items visibility with smooth animation
         function toggleChildItems(button) {
@@ -280,6 +301,132 @@
                     toggleAllButton.innerHTML = '<i class="fas fa-expand-alt mr-1"></i> Collapse All';
                 }
             }
+        }
+
+        // Global removeItem function for section items (fallback)
+        window.removeItem = function(button) {
+            const itemCard = button.closest('.section-item-card');
+            if (!itemCard) return;
+
+            // Check if SwalHelper is available
+            if (typeof SwalHelper === 'undefined' || typeof window.SwalHelper === 'undefined') {
+                console.error('SwalHelper is not available, falling back to confirm');
+                if (confirm('Bu öğeyi silmek istediğinizden emin misiniz?')) {
+                    itemCard.remove();
+                    
+                    // Update item numbers and count badge
+                    if (typeof SectionModal !== "undefined") {
+                        SectionModal.updateItemNumbers();
+                        SectionModal.updateItemsCountBadge();
+                    }
+                }
+                return;
+            }
+
+            // Get item info for better UX
+            const itemTitle = itemCard.querySelector('.item-number')?.textContent || 'Bu öğe';
+
+            // Show beautiful confirmation dialog
+            SwalHelper.confirmDelete(
+                'Öğeyi Sil',
+                `"${itemTitle}" öğesini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`,
+                {
+                    confirmButtonText: '<i class="fas fa-trash mr-2"></i>Evet, Sil',
+                    cancelButtonText: '<i class="fas fa-times mr-2"></i>İptal'
+                }
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading
+                    SwalHelper.loading('Siliniyor...', 'Öğe siliniyor, lütfen bekleyin...');
+                    
+                    // Simulate removal delay for better UX
+                    setTimeout(() => {
+                        itemCard.remove();
+
+                        // Update item numbers and count badge
+                        if (typeof SectionModal !== "undefined") {
+                            SectionModal.updateItemNumbers();
+                            SectionModal.updateItemsCountBadge();
+                        }
+
+                        // Close loading and show success
+                        Swal.close();
+                        SwalHelper.toast('Öğe başarıyla silindi', 'success');
+                    }, 800);
+                }
+            });
+        };
+
+        // Remove nested item with beautiful confirmation
+        function removeNestedItem(button) {
+            const nestedCard = button.closest('.nested-item-card');
+            if (!nestedCard) return;
+
+            // Check if SwalHelper is available
+            if (typeof SwalHelper === 'undefined' || typeof window.SwalHelper === 'undefined') {
+                console.error('SwalHelper is not available, falling back to confirm');
+                if (confirm('Bu nested öğeyi silmek istediğinizden emin misiniz?')) {
+                    // Get parent container to update count
+                    const parentContainer = nestedCard.closest('.nested-items-container');
+                    
+                    // Remove the card
+                    nestedCard.remove();
+                    
+                    // Update nested items count if parent container exists
+                    if (parentContainer) {
+                        const remainingItems = parentContainer.querySelectorAll('.nested-item-card');
+                        const countHeader = parentContainer.parentElement?.querySelector('h5');
+                        if (countHeader) {
+                            const currentText = countHeader.textContent;
+                            const updatedText = currentText.replace(/\(\d+\)/, `(${remainingItems.length})`);
+                            countHeader.textContent = updatedText;
+                        }
+                    }
+                }
+                return;
+            }
+
+            // Get item info for better UX
+            const itemTitle = nestedCard.querySelector('span')?.textContent || 'Bu nested öğe';
+            
+            // Show beautiful confirmation dialog
+            SwalHelper.confirmDelete(
+                'Nested Öğeyi Sil',
+                `"${itemTitle}" öğesini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`,
+                {
+                    confirmButtonText: '<i class="fas fa-trash mr-2"></i>Evet, Sil',
+                    cancelButtonText: '<i class="fas fa-times mr-2"></i>İptal'
+                }
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading
+                    SwalHelper.loading('Siliniyor...', 'Nested öğe siliniyor, lütfen bekleyin...');
+                    
+                    // Simulate removal delay for better UX
+                    setTimeout(() => {
+                        // Get parent container to update count
+                        const parentContainer = nestedCard.closest('.nested-items-container');
+                        
+                        // Remove the card
+                        nestedCard.remove();
+                        
+                        // Update nested items count if parent container exists
+                        if (parentContainer) {
+                            const remainingItems = parentContainer.querySelectorAll('.nested-item-card');
+                            const countHeader = parentContainer.parentElement?.querySelector('h5');
+                            if (countHeader) {
+                                const currentText = countHeader.textContent;
+                                const updatedText = currentText.replace(/\(\d+\)/, `(${remainingItems.length})`);
+                                countHeader.textContent = updatedText;
+                            }
+                        }
+
+                        // Close loading and show success
+                        Swal.close();
+                        SwalHelper.toast('Nested öğe başarıyla silindi', 'success');
+                    }, 800);
+                }
+            });
         }
     </script>
 }
