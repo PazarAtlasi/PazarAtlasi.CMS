@@ -2772,6 +2772,62 @@ namespace PazarAtlasi.CMS.Controllers
                         })
                         .OrderBy(si => si.Title)
                         .ToListAsync();
+
+                    // Load parent item if exists
+                    if (sectionItem.ParentSectionItemId.HasValue)
+                    {
+                        var parentItem = await _pazarAtlasiDbContext.SectionItems
+                            .Include(si => si.Translations)
+                            .FirstOrDefaultAsync(si => si.Id == sectionItem.ParentSectionItemId.Value && !si.IsDeleted);
+
+                        if (parentItem != null)
+                        {
+                            viewModel.ParentItem = new SectionItemDto
+                            {
+                                Id = parentItem.Id,
+                                Title = parentItem.Title,
+                                Type = parentItem.Type,
+                                MediaType = parentItem.MediaType,
+                                SortOrder = parentItem.SortOrder,
+                                Key = parentItem.Key,
+                                Description = parentItem.Description,
+                                IconClass = parentItem.IconClass,
+                                Translations = parentItem.Translations.Select(t => new SectionItemTranslationDto
+                                {
+                                    Id = t.Id,
+                                    LanguageId = t.LanguageId,
+                                    Title = t.Title,
+                                    Description = t.Description
+                                }).ToList()
+                            };
+                        }
+                    }
+
+                    // Load child items
+                    var childItems = await _pazarAtlasiDbContext.SectionItems
+                        .Include(si => si.Translations)
+                        .Where(si => si.ParentSectionItemId == id.Value && !si.IsDeleted)
+                        .OrderBy(si => si.SortOrder)
+                        .ToListAsync();
+
+                    viewModel.ChildItems = childItems.Select(ci => new SectionItemDto
+                    {
+                        Id = ci.Id,
+                        Title = ci.Title,
+                        Type = ci.Type,
+                        MediaType = ci.MediaType,
+                        SortOrder = ci.SortOrder,
+                        Key = ci.Key,
+                        Description = ci.Description,
+                        IconClass = ci.IconClass,
+                        Translations = ci.Translations.Select(t => new SectionItemTranslationDto
+                        {
+                            Id = t.Id,
+                            LanguageId = t.LanguageId,
+                            Title = t.Title,
+                            Description = t.Description
+                        }).ToList()
+                    }).ToList();
                 }
                 else
                 {

@@ -23,6 +23,11 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public List<TemplateDto> Templates { get; set; } = new();
         public List<SectionItemDto> ParentSectionItems { get; set; } = new();
         
+        // Nested structure data
+        public SectionItemDto? ParentItem { get; set; }
+        public List<SectionItemDto> ChildItems { get; set; } = new();
+        public bool ShowNestedStructure => IsEditMode && (ParentItem != null || ChildItems.Any());
+        
         // Additional properties for better UX
         public string? SuccessMessage { get; set; }
         public string? ErrorMessage { get; set; }
