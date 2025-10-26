@@ -2,6 +2,40 @@
 
 @{
     ViewData["Title"] = "Section Items";
+    
+    // Helper methods for styling based on level
+    string GetItemBackgroundClass(int level)
+    {
+        return level switch
+        {
+            0 => "bg-blue-100",
+            1 => "bg-green-100", 
+            2 => "bg-yellow-100",
+            _ => "bg-slate-100"
+        };
+    }
+    
+    string GetItemTextClass(int level)
+    {
+        return level switch
+        {
+            0 => "text-blue-600",
+            1 => "text-green-600",
+            2 => "text-yellow-600", 
+            _ => "text-slate-600"
+        };
+    }
+    
+    string GetItemTitleClass(int level)
+    {
+        return level switch
+        {
+            0 => "text-slate-900",
+            1 => "text-slate-800",
+            2 => "text-slate-700",
+            _ => "text-slate-600"
+        };
+    }
 }
 
 <div class="section-items-management">
@@ -98,34 +132,62 @@
                     <tbody class="bg-white divide-y divide-slate-200">
                         @foreach (var item in Model)
                         {
-                            <tr class="hover:bg-slate-50 @(item.IsChild ? "bg-slate-50" : "")">
-                                <td class="px-6 py-4 whitespace-nowrap @(item.IsChild ? "pl-12" : "")">
+                            <tr class="hover:bg-slate-50 @(item.Level > 0 ? "bg-slate-50" : "") section-item-row" 
+                                data-item-id="@item.Id" 
+                                data-level="@item.Level" 
+                                data-parent-id="@(item.ParentSectionItemId?.ToString() ?? "")"
+                                style="@(item.Level > 0 ? "display: none;" : "")">
+                                <td class="px-6 py-4 whitespace-nowrap" style="padding-left: @(24 + (item.Level * 24))px;">
                                     <div class="flex items-center">
-                                        @if (item.IsChild)
+                                        @if (item.Level > 0)
                                         {
                                             <div class="flex items-center mr-3">
-                                                <div class="w-6 h-px bg-slate-300 mr-2"></div>
-                                                <i class="fas fa-level-down-alt text-slate-400 text-xs"></i>
+                                                @for (int i = 0; i < item.Level; i++)
+                                                {
+                                                    <div class="w-4 h-px bg-slate-300 mr-1"></div>
+                                                }
+                                                <i class="fas fa-level-down-alt text-slate-400 text-xs mr-2"></i>
                                             </div>
                                         }
+                                        
+                                        @if (item.HasChildren)
+                                        {
+                                            <button type="button" 
+                                                    class="toggle-children mr-2 p-1 hover:bg-slate-200 rounded transition-colors"
+                                                    data-item-id="@item.Id"
+                                                    title="Toggle children">
+                                                <i class="fas fa-chevron-right text-slate-500 text-xs transform transition-transform duration-200"></i>
+                                            </button>
+                                        }
+                                        else if (item.Level > 0)
+                                        {
+                                            <div class="w-6 mr-2"></div>
+                                        }
+                                        
                                         <div class="flex-shrink-0 h-10 w-10">
-                                            <div class="h-10 w-10 rounded-full @(item.IsChild ? "bg-slate-100" : "bg-blue-100") flex items-center justify-center">
+                                            <div class="h-10 w-10 rounded-full @(GetItemBackgroundClass(item.Level)) flex items-center justify-center">
                                                 @if (!string.IsNullOrEmpty(item.IconClass))
                                                 {
-                                                    <i class="@item.IconClass @(item.IsChild ? "text-slate-600" : "text-blue-600")"></i>
+                                                    <i class="@item.IconClass @(GetItemTextClass(item.Level))"></i>
                                                 }
                                                 else
                                                 {
-                                                    <i class="fas fa-list-ul @(item.IsChild ? "text-slate-600" : "text-blue-600")"></i>
+                                                    <i class="fas fa-list-ul @(GetItemTextClass(item.Level))"></i>
                                                 }
                                             </div>
                                         </div>
                                         <div class="ml-4">
-                                            <div class="text-sm font-medium @(item.IsChild ? "text-slate-700" : "text-slate-900")">
+                                            <div class="text-sm font-medium @(GetItemTitleClass(item.Level))">
                                                 @(item.Title ?? "No Title")
-                                                @if (item.IsChild)
+                                                @if (item.Level > 0)
                                                 {
-                                                    <span class="ml-2 text-xs text-slate-500">(Child of: @item.ParentTitle)</span>
+                                                    <span class="ml-2 text-xs text-slate-500">(Level @item.Level)</span>
+                                                }
+                                                @if (item.HasChildren)
+                                                {
+                                                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                        @item.Children.Count child@(item.Children.Count != 1 ? "ren" : "")
+                                                    </span>
                                                 }
                                             </div>
                                             <div class="text-sm text-slate-500">
@@ -143,59 +205,59 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex flex-col space-y-1">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(item.IsChild ? "bg-slate-100 text-slate-700" : "bg-blue-100 text-blue-800")">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(item.Level > 0 ? "bg-slate-100 text-slate-700" : "bg-blue-100 text-blue-800")">
                                             @item.Type
                                         </span>
-                                        <span class="text-xs @(item.IsChild ? "text-slate-400" : "text-slate-500")">@item.MediaType</span>
+                                        <span class="text-xs @(GetItemTextClass(item.Level).Replace("text-", "text-").Replace("-600", "-500"))">@item.MediaType</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if (item.TemplateId.HasValue)
                                     {
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(item.IsChild ? "bg-slate-100 text-slate-700" : "bg-green-100 text-green-800")">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(item.Level > 0 ? "bg-slate-100 text-slate-700" : "bg-green-100 text-green-800")">
                                             @item.TemplateName
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="text-sm @(item.IsChild ? "text-slate-400" : "text-slate-500")">No Template</span>
+                                        <span class="text-sm @(item.Level > 0 ? "text-slate-400" : "text-slate-500")">No Template</span>
                                     }
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if (item.IsChild)
+                                    @if (item.Level > 0)
                                     {
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
                                             <i class="fas fa-level-down-alt mr-1"></i>
-                                            Child
+                                            Level @item.Level
                                         </span>
                                     }
-                                    else if (item.ParentSectionItemId.HasValue)
+                                    else if (item.HasChildren)
                                     {
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                             <i class="fas fa-sitemap mr-1"></i>
-                                            Nested
+                                            Parent
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="text-sm @(item.IsChild ? "text-slate-400" : "text-slate-500")">Root Item</span>
+                                        <span class="text-sm text-slate-500">Root Item</span>
                                     }
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm @(item.IsChild ? "text-slate-400" : "text-slate-900")">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm @(GetItemTitleClass(item.Level))">
                                     @item.SortOrder
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex flex-wrap gap-1">
                                         @foreach (var translation in item.Translations.Take(3))
                                         {
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @(item.IsChild ? "bg-slate-200 text-slate-600" : "bg-slate-100 text-slate-800")" 
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @(item.Level > 0 ? "bg-slate-200 text-slate-600" : "bg-slate-100 text-slate-800")" 
                                                   title="@translation.LanguageName">
                                                 @translation.LanguageCode
                                             </span>
                                         }
                                         @if (item.Translations.Count > 3)
                                         {
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @(item.IsChild ? "bg-slate-300 text-slate-500" : "bg-slate-200 text-slate-600")">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @(item.Level > 0 ? "bg-slate-300 text-slate-500" : "bg-slate-200 text-slate-600")">
                                                 +@(item.Translations.Count - 3)
                                             </span>
                                         }
@@ -203,12 +265,12 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex flex-col space-y-1">
-                                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium @(item.IsChild ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-indigo-50 text-indigo-700 border-indigo-200") border">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium @(item.Level > 0 ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-indigo-50 text-indigo-700 border-indigo-200") border">
                                             @item.Fields.Count Fields
                                         </span>
                                         @if (item.FieldValues.Any())
                                         {
-                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium @(item.IsChild ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-green-50 text-green-700 border-green-200") border">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium @(item.Level > 0 ? "bg-slate-100 text-slate-600 border-slate-200" : "bg-green-50 text-green-700 border-green-200") border">
                                                 @item.FieldValues.Count Values
                                             </span>
                                         }
@@ -217,12 +279,12 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex items-center space-x-2">
                                         <a href="@Url.Action("SectionItemForm", "Content", new { id = item.Id })" 
-                                           class="@(item.IsChild ? "text-slate-500 hover:text-slate-700" : "text-blue-600 hover:text-blue-900") transition-colors" title="Edit">
+                                           class="@(item.Level > 0 ? "text-slate-500 hover:text-slate-700" : "text-blue-600 hover:text-blue-900") transition-colors" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <button type="button" 
                                                 onclick="viewSectionItem(@item.Id)" 
-                                                class="@(item.IsChild ? "text-slate-400 hover:text-slate-600" : "text-slate-600 hover:text-slate-900") transition-colors" title="View Details">
+                                                class="@(item.Level > 0 ? "text-slate-400 hover:text-slate-600" : "text-slate-600 hover:text-slate-900") transition-colors" title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
@@ -314,6 +376,114 @@
 
 @section Scripts {
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tree view toggle functionality
+            const toggleButtons = document.querySelectorAll('.toggle-children');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-item-id');
+                    const icon = this.querySelector('i');
+                    const isExpanded = icon.classList.contains('rotate-90');
+                    
+                    if (isExpanded) {
+                        // Collapse children
+                        collapseChildren(itemId);
+                        icon.classList.remove('rotate-90');
+                    } else {
+                        // Expand children
+                        expandChildren(itemId);
+                        icon.classList.add('rotate-90');
+                    }
+                });
+            });
+            
+            // Add expand/collapse all buttons
+            addExpandCollapseButtons();
+        });
+        
+        function expandChildren(parentId) {
+            const childRows = document.querySelectorAll(`tr[data-parent-id="${parentId}"]`);
+            childRows.forEach(row => {
+                row.style.display = '';
+                
+                // If this child has children and is expanded, show its children too
+                const childId = row.getAttribute('data-item-id');
+                const toggleButton = row.querySelector('.toggle-children');
+                if (toggleButton) {
+                    const icon = toggleButton.querySelector('i');
+                    if (icon.classList.contains('rotate-90')) {
+                        expandChildren(childId);
+                    }
+                }
+            });
+        }
+        
+        function collapseChildren(parentId) {
+            const childRows = document.querySelectorAll(`tr[data-parent-id="${parentId}"]`);
+            childRows.forEach(row => {
+                row.style.display = 'none';
+                
+                // Also collapse any grandchildren
+                const childId = row.getAttribute('data-item-id');
+                collapseChildren(childId);
+                
+                // Reset toggle button state
+                const toggleButton = row.querySelector('.toggle-children');
+                if (toggleButton) {
+                    const icon = toggleButton.querySelector('i');
+                    icon.classList.remove('rotate-90');
+                }
+            });
+        }
+        
+        function expandAll() {
+            const allRows = document.querySelectorAll('.section-item-row');
+            const allToggleButtons = document.querySelectorAll('.toggle-children');
+            
+            allRows.forEach(row => {
+                row.style.display = '';
+            });
+            
+            allToggleButtons.forEach(button => {
+                const icon = button.querySelector('i');
+                icon.classList.add('rotate-90');
+            });
+        }
+        
+        function collapseAll() {
+            const childRows = document.querySelectorAll('.section-item-row[data-level]:not([data-level="0"])');
+            const allToggleButtons = document.querySelectorAll('.toggle-children');
+            
+            childRows.forEach(row => {
+                row.style.display = 'none';
+            });
+            
+            allToggleButtons.forEach(button => {
+                const icon = button.querySelector('i');
+                icon.classList.remove('rotate-90');
+            });
+        }
+        
+        function addExpandCollapseButtons() {
+            const tableHeader = document.querySelector('.bg-white.rounded-xl.shadow-md .px-6.py-4.border-b');
+            if (tableHeader) {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'flex items-center space-x-2 mt-2';
+                buttonContainer.innerHTML = `
+                    <button onclick="expandAll()" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <i class="fas fa-expand-arrows-alt mr-1"></i>
+                        Expand All
+                    </button>
+                    <button onclick="collapseAll()" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <i class="fas fa-compress-arrows-alt mr-1"></i>
+                        Collapse All
+                    </button>
+                `;
+                tableHeader.appendChild(buttonContainer);
+            }
+        }
+
         function viewSectionItem(id) {
             // This would typically make an AJAX call to get detailed information
             // For now, we'll just show a placeholder

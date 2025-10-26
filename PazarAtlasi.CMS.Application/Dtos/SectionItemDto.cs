@@ -20,6 +20,9 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public string? IconClass { get; set; }
         public bool IsChild { get; set; } = false;
         public string? ParentTitle { get; set; }
+        public int Level { get; set; } = 0; // For tree view indentation
+        public bool HasChildren { get; set; } = false;
+        public List<SectionItemDto> Children { get; set; } = new List<SectionItemDto>();
         public List<SectionItemTranslationDto> Translations { get; set; } = new List<SectionItemTranslationDto>();
         public List<SectionItemFieldDto> Fields { get; set; } = new List<SectionItemFieldDto>();
         public List<SectionItemFieldValueDto> FieldValues { get; set; } = new List<SectionItemFieldValueDto>();

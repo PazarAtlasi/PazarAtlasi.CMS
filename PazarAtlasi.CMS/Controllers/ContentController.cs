@@ -2512,31 +2512,68 @@ namespace PazarAtlasi.CMS.Controllers
                 .ThenBy(si => si.CreatedAt)
                 .ToListAsync();
 
-            // Group items by parent-child relationship
-            var rootItems = sectionItems.Where(si => si.ParentSectionItemId == null).OrderBy(si => si.SortOrder).ToList();
-            var childItems = sectionItems.Where(si => si.ParentSectionItemId != null).ToList();
+            // Build hierarchical tree structure
+            var hierarchicalItems = BuildSectionItemTree(sectionItems);
 
-            // Create a flat list with proper hierarchy
-            var hierarchicalItems = new List<SectionItemDto>();
-            
-            foreach (var rootItem in rootItems)
+            // Flatten the tree for display with proper indentation
+            var flattenedItems = new List<SectionItemDto>();
+            FlattenSectionItemTree(hierarchicalItems, flattenedItems, 0);
+
+            return View(flattenedItems);
+        }
+
+        /// <summary>
+        /// Build hierarchical tree structure from flat list
+        /// </summary>
+        private List<SectionItemDto> BuildSectionItemTree(List<SectionItem> sectionItems)
+        {
+            var itemDictionary = new Dictionary<int, SectionItemDto>();
+            var rootItems = new List<SectionItemDto>();
+
+            // First pass: Create all DTOs
+            foreach (var item in sectionItems)
             {
-                // Add root item
-                var rootDto = MapSectionItemToDto(rootItem);
-                hierarchicalItems.Add(rootDto);
+                var dto = MapSectionItemToDto(item);
+                itemDictionary[item.Id] = dto;
+            }
+
+            // Second pass: Build parent-child relationships
+            foreach (var item in sectionItems)
+            {
+                var dto = itemDictionary[item.Id];
                 
-                // Add child items
-                var children = childItems.Where(ci => ci.ParentSectionItemId == rootItem.Id).OrderBy(ci => ci.SortOrder).ToList();
-                foreach (var child in children)
+                if (item.ParentSectionItemId.HasValue && itemDictionary.ContainsKey(item.ParentSectionItemId.Value))
                 {
-                    var childDto = MapSectionItemToDto(child);
-                    childDto.IsChild = true; // Mark as child for styling
-                    childDto.ParentTitle = rootItem.Translations.FirstOrDefault()?.Title ?? rootItem.Title ?? $"Item {rootItem.Id}";
-                    hierarchicalItems.Add(childDto);
+                    var parent = itemDictionary[item.ParentSectionItemId.Value];
+                    parent.Children.Add(dto);
+                    parent.HasChildren = true;
+                    dto.IsChild = true;
+                    dto.ParentTitle = parent.Title;
+                }
+                else
+                {
+                    rootItems.Add(dto);
                 }
             }
 
-            return View(hierarchicalItems);
+            return rootItems.OrderBy(r => r.SortOrder).ToList();
+        }
+
+        /// <summary>
+        /// Flatten tree structure for display with proper indentation levels
+        /// </summary>
+        private void FlattenSectionItemTree(List<SectionItemDto> items, List<SectionItemDto> flatList, int level)
+        {
+            foreach (var item in items.OrderBy(i => i.SortOrder))
+            {
+                item.Level = level;
+                flatList.Add(item);
+                
+                if (item.Children.Any())
+                {
+                    FlattenSectionItemTree(item.Children, flatList, level + 1);
+                }
+            }
         }
 
         /// <summary>
