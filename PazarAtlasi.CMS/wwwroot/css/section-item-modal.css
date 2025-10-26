@@ -262,3 +262,85 @@ video {
     aspect-ratio: 1 / 1;
 }
 
+/* Child Items Toggle Styles */
+.nested-items-container {
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.nested-items-container.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.nested-items-container.expanded {
+    max-height: none;
+    opacity: 1;
+}
+
+/* Toggle Button Styles */
+button[onclick*="toggleChildItems"] {
+    transition: all 0.2s ease-in-out;
+}
+
+button[onclick*="toggleChildItems"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button[onclick*="toggleAllChildItems"] {
+    transition: all 0.2s ease-in-out;
+}
+
+button[onclick*="toggleAllChildItems"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Nested Item Card Animation */
+.nested-item-card {
+    transition: all 0.2s ease-in-out;
+}
+
+.nested-item-card:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Chevron Icon Animation */
+button[onclick*="toggleChildItems"] i {
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Smooth collapse/expand animation */
+@keyframes slideDown {
+    from {
+        max-height: 0;
+        opacity: 0;
+    }
+    to {
+        max-height: 1000px;
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        max-height: 1000px;
+        opacity: 1;
+    }
+    to {
+        max-height: 0;
+        opacity: 0;
+    }
+}
+
+.nested-items-container.expanding {
+    animation: slideDown 0.3s ease-in-out;
+}
+
+.nested-items-container.collapsing {
+    animation: slideUp 0.3s ease-in-out;
+}

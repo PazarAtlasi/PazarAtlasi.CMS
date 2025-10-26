@@ -28,9 +28,24 @@
                 <i class="fas fa-level-down-alt mr-2 text-@(iconColor)"></i>
                 Nested Items (@parentItem.ChildItems.Count) - Level @level
             </h5>
+            <div class="flex items-center space-x-2">
+                @if (level == 1)
+                {
+                    <button type="button" onclick="toggleAllChildItems()" 
+                            class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded transition-colors"
+                            title="Toggle all child items">
+                        <i class="fas fa-expand-alt mr-1"></i> Collapse All
+                    </button>
+                }
+                <button type="button" onclick="toggleChildItems(this)" 
+                        class="text-xs px-2 py-1 bg-@(buttonBg) hover:bg-@(buttonHover) text-@(iconColor) rounded transition-colors"
+                        title="Toggle child items">
+                    <i class="fas fa-chevron-up mr-1"></i> Hide
+                </button>
+            </div>
         </div>
 
-        <div class="space-y-2 ml-@(marginLeft) pl-3 border-l-2 border-@(borderColor)">
+        <div class="nested-items-container space-y-2 ml-@(marginLeft) pl-3 border-l-2 border-@(borderColor)">
             @foreach (var childItem in parentItem.ChildItems)
             {
                 ViewBag.AvailableLanguages = availableLanguages;
@@ -81,17 +96,6 @@
                             @await Html.PartialAsync("~/Views/Content/_SectionItemNested.cshtml")
                         }
                     </div>
-
-                    <!-- Add button for this nested item type -->
-                    @if (childItem.AllowReorder)
-                    {
-                        <button type="button"
-                                onclick="SectionModal.addNestedItemByType('@parentItem.Id', '@childItem.Type', @level)"
-                                class="w-full mt-2 px-2 py-1 bg-white hover:bg-@(buttonBg) text-@(iconColor) hover:text-@(iconColor) rounded text-xs transition-colors border-2 border-@(borderColor)">
-                            <i class="fas fa-plus mr-1"></i> @($"Add {childItem.Type.ToString()}")
-
-                        </button>
-                    }
                 }
             }
         </div>

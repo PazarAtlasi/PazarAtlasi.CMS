@@ -183,6 +183,104 @@
     <script>
         // Set global page ID for section modal
         window.currentPageId = @Model.Id;
+
+        // Toggle child items visibility with smooth animation
+        function toggleChildItems(button) {
+            const container = button.closest('.mt-4').querySelector('.nested-items-container');
+            const icon = button.querySelector('i');
+            
+            if (container.style.display === 'none' || container.classList.contains('collapsed')) {
+                // Show container
+                container.style.display = 'block';
+                container.classList.remove('collapsed');
+                container.classList.add('expanded', 'expanding');
+                
+                setTimeout(() => {
+                    container.classList.remove('expanding');
+                }, 300);
+                
+                icon.className = 'fas fa-chevron-up mr-1';
+                button.innerHTML = '<i class="fas fa-chevron-up mr-1"></i> Hide';
+                button.title = 'Hide child items';
+            } else {
+                // Hide container
+                container.classList.add('collapsing');
+                container.classList.remove('expanded');
+                
+                setTimeout(() => {
+                    container.style.display = 'none';
+                    container.classList.add('collapsed');
+                    container.classList.remove('collapsing');
+                }, 300);
+                
+                icon.className = 'fas fa-chevron-down mr-1';
+                button.innerHTML = '<i class="fas fa-chevron-down mr-1"></i> Show';
+                button.title = 'Show child items';
+            }
+        }
+
+        // Toggle all child items visibility
+        function toggleAllChildItems() {
+            const allContainers = document.querySelectorAll('.nested-items-container');
+            const allButtons = document.querySelectorAll('[onclick="toggleChildItems(this)"]');
+            const toggleAllButton = document.querySelector('[onclick="toggleAllChildItems()"]');
+            
+            // Check if any container is visible
+            const anyVisible = Array.from(allContainers).some(container => 
+                container.style.display !== 'none' && !container.classList.contains('collapsed')
+            );
+            
+            allContainers.forEach((container, index) => {
+                setTimeout(() => {
+                    if (anyVisible) {
+                        // Hide all
+                        container.classList.add('collapsing');
+                        container.classList.remove('expanded');
+                        
+                        setTimeout(() => {
+                            container.style.display = 'none';
+                            container.classList.add('collapsed');
+                            container.classList.remove('collapsing');
+                        }, 300);
+                    } else {
+                        // Show all
+                        container.style.display = 'block';
+                        container.classList.remove('collapsed');
+                        container.classList.add('expanded', 'expanding');
+                        
+                        setTimeout(() => {
+                            container.classList.remove('expanding');
+                        }, 300);
+                    }
+                }, index * 50); // Stagger animation
+            });
+            
+            // Update individual toggle buttons
+            allButtons.forEach(button => {
+                const icon = button.querySelector('i');
+                if (anyVisible) {
+                    icon.className = 'fas fa-chevron-down mr-1';
+                    button.innerHTML = '<i class="fas fa-chevron-down mr-1"></i> Show';
+                    button.title = 'Show child items';
+                } else {
+                    icon.className = 'fas fa-chevron-up mr-1';
+                    button.innerHTML = '<i class="fas fa-chevron-up mr-1"></i> Hide';
+                    button.title = 'Hide child items';
+                }
+            });
+            
+            // Update toggle all button
+            if (toggleAllButton) {
+                const icon = toggleAllButton.querySelector('i');
+                if (anyVisible) {
+                    icon.className = 'fas fa-compress-alt mr-1';
+                    toggleAllButton.innerHTML = '<i class="fas fa-compress-alt mr-1"></i> Expand All';
+                } else {
+                    icon.className = 'fas fa-expand-alt mr-1';
+                    toggleAllButton.innerHTML = '<i class="fas fa-expand-alt mr-1"></i> Collapse All';
+                }
+            }
+        }
     </script>
 }
 

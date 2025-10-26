@@ -1042,121 +1042,6 @@ const SectionModal = (function () {
   }
 
   /**
-   * NEW: Add nested item by type
-   */
-  async function addNestedItemByType(parentItemId, itemType, level) {
-    console.log("addNestedItemByType called:", {
-      parentItemId,
-      itemType,
-      level,
-    });
-
-    try {
-      // Find parent item's nested items container
-      const parentCard =
-        document.querySelector(
-          `[data-nested-id="${parentItemId}"]`
-        ) ||
-        document.querySelector(`[data-item-id="${parentItemId}"]`);
-
-      if (!parentCard) {
-        console.error("Parent item not found:", parentItemId);
-        return;
-      }
-
-      // Find or create nested items container
-      let nestedContainer = parentCard.querySelector(".space-y-2");
-      if (!nestedContainer) {
-        // Create nested items section if it doesn't exist
-        const itemContent =
-          parentCard.querySelector(".space-y-3") ||
-          parentCard.querySelector(".space-y-2");
-        if (itemContent) {
-          const nestedSection = document.createElement("div");
-          nestedSection.className =
-            "mt-4 pt-4 border-t border-slate-200";
-          nestedSection.innerHTML = `
-                        <div class="flex items-center justify-between mb-3">
-                            <h5 class="text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                                <i class="fas fa-level-down-alt mr-2 text-purple-600"></i>
-                                Nested Items (0)
-                            </h5>
-                        </div>
-                        <div class="space-y-2 ml-4 pl-3 border-l-2 border-purple-200"></div>
-                    `;
-          itemContent.appendChild(nestedSection);
-          nestedContainer = nestedSection.querySelector(".space-y-2");
-        }
-      }
-
-      if (!nestedContainer) {
-        console.error("Could not create nested container");
-        return;
-      }
-
-      const currentCount = nestedContainer.querySelectorAll(
-        ".nested-item-card"
-      ).length;
-      const templateId = currentSection.templateId;
-
-      // For now, create a simple nested item card
-      // TODO: Get this from backend based on itemType
-      const colorClasses = ["purple", "indigo", "blue"];
-      const colorIndex = Math.min(level - 1, colorClasses.length - 1);
-      const color = colorClasses[colorIndex];
-
-      const nestedCard = document.createElement("div");
-      nestedCard.className = `nested-item-card bg-${color}-50 border border-${color}-200 rounded p-3`;
-      nestedCard.setAttribute("data-nested-id", `temp-${Date.now()}`);
-      nestedCard.setAttribute("data-nested-type", itemType);
-      nestedCard.setAttribute("data-level", level);
-      nestedCard.innerHTML = `
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-medium text-slate-600">
-                        <i class="fas fa-link mr-1"></i> ${itemType} #${
-        currentCount + 1
-      }
-                    </span>
-                    <button type="button" onclick="SectionModal.removeNestedItem('${parentItemId}', 'temp-${Date.now()}', ${level})"
-                            class="text-red-500 hover:text-red-700 text-xs">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="space-y-2">
-                    <div class="nested-field-container">
-                        <label class="block text-xs font-medium text-slate-600 mb-1">
-                            ${itemType} Content
-                        </label>
-                        <input type="text" 
-                               class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs"
-                               placeholder="Enter ${itemType.toLowerCase()} content...">
-                    </div>
-                </div>
-            `;
-
-      nestedContainer.appendChild(nestedCard);
-
-      // Update nested items count
-      const countHeader =
-        nestedContainer.parentElement?.querySelector("h5");
-      if (countHeader) {
-        const newCount = nestedContainer.querySelectorAll(
-          ".nested-item-card"
-        ).length;
-        countHeader.innerHTML = `
-                    <i class="fas fa-level-down-alt mr-2 text-${color}-600"></i>
-                    Nested Items (${newCount})
-                `;
-      }
-
-      console.log("Nested item added successfully");
-    } catch (error) {
-      console.error("Error adding nested item:", error);
-      alert("Failed to add nested item. Please try again.");
-    }
-  }
-
-  /**
    * NEW: Show template selection modal for adding new item
    */
   function showTemplateSelectionForNewItem() {
@@ -1497,7 +1382,6 @@ const SectionModal = (function () {
 
     // NEW: Type-based item management
     addSectionItemByType,
-    addNestedItemByType,
     showItemTypeSelectionModal,
     closeItemTypeSelectionModal,
 
