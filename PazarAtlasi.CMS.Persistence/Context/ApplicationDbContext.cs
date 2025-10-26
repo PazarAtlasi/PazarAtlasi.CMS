@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PazarAtlasi.CMS.Domain.Common;
+using PazarAtlasi.CMS.Domain.Entities.Announcement;
 using PazarAtlasi.CMS.Domain.Entities.Content;
 
 namespace PazarAtlasi.CMS.Persistence.Context
@@ -51,6 +52,8 @@ namespace PazarAtlasi.CMS.Persistence.Context
         public DbSet<Template> Templates { get; set; }
 
         public DbSet<TemplateTranslation> TemplateTranslations { get; set; }
+
+        public DbSet<Announcement> Announcements { get; set; }
 
 
 

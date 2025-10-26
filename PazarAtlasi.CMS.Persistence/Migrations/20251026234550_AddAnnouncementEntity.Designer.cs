@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PazarAtlasi.CMS.Persistence.Context;
 
@@ -11,9 +12,11 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    partial class PazarAtlasiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251026234550_AddAnnouncementEntity")]
+    partial class AddAnnouncementEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Announcement.Announcement", b =>
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Content.Announcement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,6 +51,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int")
                         .HasColumnName("CreatedBy");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("CreatedByName");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -109,10 +117,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 1,
                             Content = "<p>Yeni duyuru sistemimize hoş geldiniz. Bu sistem ile önemli duyurularınızı kolayca yönetebilirsiniz.</p>",
-                            CreatedAt = new DateTime(2024, 10, 27, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 10, 26, 23, 45, 48, 699, DateTimeKind.Utc).AddTicks(2221),
+                            CreatedByName = "Sistem Yöneticisi",
                             IsDeleted = false,
-                            PublishEnd = new DateTime(2024, 11, 27, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            PublishStart = new DateTime(2024, 10, 27, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            PublishEnd = new DateTime(2025, 11, 25, 23, 45, 48, 699, DateTimeKind.Utc).AddTicks(1816),
+                            PublishStart = new DateTime(2025, 10, 26, 23, 45, 48, 699, DateTimeKind.Utc).AddTicks(1653),
                             Status = 1,
                             Summary = "Yeni duyuru sistemi tanıtımı",
                             Title = "Hoş Geldiniz!"
@@ -121,10 +130,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 2,
                             Content = "<p>Sistemimizde planlı bakım çalışması yapılacaktır. Bakım sırasında hizmetlerimizde kısa süreli kesintiler yaşanabilir.</p><p>Bakım tarihi: <strong>15 Kasım 2024, 02:00-04:00</strong></p>",
-                            CreatedAt = new DateTime(2024, 10, 22, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 10, 21, 23, 45, 48, 699, DateTimeKind.Utc).AddTicks(2568),
+                            CreatedByName = "Teknik Ekip",
                             IsDeleted = false,
-                            PublishEnd = new DateTime(2024, 11, 6, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            PublishStart = new DateTime(2024, 10, 22, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            PublishEnd = new DateTime(2025, 11, 5, 23, 45, 48, 699, DateTimeKind.Utc).AddTicks(2567),
+                            PublishStart = new DateTime(2025, 10, 21, 23, 45, 48, 699, DateTimeKind.Utc).AddTicks(2563),
                             Status = 1,
                             Summary = "Planlı sistem bakımı hakkında bilgilendirme",
                             Title = "Sistem Bakımı Duyurusu"

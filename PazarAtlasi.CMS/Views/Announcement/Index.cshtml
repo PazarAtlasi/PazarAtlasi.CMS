@@ -1,0 +1,244 @@
+@model AnnouncementListResponse
+@{
+    ViewData["Title"] = "Duyurular";
+}
+
+<div class="announcements-page">
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <h4 class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    Duyurular
+                </h4>
+                <p class="text-slate-500 mt-3 max-w-xl">Duyurularınızı oluşturun, düzenleyin ve yayınlayın. Yayın tarihlerini belirleyerek duyurularınızı zamanında yayınlayabilirsiniz.</p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <a href="@Url.Action("Create", "Announcement")" 
+                   class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-plus mr-2"></i> Yeni Duyuru Ekle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtreler -->
+    <div class="bg-white rounded-xl shadow-md mb-6">
+        <div class="p-5 border-b border-slate-100">
+            <h5 class="text-lg font-semibold text-slate-800 m-0">Filtreler</h5>
+        </div>
+        <div class="p-5">
+            <form method="get" class="flex flex-wrap gap-4 items-end">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Arama</label>
+                    <input type="text" name="search" value="@Model.Search" 
+                           placeholder="Başlık veya özet ile ara..." 
+                           class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                </div>
+                <div class="min-w-[150px]">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Durum</label>
+                    <select name="status" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="">Tümü</option>
+                        <option value="Draft" selected="@(Model.StatusFilter == "Draft")">Taslak</option>
+                        <option value="Active" selected="@(Model.StatusFilter == "Active")">Yayında</option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-search mr-1"></i> Filtrele
+                    </button>
+                    <a href="@Url.Action("Index", "Announcement")" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors">
+                        <i class="fas fa-times mr-1"></i> Temizle
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Duyuru Listesi -->
+    <div class="bg-white rounded-xl shadow-md">
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+            <h5 class="text-lg font-semibold text-slate-800 m-0">
+                Duyurular (@Model.TotalCount)
+            </h5>
+        </div>
+        <div class="p-5">
+            @if (Model.Announcements.Any())
+            {
+                <div class="space-y-4">
+                    @foreach (var announcement in Model.Announcements)
+                    {
+                        <div class="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-2">
+                                        <h6 class="font-semibold text-slate-800 text-lg mr-3">@announcement.Title</h6>
+                                        <span class="px-3 py-1 text-xs font-medium rounded-full 
+                                            @(announcement.StatusColor == "green" ? "bg-green-100 text-green-800" : 
+                                              announcement.StatusColor == "yellow" ? "bg-yellow-100 text-yellow-800" :
+                                              announcement.StatusColor == "blue" ? "bg-blue-100 text-blue-800" :
+                                              "bg-gray-100 text-gray-800")">
+                                            @(announcement.StatusColor == "green" ? "🟢" : 
+                                              announcement.StatusColor == "yellow" ? "🟡" :
+                                              announcement.StatusColor == "blue" ? "🔵" : "⚪") @announcement.StatusText
+                                        </span>
+                                    </div>
+                                    
+                                    @if (!string.IsNullOrEmpty(announcement.Summary))
+                                    {
+                                        <p class="text-slate-600 mb-3">@announcement.Summary</p>
+                                    }
+                                    
+                                    <div class="flex flex-wrap gap-4 text-sm text-slate-500">
+                                        <span><i class="fas fa-calendar-alt mr-1"></i> @announcement.PublishStart.ToString("dd.MM.yyyy HH:mm") - @announcement.PublishEnd.ToString("dd.MM.yyyy HH:mm")</span>
+                                        <span><i class="fas fa-user mr-1"></i> @announcement.CreatedByName</span>
+                                        <span><i class="fas fa-clock mr-1"></i> @announcement.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex space-x-2 ml-4">
+                                    <a href="@Url.Action("Edit", "Announcement", new { id = announcement.Id })" 
+                                       class="p-2 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 text-sm transition-colors" 
+                                       title="Düzenle">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    
+                                    @if (announcement.Status == PazarAtlasi.CMS.Domain.Common.Status.Draft)
+                                    {
+                                        <button onclick="publishAnnouncement(@announcement.Id)" 
+                                                class="p-2 bg-green-100 hover:bg-green-200 rounded text-green-600 text-sm transition-colors" 
+                                                title="Yayınla">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button onclick="saveAsDraft(@announcement.Id)" 
+                                                class="p-2 bg-yellow-100 hover:bg-yellow-200 rounded text-yellow-600 text-sm transition-colors" 
+                                                title="Taslağa Çevir">
+                                            <i class="fas fa-pause"></i>
+                                        </button>
+                                    }
+                                    
+                                    <button onclick="deleteAnnouncement(@announcement.Id)" 
+                                            class="p-2 bg-red-100 hover:bg-red-200 rounded text-red-600 text-sm transition-colors" 
+                                            title="Sil">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Sayfalama -->
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="flex justify-center mt-6">
+                        <nav class="flex space-x-1">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <a href="@Url.Action("Index", new { page = Model.PageNumber - 1, search = Model.Search, status = Model.StatusFilter })" 
+                                   class="px-3 py-2 bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            }
+
+                            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                            {
+                                <a href="@Url.Action("Index", new { page = i, search = Model.Search, status = Model.StatusFilter })" 
+                                   class="px-3 py-2 @(i == Model.PageNumber ? "bg-purple-600 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300") rounded transition-colors">
+                                    @i
+                                </a>
+                            }
+
+                            @if (Model.PageNumber < Model.TotalPages)
+                            {
+                                <a href="@Url.Action("Index", new { page = Model.PageNumber + 1, search = Model.Search, status = Model.StatusFilter })" 
+                                   class="px-3 py-2 bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            }
+                        </nav>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-12">
+                    <i class="fas fa-bullhorn text-4xl text-slate-300 mb-4"></i>
+                    <h3 class="text-lg font-medium text-slate-600 mb-2">Henüz duyuru yok</h3>
+                    <p class="text-slate-500 mb-4">İlk duyurunuzu oluşturmak için aşağıdaki butona tıklayın.</p>
+                    <a href="@Url.Action("Create", "Announcement")" 
+                       class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Yeni Duyuru Ekle
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function publishAnnouncement(id) {
+            if (confirm('Bu duyuruyu yayınlamak istediğinizden emin misiniz?')) {
+                $.post('@Url.Action("Publish", "Announcement")', { id: id }, function(response) {
+                    if (response.success) {
+                        showNotification(response.message, 'success');
+                        location.reload();
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                });
+            }
+        }
+
+        function saveAsDraft(id) {
+            if (confirm('Bu duyuruyu taslağa çevirmek istediğinizden emin misiniz?')) {
+                $.post('@Url.Action("SaveAsDraft", "Announcement")', { id: id }, function(response) {
+                    if (response.success) {
+                        showNotification(response.message, 'success');
+                        location.reload();
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                });
+            }
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm('Bu duyuruyu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+                $.post('@Url.Action("Delete", "Announcement")', { 
+                    id: id,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                }, function(response) {
+                    if (response.success) {
+                        showNotification(response.message, 'success');
+                        location.reload();
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                });
+            }
+        }
+
+        function showNotification(message, type) {
+            // Basit bir notification sistemi
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const notification = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+            
+            // Sayfanın üstüne notification ekle
+            $('body').prepend(notification);
+            
+            // 3 saniye sonra otomatik kapat
+            setTimeout(() => {
+                $('.alert').fadeOut();
+            }, 3000);
+        }
+    </script>
+}

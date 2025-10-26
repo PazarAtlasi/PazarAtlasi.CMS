@@ -1,0 +1,276 @@
+@model AnnouncementEditViewModel
+@{
+    ViewData["Title"] = "Duyuru Düzenle";
+}
+
+<div class="announcement-edit">
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <h4 class="text-2xl font-bold text-slate-800 relative inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    Duyuru Düzenle
+                </h4>
+                <p class="text-slate-500 mt-3 max-w-xl">Mevcut duyuruyu düzenleyin ve değişikliklerinizi kaydedin.</p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <a href="@Url.Action("Index", "Announcement")" 
+                   class="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm transition-colors inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input asp-for="Id" type="hidden">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Ana Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="p-5 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 m-0">Duyuru Bilgileri</h5>
+                    </div>
+                    <div class="p-5 space-y-6">
+                        <!-- Başlık -->
+                        <div>
+                            <label asp-for="Title" class="block text-sm font-medium text-slate-700 mb-2">Başlık *</label>
+                            <input asp-for="Title" 
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                   placeholder="Duyuru başlığını girin...">
+                            <span asp-validation-for="Title" class="text-red-500 text-sm"></span>
+                        </div>
+
+                        <!-- Kısa Özet -->
+                        <div>
+                            <label asp-for="Summary" class="block text-sm font-medium text-slate-700 mb-2">Kısa Özet</label>
+                            <textarea asp-for="Summary" rows="3"
+                                      class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                      placeholder="Duyurunun kısa özetini girin..."></textarea>
+                            <span asp-validation-for="Summary" class="text-red-500 text-sm"></span>
+                            <p class="text-xs text-slate-500 mt-1">Bu özet, duyuru listesinde görüntülenecektir.</p>
+                        </div>
+
+                        <!-- İçerik -->
+                        <div>
+                            <label asp-for="Content" class="block text-sm font-medium text-slate-700 mb-2">İçerik *</label>
+                            <textarea asp-for="Content" id="contentEditor" rows="10"
+                                      class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                      placeholder="Duyuru içeriğini girin..."></textarea>
+                            <span asp-validation-for="Content" class="text-red-500 text-sm"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kapak Görseli -->
+                <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="p-5 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 m-0">Kapak Görseli</h5>
+                    </div>
+                    <div class="p-5">
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center">
+                            <div id="imageUploadArea" @(!string.IsNullOrEmpty(Model.CoverImage) ? "class=hidden" : "")>
+                                <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-3"></i>
+                                <p class="text-slate-600 mb-2">Görsel yüklemek için tıklayın veya sürükleyin</p>
+                                <p class="text-xs text-slate-500">PNG, JPG, GIF formatları desteklenir (Max: 5MB)</p>
+                                <input type="file" id="coverImageInput" accept="image/*" class="hidden">
+                                <button type="button" onclick="document.getElementById('coverImageInput').click()" 
+                                        class="mt-3 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors">
+                                    Görsel Seç
+                                </button>
+                            </div>
+                            <div id="imagePreview" @(string.IsNullOrEmpty(Model.CoverImage) ? "class=hidden" : "")>
+                                <img id="previewImage" src="@Model.CoverImage" alt="Preview" class="max-w-full h-48 object-cover rounded-lg mx-auto mb-3">
+                                <button type="button" onclick="removeImage()" 
+                                        class="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors">
+                                    Görseli Kaldır
+                                </button>
+                            </div>
+                        </div>
+                        <input asp-for="CoverImage" type="hidden" id="coverImageUrl">
+                        <span asp-validation-for="CoverImage" class="text-red-500 text-sm"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yan Panel -->
+            <div class="lg:col-span-1">
+                <!-- Yayın Ayarları -->
+                <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="p-5 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 m-0">Yayın Ayarları</h5>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <!-- Durum -->
+                        <div>
+                            <label asp-for="Status" class="block text-sm font-medium text-slate-700 mb-2">Durum</label>
+                            <select asp-for="Status" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="0">Taslak</option>
+                                <option value="1">Yayında</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-red-500 text-sm"></span>
+                        </div>
+
+                        <!-- Yayın Başlangıç Tarihi -->
+                        <div>
+                            <label asp-for="PublishStart" class="block text-sm font-medium text-slate-700 mb-2">Yayın Başlangıç Tarihi *</label>
+                            <input asp-for="PublishStart" type="datetime-local" 
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <span asp-validation-for="PublishStart" class="text-red-500 text-sm"></span>
+                        </div>
+
+                        <!-- Yayın Bitiş Tarihi -->
+                        <div>
+                            <label asp-for="PublishEnd" class="block text-sm font-medium text-slate-700 mb-2">Yayın Bitiş Tarihi *</label>
+                            <input asp-for="PublishEnd" type="datetime-local" 
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <span asp-validation-for="PublishEnd" class="text-red-500 text-sm"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kaydet Butonları -->
+                <div class="bg-white rounded-xl shadow-md mb-6">
+                    <div class="p-5 space-y-3">
+                        <button type="submit" name="status" value="1" 
+                                class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+                            <i class="fas fa-save mr-2"></i> Kaydet ve Yayınla
+                        </button>
+                        <button type="submit" name="status" value="0" 
+                                class="w-full py-2 px-4 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
+                            <i class="fas fa-save mr-2"></i> Taslak Olarak Kaydet
+                        </button>
+                        <a href="@Url.Action("Index", "Announcement")" 
+                           class="w-full py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg transition-colors text-center block">
+                            <i class="fas fa-times mr-2"></i> İptal
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tehlikeli İşlemler -->
+                <div class="bg-white rounded-xl shadow-md border border-red-200">
+                    <div class="p-5 border-b border-red-100">
+                        <h5 class="text-lg font-semibold text-red-800 m-0">Tehlikeli İşlemler</h5>
+                    </div>
+                    <div class="p-5">
+                        <button type="button" onclick="deleteAnnouncement(@Model.Id)" 
+                                class="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                            <i class="fas fa-trash mr-2"></i> Duyuruyu Sil
+                        </button>
+                        <p class="text-xs text-red-500 mt-2">Bu işlem geri alınamaz!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <!-- TinyMCE Rich Text Editor -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // TinyMCE Rich Text Editor
+            tinymce.init({
+                selector: '#contentEditor',
+                height: 400,
+                menubar: false,
+                plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                ],
+                toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }'
+            });
+
+            // Görsel yükleme
+            $('#coverImageInput').change(function() {
+                const file = this.files[0];
+                if (file) {
+                    uploadImage(file);
+                }
+            });
+
+            // Tarih validasyonu
+            $('#PublishStart, #PublishEnd').change(function() {
+                validateDates();
+            });
+
+            // Form submit öncesi TinyMCE içeriğini kaydet
+            $('form').submit(function() {
+                tinymce.triggerSave();
+            });
+        });
+
+        function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                url: '@Url.Action("UploadCoverImage", "Announcement")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        $('#coverImageUrl').val(response.url);
+                        $('#previewImage').attr('src', response.url);
+                        $('#imageUploadArea').addClass('hidden');
+                        $('#imagePreview').removeClass('hidden');
+                    } else {
+                        alert('Görsel yüklenirken hata oluştu: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Görsel yüklenirken bir hata oluştu.');
+                }
+            });
+        }
+
+        function removeImage() {
+            $('#coverImageUrl').val('');
+            $('#previewImage').attr('src', '');
+            $('#imageUploadArea').removeClass('hidden');
+            $('#imagePreview').addClass('hidden');
+        }
+
+        function validateDates() {
+            const startDate = new Date($('#PublishStart').val());
+            const endDate = new Date($('#PublishEnd').val());
+
+            if (startDate && endDate && startDate >= endDate) {
+                alert('Yayın bitiş tarihi, başlangıç tarihinden sonra olmalıdır.');
+                $('#PublishEnd').focus();
+            }
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm('Bu duyuruyu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+                $.post('@Url.Action("Delete", "Announcement")', { 
+                    id: id,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                }, function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        window.location.href = '@Url.Action("Index", "Announcement")';
+                    } else {
+                        alert(response.message);
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .tox-tinymce {
+            border-radius: 0.5rem !important;
+        }
+    </style>
+}
