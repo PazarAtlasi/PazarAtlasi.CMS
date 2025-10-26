@@ -1356,6 +1356,28 @@ const SectionModal = (function () {
     }
   }
 
+  /**
+   * Check if items grid is empty and hide it
+   */
+  function checkAndHideEmptyItemsGrid() {
+    const itemsGrid = document.getElementById("itemsGrid");
+    const itemsGridContainer = document.getElementById(
+      "itemsGridContainer"
+    );
+
+    if (itemsGrid && itemsGridContainer) {
+      const remainingItems = itemsGrid.querySelectorAll(
+        ".section-item-card"
+      );
+
+      if (remainingItems.length === 0) {
+        // Hide the items grid container
+        itemsGridContainer.classList.add("hidden");
+        console.log("Items grid hidden - no items remaining");
+      }
+    }
+  }
+
   // Public API
   return {
     show,
@@ -1380,6 +1402,7 @@ const SectionModal = (function () {
     // UI management
     updateItemNumbers,
     updateItemsCountBadge,
+    checkAndHideEmptyItemsGrid,
 
     // NEW: Type-based item management
     addSectionItemByType,
@@ -1427,6 +1450,12 @@ function removeItem(button) {
             typeof SectionModal.updateItemsCountBadge === "function"
           ) {
             SectionModal.updateItemsCountBadge();
+          }
+          if (
+            typeof SectionModal.checkAndHideEmptyItemsGrid ===
+            "function"
+          ) {
+            SectionModal.checkAndHideEmptyItemsGrid();
           }
         } else if (typeof updateItemNumbers === "function") {
           updateItemNumbers();
@@ -1476,6 +1505,12 @@ function removeItem(button) {
                 "function"
               ) {
                 SectionModal.updateItemsCountBadge();
+              }
+              if (
+                typeof SectionModal.checkAndHideEmptyItemsGrid ===
+                "function"
+              ) {
+                SectionModal.checkAndHideEmptyItemsGrid();
               }
             } else if (typeof updateItemNumbers === "function") {
               updateItemNumbers();

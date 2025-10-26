@@ -324,6 +324,9 @@
                                 SectionModal.updateItemsCountBadge();
                             }
                         }
+
+                        // Check if no items left and hide items grid
+                        checkAndHideEmptyItemsGrid();
                     } catch (error) {
                         console.error('Error during item removal:', error);
                     }
@@ -362,6 +365,9 @@
                                 }
                             }
 
+                            // Check if no items left and hide items grid
+                            checkAndHideEmptyItemsGrid();
+
                             // Close loading and show success
                             Swal.close();
                             SwalHelper.toast('Öğe başarıyla silindi', 'success');
@@ -379,6 +385,22 @@
                 Swal.close();
             });
         };
+
+        // Check if items grid is empty and hide it
+        function checkAndHideEmptyItemsGrid() {
+            const itemsGrid = document.getElementById('itemsGrid');
+            const itemsGridContainer = document.getElementById('itemsGridContainer');
+            
+            if (itemsGrid && itemsGridContainer) {
+                const remainingItems = itemsGrid.querySelectorAll('.section-item-card');
+                
+                if (remainingItems.length === 0) {
+                    // Hide the items grid container
+                    itemsGridContainer.classList.add('hidden');
+                    console.log('Items grid hidden - no items remaining');
+                }
+            }
+        }
 
 
     </script>
