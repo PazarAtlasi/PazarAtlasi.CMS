@@ -1,4 +1,5 @@
 using PazarAtlasi.CMS.Domain.Common;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PazarAtlasi.CMS.Application.Dtos
 {
@@ -129,6 +130,9 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public string? OptionsJson { get; set; }
         public int SortOrder { get; set; }
         public List<SectionItemFieldTranslationUpdateDto> Translations { get; set; } = new List<SectionItemFieldTranslationUpdateDto>();
+        
+        // SelectList için field types
+        public List<SelectListItem> FieldTypes { get; set; } = new List<SelectListItem>();
     }
 
     public class SectionItemFieldTranslationUpdateDto

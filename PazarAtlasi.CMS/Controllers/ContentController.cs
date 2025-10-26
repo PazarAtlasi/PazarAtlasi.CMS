@@ -12,6 +12,8 @@ using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
 using PazarAtlasi.CMS.Application.Dtos;
 using PazarAtlasi.CMS.Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -2095,6 +2097,63 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
+        /// Get SectionItemFieldTypes as SelectListItem list
+        /// </summary>
+        private List<SelectListItem> GetSectionItemFieldTypes()
+        {
+            return Enum.GetValues<SectionItemFieldType>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                })
+                .ToList();
+        }
+
+        /// <summary>
+        /// Get new field partial view for adding fields dynamically
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetNewFieldPartial(int fieldIndex)
+        {
+            try
+            {
+                var languages = await GetAvailableLanguagesAsync();
+                
+                var newField = new SectionItemFieldUpdateDto
+                {
+                    Id = 0,
+                    SectionItemId = 0,
+                    FieldKey = "",
+                    FieldName = "",
+                    Type = SectionItemFieldType.Text,
+                    Required = false,
+                    IsTranslatable = false,
+                    SortOrder = fieldIndex + 1,
+                    FieldTypes = GetSectionItemFieldTypes(),
+                    Translations = languages.Select(l => new SectionItemFieldTranslationUpdateDto
+                    {
+                        Id = 0,
+                        SectionItemFieldId = 0,
+                        LanguageId = l.Id,
+                        Label = "",
+                        Description = "",
+                        Placeholder = ""
+                    }).ToList()
+                };
+
+                ViewBag.Languages = languages;
+                ViewBag.FieldIndex = fieldIndex;
+
+                return PartialView("_SectionItemDetailField", newField);
+            }
+            catch (Exception ex)
+            {
+                return Content($"<div class='text-red-500'>Error: {ex.Message}</div>");
+            }
+        }
+
+        /// <summary>
         /// Get template configuration as SectionItemViewModel with proper child structure
         /// Fields are only inside Items, not at template level
         /// SectionItemları çekip onların child yapısını doğru şekilde oluşturur
@@ -2558,30 +2617,337 @@ namespace PazarAtlasi.CMS.Controllers
             };
         }
 
-        /// <summary>
-        /// SectionItem edit view (GET)
-        /// </summary>
-        public async Task<IActionResult> SectionItemEdit(int id)
-        {
-            var sectionItem = await _pazarAtlasiDbContext.SectionItems
-                .Include(si => si.Template)
-                .Include(si => si.Translations)
-                    .ThenInclude(t => t.Language)
-                .Include(si => si.ParentSectionItem)
-                .Include(si => si.SectionItemFields)
-                    .ThenInclude(f => f.Translations)
-                .Include(si => si.SectionItemFieldValues)
-                    .ThenInclude(fv => fv.Translations)
-                .FirstOrDefaultAsync(si => si.Id == id && !si.IsDeleted);
 
-            if (sectionItem == null)
+
+        /// <summary>
+        /// Unified SectionItem form (GET) - handles both create and edit
+        /// </summary>
+        public async Task<IActionResult> SectionItemForm(int? id)
+        {
+            try
             {
-                TempData["ErrorMessage"] = "SectionItem bulunamadı.";
+                var viewModel = new SectionItemFormViewModel();
+
+                // Load dropdown data
+                viewModel.AvailableLanguages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderBy(l => l.Name)
+                    .ToListAsync();
+
+                var templates = await _pazarAtlasiDbContext.Templates
+                    .Include(t => t.Translations)
+                    .Where(t => t.IsActive && !t.IsDeleted)
+                    .OrderBy(t => t.SortOrder)
+                    .ToListAsync();
+
+                viewModel.Templates = templates.Select(t => new TemplateDto
+                {
+                    Id = t.Id,
+                    TemplateType = t.TemplateType,
+                    TemplateKey = t.TemplateKey,
+                    ConfigurationSchema = t.ConfigurationSchema,
+                    IsActive = t.IsActive,
+                    SortOrder = t.SortOrder,
+                    Translations = t.Translations.Select(tt => new TemplateTranslationDto
+                    {
+                        Id = tt.Id,
+                        TemplateId = tt.TemplateId,
+                        LanguageId = tt.LanguageId,
+                        Name = tt.Name,
+                        Description = tt.Description
+                    }).ToList()
+                }).ToList();
+
+                viewModel.SectionItemTypes = Enum.GetValues<SectionItemType>().Select(e => e.ToString()).ToList();
+                viewModel.MediaTypes = Enum.GetValues<MediaType>().Select(e => e.ToString()).ToList();
+
+                if (id.HasValue && id.Value > 0)
+                {
+                    // Edit mode - load existing item
+                    var sectionItem = await _pazarAtlasiDbContext.SectionItems
+                        .Include(si => si.Translations)
+                        .Include(si => si.SectionItemFields)
+                            .ThenInclude(f => f.Translations)
+                        .Include(si => si.SectionItemFieldValues)
+                            .ThenInclude(fv => fv.Translations)
+                        .FirstOrDefaultAsync(si => si.Id == id.Value && !si.IsDeleted);
+
+                    if (sectionItem == null)
+                    {
+                        TempData["ErrorMessage"] = "Section item not found.";
+                        return RedirectToAction(nameof(SectionItems));
+                    }
+
+                    // Map to DTO
+                    viewModel.SectionItem = new SectionItemUpdateDto
+                    {
+                        Id = sectionItem.Id,
+                        ParentSectionItemId = sectionItem.ParentSectionItemId,
+                        TemplateId = sectionItem.TemplateId,
+                        Type = sectionItem.Type,
+                        MediaType = sectionItem.MediaType,
+                        SortOrder = sectionItem.SortOrder,
+                        Title = sectionItem.Title,
+                        Key = sectionItem.Key,
+                        Description = sectionItem.Description,
+                        AllowReorder = sectionItem.AllowReorder,
+                        AllowRemove = sectionItem.AllowRemove,
+                        IconClass = sectionItem.IconClass,
+                        Translations = viewModel.AvailableLanguages.Select(l => 
+                        {
+                            var existingTranslation = sectionItem.Translations.FirstOrDefault(t => t.LanguageId == l.Id);
+                            return new SectionItemTranslationUpdateDto
+                            {
+                                Id = existingTranslation?.Id ?? 0,
+                                SectionItemId = sectionItem.Id,
+                                LanguageId = l.Id,
+                                Title = existingTranslation?.Title ?? "",
+                                Description = existingTranslation?.Description ?? ""
+                            };
+                        }).ToList(),
+                        Fields = sectionItem.SectionItemFields.Select(f => new SectionItemFieldUpdateDto
+                        {
+                            Id = f.Id,
+                            SectionItemId = f.SectionItemId,
+                            FieldKey = f.FieldKey,
+                            FieldName = f.FieldName,
+                            Type = f.Type,
+                            Required = f.Required,
+                            MaxLength = f.MaxLength,
+                            Placeholder = f.Placeholder,
+                            DefaultValue = f.DefaultValue,
+                            IsTranslatable = f.IsTranslatable,
+                            OptionsJson = f.OptionsJson,
+                            SortOrder = f.SortOrder,
+                            FieldTypes = GetSectionItemFieldTypes(),
+                            Translations = f.Translations.Select(ft => new SectionItemFieldTranslationUpdateDto
+                            {
+                                Id = ft.Id,
+                                SectionItemFieldId = ft.SectionItemFieldId,
+                                LanguageId = ft.LanguageId,
+                                Label = ft.Label,
+                                Description = ft.Description,
+                                Placeholder = ft.Placeholder
+                            }).ToList()
+                        }).ToList(),
+                        FieldValues = sectionItem.SectionItemFieldValues.Select(fv => new SectionItemFieldValueUpdateDto
+                        {
+                            Id = fv.Id,
+                            SectionId = fv.SectionId,
+                            SectionItemId = fv.SectionItemId,
+                            SectionItemFieldId = fv.SectionItemFieldId,
+                            Value = fv.Value,
+                            Translations = fv.Translations.Select(fvt => new SectionItemFieldValueTranslationUpdateDto
+                            {
+                                Id = fvt.Id,
+                                SectionItemFieldValueId = fvt.SectionItemFieldValueId,
+                                LanguageId = fvt.LanguageId,
+                                Value = fvt.Value
+                            }).ToList()
+                        }).ToList()
+                    };
+
+                    // Load parent items (excluding current item and its children)
+                    viewModel.ParentSectionItems = await _pazarAtlasiDbContext.SectionItems
+                        .Include(si => si.Translations)
+                        .Where(si => !si.IsDeleted && si.Id != id.Value)
+                        .Select(si => new SectionItemDto
+                        {
+                            Id = si.Id,
+                            Title = si.Title,
+                            Translations = si.Translations.Select(t => new SectionItemTranslationDto
+                            {
+                                Id = t.Id,
+                                LanguageId = t.LanguageId,
+                                Title = t.Title,
+                                Description = t.Description
+                            }).ToList()
+                        })
+                        .OrderBy(si => si.Title)
+                        .ToListAsync();
+                }
+                else
+                {
+                    // Create mode - initialize empty item
+                    viewModel.SectionItem = new SectionItemUpdateDto
+                    {
+                        SortOrder = 0,
+                        AllowReorder = true,
+                        AllowRemove = true,
+                        Translations = viewModel.AvailableLanguages.Select(l => new SectionItemTranslationUpdateDto
+                        {
+                            LanguageId = l.Id,
+                            Title = "",
+                            Description = ""
+                        }).ToList()
+                    };
+
+                    // Load all items as potential parents
+                    viewModel.ParentSectionItems = await _pazarAtlasiDbContext.SectionItems
+                        .Include(si => si.Translations)
+                        .Where(si => !si.IsDeleted)
+                        .Select(si => new SectionItemDto
+                        {
+                            Id = si.Id,
+                            Title = si.Title,
+                            Translations = si.Translations.Select(t => new SectionItemTranslationDto
+                            {
+                                Id = t.Id,
+                                LanguageId = t.LanguageId,
+                                Title = t.Title,
+                                Description = t.Description
+                            }).ToList()
+                        })
+                        .OrderBy(si => si.Title)
+                        .ToListAsync();
+                }
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
                 return RedirectToAction(nameof(SectionItems));
             }
+        }
 
-            var languages = await _pazarAtlasiDbContext.Languages
+        /// <summary>
+        /// Unified SectionItem form (POST) - handles both create and edit
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SectionItemForm(SectionItemFormViewModel viewModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    // Reload dropdown data
+                    await LoadSectionItemFormDropdownData(viewModel);
+                    return View(viewModel);
+                }
+
+                var model = viewModel.SectionItem;
+
+                if (model.Id > 0)
+                {
+                    // Update existing item
+                    var sectionItem = await _pazarAtlasiDbContext.SectionItems
+                        .Include(si => si.Translations)
+                        .FirstOrDefaultAsync(si => si.Id == model.Id && !si.IsDeleted);
+
+                    if (sectionItem == null)
+                    {
+                        viewModel.ErrorMessage = "Section item not found.";
+                        await LoadSectionItemFormDropdownData(viewModel);
+                        return View(viewModel);
+                    }
+
+                    // Update properties
+                    sectionItem.ParentSectionItemId = model.ParentSectionItemId;
+                    sectionItem.TemplateId = model.TemplateId;
+                    sectionItem.Type = model.Type;
+                    sectionItem.MediaType = model.MediaType;
+                    sectionItem.SortOrder = model.SortOrder;
+                    sectionItem.Title = model.Title;
+                    sectionItem.Key = model.Key;
+                    sectionItem.Description = model.Description;
+                    sectionItem.AllowReorder = model.AllowReorder;
+                    sectionItem.AllowRemove = model.AllowRemove;
+                    sectionItem.IconClass = model.IconClass;
+                    sectionItem.UpdatedAt = DateTime.UtcNow;
+
+                    // Update translations
+                    _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(sectionItem.Translations);
+                    
+                    foreach (var translationDto in model.Translations.Where(t => !string.IsNullOrEmpty(t.Title) || !string.IsNullOrEmpty(t.Description)))
+                    {
+                        sectionItem.Translations.Add(new SectionItemTranslation
+                        {
+                            SectionItemId = sectionItem.Id,
+                            LanguageId = translationDto.LanguageId,
+                            Title = translationDto.Title,
+                            Description = translationDto.Description,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        });
+                    }
+
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Section item updated successfully.";
+                }
+                else
+                {
+                    // Create new item
+                    var sectionItem = new SectionItem
+                    {
+                        ParentSectionItemId = model.ParentSectionItemId,
+                        TemplateId = model.TemplateId,
+                        Type = model.Type,
+                        MediaType = model.MediaType,
+                        SortOrder = model.SortOrder,
+                        Title = model.Title,
+                        Key = model.Key,
+                        Description = model.Description,
+                        AllowReorder = model.AllowReorder,
+                        AllowRemove = model.AllowRemove,
+                        IconClass = model.IconClass,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+
+                    _pazarAtlasiDbContext.SectionItems.Add(sectionItem);
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                    // Add translations
+                    foreach (var translationDto in model.Translations.Where(t => !string.IsNullOrEmpty(t.Title) || !string.IsNullOrEmpty(t.Description)))
+                    {
+                        sectionItem.Translations.Add(new SectionItemTranslation
+                        {
+                            SectionItemId = sectionItem.Id,
+                            LanguageId = translationDto.LanguageId,
+                            Title = translationDto.Title,
+                            Description = translationDto.Description,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        });
+                    }
+
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Section item created successfully.";
+                }
+
+                return RedirectToAction(nameof(SectionItems));
+            }
+            catch (Exception ex)
+            {
+                viewModel.ErrorMessage = $"An error occurred: {ex.Message}";
+                await LoadSectionItemFormDropdownData(viewModel);
+                return View(viewModel);
+            }
+        }
+
+        /// <summary>
+        /// Helper method to load dropdown data for SectionItemForm
+        /// </summary>
+        private async Task LoadSectionItemFormDropdownData(SectionItemFormViewModel viewModel)
+        {
+            viewModel.AvailableLanguages = await _pazarAtlasiDbContext.Languages
                 .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
                 .OrderBy(l => l.Name)
                 .ToListAsync();
 
@@ -2591,400 +2957,52 @@ namespace PazarAtlasi.CMS.Controllers
                 .OrderBy(t => t.SortOrder)
                 .ToListAsync();
 
-            var parentSectionItems = await _pazarAtlasiDbContext.SectionItems
-                .Include(si => si.Translations)
-                .Where(si => !si.IsDeleted && si.Id != id)
-                .OrderBy(si => si.SortOrder)
-                .ToListAsync();
-
-            ViewBag.Languages = languages.Select(t => new LanguageViewModel()
-            {
-                Id = t.Id,
-                Code = t.Code,
-                Name = t.Name,
-                IsDefault = t.IsDefault
-            }).ToList();
-            ViewBag.Templates = templates.Select(t => new TemplateDto()
+            viewModel.Templates = templates.Select(t => new TemplateDto
             {
                 Id = t.Id,
                 TemplateType = t.TemplateType,
                 TemplateKey = t.TemplateKey,
                 ConfigurationSchema = t.ConfigurationSchema,
                 IsActive = t.IsActive,
-                SortOrder = t.SortOrder,
+                SortOrder = t.SortOrder
             }).ToList();
-            ViewBag.ParentSectionItems = parentSectionItems.Select(t => new SectionItemViewModel()
-            {
-                Id = t.Id,
-                Title = t.Title,
-                TemplateId = t.TemplateId,
-                TemplateKey = t.Template?.TemplateKey ?? "",
-                TemplateType = t.Template?.TemplateType ?? TemplateType.Default,
-                Type = t.Type,
-                MediaType = t.MediaType,
-                SortOrder = t.SortOrder,
-                Translations = t.Translations.Select(tt => new SectionItemTranslationViewModel
-                {
-                    Id = tt.Id,
-                    LanguageId = tt.LanguageId,
-                    LanguageName = tt.Language.Name,
-                    LanguageCode = tt.Language.Code,
-                    Title = tt.Title,
-                    Description = tt.Description
-                }).ToList(),
-                ParentSectionItemId = t.ParentSectionItemId,
-                Description = t.Description,
-                AllowRemove = t.AllowRemove,
-                AllowReorder = t.AllowReorder,
-                IconClass = t.IconClass
-            }).ToList();
-            ViewBag.SectionItemTypes = Enum.GetValues<SectionItemType>();
-            ViewBag.MediaTypes = Enum.GetValues<MediaType>();
-            ViewBag.SectionItemFieldTypes = Enum.GetValues<SectionItemFieldType>();
 
-            var model = new SectionItemUpdateDto
-            {
-                Id = sectionItem.Id,
-                ParentSectionItemId = sectionItem.ParentSectionItemId,
-                TemplateId = sectionItem.TemplateId,
-                Type = sectionItem.Type,
-                MediaType = sectionItem.MediaType,
-                SortOrder = sectionItem.SortOrder,
-                Title = sectionItem.Title,
-                Key = sectionItem.Key,
-                Description = sectionItem.Description,
-                AllowReorder = sectionItem.AllowReorder,
-                AllowRemove = sectionItem.AllowRemove,
-                IconClass = sectionItem.IconClass,
-                Translations = sectionItem.Translations.Select(t => new SectionItemTranslationUpdateDto
-                {
-                    Id = t.Id,
-                    SectionItemId = t.SectionItemId,
-                    LanguageId = t.LanguageId,
-                    Title = t.Title,
-                    Description = t.Description
-                }).ToList(),
-                Fields = sectionItem.SectionItemFields.Select(f => new SectionItemFieldUpdateDto
-                {
-                    Id = f.Id,
-                    SectionItemId = f.SectionItemId,
-                    FieldKey = f.FieldKey,
-                    FieldName = f.FieldName,
-                    Type = f.Type,
-                    Required = f.Required,
-                    MaxLength = f.MaxLength,
-                    Placeholder = f.Placeholder,
-                    DefaultValue = f.DefaultValue,
-                    IsTranslatable = f.IsTranslatable,
-                    OptionsJson = f.OptionsJson,
-                    SortOrder = f.SortOrder,
-                    Translations = f.Translations.Select(ft => new SectionItemFieldTranslationUpdateDto
-                    {
-                        Id = ft.Id,
-                        SectionItemFieldId = ft.SectionItemFieldId,
-                        LanguageId = ft.LanguageId,
-                        Label = ft.Label,
-                        Description = ft.Description,
-                        Placeholder = ft.Placeholder
-                    }).ToList()
-                }).ToList(),
-                FieldValues = sectionItem.SectionItemFieldValues.Select(fv => new SectionItemFieldValueUpdateDto
-                {
-                    Id = fv.Id,
-                    SectionId = fv.SectionId,
-                    SectionItemId = fv.SectionItemId,
-                    SectionItemFieldId = fv.SectionItemFieldId,
-                    Value = fv.Value,
-                    JsonValue = fv.JsonValue,
-                    Translations = fv.Translations.Select(fvt => new SectionItemFieldValueTranslationUpdateDto
-                    {
-                        Id = fvt.Id,
-                        SectionItemFieldValueId = fvt.SectionItemFieldValueId,
-                        LanguageId = fvt.LanguageId,
-                        Value = fvt.Value,
-                        JsonValue = fvt.JsonValue
-                    }).ToList()
-                }).ToList()
-            };
-
-            return View(model);
-        }
-
-        /// <summary>
-        /// SectionItem edit view (POST)
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> SectionItemEdit(SectionItemUpdateDto model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    var languages = await _pazarAtlasiDbContext.Languages
-                        .Where(l => !l.IsDeleted)
-                        .OrderBy(l => l.Name)
-                        .ToListAsync();
-
-                    var templates = await _pazarAtlasiDbContext.Templates
-                        .Include(t => t.Translations)
-                        .Where(t => t.IsActive && !t.IsDeleted)
-                        .OrderBy(t => t.SortOrder)
-                        .ToListAsync();
-
-                    var parentSectionItems = await _pazarAtlasiDbContext.SectionItems
-                        .Include(si => si.Translations)
-                        .Where(si => !si.IsDeleted && si.Id != model.Id)
-                        .OrderBy(si => si.SortOrder)
-                        .ToListAsync();
-
-                    ViewBag.Languages = languages;
-                    ViewBag.Templates = templates;
-                    ViewBag.ParentSectionItems = parentSectionItems;
-                    ViewBag.SectionItemTypes = Enum.GetValues<SectionItemType>();
-                    ViewBag.MediaTypes = Enum.GetValues<MediaType>();
-                    ViewBag.SectionItemFieldTypes = Enum.GetValues<SectionItemFieldType>();
-
-                    return View(model);
-                }
-
-                var sectionItem = await _pazarAtlasiDbContext.SectionItems
-                    .Include(si => si.Translations)
-                    .Include(si => si.SectionItemFields)
-                        .ThenInclude(f => f.Translations)
-                    .Include(si => si.SectionItemFieldValues)
-                        .ThenInclude(fv => fv.Translations)
-                    .FirstOrDefaultAsync(si => si.Id == model.Id && !si.IsDeleted);
-
-                if (sectionItem == null)
-                {
-                    TempData["ErrorMessage"] = "SectionItem bulunamadı.";
-                    return RedirectToAction(nameof(SectionItems));
-                }
-
-                // Update basic properties
-                sectionItem.ParentSectionItemId = model.ParentSectionItemId;
-                sectionItem.TemplateId = model.TemplateId;
-                sectionItem.Type = model.Type;
-                sectionItem.MediaType = model.MediaType;
-                sectionItem.SortOrder = model.SortOrder;
-                sectionItem.Title = model.Title;
-                sectionItem.Key = model.Key;
-                sectionItem.Description = model.Description;
-                sectionItem.AllowReorder = model.AllowReorder;
-                sectionItem.AllowRemove = model.AllowRemove;
-                sectionItem.IconClass = model.IconClass;
-                sectionItem.UpdatedAt = DateTime.UtcNow;
-
-                // Update translations
-                foreach (var translationDto in model.Translations)
-                {
-                    var translation = sectionItem.Translations.FirstOrDefault(t => t.Id == translationDto.Id);
-                    if (translation != null)
-                    {
-                        translation.Title = translationDto.Title;
-                        translation.Description = translationDto.Description;
-                        translation.UpdatedAt = DateTime.UtcNow;
-                    }
-                    else
-                    {
-                        sectionItem.Translations.Add(new SectionItemTranslation
-                        {
-                            SectionItemId = sectionItem.Id,
-                            LanguageId = translationDto.LanguageId,
-                            Title = translationDto.Title,
-                            Description = translationDto.Description,
-                            CreatedAt = DateTime.UtcNow,
-                            IsDeleted = false
-                        });
-                    }
-                }
-
-                await _pazarAtlasiDbContext.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = "SectionItem başarıyla güncellendi.";
-                return RedirectToAction(nameof(SectionItems));
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Hata oluştu: {ex.Message}";
-                
-                var languages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .OrderBy(l => l.Name)
-                    .ToListAsync();
-
-                var templates = await _pazarAtlasiDbContext.Templates
-                    .Include(t => t.Translations)
-                    .Where(t => t.IsActive && !t.IsDeleted)
-                    .OrderBy(t => t.SortOrder)
-                    .ToListAsync();
-
-                var parentSectionItems = await _pazarAtlasiDbContext.SectionItems
-                    .Include(si => si.Translations)
-                    .Where(si => !si.IsDeleted && si.Id != model.Id)
-                    .OrderBy(si => si.SortOrder)
-                    .ToListAsync();
-
-                ViewBag.Languages = languages;
-                ViewBag.Templates = templates;
-                ViewBag.ParentSectionItems = parentSectionItems;
-                ViewBag.SectionItemTypes = Enum.GetValues<SectionItemType>();
-                ViewBag.MediaTypes = Enum.GetValues<MediaType>();
-                ViewBag.SectionItemFieldTypes = Enum.GetValues<SectionItemFieldType>();
-
-                return View(model);
-            }
-        }
-
-        /// <summary>
-        /// SectionItem create view (GET)
-        /// </summary>
-        public async Task<IActionResult> SectionItemCreate()
-        {
-            var languages = await _pazarAtlasiDbContext.Languages
-                .Where(l => !l.IsDeleted)
-                .OrderBy(l => l.Name)
-                .ToListAsync();
-
-            var templates = await _pazarAtlasiDbContext.Templates
-                .Include(t => t.Translations)
-                .Where(t => t.IsActive && !t.IsDeleted)
-                .OrderBy(t => t.SortOrder)
-                .ToListAsync();
-
-            var parentSectionItems = await _pazarAtlasiDbContext.SectionItems
+            viewModel.ParentSectionItems = await _pazarAtlasiDbContext.SectionItems
                 .Include(si => si.Translations)
-                .Where(si => !si.IsDeleted)
-                .OrderBy(si => si.SortOrder)
+                .Where(si => !si.IsDeleted && si.Id != viewModel.SectionItem.Id)
+                .Select(si => new SectionItemDto
+                {
+                    Id = si.Id,
+                    Title = si.Title,
+                    Translations = si.Translations.Select(t => new SectionItemTranslationDto
+                    {
+                        Id = t.Id,
+                        LanguageId = t.LanguageId,
+                        Title = t.Title,
+                        Description = t.Description
+                    }).ToList()
+                })
+                .OrderBy(si => si.Title)
                 .ToListAsync();
 
-            ViewBag.Languages = languages;
-            ViewBag.Templates = templates;
-            ViewBag.ParentSectionItems = parentSectionItems;
-            ViewBag.SectionItemTypes = Enum.GetValues<SectionItemType>();
-            ViewBag.MediaTypes = Enum.GetValues<MediaType>();
-            ViewBag.SectionItemFieldTypes = Enum.GetValues<SectionItemFieldType>();
-
-            var model = new SectionItemUpdateDto
-            {
-                Translations = languages.Select(l => new SectionItemTranslationUpdateDto
-                {
-                    LanguageId = l.Id
-                }).ToList()
-            };
-
-            return View(model);
+            viewModel.SectionItemTypes = Enum.GetValues<SectionItemType>().Select(e => e.ToString()).ToList();
+            viewModel.MediaTypes = Enum.GetValues<MediaType>().Select(e => e.ToString()).ToList();
         }
 
         /// <summary>
-        /// SectionItem create view (POST)
+        /// Backward compatibility - redirect to SectionItemForm
         /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> SectionItemCreate(SectionItemUpdateDto model)
+        public IActionResult SectionItemCreate()
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    var languages = await _pazarAtlasiDbContext.Languages
-                        .Where(l => !l.IsDeleted)
-                        .OrderBy(l => l.Name)
-                        .ToListAsync();
+            return RedirectToAction(nameof(SectionItemForm));
+        }
 
-                    var templates = await _pazarAtlasiDbContext.Templates
-                        .Include(t => t.Translations)
-                        .Where(t => t.IsActive && !t.IsDeleted)
-                        .OrderBy(t => t.SortOrder)
-                        .ToListAsync();
-
-                    var parentSectionItems = await _pazarAtlasiDbContext.SectionItems
-                        .Include(si => si.Translations)
-                        .Where(si => !si.IsDeleted)
-                        .OrderBy(si => si.SortOrder)
-                        .ToListAsync();
-
-                    ViewBag.Languages = languages;
-                    ViewBag.Templates = templates;
-                    ViewBag.ParentSectionItems = parentSectionItems;
-                    ViewBag.SectionItemTypes = Enum.GetValues<SectionItemType>();
-                    ViewBag.MediaTypes = Enum.GetValues<MediaType>();
-                    ViewBag.SectionItemFieldTypes = Enum.GetValues<SectionItemFieldType>();
-
-                    return View(model);
-                }
-
-                var sectionItem = new SectionItem
-                {
-                    ParentSectionItemId = model.ParentSectionItemId,
-                    TemplateId = model.TemplateId,
-                    Type = model.Type,
-                    MediaType = model.MediaType,
-                    SortOrder = model.SortOrder,
-                    Title = model.Title,
-                    Key = model.Key,
-                    Description = model.Description,
-                    AllowReorder = model.AllowReorder,
-                    AllowRemove = model.AllowRemove,
-                    IconClass = model.IconClass,
-                    CreatedAt = DateTime.UtcNow,
-                    IsDeleted = false
-                };
-
-                _pazarAtlasiDbContext.SectionItems.Add(sectionItem);
-                await _pazarAtlasiDbContext.SaveChangesAsync();
-
-                // Add translations
-                foreach (var translationDto in model.Translations)
-                {
-                    if (!string.IsNullOrEmpty(translationDto.Title) || !string.IsNullOrEmpty(translationDto.Description))
-                    {
-                        sectionItem.Translations.Add(new SectionItemTranslation
-                        {
-                            SectionItemId = sectionItem.Id,
-                            LanguageId = translationDto.LanguageId,
-                            Title = translationDto.Title,
-                            Description = translationDto.Description,
-                            CreatedAt = DateTime.UtcNow,
-                            IsDeleted = false
-                        });
-                    }
-                }
-
-                await _pazarAtlasiDbContext.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = "SectionItem başarıyla oluşturuldu.";
-                return RedirectToAction(nameof(SectionItems));
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Hata oluştu: {ex.Message}";
-                
-                var languages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .OrderBy(l => l.Name)
-                    .ToListAsync();
-
-                var templates = await _pazarAtlasiDbContext.Templates
-                    .Include(t => t.Translations)
-                    .Where(t => t.IsActive && !t.IsDeleted)
-                    .OrderBy(t => t.SortOrder)
-                    .ToListAsync();
-
-                var parentSectionItems = await _pazarAtlasiDbContext.SectionItems
-                    .Include(si => si.Translations)
-                    .Where(si => !si.IsDeleted)
-                    .OrderBy(si => si.SortOrder)
-                    .ToListAsync();
-
-                ViewBag.Languages = languages;
-                ViewBag.Templates = templates;
-                ViewBag.ParentSectionItems = parentSectionItems;
-                ViewBag.SectionItemTypes = Enum.GetValues<SectionItemType>();
-                ViewBag.MediaTypes = Enum.GetValues<MediaType>();
-                ViewBag.SectionItemFieldTypes = Enum.GetValues<SectionItemFieldType>();
-
-                return View(model);
-            }
+        /// <summary>
+        /// Backward compatibility - redirect to SectionItemForm with id
+        /// </summary>
+        public IActionResult SectionItemEdit(int id)
+        {
+            return RedirectToAction(nameof(SectionItemForm), new { id });
         }
 
         #endregion SectionItems Actions

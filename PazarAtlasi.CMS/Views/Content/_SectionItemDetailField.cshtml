@@ -1,8 +1,9 @@
+@using PazarAtlasi.CMS.Models.ViewModels
 @model PazarAtlasi.CMS.Application.Dtos.SectionItemFieldUpdateDto
 @{
     var fieldIndex = ViewData["FieldIndex"] as int? ?? 0;
-    var languages = ViewBag.Languages as List<PazarAtlasi.CMS.Domain.Entities.Content.Language> ?? new
-    List<PazarAtlasi.CMS.Domain.Entities.Content.Language>();
+    var languages = ViewBag.Languages as List<LanguageViewModel> ?? new
+    List<LanguageViewModel>();
 }
 
 <div class="bg-white border border-gray-200 rounded-lg shadow-sm mb-4" data-field-index="@fieldIndex">
@@ -12,30 +13,30 @@
             <h6 class="text-sm font-medium text-gray-900">
                 Field: @(Model.FieldName ?? "New Field")
             </h6>
-            @if (Model.Required)
-            {
-                <span
-                    class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    Required
-                </span>
-            }
-            @if (Model.IsTranslatable)
-            {
-                <span
-                    class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Translatable
-                </span>
+            @{
+                if (Model.Required)
+                {
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        Required
+                    </span>
+                }
+                if (Model.IsTranslatable)
+                {
+                    <span class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        Translatable
+                    </span>
+                }
             }
         </div>
         <div class="flex items-center space-x-2">
             <button type="button"
-                class="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                onclick="toggleFieldDetails(@fieldIndex)" title="Toggle Details">
+                    class="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    onclick="toggleFieldDetails(@fieldIndex)" title="Toggle Details">
                 <i class="fas fa-chevron-down" id="fieldToggleIcon_@fieldIndex"></i>
             </button>
             <button type="button"
-                class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                onclick="removeField(@fieldIndex)" title="Remove Field">
+                    class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    onclick="removeField(@fieldIndex)" title="Remove Field">
                 <i class="fas fa-trash"></i>
             </button>
         </div>
@@ -49,8 +50,8 @@
                         Field Key <span class="text-red-500">*</span>
                     </label>
                     <input asp-for="FieldKey"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="e.g., title, image, url" />
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="e.g., title, image, url" />
                     <p class="mt-1 text-sm text-gray-500">Unique identifier for this field</p>
                     <span asp-validation-for="FieldKey" class="text-red-600 text-sm"></span>
                 </div>
@@ -60,8 +61,8 @@
                         Field Name <span class="text-red-500">*</span>
                     </label>
                     <input asp-for="FieldName"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="e.g., Title, Image URL" />
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="e.g., Title, Image URL" />
                     <p class="mt-1 text-sm text-gray-500">Display name for this field</p>
                     <span asp-validation-for="FieldName" class="text-red-600 text-sm"></span>
                 </div>
@@ -71,8 +72,8 @@
                         Field Type <span class="text-red-500">*</span>
                     </label>
                     <select asp-for="Type"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        asp-items="@(new SelectList(ViewBag.SectionItemFieldTypes))">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            asp-items="@Model.FieldTypes">
                         <option value="">Select Type</option>
                     </select>
                     <span asp-validation-for="Type" class="text-red-600 text-sm"></span>
@@ -81,8 +82,8 @@
                 <div>
                     <label asp-for="SortOrder" class="block text-sm font-medium text-gray-700 mb-2">Sort Order</label>
                     <input asp-for="SortOrder"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        type="number" />
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           type="number" />
                     <p class="mt-1 text-sm text-gray-500">Display order (lower numbers first)</p>
                     <span asp-validation-for="SortOrder" class="text-red-600 text-sm"></span>
                 </div>
@@ -92,37 +93,41 @@
             <div class="space-y-4">
                 <div>
                     <label asp-for="Placeholder"
-                        class="block text-sm font-medium text-gray-700 mb-2">Placeholder</label>
+                           class="block text-sm font-medium text-gray-700 mb-2">Placeholder</label>
                     <input asp-for="Placeholder"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter placeholder text" />
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="Enter placeholder text" />
                     <span asp-validation-for="Placeholder" class="text-red-600 text-sm"></span>
                 </div>
 
                 <div>
-                    <label asp-for="DefaultValue" class="block text-sm font-medium text-gray-700 mb-2">Default
-                        Value</label>
+                    <label asp-for="DefaultValue" class="block text-sm font-medium text-gray-700 mb-2">
+                        Default
+                        Value
+                    </label>
                     <input asp-for="DefaultValue"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter default value" />
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="Enter default value" />
                     <span asp-validation-for="DefaultValue" class="text-red-600 text-sm"></span>
                 </div>
 
                 <div>
                     <label asp-for="MaxLength" class="block text-sm font-medium text-gray-700 mb-2">Max Length</label>
                     <input asp-for="MaxLength"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        type="number" min="1" />
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           type="number" min="1" />
                     <p class="mt-1 text-sm text-gray-500">Maximum character length (optional)</p>
                     <span asp-validation-for="MaxLength" class="text-red-600 text-sm"></span>
                 </div>
 
                 <div>
-                    <label asp-for="OptionsJson" class="block text-sm font-medium text-gray-700 mb-2">Options
-                        JSON</label>
+                    <label asp-for="OptionsJson" class="block text-sm font-medium text-gray-700 mb-2">
+                        Options
+                        JSON
+                    </label>
                     <textarea asp-for="OptionsJson"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        rows="3" placeholder='{"option1": "Value 1", "option2": "Value 2"}'></textarea>
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                              rows="3" placeholder='{"option1": "Value 1", "option2": "Value 2"}'></textarea>
                     <p class="mt-1 text-sm text-gray-500">JSON options for select/radio fields</p>
                     <span asp-validation-for="OptionsJson" class="text-red-600 text-sm"></span>
                 </div>
@@ -134,7 +139,7 @@
             <div class="space-y-3">
                 <div class="flex items-center">
                     <input asp-for="Required" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        type="checkbox" />
+                           type="checkbox" />
                     <label asp-for="Required" class="ml-3 text-sm font-medium text-gray-700">
                         Required Field
                     </label>
@@ -142,7 +147,7 @@
 
                 <div class="flex items-center">
                     <input asp-for="IsTranslatable"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" type="checkbox" />
+                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" type="checkbox" />
                     <label asp-for="IsTranslatable" class="ml-3 text-sm font-medium text-gray-700">
                         Translatable Field
                     </label>
@@ -179,28 +184,28 @@
 
                                 <div>
                                     <label asp-for="Translations[i].Label"
-                                        class="block text-xs font-medium text-gray-700 mb-1">Label</label>
+                                           class="block text-xs font-medium text-gray-700 mb-1">Label</label>
                                     <input asp-for="Translations[i].Label"
-                                        class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Field label" />
+                                           class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Field label" />
                                     <span asp-validation-for="Translations[i].Label" class="text-red-600 text-xs"></span>
                                 </div>
 
                                 <div>
                                     <label asp-for="Translations[i].Description"
-                                        class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                                           class="block text-xs font-medium text-gray-700 mb-1">Description</label>
                                     <textarea asp-for="Translations[i].Description"
-                                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                rows="2" placeholder="Field description"></textarea>
+                                              class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                              rows="2" placeholder="Field description"></textarea>
                                     <span asp-validation-for="Translations[i].Description" class="text-red-600 text-xs"></span>
                                 </div>
 
                                 <div>
                                     <label asp-for="Translations[i].Placeholder"
-                                        class="block text-xs font-medium text-gray-700 mb-1">Placeholder</label>
+                                           class="block text-xs font-medium text-gray-700 mb-1">Placeholder</label>
                                     <input asp-for="Translations[i].Placeholder"
-                                        class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Placeholder text" />
+                                           class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Placeholder text" />
                                     <span asp-validation-for="Translations[i].Placeholder" class="text-red-600 text-xs"></span>
                                 </div>
                             </div>
