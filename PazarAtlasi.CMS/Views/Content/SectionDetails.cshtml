@@ -336,11 +336,70 @@
 
 <script>
     function editSection(sectionId) {
-        // For now, redirect to section modal or edit page
-        // This would open the section modal for editing
-        console.log('Edit section:', sectionId);
-        alert('Edit functionality will be implemented with section modal.');
+        // Open section modal for editing (standalone section, no pageId)
+        openSectionModal(sectionId, 0);
     }
+
+    function openSectionModal(sectionId = 0, pageId = 0) {
+        const url = `/Content/GetSectionModal?id=${sectionId}&pageId=${pageId}`;
+        
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                // Create modal backdrop and container
+                let modalBackdrop = document.getElementById('section-modal-backdrop');
+                if (!modalBackdrop) {
+                    modalBackdrop = document.createElement('div');
+                    modalBackdrop.id = 'section-modal-backdrop';
+                    modalBackdrop.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                    modalBackdrop.style.display = 'none';
+                    document.body.appendChild(modalBackdrop);
+                }
+                
+                // Insert modal HTML
+                modalBackdrop.innerHTML = html;
+                
+                // Show modal with animation
+                modalBackdrop.style.display = 'flex';
+                setTimeout(() => {
+                    modalBackdrop.style.opacity = '1';
+                }, 10);
+                
+                // Add body class to prevent scrolling
+                document.body.classList.add('modal-open');
+                document.body.style.overflow = 'hidden';
+                
+                // Close modal when clicking backdrop
+                modalBackdrop.addEventListener('click', function(e) {
+                    if (e.target === modalBackdrop) {
+                        closeSectionModal();
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading section modal:', error);
+                alert('Error loading section modal. Please try again.');
+            });
+    }
+
+    function closeSectionModal() {
+        const modalBackdrop = document.getElementById('section-modal-backdrop');
+        if (modalBackdrop) {
+            modalBackdrop.style.opacity = '0';
+            setTimeout(() => {
+                modalBackdrop.style.display = 'none';
+                modalBackdrop.innerHTML = '';
+            }, 200);
+        }
+        
+        // Remove body class to restore scrolling
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+    }
+
+    // Make closeSectionModal available globally for the modal's close button
+    window.SectionModal = window.SectionModal || {};
+    window.SectionModal.close = closeSectionModal;
 
     function duplicateSection(sectionId) {
         if (confirm('Are you sure you want to duplicate this section?')) {
@@ -372,3 +431,30 @@
         }
     }
 </script>
+
+<style>
+    #section-modal-backdrop {
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+    }
+    
+    .modal-open {
+        overflow: hidden !important;
+    }
+    
+    .section-modal {
+        animation: modalSlideIn 0.3s ease-out;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    @@keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+</style>

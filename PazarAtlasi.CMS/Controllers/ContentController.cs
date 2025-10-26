@@ -666,7 +666,7 @@ namespace PazarAtlasi.CMS.Controllers
         /// Get section modal for editing/creating with items
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetSectionModal(int id, int pageId)
+        public async Task<IActionResult> GetSectionModal(int id, int pageId = 0)
         {
             try
             {
@@ -674,14 +674,27 @@ namespace PazarAtlasi.CMS.Controllers
 
                 if (id > 0)
                 {
-                    // Load section with basic info and translations
-                    var pageSection = await _pazarAtlasiDbContext.PageSections
-                        .Include(ps => ps.Section)
-                            .ThenInclude(s => s.Translations)
-                            .ThenInclude(t => t.Language)
-                        .FirstOrDefaultAsync(ps => ps.SectionId == id && ps.PageId == pageId);
+                    Section section;
 
-                    var section = pageSection?.Section;
+                    if (pageId > 0)
+                    {
+                        // Load section from PageSection (for page-specific sections)
+                        var pageSection = await _pazarAtlasiDbContext.PageSections
+                            .Include(ps => ps.Section)
+                                .ThenInclude(s => s.Translations)
+                                .ThenInclude(t => t.Language)
+                            .FirstOrDefaultAsync(ps => ps.SectionId == id && ps.PageId == pageId);
+
+                        section = pageSection?.Section;
+                    }
+                    else
+                    {
+                        // Load section directly (for standalone/reusable sections)
+                        section = await _pazarAtlasiDbContext.Sections
+                            .Include(s => s.Translations)
+                                .ThenInclude(t => t.Language)
+                            .FirstOrDefaultAsync(s => s.Id == id);
+                    }
 
                     if (section == null)
                     {
@@ -724,6 +737,7 @@ namespace PazarAtlasi.CMS.Controllers
                     model = new SectionViewModel
                     {
                         Id = section.Id,
+                        PageId = pageId,
                         Type = section.Type,
                         Attributes = section.Attributes,
                         SortOrder = section.SortOrder,
