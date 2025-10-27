@@ -524,16 +524,7 @@
 
                     if (!type || !mediaType) {
                         e.preventDefault();
-
-                        // Show validation error with SweetAlert2
-                        SwalHelper.warning(
-                            'Eksik Bilgiler',
-                            'Lütfen hem Type hem de Media Type seçiniz.',
-                            {
-                                confirmButtonText: 'Tamam'
-                            }
-                        );
-
+                        alert('Lütfen hem Type hem de Media Type seçiniz.');
                         return false;
                     }
                 });
@@ -553,6 +544,89 @@
 
         // Global field counter
         let fieldCounter = @Model.SectionItem.Fields.Count;
+
+        // Global functions - defined at window level for onclick handlers
+        window.toggleFieldDetails = function(fieldIndex) {
+            const details = document.getElementById('fieldDetails_' + fieldIndex);
+            const icon = document.getElementById('fieldToggleIcon_' + fieldIndex);
+
+            if (details && icon) {
+                if (details.style.display === 'none') {
+                    details.style.display = 'block';
+                    icon.className = 'fas fa-chevron-down';
+                } else {
+                    details.style.display = 'none';
+                    icon.className = 'fas fa-chevron-right';
+                }
+            }
+        };
+
+        window.removeField = function(fieldIndex) {
+            if (confirm('Bu field ve tüm verileri kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?')) {
+                const fieldCard = document.querySelector('[data-field-index="' + fieldIndex + '"]');
+                if (fieldCard) {
+                    fieldCard.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                    fieldCard.style.opacity = '0';
+                    fieldCard.style.transform = 'translateX(-20px)';
+                    
+                    setTimeout(() => {
+                        fieldCard.remove();
+                        updateFieldIndices();
+                        fieldCounter = Math.max(0, fieldCounter - 1);
+                        updateFieldCountBadge();
+                        console.log('Field başarıyla silindi');
+                    }, 300);
+                }
+            }
+        };
+
+        window.toggleFieldTranslations = function(fieldIndex) {
+            const checkbox = document.getElementById('SectionItem_Fields_' + fieldIndex + '__IsTranslatable');
+            const translationsDiv = document.getElementById('fieldTranslations_' + fieldIndex);
+            
+            if (checkbox && translationsDiv) {
+                if (checkbox.checked) {
+                    translationsDiv.style.display = 'block';
+                    translationsDiv.style.opacity = '0';
+                    translationsDiv.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        translationsDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                        translationsDiv.style.opacity = '1';
+                        translationsDiv.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    translationsDiv.style.display = 'none';
+                }
+            }
+        };
+
+        window.switchTranslationTab = function(fieldIndex, tabIndex, languageId) {
+            // Hide all tab contents for this field
+            const allContents = document.querySelectorAll('.translation-content-' + fieldIndex);
+            allContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            const allTabs = document.querySelectorAll('.translation-tab-' + fieldIndex);
+            allTabs.forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            // Show selected tab content
+            const selectedContent = document.getElementById('translationTab_' + fieldIndex + '_' + tabIndex);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+
+            // Add active class to selected tab
+            const selectedTab = document.querySelector('.translation-tab-' + fieldIndex + '[data-tab-index="' + tabIndex + '"]');
+            if (selectedTab) {
+                selectedTab.classList.add('border-blue-500', 'text-blue-600');
+                selectedTab.classList.remove('border-transparent', 'text-gray-500');
+            }
+        };
 
         function addField() {
             const fieldsContainer = document.getElementById('fieldsContainer');
@@ -602,8 +676,7 @@
                             newField.classList.remove('ring-2', 'ring-blue-500');
                         }, 2000);
                         
-                        // Show success toast
-                        SwalHelper.toast('Yeni field başarıyla eklendi', 'success');
+                        // Field added successfully - no toast needed until save
                     }
                 })
                 .catch(error => {
@@ -659,12 +732,48 @@
                         span.setAttribute('data-valmsg-for', span.getAttribute('data-valmsg-for').replace(/Fields\[\d+\]/, `Fields[${index}]`));
                     }
                 });
+
+                // Update translation tab IDs and onclick handlers
+                const translationTabs = card.querySelectorAll('[class*="translation-tab-"]');
+                translationTabs.forEach(tab => {
+                    const onclickAttr = tab.getAttribute('onclick');
+                    if (onclickAttr) {
+                        tab.setAttribute('onclick', onclickAttr.replace(/switchTranslationTab\(\d+,/, `switchTranslationTab(${index},`));
+                    }
+                });
+
+                // Update translation content IDs
+                const translationContents = card.querySelectorAll('[id*="translationTab_"]');
+                translationContents.forEach(content => {
+                    const currentId = content.id;
+                    const newId = currentId.replace(/translationTab_\d+_/, `translationTab_${index}_`);
+                    content.id = newId;
+                });
+
+                // Update translation container IDs
+                const translationContainer = card.querySelector('[id*="fieldTranslations_"]');
+                if (translationContainer) {
+                    translationContainer.id = `fieldTranslations_${index}`;
+                }
+
+                const translationTabsContent = card.querySelector('[id*="translationTabsContent_"]');
+                if (translationTabsContent) {
+                    translationTabsContent.id = `translationTabsContent_${index}`;
+                }
+
+                // Update checkbox onchange handler
+                const translatableCheckbox = card.querySelector('[id*="__IsTranslatable"]');
+                if (translatableCheckbox) {
+                    translatableCheckbox.setAttribute('onchange', `toggleFieldTranslations(${index})`);
+                }
             });
         }
 
         function removeFieldValue(index) {
             console.log('Remove field value functionality would be implemented here for index:', index);
         }
+
+
 
         // Update field count badge
         function updateFieldCountBadge() {
@@ -684,37 +793,6 @@
             setTimeout(updateFieldCountBadge, 100);
         };
 
-        // Override the global removeField function to update badge
-        window.removeField = function(fieldIndex) {
-            // Use SweetAlert2 for consistent UI
-            SwalHelper.deleteConfirm(
-                'Field Silinsin mi?',
-                'Bu field ve tüm verileri kalıcı olarak silinecek. Bu işlem geri alınamaz.',
-                {
-                    confirmButtonText: 'Evet, Sil',
-                    cancelButtonText: 'İptal'
-                }
-            ).then((result) => {
-                if (result.isConfirmed) {
-                    const fieldCard = document.querySelector('[data-field-index="' + fieldIndex + '"]');
-                    if (fieldCard) {
-                        // Add fade out animation
-                        fieldCard.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
-                        fieldCard.style.opacity = '0';
-                        fieldCard.style.transform = 'translateX(-20px)';
-                        
-                        setTimeout(() => {
-                            fieldCard.remove();
-                            updateFieldIndices();
-                            fieldCounter = Math.max(0, fieldCounter - 1);
-                            updateFieldCountBadge();
-                            
-                            // Show success toast
-                            SwalHelper.toast('Field başarıyla silindi', 'success');
-                        }, 300);
-                    }
-                }
-            });
-        };
+
     </script>
 }

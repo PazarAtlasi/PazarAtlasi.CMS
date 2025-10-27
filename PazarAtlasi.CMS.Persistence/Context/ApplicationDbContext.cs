@@ -37,6 +37,8 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<SectionItemField> SectionItemFields { get; set; }
 
+        public DbSet<SectionItemFieldTranslation> SectionItemFieldTranslations { get; set; }
+
         public DbSet<SectionItemFieldValue> SectionItemFieldValues { get; set; }
 
         public DbSet<SectionItemFieldValueTranslation> SectionItemFieldValueTranslations { get; set; }

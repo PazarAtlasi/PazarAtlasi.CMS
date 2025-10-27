@@ -167,7 +167,8 @@
                            id="SectionItem_Fields_@(fieldIndex)__IsTranslatable"
                            value="true"
                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
-                           type="checkbox" @(Model.IsTranslatable ? "checked" : "") />
+                           type="checkbox" @(Model.IsTranslatable ? "checked" : "")
+                           onchange="toggleFieldTranslations(@fieldIndex)" />
                     <input name="SectionItem.Fields[@fieldIndex].IsTranslatable" type="hidden" value="false" />
                     <label for="SectionItem_Fields_@(fieldIndex)__IsTranslatable" class="ml-3 text-sm font-medium text-gray-700">
                         Translatable Field
@@ -178,63 +179,81 @@
         </div>
 
         <!-- Field Translations -->
-        @if (Model.IsTranslatable && Model.Translations.Any())
-        {
-            <div class="mt-6 pt-4 border-t border-gray-200">
-                <h6 class="text-sm font-medium text-gray-900 mb-4 flex items-center">
-                    <i class="fas fa-language text-blue-600 mr-2"></i>
-                    Field Translations
-                </h6>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @for (int i = 0; i < Model.Translations.Count; i++)
+        <div id="fieldTranslations_@fieldIndex" class="mt-6 pt-4 border-t border-gray-200" style="display: @(Model.IsTranslatable ? "block" : "none")">
+            <h6 class="text-sm font-medium text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-language text-blue-600 mr-2"></i>
+                Field Translations
+            </h6>
+            
+            <!-- Tab Navigation -->
+            <div class="border-b border-gray-200 mb-4">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    @for (int langIndex = 0; langIndex < languages.Count; langIndex++)
                     {
-                        var translation = Model.Translations[i];
-                        var language = languages.FirstOrDefault(l => l.Id == translation.LanguageId);
+                        var language = languages[langIndex];
+                        <button type="button" 
+                                class="translation-tab-@fieldIndex whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm @(langIndex == 0 ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300")"
+                                onclick="switchTranslationTab(@fieldIndex, @langIndex, '@language.Id')"
+                                data-tab-index="@langIndex">
+                            @language.Name (@language.Code)
+                        </button>
+                    }
+                </nav>
+            </div>
 
-                        <div class="border border-gray-200 rounded-lg">
-                            <div class="px-3 py-2 bg-gray-50 border-b border-gray-200">
-                                <h6 class="text-xs font-medium text-gray-900">
-                                    @(language?.Name ?? "Unknown Language")
-                                    <span class="text-gray-500">(@(language?.Code ?? "N/A"))</span>
-                                </h6>
-                            </div>
-                            <div class="p-3 space-y-3">
-                                <input type="hidden" asp-for="Translations[i].Id" />
-                                <input type="hidden" asp-for="Translations[i].SectionItemFieldId" />
-                                <input type="hidden" asp-for="Translations[i].LanguageId" />
+            <!-- Tab Content -->
+            <div id="translationTabsContent_@fieldIndex">
+                @for (int langIndex = 0; langIndex < languages.Count; langIndex++)
+                {
+                    var language = languages[langIndex];
+                    var existingTranslation = Model.Translations.FirstOrDefault(t => t.LanguageId == language.Id);
+                    var translationIndex = Model.Translations.IndexOf(existingTranslation);
+                    
+                    <div id="translationTab_@(fieldIndex)_@langIndex" 
+                         class="translation-content-@fieldIndex @(langIndex == 0 ? "" : "hidden")"
+                         data-language-id="@language.Id">
+                        
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="space-y-4">
+                                <input type="hidden" name="SectionItem.Fields[@fieldIndex].Translations[@langIndex].Id" value="@(existingTranslation?.Id ?? 0)" />
+                                <input type="hidden" name="SectionItem.Fields[@fieldIndex].Translations[@langIndex].SectionItemFieldId" value="@(existingTranslation?.SectionItemFieldId ?? Model.SectionItemId)" />
+                                <input type="hidden" name="SectionItem.Fields[@fieldIndex].Translations[@langIndex].LanguageId" value="@language.Id" />
 
                                 <div>
-                                    <label asp-for="Translations[i].Label"
-                                           class="block text-xs font-medium text-gray-700 mb-1">Label</label>
-                                    <input asp-for="Translations[i].Label"
-                                           class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                           placeholder="Field label" />
-                                    <span asp-validation-for="Translations[i].Label" class="text-red-600 text-xs"></span>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Label (@language.Name)
+                                    </label>
+                                    <input name="SectionItem.Fields[@fieldIndex].Translations[@langIndex].Label"
+                                           value="@(existingTranslation?.Label ?? "")"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Enter field label in @language.Name" />
                                 </div>
 
                                 <div>
-                                    <label asp-for="Translations[i].Description"
-                                           class="block text-xs font-medium text-gray-700 mb-1">Description</label>
-                                    <textarea asp-for="Translations[i].Description"
-                                              class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                              rows="2" placeholder="Field description"></textarea>
-                                    <span asp-validation-for="Translations[i].Description" class="text-red-600 text-xs"></span>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Description (@language.Name)
+                                    </label>
+                                    <textarea name="SectionItem.Fields[@fieldIndex].Translations[@langIndex].Description"
+                                              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                              rows="3"
+                                              placeholder="Enter field description in @language.Name">@(existingTranslation?.Description ?? "")</textarea>
                                 </div>
 
                                 <div>
-                                    <label asp-for="Translations[i].Placeholder"
-                                           class="block text-xs font-medium text-gray-700 mb-1">Placeholder</label>
-                                    <input asp-for="Translations[i].Placeholder"
-                                           class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                           placeholder="Placeholder text" />
-                                    <span asp-validation-for="Translations[i].Placeholder" class="text-red-600 text-xs"></span>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Placeholder (@language.Name)
+                                    </label>
+                                    <input name="SectionItem.Fields[@fieldIndex].Translations[@langIndex].Placeholder"
+                                           value="@(existingTranslation?.Placeholder ?? "")"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="Enter placeholder text in @language.Name" />
                                 </div>
                             </div>
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
-        }
+        </div>
 
         <!-- Hidden fields for form binding -->
         <input type="hidden" name="SectionItem.Fields[@fieldIndex].Id" value="@Model.Id" />
@@ -242,56 +261,3 @@
     </div>
 </div>
 
-<script>
-    function toggleFieldDetails(fieldIndex) {
-        const details = document.getElementById('fieldDetails_' + fieldIndex);
-        const icon = document.getElementById('fieldToggleIcon_' + fieldIndex);
-
-        if (details.style.display === 'none') {
-            details.style.display = 'block';
-            icon.className = 'fas fa-chevron-down';
-        } else {
-            details.style.display = 'none';
-            icon.className = 'fas fa-chevron-right';
-        }
-    }
-
-    function removeField(fieldIndex) {
-        // Use SweetAlert2 for consistent UI
-        SwalHelper.deleteConfirm(
-            'Field Silinsin mi?',
-            'Bu field ve tüm verileri kalıcı olarak silinecek. Bu işlem geri alınamaz.',
-            {
-                confirmButtonText: 'Evet, Sil',
-                cancelButtonText: 'İptal'
-            }
-        ).then((result) => {
-            if (result.isConfirmed) {
-                const fieldCard = document.querySelector('[data-field-index="' + fieldIndex + '"]');
-                if (fieldCard) {
-                    // Add fade out animation
-                    fieldCard.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
-                    fieldCard.style.opacity = '0';
-                    fieldCard.style.transform = 'translateX(-20px)';
-                    
-                    setTimeout(() => {
-                        fieldCard.remove();
-                        
-                        // Update field indices after removal
-                        if (typeof updateFieldIndices === 'function') {
-                            updateFieldIndices();
-                        }
-                        
-                        // Decrement global counter if available
-                        if (typeof fieldCounter !== 'undefined') {
-                            fieldCounter = Math.max(0, fieldCounter - 1);
-                        }
-                        
-                        // Show success toast
-                        SwalHelper.toast('Field başarıyla silindi', 'success');
-                    }, 300);
-                }
-            }
-        });
-    }
-</script>

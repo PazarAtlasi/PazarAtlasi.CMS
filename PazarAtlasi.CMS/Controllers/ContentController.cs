@@ -2403,6 +2403,8 @@ namespace PazarAtlasi.CMS.Controllers
                     // Update existing item
                     var sectionItem = await _pazarAtlasiDbContext.SectionItems
                         .Include(si => si.Translations)
+                        .Include(si => si.SectionItemFields)
+                            .ThenInclude(f => f.Translations)
                         .FirstOrDefaultAsync(si => si.Id == model.Id && !si.IsDeleted);
 
                     if (sectionItem == null)
@@ -2441,6 +2443,9 @@ namespace PazarAtlasi.CMS.Controllers
                             IsDeleted = false
                         });
                     }
+
+                    // Update fields
+                    await UpdateSectionItemFields(sectionItem, model.Fields);
 
                     await _pazarAtlasiDbContext.SaveChangesAsync();
                     TempData["SuccessMessage"] = "Section item updated successfully.";
@@ -2481,6 +2486,9 @@ namespace PazarAtlasi.CMS.Controllers
                             IsDeleted = false
                         });
                     }
+
+                    // Add fields
+                    await UpdateSectionItemFields(sectionItem, model.Fields);
 
                     await _pazarAtlasiDbContext.SaveChangesAsync();
                     TempData["SuccessMessage"] = "Section item created successfully.";
@@ -3376,6 +3384,74 @@ namespace PazarAtlasi.CMS.Controllers
                     Placeholder = ft.Placeholder ?? field.Placeholder ?? ""
                 }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
             };
+        }
+
+        /// <summary>
+        /// Update section item fields and their translations
+        /// </summary>
+        private async Task UpdateSectionItemFields(SectionItem sectionItem, List<SectionItemFieldUpdateDto> fieldDtos)
+        {
+            if (fieldDtos == null || !fieldDtos.Any())
+                return;
+
+            // Remove existing fields and their translations
+            var existingFields = await _pazarAtlasiDbContext.SectionItemFields
+                .Include(f => f.Translations)
+                .Where(f => f.SectionItemId == sectionItem.Id)
+                .ToListAsync();
+
+            foreach (var existingField in existingFields)
+            {
+                _pazarAtlasiDbContext.SectionItemFieldTranslations.RemoveRange(existingField.Translations);
+                _pazarAtlasiDbContext.SectionItemFields.Remove(existingField);
+            }
+
+            // Add new fields
+            foreach (var fieldDto in fieldDtos.Where(f => !string.IsNullOrEmpty(f.FieldKey)))
+            {
+                var newField = new SectionItemField
+                {
+                    SectionItemId = sectionItem.Id,
+                    FieldKey = fieldDto.FieldKey,
+                    FieldName = fieldDto.FieldName,
+                    Type = fieldDto.Type,
+                    Required = fieldDto.Required,
+                    MaxLength = fieldDto.MaxLength,
+                    Placeholder = fieldDto.Placeholder,
+                    DefaultValue = fieldDto.DefaultValue,
+                    IsTranslatable = fieldDto.IsTranslatable,
+                    OptionsJson = fieldDto.OptionsJson,
+                    SortOrder = fieldDto.SortOrder,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.SectionItemFields.Add(newField);
+                await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get the ID
+
+                // Add field translations if the field is translatable
+                if (fieldDto.IsTranslatable && fieldDto.Translations != null && fieldDto.Translations.Any())
+                {
+                    foreach (var translationDto in fieldDto.Translations.Where(t => 
+                        !string.IsNullOrEmpty(t.Label) || 
+                        !string.IsNullOrEmpty(t.Description) || 
+                        !string.IsNullOrEmpty(t.Placeholder)))
+                    {
+                        var fieldTranslation = new SectionItemFieldTranslation
+                        {
+                            SectionItemFieldId = newField.Id,
+                            LanguageId = translationDto.LanguageId,
+                            Label = translationDto.Label ?? "",
+                            Description = translationDto.Description,
+                            Placeholder = translationDto.Placeholder,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        };
+
+                        _pazarAtlasiDbContext.SectionItemFieldTranslations.Add(fieldTranslation);
+                    }
+                }
+            }
         }
 
         #endregion Helper Methods
