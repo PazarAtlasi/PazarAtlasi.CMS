@@ -546,6 +546,8 @@ window.SwalHelper = {
       icon: icon,
       title: title,
       showConfirmButton: false,
+      showCloseButton: false,
+      backdrop: false,
       timer: 3000,
       timerProgressBar: true,
       customClass: {
