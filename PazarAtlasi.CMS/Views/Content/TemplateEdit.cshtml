@@ -1,7 +1,7 @@
 @model PazarAtlasi.CMS.Application.Dtos.TemplateUpdateDto
 @{
     ViewData["Title"] = "Edit Template";
-    var languages = ViewBag.Languages as List<PazarAtlasi.CMS.Domain.Entities.Content.Language>;
+    var languages = ViewBag.Languages as List<LanguageViewModel>;
     var templateTypes = ViewBag.TemplateTypes as PazarAtlasi.CMS.Domain.Common.TemplateType[];
 }
 

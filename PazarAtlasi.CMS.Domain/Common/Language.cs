@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PazarAtlasi.CMS.Domain.Entities.Content
+namespace PazarAtlasi.CMS.Domain.Common
 {
     public class Language : Entity<int>
     {

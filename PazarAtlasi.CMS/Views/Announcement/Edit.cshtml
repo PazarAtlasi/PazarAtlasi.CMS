@@ -168,23 +168,33 @@
 </div>
 
 @section Scripts {
-    <!-- TinyMCE Rich Text Editor -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Summernote Rich Text Editor -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     
     <script>
         $(document).ready(function() {
-            // TinyMCE Rich Text Editor
-            tinymce.init({
-                selector: '#contentEditor',
+            // Summernote Rich Text Editor
+            $('#contentEditor').summernote({
                 height: 400,
-                menubar: false,
-                plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                placeholder: 'Duyuru içeriğini buraya yazın...',
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
                 ],
-                toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }'
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+                fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36', '48', '64'],
+                callbacks: {
+                    onImageUpload: function(files) {
+                        uploadSummernoteImage(files[0]);
+                    }
+                }
             });
 
             // Görsel yükleme
@@ -198,11 +208,6 @@
             // Tarih validasyonu
             $('#PublishStart, #PublishEnd').change(function() {
                 validateDates();
-            });
-
-            // Form submit öncesi TinyMCE içeriğini kaydet
-            $('form').submit(function() {
-                tinymce.triggerSave();
             });
         });
 
@@ -249,6 +254,29 @@
             }
         }
 
+        function uploadSummernoteImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                url: '@Url.Action("UploadCoverImage", "Announcement")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        $('#contentEditor').summernote('insertImage', response.url);
+                    } else {
+                        alert('Görsel yüklenirken hata oluştu: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Görsel yüklenirken bir hata oluştu.');
+                }
+            });
+        }
+
         function deleteAnnouncement(id) {
             if (confirm('Bu duyuruyu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
                 $.post('@Url.Action("Delete", "Announcement")', { 
@@ -269,8 +297,16 @@
 
 @section Styles {
     <style>
-        .tox-tinymce {
+        .note-editor {
             border-radius: 0.5rem !important;
+        }
+        .note-toolbar {
+            border-top-left-radius: 0.5rem !important;
+            border-top-right-radius: 0.5rem !important;
+        }
+        .note-editing-area {
+            border-bottom-left-radius: 0.5rem !important;
+            border-bottom-right-radius: 0.5rem !important;
         }
     </style>
 }

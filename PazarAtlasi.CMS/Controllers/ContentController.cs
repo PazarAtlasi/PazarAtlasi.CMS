@@ -1842,6 +1842,13 @@ namespace PazarAtlasi.CMS.Controllers
             var languages = await _pazarAtlasiDbContext.Languages
                 .Where(l => !l.IsDeleted)
                 .OrderBy(l => l.Name)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
                 .ToListAsync();
 
             var viewModel = new TemplateUpdateDto
