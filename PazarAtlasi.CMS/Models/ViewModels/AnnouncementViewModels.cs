@@ -30,16 +30,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
     public class AnnouncementCreateViewModel
     {
-        [Required(ErrorMessage = "Başlık alanı zorunludur.")]
-        [StringLength(500, ErrorMessage = "Başlık en fazla 500 karakter olabilir.")]
-        public string Title { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "İçerik alanı zorunludur.")]
-        public string Content { get; set; } = string.Empty;
-
-        [StringLength(1000, ErrorMessage = "Özet en fazla 1000 karakter olabilir.")]
-        public string? Summary { get; set; }
-
         public string? CoverImage { get; set; }
 
         [Required(ErrorMessage = "Yayın başlangıç tarihi zorunludur.")]
@@ -49,22 +39,18 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public DateTime PublishEnd { get; set; }
 
         public Status Status { get; set; }
+
+        // Çok dilli içerik
+        public List<AnnouncementTranslationViewModel> Translations { get; set; } = new();
+
+        // Available languages
+        public List<LanguageViewModel> AvailableLanguages { get; set; } = new();
     }
 
     public class AnnouncementEditViewModel
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Başlık alanı zorunludur.")]
-        [StringLength(500, ErrorMessage = "Başlık en fazla 500 karakter olabilir.")]
-        public string Title { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "İçerik alanı zorunludur.")]
-        public string Content { get; set; } = string.Empty;
-
-        [StringLength(1000, ErrorMessage = "Özet en fazla 1000 karakter olabilir.")]
-        public string? Summary { get; set; }
-
         public string? CoverImage { get; set; }
 
         [Required(ErrorMessage = "Yayın başlangıç tarihi zorunludur.")]
@@ -74,5 +60,39 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public DateTime PublishEnd { get; set; }
 
         public Status Status { get; set; }
+
+        // Çok dilli içerik
+        public List<AnnouncementTranslationViewModel> Translations { get; set; } = new();
+
+        // Available languages
+        public List<LanguageViewModel> AvailableLanguages { get; set; } = new();
+    }
+
+    public class AnnouncementTranslationViewModel
+    {
+        public int Id { get; set; }
+        public int AnnouncementId { get; set; }
+        public int LanguageId { get; set; }
+        public string? LanguageName { get; set; }
+        public string? LanguageCode { get; set; }
+        public bool IsDefault { get; set; }
+
+        [Required(ErrorMessage = "Başlık alanı zorunludur.")]
+        [StringLength(500, ErrorMessage = "Başlık en fazla 500 karakter olabilir.")]
+        public string Title { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "İçerik alanı zorunludur.")]
+        public string Content { get; set; } = string.Empty;
+
+        [StringLength(1000, ErrorMessage = "Özet en fazla 1000 karakter olabilir.")]
+        public string? Summary { get; set; }
+    }
+
+    public class LanguageViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Code { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

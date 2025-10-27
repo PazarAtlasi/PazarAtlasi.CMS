@@ -200,14 +200,5 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? Description { get; set; }
     }
 
-    public class LanguageViewModel
-    {
-        public int Id { get; set; }
-        
-        public string Name { get; set; } = string.Empty;
-        
-        public string? Code { get; set; }
-        
-        public bool IsDefault { get; set; }
-    }
+
 }

@@ -1,9 +1,16 @@
 using PazarAtlasi.CMS.Domain.Common;
+using PazarAtlasi.CMS.Domain.Entities.Content;
 
 namespace PazarAtlasi.CMS.Domain.Entities.Announcement
 {
     public class Announcement : Entity<int>
     {
+        public Announcement()
+        {
+            CreatedAt = DateTime.UtcNow;
+            Translations = new HashSet<AnnouncementTranslation>();
+        }
+
         public string Title { get; set; } = string.Empty;
         
         public string Content { get; set; } = string.Empty;
@@ -15,5 +22,10 @@ namespace PazarAtlasi.CMS.Domain.Entities.Announcement
         public DateTime PublishStart { get; set; }
         
         public DateTime PublishEnd { get; set; }
+        
+        public string? CreatedByName { get; set; }
+
+        // Navigation properties
+        public virtual ICollection<AnnouncementTranslation> Translations { get; set; }
     }
 }

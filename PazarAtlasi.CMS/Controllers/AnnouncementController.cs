@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PazarAtlasi.CMS.Persistence.Context;
-using PazarAtlasi.CMS.Domain.Entities.Content;
+using PazarAtlasi.CMS.Domain.Entities.Announcement;
 using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
 using PazarAtlasi.CMS.Models.ViewModels;
@@ -85,13 +85,37 @@ namespace PazarAtlasi.CMS.Controllers
         /// Yeni duyuru oluşturma sayfası
         /// </summary>
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var availableLanguages = await _context.Languages
+                .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .OrderBy(l => l.IsDefault ? 0 : 1)
+                .ThenBy(l => l.Name)
+                .ToListAsync();
+
             var model = new AnnouncementCreateViewModel
             {
                 PublishStart = DateTime.Now,
                 PublishEnd = DateTime.Now.AddDays(30),
-                Status = Status.Draft
+                Status = Status.Draft,
+                AvailableLanguages = availableLanguages,
+                Translations = availableLanguages.Select(l => new AnnouncementTranslationViewModel
+                {
+                    LanguageId = l.Id,
+                    LanguageName = l.Name,
+                    LanguageCode = l.Code,
+                    IsDefault = l.IsDefault,
+                    Title = string.Empty,
+                    Content = string.Empty,
+                    Summary = string.Empty
+                }).ToList()
             };
 
             return View(model);
@@ -104,18 +128,43 @@ namespace PazarAtlasi.CMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AnnouncementCreateViewModel model)
         {
+            // Çevirilerin en az birinin dolu olduğunu kontrol et
+            var hasValidTranslation = model.Translations?.Any(t => !string.IsNullOrWhiteSpace(t.Title) && !string.IsNullOrWhiteSpace(t.Content)) == true;
+            
+            if (!hasValidTranslation)
+            {
+                ModelState.AddModelError("", "En az bir dil için başlık ve içerik doldurulmalıdır.");
+            }
+
             if (!ModelState.IsValid)
             {
+                // Dilleri yeniden yükle
+                model.AvailableLanguages = await _context.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderBy(l => l.IsDefault ? 0 : 1)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
                 return View(model);
             }
 
             try
             {
+                // Default dil için başlık ve özet al
+                var defaultTranslation = model.Translations.FirstOrDefault(t => t.IsDefault) ?? model.Translations.First();
+
                 var announcement = new PazarAtlasi.CMS.Domain.Entities.Announcement.Announcement
                 {
-                    Title = model.Title,
-                    Content = model.Content,
-                    Summary = model.Summary,
+                    Title = defaultTranslation.Title, // Backward compatibility için
+                    Content = defaultTranslation.Content, // Backward compatibility için
+                    Summary = defaultTranslation.Summary, // Backward compatibility için
                     CoverImage = model.CoverImage,
                     PublishStart = model.PublishStart,
                     PublishEnd = model.PublishEnd,
@@ -126,12 +175,43 @@ namespace PazarAtlasi.CMS.Controllers
                 _context.Announcements.Add(announcement);
                 await _context.SaveChangesAsync();
 
+                // Çevirileri ekle
+                var translations = model.Translations
+                    .Where(t => !string.IsNullOrWhiteSpace(t.Title) && !string.IsNullOrWhiteSpace(t.Content))
+                    .Select(t => new PazarAtlasi.CMS.Domain.Entities.Announcement.AnnouncementTranslation
+                    {
+                        AnnouncementId = announcement.Id,
+                        LanguageId = t.LanguageId,
+                        Title = t.Title,
+                        Content = t.Content,
+                        Summary = t.Summary,
+                        CreatedAt = DateTime.UtcNow
+                    }).ToList();
+
+                _context.AnnouncementTranslations.AddRange(translations);
+                await _context.SaveChangesAsync();
+
                 TempData["SuccessMessage"] = "Duyuru başarıyla oluşturuldu.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Duyuru oluşturulurken bir hata oluştu: " + ex.Message);
+                
+                // Dilleri yeniden yükle
+                model.AvailableLanguages = await _context.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderBy(l => l.IsDefault ? 0 : 1)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
                 return View(model);
             }
         }
@@ -142,23 +222,53 @@ namespace PazarAtlasi.CMS.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var announcement = await _context.Announcements.FindAsync(id);
+            var announcement = await _context.Announcements
+                .Include(a => a.Translations)
+                .ThenInclude(t => t.Language)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (announcement == null)
             {
                 TempData["ErrorMessage"] = "Duyuru bulunamadı.";
                 return RedirectToAction(nameof(Index));
             }
 
+            var availableLanguages = await _context.Languages
+                .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .OrderBy(l => l.IsDefault ? 0 : 1)
+                .ThenBy(l => l.Name)
+                .ToListAsync();
+
             var model = new AnnouncementEditViewModel
             {
                 Id = announcement.Id,
-                Title = announcement.Title,
-                Content = announcement.Content,
-                Summary = announcement.Summary,
                 CoverImage = announcement.CoverImage,
                 PublishStart = announcement.PublishStart,
                 PublishEnd = announcement.PublishEnd,
-                Status = announcement.Status
+                Status = announcement.Status,
+                AvailableLanguages = availableLanguages,
+                Translations = availableLanguages.Select(l => 
+                {
+                    var existingTranslation = announcement.Translations.FirstOrDefault(t => t.LanguageId == l.Id);
+                    return new AnnouncementTranslationViewModel
+                    {
+                        Id = existingTranslation?.Id ?? 0,
+                        LanguageId = l.Id,
+                        LanguageName = l.Name,
+                        LanguageCode = l.Code,
+                        IsDefault = l.IsDefault,
+                        Title = existingTranslation?.Title ?? string.Empty,
+                        Content = existingTranslation?.Content ?? string.Empty,
+                        Summary = existingTranslation?.Summary ?? string.Empty
+                    };
+                }).ToList()
             };
 
             return View(model);
@@ -171,29 +281,74 @@ namespace PazarAtlasi.CMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(AnnouncementEditViewModel model)
         {
+            // Çevirilerin en az birinin dolu olduğunu kontrol et
+            var hasValidTranslation = model.Translations?.Any(t => !string.IsNullOrWhiteSpace(t.Title) && !string.IsNullOrWhiteSpace(t.Content)) == true;
+            
+            if (!hasValidTranslation)
+            {
+                ModelState.AddModelError("", "En az bir dil için başlık ve içerik doldurulmalıdır.");
+            }
+
             if (!ModelState.IsValid)
             {
+                // Dilleri yeniden yükle
+                model.AvailableLanguages = await _context.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderBy(l => l.IsDefault ? 0 : 1)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
                 return View(model);
             }
 
             try
             {
-                var announcement = await _context.Announcements.FindAsync(model.Id);
+                var announcement = await _context.Announcements
+                    .Include(a => a.Translations)
+                    .FirstOrDefaultAsync(a => a.Id == model.Id);
+
                 if (announcement == null)
                 {
                     TempData["ErrorMessage"] = "Duyuru bulunamadı.";
                     return RedirectToAction(nameof(Index));
                 }
 
-                announcement.Title = model.Title;
-                announcement.Content = model.Content;
-                announcement.Summary = model.Summary;
+                // Default dil için başlık ve özet al (backward compatibility)
+                var defaultTranslation = model.Translations.FirstOrDefault(t => t.IsDefault) ?? model.Translations.First();
+
+                announcement.Title = defaultTranslation.Title;
+                announcement.Content = defaultTranslation.Content;
+                announcement.Summary = defaultTranslation.Summary;
                 announcement.CoverImage = model.CoverImage;
                 announcement.PublishStart = model.PublishStart;
                 announcement.PublishEnd = model.PublishEnd;
                 announcement.Status = model.Status;
                 announcement.UpdatedAt = DateTime.UtcNow;
 
+                // Mevcut çevirileri sil
+                _context.AnnouncementTranslations.RemoveRange(announcement.Translations);
+
+                // Yeni çevirileri ekle
+                var translations = model.Translations
+                    .Where(t => !string.IsNullOrWhiteSpace(t.Title) && !string.IsNullOrWhiteSpace(t.Content))
+                    .Select(t => new PazarAtlasi.CMS.Domain.Entities.Announcement.AnnouncementTranslation
+                    {
+                        AnnouncementId = announcement.Id,
+                        LanguageId = t.LanguageId,
+                        Title = t.Title,
+                        Content = t.Content,
+                        Summary = t.Summary,
+                        CreatedAt = DateTime.UtcNow
+                    }).ToList();
+
+                _context.AnnouncementTranslations.AddRange(translations);
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Duyuru başarıyla güncellendi.";
@@ -202,6 +357,21 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Duyuru güncellenirken bir hata oluştu: " + ex.Message);
+                
+                // Dilleri yeniden yükle
+                model.AvailableLanguages = await _context.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .OrderBy(l => l.IsDefault ? 0 : 1)
+                    .ThenBy(l => l.Name)
+                    .ToListAsync();
+
                 return View(model);
             }
         }

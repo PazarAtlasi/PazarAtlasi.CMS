@@ -55,6 +55,8 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<Announcement> Announcements { get; set; }
 
+        public DbSet<AnnouncementTranslation> AnnouncementTranslations { get; set; }
+
 
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
