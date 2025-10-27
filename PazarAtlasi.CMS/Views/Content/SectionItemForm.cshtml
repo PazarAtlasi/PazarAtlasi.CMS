@@ -524,7 +524,15 @@
 
                     if (!type || !mediaType) {
                         e.preventDefault();
-                        alert('Lütfen hem Type hem de Media Type seçiniz.');
+                        
+                        SwalHelper.warning(
+                            'Eksik Bilgiler',
+                            'Lütfen hem Type hem de Media Type seçiniz.',
+                            {
+                                confirmButtonText: 'Tamam'
+                            }
+                        );
+                        
                         return false;
                     }
                 });
@@ -562,22 +570,34 @@
         };
 
         window.removeField = function(fieldIndex) {
-            if (confirm('Bu field ve tüm verileri kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?')) {
-                const fieldCard = document.querySelector('[data-field-index="' + fieldIndex + '"]');
-                if (fieldCard) {
-                    fieldCard.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
-                    fieldCard.style.opacity = '0';
-                    fieldCard.style.transform = 'translateX(-20px)';
-                    
-                    setTimeout(() => {
-                        fieldCard.remove();
-                        updateFieldIndices();
-                        fieldCounter = Math.max(0, fieldCounter - 1);
-                        updateFieldCountBadge();
-                        console.log('Field başarıyla silindi');
-                    }, 300);
+            SwalHelper.confirmDelete(
+                'Field Silinsin mi?',
+                'Bu field ve tüm verileri kalıcı olarak silinecek. Bu işlem geri alınamaz.',
+                {
+                    confirmButtonText: '<i class="fas fa-trash mr-2"></i>Evet, Sil',
+                    cancelButtonText: '<i class="fas fa-times mr-2"></i>İptal'
                 }
-            }
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    const fieldCard = document.querySelector('[data-field-index="' + fieldIndex + '"]');
+                    if (fieldCard) {
+                        // Add fade out animation
+                        fieldCard.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                        fieldCard.style.opacity = '0';
+                        fieldCard.style.transform = 'translateX(-20px)';
+                        
+                        setTimeout(() => {
+                            fieldCard.remove();
+                            updateFieldIndices();
+                            fieldCounter = Math.max(0, fieldCounter - 1);
+                            updateFieldCountBadge();
+                            
+                            // Show success toast
+                            SwalHelper.toast('Field başarıyla silindi', 'success');
+                        }, 300);
+                    }
+                }
+            });
         };
 
         window.toggleFieldTranslations = function(fieldIndex) {
@@ -690,10 +710,7 @@
                     // Show error with SweetAlert2
                     SwalHelper.error(
                         'Field Eklenemedi',
-                        'Field eklenirken bir hata oluştu. Lütfen tekrar deneyin.',
-                        {
-                            confirmButtonText: 'Tamam'
-                        }
+                        'Field eklenirken bir hata oluştu. Lütfen tekrar deneyin.'
                     );
                 });
         }
