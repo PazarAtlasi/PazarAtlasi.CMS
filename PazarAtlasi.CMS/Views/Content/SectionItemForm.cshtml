@@ -359,18 +359,26 @@
                         </div>
                     </div>
 
-                    @if (Model.ShowFieldsSection)
-                    {
-                        <!-- Fields Section -->
-                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <!-- Fields Section -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
                                 <h3 class="text-lg font-medium text-gray-900">Fields</h3>
-                                <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="addField()">
-                                    <i class="fas fa-plus mr-2"></i>
-                                    Add Field
-                                </button>
+                                <span class="ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    @Model.SectionItem.Fields.Count field(s)
+                                </span>
                             </div>
-                            <div class="p-6">
+                            <button type="button" 
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" 
+                                    onclick="addField()"
+                                    title="Add a new field to this section item">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add Field
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            @if (Model.SectionItem.Fields.Any())
+                            {
                                 <div id="fieldsContainer" class="space-y-4">
                                     @for (int i = 0; i < Model.SectionItem.Fields.Count; i++)
                                     {
@@ -379,9 +387,25 @@
                                         await Html.PartialAsync("_SectionItemDetailField.cshtml", Model.SectionItem.Fields[i]);
                                     }
                                 </div>
-                            </div>
+                            }
+                            else
+                            {
+                                <div id="fieldsContainer" class="space-y-4">
+                                    <div class="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                                        <i class="fas fa-plus-circle text-gray-400 text-3xl mb-3"></i>
+                                        <h4 class="text-lg font-medium text-gray-900 mb-2">No fields yet</h4>
+                                        <p class="text-gray-500 mb-4">Add fields to define the structure of this section item.</p>
+                                        <button type="button" 
+                                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" 
+                                                onclick="addField()">
+                                            <i class="fas fa-plus mr-2"></i>
+                                            Add Your First Field
+                                        </button>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    }
+                    </div>
 
                     @if (Model.ShowFieldValuesSection)
                     {
@@ -501,18 +525,14 @@
                     if (!type || !mediaType) {
                         e.preventDefault();
 
-                        const errorDiv = document.createElement('div');
-                        errorDiv.className = 'mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center';
-                        errorDiv.innerHTML = `
-                            <i class="fas fa-exclamation-circle text-red-600 mr-3"></i>
-                            <span class="text-red-800">Please select both Type and Media Type.</span>
-                            <button type="button" class="ml-auto text-red-600 hover:text-red-800" onclick="this.parentElement.remove()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-
-                        const formContainer = form.parentElement;
-                        formContainer.insertBefore(errorDiv, form);
+                        // Show validation error with SweetAlert2
+                        SwalHelper.warning(
+                            'Eksik Bilgiler',
+                            'Lütfen hem Type hem de Media Type seçiniz.',
+                            {
+                                confirmButtonText: 'Tamam'
+                            }
+                        );
 
                         return false;
                     }
@@ -531,12 +551,170 @@
             });
         });
 
+        // Global field counter
+        let fieldCounter = @Model.SectionItem.Fields.Count;
+
         function addField() {
-            console.log('Add field functionality would be implemented here');
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            if (!fieldsContainer) {
+                console.error('Fields container not found');
+                return;
+            }
+
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-center';
+            loadingDiv.innerHTML = `
+                <i class="fas fa-spinner fa-spin text-blue-600 mr-2"></i>
+                <span class="text-blue-800">Adding new field...</span>
+            `;
+            fieldsContainer.appendChild(loadingDiv);
+
+            // Make AJAX request to get new field partial
+            fetch(`@Url.Action("GetNewFieldPartial", "Content")?fieldIndex=${fieldCounter}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Remove loading indicator
+                    fieldsContainer.removeChild(loadingDiv);
+                    
+                    // Add new field HTML
+                    fieldsContainer.insertAdjacentHTML('beforeend', html);
+                    
+                    // Increment counter
+                    fieldCounter++;
+                    
+                    // Update field indices for proper form binding
+                    updateFieldIndices();
+                    
+                    // Add smooth scroll to new field
+                    const newField = fieldsContainer.lastElementChild;
+                    if (newField) {
+                        newField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Add highlight effect
+                        newField.classList.add('ring-2', 'ring-blue-500');
+                        setTimeout(() => {
+                            newField.classList.remove('ring-2', 'ring-blue-500');
+                        }, 2000);
+                        
+                        // Show success toast
+                        SwalHelper.toast('Yeni field başarıyla eklendi', 'success');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding field:', error);
+                    
+                    // Remove loading indicator
+                    if (fieldsContainer.contains(loadingDiv)) {
+                        fieldsContainer.removeChild(loadingDiv);
+                    }
+                    
+                    // Show error with SweetAlert2
+                    SwalHelper.error(
+                        'Field Eklenemedi',
+                        'Field eklenirken bir hata oluştu. Lütfen tekrar deneyin.',
+                        {
+                            confirmButtonText: 'Tamam'
+                        }
+                    );
+                });
+        }
+
+        function updateFieldIndices() {
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            if (!fieldsContainer) return;
+
+            const fieldCards = fieldsContainer.querySelectorAll('[data-field-index]');
+            fieldCards.forEach((card, index) => {
+                // Update data attribute
+                card.setAttribute('data-field-index', index);
+                
+                // Update all form field names to use correct index
+                const inputs = card.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    if (input.name && input.name.includes('Fields[')) {
+                        // Replace old index with new index
+                        input.name = input.name.replace(/Fields\[\d+\]/, `Fields[${index}]`);
+                        input.id = input.id ? input.id.replace(/Fields_\d+_/, `Fields_${index}_`) : '';
+                    }
+                });
+                
+                // Update labels
+                const labels = card.querySelectorAll('label[for]');
+                labels.forEach(label => {
+                    if (label.getAttribute('for') && label.getAttribute('for').includes('Fields_')) {
+                        label.setAttribute('for', label.getAttribute('for').replace(/Fields_\d+_/, `Fields_${index}_`));
+                    }
+                });
+                
+                // Update validation spans
+                const validationSpans = card.querySelectorAll('span[data-valmsg-for]');
+                validationSpans.forEach(span => {
+                    if (span.getAttribute('data-valmsg-for') && span.getAttribute('data-valmsg-for').includes('Fields[')) {
+                        span.setAttribute('data-valmsg-for', span.getAttribute('data-valmsg-for').replace(/Fields\[\d+\]/, `Fields[${index}]`));
+                    }
+                });
+            });
         }
 
         function removeFieldValue(index) {
             console.log('Remove field value functionality would be implemented here for index:', index);
         }
+
+        // Update field count badge
+        function updateFieldCountBadge() {
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            const badge = document.querySelector('.bg-blue-100.text-blue-800');
+            
+            if (fieldsContainer && badge) {
+                const fieldCount = fieldsContainer.querySelectorAll('[data-field-index]').length;
+                badge.textContent = `${fieldCount} field(s)`;
+            }
+        }
+
+        // Call updateFieldCountBadge when fields are added or removed
+        const originalAddField = addField;
+        addField = function() {
+            originalAddField();
+            setTimeout(updateFieldCountBadge, 100);
+        };
+
+        // Override the global removeField function to update badge
+        window.removeField = function(fieldIndex) {
+            // Use SweetAlert2 for consistent UI
+            SwalHelper.deleteConfirm(
+                'Field Silinsin mi?',
+                'Bu field ve tüm verileri kalıcı olarak silinecek. Bu işlem geri alınamaz.',
+                {
+                    confirmButtonText: 'Evet, Sil',
+                    cancelButtonText: 'İptal'
+                }
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    const fieldCard = document.querySelector('[data-field-index="' + fieldIndex + '"]');
+                    if (fieldCard) {
+                        // Add fade out animation
+                        fieldCard.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                        fieldCard.style.opacity = '0';
+                        fieldCard.style.transform = 'translateX(-20px)';
+                        
+                        setTimeout(() => {
+                            fieldCard.remove();
+                            updateFieldIndices();
+                            fieldCounter = Math.max(0, fieldCounter - 1);
+                            updateFieldCountBadge();
+                            
+                            // Show success toast
+                            SwalHelper.toast('Field başarıyla silindi', 'success');
+                        }, 300);
+                    }
+                }
+            });
+        };
     </script>
 }
