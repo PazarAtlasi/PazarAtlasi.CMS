@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="Models\API\Response\" />
+    <Folder Include="Models\API\Request\" />
   </ItemGroup>
 
 </Project>
