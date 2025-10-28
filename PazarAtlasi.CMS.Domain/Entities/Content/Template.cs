@@ -4,8 +4,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 {
     public class Template : Entity<int>
     {
-        public TemplateType TemplateType { get; set; } // Template type for rendering behavior
-        
         public string TemplateKey { get; set; } = string.Empty; // Unique identifier for template (e.g., "navbar-megamenu", "navbar-simple")
         
         public string? ConfigurationSchema { get; set; } // JSON schema for template configuration

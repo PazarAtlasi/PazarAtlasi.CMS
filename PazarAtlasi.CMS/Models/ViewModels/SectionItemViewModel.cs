@@ -14,8 +14,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
         public int? ParentSectionItemId { get; set; }
 
-        public TemplateType TemplateType { get; set; } // Template type for rendering behavior
-
         public string TemplateKey { get; set; } = string.Empty; // Unique identifier for template (e.g., "navbar-megamenu", "navbar-simple")
 
         public int? TemplateId { get; set; }

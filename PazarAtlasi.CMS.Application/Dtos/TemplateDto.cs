@@ -5,7 +5,6 @@ namespace PazarAtlasi.CMS.Application.Dtos
     public class TemplateDto
     {
         public int Id { get; set; }
-        public TemplateType TemplateType { get; set; }
         public string TemplateKey { get; set; } = string.Empty;
         public string? ConfigurationSchema { get; set; }
         public bool IsActive { get; set; }
@@ -26,7 +25,6 @@ namespace PazarAtlasi.CMS.Application.Dtos
 
     public class TemplateCreateDto
     {
-        public TemplateType TemplateType { get; set; }
         public string TemplateKey { get; set; } = string.Empty;
         public string? ConfigurationSchema { get; set; }
         public bool IsActive { get; set; } = true;
@@ -44,7 +42,6 @@ namespace PazarAtlasi.CMS.Application.Dtos
     public class TemplateUpdateDto
     {
         public int Id { get; set; }
-        public TemplateType TemplateType { get; set; }
         public string TemplateKey { get; set; } = string.Empty;
         public string? ConfigurationSchema { get; set; }
         public bool IsActive { get; set; }

@@ -823,7 +823,7 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         id = st.Template.Id,  // Template ID, not SectionTypeTemplate ID
                         name = st.Template.Translations.Any() ? st.Template.Translations.First().Name : "No Name",
-                        templateType = st.Template.TemplateType.ToString()
+                        key = st.Template.TemplateKey
                     })
                     .ToListAsync();
 
@@ -1402,7 +1402,7 @@ namespace PazarAtlasi.CMS.Controllers
                         Id = s.Id,
                         Name = s.Translations.FirstOrDefault() != null ? s.Translations.FirstOrDefault()!.Title : $"Section {s.Id}",
                         Type = s.Type.ToString(),
-                        TemplateType = s.SectionTemplates.FirstOrDefault() != null ? s.SectionTemplates.FirstOrDefault()!.Template.TemplateType.ToString() : "Default",
+                        TemplateType = s.SectionTemplates.FirstOrDefault() != null ? s.SectionTemplates.FirstOrDefault()!.Template.TemplateKey.ToString() : "Default",
                         Description = s.Translations.FirstOrDefault() != null ? s.Translations.FirstOrDefault()!.Description : ""
                     })
                     .OrderBy(s => s.Name)
@@ -1826,7 +1826,6 @@ namespace PazarAtlasi.CMS.Controllers
                 .Select(t => new TemplateDto
                 {
                     Id = t.Id,
-                    TemplateType = t.TemplateType,
                     TemplateKey = t.TemplateKey,
                     ConfigurationSchema = t.ConfigurationSchema,
                     IsActive = t.IsActive,
@@ -1866,16 +1865,11 @@ namespace PazarAtlasi.CMS.Controllers
                 })
                 .ToListAsync();
 
-            var templateTypes = Enum.GetValues<TemplateType>()
-                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
-                .ToList();
-
             var viewModel = new TemplateCreateViewModel
             {
                 IsActive = true,
                 SortOrder = 0,
                 AvailableLanguages = languages,
-                TemplateTypes = templateTypes,
                 Translations = languages.Select(l => new TemplateTranslationCreateViewModel
                 {
                     LanguageId = l.Id,
@@ -1917,7 +1911,6 @@ namespace PazarAtlasi.CMS.Controllers
                 // Create new template
                 var template = new Template
                 {
-                    TemplateType = model.TemplateType,
                     TemplateKey = model.TemplateKey,
                     ConfigurationSchema = model.ConfigurationSchema,
                     IsActive = model.IsActive,
@@ -1989,14 +1982,9 @@ namespace PazarAtlasi.CMS.Controllers
                 })
                 .ToListAsync();
 
-            var templateTypes = Enum.GetValues<TemplateType>()
-                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
-                .ToList();
-
             var viewModel = new TemplateEditViewModel
             {
                 Id = template.Id,
-                TemplateType = template.TemplateType,
                 TemplateKey = template.TemplateKey,
                 ConfigurationSchema = template.ConfigurationSchema,
                 IsActive = template.IsActive,
@@ -2004,7 +1992,6 @@ namespace PazarAtlasi.CMS.Controllers
                 CreatedAt = template.CreatedAt,
                 UpdatedAt = template.UpdatedAt,
                 AvailableLanguages = languages,
-                TemplateTypes = templateTypes,
                 Translations = languages.Select(l =>
                 {
                     var existingTranslation = template.Translations.FirstOrDefault(t => t.LanguageId == l.Id);
@@ -2050,7 +2037,6 @@ namespace PazarAtlasi.CMS.Controllers
                 }
 
                 // Update template properties
-                template.TemplateType = model.TemplateType;
                 template.TemplateKey = model.TemplateKey;
                 template.ConfigurationSchema = model.ConfigurationSchema;
                 template.IsActive = model.IsActive;
@@ -2303,7 +2289,6 @@ namespace PazarAtlasi.CMS.Controllers
                 viewModel.Templates = templates.Select(t => new TemplateDto
                 {
                     Id = t.Id,
-                    TemplateType = t.TemplateType,
                     TemplateKey = t.TemplateKey,
                     ConfigurationSchema = t.ConfigurationSchema,
                     IsActive = t.IsActive,
@@ -2677,7 +2662,6 @@ namespace PazarAtlasi.CMS.Controllers
             viewModel.Templates = templates.Select(t => new TemplateDto
             {
                 Id = t.Id,
-                TemplateType = t.TemplateType,
                 TemplateKey = t.TemplateKey,
                 ConfigurationSchema = t.ConfigurationSchema,
                 IsActive = t.IsActive,
@@ -3434,7 +3418,6 @@ namespace PazarAtlasi.CMS.Controllers
                 Id = 0, // New item
                 TemplateId = template.Id,
                 TemplateKey = template.TemplateKey,
-                TemplateType = template.TemplateType,
                 Type = SectionItemType.None,
                 MediaType = MediaType.None,
                 SortOrder = 1,
@@ -3470,7 +3453,6 @@ namespace PazarAtlasi.CMS.Controllers
                 ParentSectionItemId = sectionItem.ParentSectionItemId,
                 TemplateId = sectionItem.TemplateId,
                 TemplateKey = sectionItem.Template?.TemplateKey ?? "",
-                TemplateType = sectionItem.Template?.TemplateType ?? TemplateType.Default,
                 Type = sectionItem.Type,
                 MediaType = sectionItem.MediaType,
                 SortOrder = sectionItem.SortOrder,
@@ -3631,12 +3613,7 @@ namespace PazarAtlasi.CMS.Controllers
                 })
                 .ToListAsync();
 
-            var templateTypes = Enum.GetValues<TemplateType>()
-                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
-                .ToList();
-
             model.AvailableLanguages = languages;
-            model.TemplateTypes = templateTypes;
 
             // Ensure translations exist for all languages
             foreach (var language in languages)
@@ -3678,12 +3655,7 @@ namespace PazarAtlasi.CMS.Controllers
                 })
                 .ToListAsync();
 
-            var templateTypes = Enum.GetValues<TemplateType>()
-                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
-                .ToList();
-
             model.AvailableLanguages = languages;
-            model.TemplateTypes = templateTypes;
 
             // Update language information in translations
             foreach (var translation in model.Translations)
@@ -3696,19 +3668,6 @@ namespace PazarAtlasi.CMS.Controllers
                     translation.IsDefault = language.IsDefault;
                 }
             }
-        }
-
-        /// <summary>
-        /// Get template type description for UI
-        /// </summary>
-        private string GetTemplateTypeDescription(TemplateType templateType)
-        {
-            return templateType switch
-            {
-                TemplateType.None => "No specific type",
-                TemplateType.List => "List component template",
-                _ => templateType.ToString()
-            };
         }
 
         #endregion Template Helper Methods

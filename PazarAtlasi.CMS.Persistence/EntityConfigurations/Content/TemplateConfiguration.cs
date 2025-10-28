@@ -19,18 +19,12 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(t => t.ConfigurationSchema)
                 .HasColumnType("nvarchar(max)");
 
-            builder.Property(t => t.TemplateType)
-                .IsRequired()
-                .HasConversion<int>();
-
             builder.Property(t => t.IsActive)
                 .HasDefaultValue(true);
 
             builder.Property(t => t.SortOrder)
                 .HasDefaultValue(0);
 
-            // Index for performance
-            builder.HasIndex(t => new { t.TemplateType, t.IsActive });
             builder.HasIndex(t => t.TemplateKey).IsUnique();
 
             // Relationships
@@ -50,7 +44,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 1,
-                    TemplateType = TemplateType.Default,
                     TemplateKey = "navbar-simple",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""backgroundColor"":{""type"":""string"",""default"":""#ffffff""},""textColor"":{""type"":""string"",""default"":""#333333""},""showLogo"":{""type"":""boolean"",""default"":true},""logoPosition"":{""type"":""string"",""enum"":[""left"",""center"",""right""],""default"":""left""}}}",
                     IsActive = true,
@@ -61,7 +54,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 2,
-                    TemplateType = TemplateType.MegaMenu,
                     TemplateKey = "navbar-megamenu",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""backgroundColor"":{""type"":""string"",""default"":""#1a1a1a""},""textColor"":{""type"":""string"",""default"":""#ffffff""},""showLogo"":{""type"":""boolean"",""default"":true},""logoPosition"":{""type"":""string"",""enum"":[""left"",""center"",""right""],""default"":""left""},""megaMenuColumns"":{""type"":""integer"",""minimum"":2,""maximum"":4,""default"":3},""showDescriptions"":{""type"":""boolean"",""default"":true},""showImages"":{""type"":""boolean"",""default"":true}}}",
                     IsActive = true,
@@ -72,7 +64,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 3,
-                    TemplateType = TemplateType.Tabs,
                     TemplateKey = "navbar-servicetabs",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""backgroundColor"":{""type"":""string"",""default"":""#2d3748""},""textColor"":{""type"":""string"",""default"":""#ffffff""},""showLogo"":{""type"":""boolean"",""default"":true},""logoPosition"":{""type"":""string"",""enum"":[""left"",""center"",""right""],""default"":""left""},""tabStyle"":{""type"":""string"",""enum"":[""pills"",""underline"",""background""],""default"":""pills""},""showIcons"":{""type"":""boolean"",""default"":true},""animationDuration"":{""type"":""integer"",""minimum"":100,""maximum"":1000,""default"":300}}}",
                     IsActive = true,
@@ -83,7 +74,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 4,
-                    TemplateType = TemplateType.List,
                     TemplateKey = "navbar-categorized",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""backgroundColor"":{""type"":""string"",""default"":""#4a5568""},""textColor"":{""type"":""string"",""default"":""#ffffff""},""showLogo"":{""type"":""boolean"",""default"":true},""logoPosition"":{""type"":""string"",""enum"":[""left"",""center"",""right""],""default"":""left""},""categoryStyle"":{""type"":""string"",""enum"":[""sidebar"",""dropdown"",""tabs""],""default"":""sidebar""},""showCategoryIcons"":{""type"":""boolean"",""default"":true},""itemsPerCategory"":{""type"":""integer"",""minimum"":2,""maximum"":8,""default"":4}}}",
                     IsActive = true,
@@ -96,7 +86,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 5,
-                    TemplateType = TemplateType.Default,
                     TemplateKey = "default",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""backgroundColor"":{""type"":""string"",""default"":""#ffffff""},""textColor"":{""type"":""string"",""default"":""#333333""},""padding"":{""type"":""string"",""enum"":[""small"",""medium"",""large""],""default"":""medium""}}}",
                     IsActive = true,
@@ -107,7 +96,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 6,
-                    TemplateType = TemplateType.Sequential,
                     TemplateKey = "sequential",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""direction"":{""type"":""string"",""enum"":[""horizontal"",""vertical""],""default"":""vertical""},""spacing"":{""type"":""string"",""enum"":[""small"",""medium"",""large""],""default"":""medium""},""showNumbers"":{""type"":""boolean"",""default"":false}}}",
                     IsActive = true,
@@ -118,7 +106,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 7,
-                    TemplateType = TemplateType.Grid,
                     TemplateKey = "grid",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""columns"":{""type"":""integer"",""minimum"":1,""maximum"":6,""default"":3},""gap"":{""type"":""string"",""enum"":[""small"",""medium"",""large""],""default"":""medium""},""showImages"":{""type"":""boolean"",""default"":true},""showExcerpts"":{""type"":""boolean"",""default"":true}}}",
                     IsActive = true,
@@ -129,7 +116,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 8,
-                    TemplateType = TemplateType.Masonry,
                     TemplateKey = "masonry",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""columns"":{""type"":""integer"",""minimum"":2,""maximum"":5,""default"":3},""gap"":{""type"":""string"",""enum"":[""small"",""medium"",""large""],""default"":""medium""},""showImages"":{""type"":""boolean"",""default"":true},""imageAspectRatio"":{""type"":""string"",""enum"":[""auto"",""square"",""landscape"",""portrait""],""default"":""auto""}}}",
                     IsActive = true,
@@ -140,7 +126,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 9,
-                    TemplateType = TemplateType.Carousel,
                     TemplateKey = "carousel",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""autoPlay"":{""type"":""boolean"",""default"":true},""interval"":{""type"":""integer"",""minimum"":2000,""maximum"":10000,""default"":5000},""showIndicators"":{""type"":""boolean"",""default"":true},""showArrows"":{""type"":""boolean"",""default"":true},""transitionEffect"":{""type"":""string"",""enum"":[""fade"",""slide"",""zoom""],""default"":""slide""}}}",
                     IsActive = true,
@@ -151,7 +136,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 10,
-                    TemplateType = TemplateType.List,
                     TemplateKey = "list",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""showIcons"":{""type"":""boolean"",""default"":true},""iconPosition"":{""type"":""string"",""enum"":[""left"",""right""],""default"":""left""},""spacing"":{""type"":""string"",""enum"":[""compact"",""comfortable"",""spacious""],""default"":""comfortable""},""showDividers"":{""type"":""boolean"",""default"":false}}}",
                     IsActive = true,
@@ -162,7 +146,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 11,
-                    TemplateType = TemplateType.SingleItem,
                     TemplateKey = "single-item",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""alignment"":{""type"":""string"",""enum"":[""left"",""center"",""right""],""default"":""center""},""showImage"":{""type"":""boolean"",""default"":true},""imageSize"":{""type"":""string"",""enum"":[""small"",""medium"",""large""],""default"":""medium""},""showDescription"":{""type"":""boolean"",""default"":true}}}",
                     IsActive = true,
@@ -173,7 +156,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 12,
-                    TemplateType = TemplateType.MultiItem,
                     TemplateKey = "multi-item",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""itemsPerRow"":{""type"":""integer"",""minimum"":2,""maximum"":6,""default"":3},""showTitles"":{""type"":""boolean"",""default"":true},""showDescriptions"":{""type"":""boolean"",""default"":true},""equalHeight"":{""type"":""boolean"",""default"":true}}}",
                     IsActive = true,
@@ -184,7 +166,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 13,
-                    TemplateType = TemplateType.Accordion,
                     TemplateKey = "accordion",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""allowMultiple"":{""type"":""boolean"",""default"":false},""defaultOpen"":{""type"":""integer"",""minimum"":0,""default"":0},""showIcons"":{""type"":""boolean"",""default"":true},""animationDuration"":{""type"":""integer"",""minimum"":100,""maximum"":1000,""default"":300}}}",
                     IsActive = true,
@@ -195,7 +176,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Template
                 {
                     Id = 14,
-                    TemplateType = TemplateType.Tabs,
                     TemplateKey = "tabs",
                     ConfigurationSchema = @"{""type"":""object"",""properties"":{""tabPosition"":{""type"":""string"",""enum"":[""top"",""bottom"",""left"",""right""],""default"":""top""},""tabStyle"":{""type"":""string"",""enum"":[""pills"",""underline"",""background""],""default"":""underline""},""showIcons"":{""type"":""boolean"",""default"":false},""defaultTab"":{""type"":""integer"",""minimum"":0,""default"":0}}}",
                     IsActive = true,

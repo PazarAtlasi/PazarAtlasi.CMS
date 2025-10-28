@@ -7,7 +7,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     /// </summary>
     public class TemplateCreateViewModel
     {
-        public TemplateType TemplateType { get; set; }
         public string TemplateKey { get; set; } = string.Empty;
         public string? ConfigurationSchema { get; set; }
         public bool IsActive { get; set; } = true;
@@ -22,11 +21,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         /// Template translations for each language
         /// </summary>
         public List<TemplateTranslationCreateViewModel> Translations { get; set; } = new List<TemplateTranslationCreateViewModel>();
-        
-        /// <summary>
-        /// Available template types for dropdown
-        /// </summary>
-        public List<TemplateTypeOption> TemplateTypes { get; set; } = new List<TemplateTypeOption>();
     }
 
     /// <summary>
@@ -35,12 +29,17 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class TemplateEditViewModel
     {
         public int Id { get; set; }
-        public TemplateType TemplateType { get; set; }
+
         public string TemplateKey { get; set; } = string.Empty;
+
         public string? ConfigurationSchema { get; set; }
+
         public bool IsActive { get; set; }
+
         public int SortOrder { get; set; }
+
         public DateTime CreatedAt { get; set; }
+
         public DateTime? UpdatedAt { get; set; }
         
         /// <summary>
@@ -52,11 +51,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         /// Template translations for each language
         /// </summary>
         public List<TemplateTranslationEditViewModel> Translations { get; set; } = new List<TemplateTranslationEditViewModel>();
-        
-        /// <summary>
-        /// Available template types for dropdown
-        /// </summary>
-        public List<TemplateTypeOption> TemplateTypes { get; set; } = new List<TemplateTypeOption>();
     }
 
     /// <summary>
@@ -65,12 +59,17 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class TemplateListViewModel
     {
         public int Id { get; set; }
-        public TemplateType TemplateType { get; set; }
+
         public string TemplateKey { get; set; } = string.Empty;
+
         public string? ConfigurationSchema { get; set; }
+
         public bool IsActive { get; set; }
+
         public int SortOrder { get; set; }
+
         public DateTime CreatedAt { get; set; }
+
         public DateTime? UpdatedAt { get; set; }
         
         /// <summary>
@@ -87,11 +86,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         /// Number of translations available
         /// </summary>
         public int TranslationCount { get; set; }
-        
-        /// <summary>
-        /// Template type display name
-        /// </summary>
-        public string TemplateTypeName => TemplateType.ToString();
         
         /// <summary>
         /// Status badge CSS class
@@ -141,23 +135,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     }
 
     /// <summary>
-    /// Template Type option for dropdown
-    /// </summary>
-    public class TemplateTypeOption
-    {
-        public TemplateType Value { get; set; }
-        public string Text { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        
-        public TemplateTypeOption(TemplateType value, string text, string? description = null)
-        {
-            Value = value;
-            Text = text;
-            Description = description;
-        }
-    }
-
-    /// <summary>
     /// Response model for Template List with pagination
     /// </summary>
     public class TemplateListResponse
@@ -178,7 +155,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
     public class TemplateDetailsViewModel
     {
         public int Id { get; set; }
-        public TemplateType TemplateType { get; set; }
         public string TemplateKey { get; set; } = string.Empty;
         public string? ConfigurationSchema { get; set; }
         public bool IsActive { get; set; }

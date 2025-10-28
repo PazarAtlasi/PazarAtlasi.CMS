@@ -80,22 +80,6 @@ namespace PazarAtlasi.CMS.Domain.Common
         Media
     }
 
-    public enum TemplateType
-    {
-        None,
-        Default,
-        Sequential,
-        Grid,
-        Masonry,
-        Carousel,
-        List,
-        SingleItem,
-        MultiItem,
-        Accordion,
-        Tabs,
-        MegaMenu
-    }
-
     public enum Status
     {
         Draft = 0,

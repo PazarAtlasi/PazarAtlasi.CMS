@@ -1101,7 +1101,7 @@ const SectionModal = (function () {
                   </div>
                   <div class="flex items-center justify-between text-xs text-slate-400 mt-2 pt-2 border-t border-slate-100">
                     <span><i class="fas fa-tag mr-1"></i>${
-                      template.templateType
+                      template.key
                     }</span>
                     <span class="text-blue-600 group-hover:text-blue-700 font-medium">
                       Select <i class="fas fa-arrow-right ml-1"></i>
