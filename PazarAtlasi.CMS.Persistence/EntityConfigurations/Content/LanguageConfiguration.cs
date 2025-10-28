@@ -35,7 +35,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 1,
                     Name = "Türkçe",
-                    Code = "TR",
+                    Code = "tr-TR",
                     IsDefault = true,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,
@@ -45,7 +45,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 2,
                     Name = "English",
-                    Code = "US",
+                    Code = "en-US",
                     IsDefault = false,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,
@@ -55,7 +55,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 3,
                     Name = "Deutsch",
-                    Code = "DE",
+                    Code = "de-DE",
                     IsDefault = false,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
                     Status = Status.Active,

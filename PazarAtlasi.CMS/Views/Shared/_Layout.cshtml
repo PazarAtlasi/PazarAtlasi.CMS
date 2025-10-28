@@ -245,13 +245,26 @@
                             class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Analytics"]</span>
                     </a>
                 </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
+                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
                     <a href="#"
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-cog w-5 mr-3 text-center text-lg"></i>
                         <span
                             class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Settings"]</span>
+                        <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
                     </a>
+                    <ul
+                        class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
+                        <li><a href="@Url.Action("Index", "Settings")"
+                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
+                                    class="fas fa-cogs w-[18px] mr-2.5 text-center text-sm"></i> Genel Ayarlar</a></li>
+                        <li><a href="@Url.Action("Countries", "Settings")"
+                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
+                                    class="fas fa-globe w-[18px] mr-2.5 text-center text-sm"></i> Ülkeler</a></li>
+                        <li><a href="@Url.Action("Languages", "Settings")"
+                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
+                                    class="fas fa-language w-[18px] mr-2.5 text-center text-sm"></i> Diller</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>

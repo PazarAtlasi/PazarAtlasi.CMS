@@ -94,5 +94,18 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string Name { get; set; } = string.Empty;
         public string? Code { get; set; }
         public bool IsDefault { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
+
+    public class LanguageListViewModel
+    {
+        public List<LanguageViewModel> Languages { get; set; } = new();
+        public int TotalCount { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+        public bool HasPreviousPage => PageNumber > 1;
+        public bool HasNextPage => PageNumber < TotalPages;
     }
 }
