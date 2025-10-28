@@ -398,7 +398,7 @@
                                     {
                                         ViewBag.Languages = Model.AvailableLanguages;
                                         ViewBag.FieldIndex = i;
-                                        await Html.PartialAsync("_SectionItemDetailField.cshtml", Model.SectionItem.Fields[i]);
+                                        @await Html.PartialAsync("_SectionItemDetailField.cshtml", Model.SectionItem.Fields[i]);
                                     }
                                 }
                             </div>
