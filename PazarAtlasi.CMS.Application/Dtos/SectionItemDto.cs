@@ -143,7 +143,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public int Id { get; set; }
         public int SectionItemFieldId { get; set; }
         public int LanguageId { get; set; }
-        public string Label { get; set; } = string.Empty;
+        public string? Label { get; set; } = string.Empty;
         public string? Description { get; set; }
         public string? Placeholder { get; set; }
     }
