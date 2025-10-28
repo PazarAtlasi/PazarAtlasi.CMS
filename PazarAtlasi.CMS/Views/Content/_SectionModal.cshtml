@@ -31,7 +31,7 @@
                 <i class="fas fa-cog mr-2 text-purple-600"></i> Section Settings
             </h4>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Section Type</label>
                     <select id="sectionType"
@@ -42,6 +42,14 @@
                             <!option value="@((int)sectionType)" @((Model.Type == sectionType) ? "selected" : "")>@sectionType.ToString()</!option>
                         }
                     </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Section Key</label>
+                    <input type="text" id="sectionKey" value="@Model.Key" 
+                           placeholder="e.g., home-hero, blog-header"
+                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" />
+                    <p class="text-xs text-slate-500 mt-1">Unique identifier for this section</p>
                 </div>
 
                 <div>

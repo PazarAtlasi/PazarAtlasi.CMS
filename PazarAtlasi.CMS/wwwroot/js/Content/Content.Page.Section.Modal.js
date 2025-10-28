@@ -236,6 +236,7 @@ const SectionModal = (function () {
         Id: currentSection.id,
         PageId: currentSection.pageId || null, // null for reusable sections
         Type: currentSection.type,
+        Key: document.getElementById("sectionKey").value || "",
         Status: parseInt(
           document.getElementById("modalSectionStatus").value
         ),
@@ -1375,6 +1376,113 @@ const SectionModal = (function () {
         itemsGridContainer.classList.add("hidden");
         console.log("Items grid hidden - no items remaining");
       }
+    }
+  }
+
+  /**
+   * Handle section type change - auto-generate key and load templates
+   */
+  function handleSectionTypeChange(sectionTypeValue) {
+    console.log("Section type changed to:", sectionTypeValue);
+
+    currentSection.type = parseInt(sectionTypeValue);
+
+    // Auto-generate section key based on type
+    generateSectionKey(sectionTypeValue);
+
+    // Load templates for this section type
+    loadTemplatesForSectionType(sectionTypeValue);
+
+    // Show/hide add item button based on section type
+    const addItemButtonContainer = document.getElementById(
+      "addItemButtonContainer"
+    );
+    if (addItemButtonContainer) {
+      if (currentSection.type > 0) {
+        addItemButtonContainer.classList.remove("hidden");
+      } else {
+        addItemButtonContainer.classList.add("hidden");
+      }
+    }
+  }
+
+  /**
+   * Generate section key based on section type and page context
+   */
+  function generateSectionKey(sectionTypeValue) {
+    const sectionKeyInput = document.getElementById("sectionKey");
+    if (!sectionKeyInput) return;
+
+    // Don't overwrite if user has already entered a key
+    if (sectionKeyInput.value.trim() !== "") return;
+
+    const sectionTypeNames = {
+      1: "navbar",
+      2: "header",
+      3: "hero",
+      4: "catalog",
+      5: "favorite",
+      6: "featured",
+      7: "newsletter",
+      8: "content-block",
+      9: "contact",
+      10: "footer",
+      11: "sidebar",
+      12: "main-content",
+      13: "related-content",
+      14: "advertisement",
+      15: "search",
+      16: "contact-form",
+      17: "why-us",
+      18: "social-media",
+      19: "testimonials",
+      20: "call-to-action",
+      21: "breadcrumbs",
+      22: "pagination",
+      23: "map",
+      24: "gallery",
+    };
+
+    const typeName = sectionTypeNames[sectionTypeValue] || "section";
+
+    // Generate key based on page context
+    let keyPrefix = "";
+    if (currentSection.pageId) {
+      // For page-specific sections, we could add page context
+      // For now, just use the type name
+      keyPrefix = typeName;
+    } else {
+      // For reusable sections, add "global-" prefix
+      keyPrefix = `global-${typeName}`;
+    }
+
+    // Add timestamp to ensure uniqueness
+    const timestamp = Date.now().toString().slice(-4);
+    const generatedKey = `${keyPrefix}-${timestamp}`;
+
+    sectionKeyInput.value = generatedKey;
+    console.log("Generated section key:", generatedKey);
+  }
+
+  /**
+   * Load templates for selected section type
+   */
+  async function loadTemplatesForSectionType(sectionTypeValue) {
+    try {
+      const response =
+        await ContentServices.getTemplatesBySectionType(
+          sectionTypeValue
+        );
+      if (response.success) {
+        currentSection.availableTemplates = response.templates || [];
+        console.log(
+          "Loaded templates for section type:",
+          currentSection.availableTemplates
+        );
+      }
+    } catch (error) {
+      console.error("Error loading templates:", error);
+      currentSection.availableTemplates = [];
     }
   }
 

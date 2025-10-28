@@ -7,6 +7,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int Id { get; set; }
         public string? Name { get; set; }
         public SectionType Type { get; set; }
+        public string Key { get; set; } = string.Empty;
         public Status Status { get; set; }
         public int ItemsCount { get; set; }
         public string? PageName { get; set; }

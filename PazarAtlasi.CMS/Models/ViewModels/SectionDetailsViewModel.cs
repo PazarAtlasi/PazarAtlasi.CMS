@@ -8,6 +8,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? Name { get; set; }
         public string? Description { get; set; }
         public SectionType Type { get; set; }
+        public string Key { get; set; } = string.Empty;
         public Status Status { get; set; }
         public int SortOrder { get; set; }
         public string? Attributes { get; set; }

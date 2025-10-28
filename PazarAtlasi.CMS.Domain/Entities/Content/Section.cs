@@ -11,6 +11,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
     {
         public SectionType Type { get; set; } = SectionType.None;
 
+        /// <summary>
+        /// Unique key for this section (e.g., "hero", "navbar", "footer")
+        /// </summary>
+        public string Key { get; set; } = string.Empty;
+
         public string? Attributes { get; set; }
 
         public int SortOrder { get; set; } = 0;

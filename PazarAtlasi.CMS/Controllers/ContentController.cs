@@ -131,6 +131,7 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     Id = s.Id,
                     Type = s.Type,
+                    Key = s.Key,
                     Attributes = s.Attributes,
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
@@ -739,6 +740,7 @@ namespace PazarAtlasi.CMS.Controllers
                         Id = section.Id,
                         PageId = pageId,
                         Type = section.Type,
+                        Key = section.Key,
                         Attributes = section.Attributes,
                         SortOrder = section.SortOrder,
                         Configure = section.Configure,
@@ -763,6 +765,7 @@ namespace PazarAtlasi.CMS.Controllers
                         Id = 0,
                         PageId = pageId,
                         Type = SectionType.None,
+                        Key = "",
                         SortOrder = 1,
                         Status = Domain.Common.Status.Active
                     };
@@ -1135,6 +1138,7 @@ namespace PazarAtlasi.CMS.Controllers
 
                     // Update section properties
                     section.Type = request.Type;
+                    section.Key = request.Key;
                     section.Attributes = request.Attributes;
                     section.Configure = request.Configure;
                     section.Status = request.Status;
@@ -1192,6 +1196,7 @@ namespace PazarAtlasi.CMS.Controllers
                     var newSection = new Section
                     {
                         Type = request.Type,
+                        Key = request.Key,
                         Attributes = request.Attributes ?? "{}",
                         SortOrder = request.SortOrder,
                         Configure = request.Configure ?? "{}",
@@ -1274,6 +1279,7 @@ namespace PazarAtlasi.CMS.Controllers
                     section = new Domain.Entities.Content.Section
                     {
                         Type = model.Type,
+                        Key = model.Key,
                         Status = model.Status,
                         SortOrder = model.SortOrder,
                         Attributes = model.Attributes ?? "{}",
@@ -1295,6 +1301,7 @@ namespace PazarAtlasi.CMS.Controllers
                     }
 
                     section.Type = model.Type;
+                    section.Key = model.Key;
                     section.Status = model.Status;
                     section.SortOrder = model.SortOrder;
                     section.Attributes = model.Attributes ?? "{}";

@@ -13,6 +13,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
 
             builder.Property(s => s.Id).HasColumnName("Id").IsRequired();
             builder.Property(s => s.Type).HasColumnName("Type").HasDefaultValue(SectionType.None);
+            builder.Property(s => s.Key).HasColumnName("Key").HasMaxLength(100).IsRequired();
             builder.Property(s => s.Attributes).HasColumnName("Attributes").HasColumnType("nvarchar(max)");
             builder.Property(s => s.SortOrder).HasColumnName("SortOrder").HasDefaultValue(0);
             builder.Property(s => s.Configure).HasColumnName("Configure").HasColumnType("nvarchar(max)");
@@ -34,17 +35,19 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                    .OnDelete(DeleteBehavior.Cascade);
             // Indexes
             builder.HasIndex(s => s.Type).HasDatabaseName("IX_Sections_Type");
+            builder.HasIndex(s => s.Key).HasDatabaseName("IX_Sections_Key").IsUnique();
 
             // Query Filter
             builder.HasQueryFilter(s => !s.IsDeleted);
 
-            // Seed Data
+            // Seed Data - Only update existing sections with Key values
             builder.HasData(
                 // Ana Sayfa Sections
                 new Section
                 {
                     Id = 1,
                     Type = SectionType.Hero,
+                    Key = "home-hero",
                     SortOrder = 1,
                     Attributes = "{\"backgroundImage\": \"hero-bg.jpg\", \"height\": \"500px\"}",
                     Configure = "{\"showButton\": true, \"buttonText\": \"Keşfet\"}",
@@ -56,6 +59,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 2,
                     Type = SectionType.Featured,
+                    Key = "home-featured-products",
                     SortOrder = 2,
                     Attributes = "{\"columns\": 3}",
                     Configure = "{\"maxItems\": 6, \"showMore\": true, \"showPrices\": true}",
@@ -67,6 +71,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 3,
                     Type = SectionType.Newsletter,
+                    Key = "home-newsletter",
                     SortOrder = 3,
                     Attributes = "{\"backgroundColor\": \"#f8f9fa\"}",
                     Configure = "{\"showPrivacyText\": true}",
@@ -79,6 +84,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 4,
                     Type = SectionType.Header,
+                    Key = "blog-header",
                     SortOrder = 1,
                     Attributes = "{}",
                     Configure = "{\"showSearchBox\": true,\"showBreadcrumbs\": true}",
@@ -90,6 +96,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 5,
                     Type = SectionType.MainContent,
+                    Key = "blog-main-content",
                     SortOrder = 2,
                     Attributes = "{}",
                     Configure = "{\"showExcerpt\": true, \"showAuthor\": true, \"showDate\": true,\"postsPerPage\": 10}",
@@ -102,6 +109,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 6,
                     Type = SectionType.Catalog,
+                    Key = "products-catalog",
                     SortOrder = 1,
                     Attributes = "{\"columns\": 4}",
                     Configure = "{\"productsPerPage\": 20, \"showSorting\": true, \"showFilters\": true}",

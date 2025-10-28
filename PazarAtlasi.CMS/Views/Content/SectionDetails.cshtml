@@ -76,7 +76,7 @@
     </div>
 
     <!-- Section Info Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
         <div class="bg-white rounded-xl shadow-md p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-purple-100 rounded-full">
@@ -85,6 +85,17 @@
                 <div class="ml-4">
                     <p class="text-sm font-medium text-slate-600">Section Type</p>
                     <p class="text-lg font-bold text-slate-800">@Model.Type.ToString()</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-indigo-100 rounded-full">
+                    <i class="fas fa-key text-indigo-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Section Key</p>
+                    <p class="text-sm font-mono font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded">@Model.Key</p>
                 </div>
             </div>
         </div>
