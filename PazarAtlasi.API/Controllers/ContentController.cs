@@ -195,9 +195,9 @@ namespace PazarAtlasi.API.Controllers
         }
 
         /// <summary>
-        /// Get section by ID
+        /// Get section by Key
         /// </summary>
-        /// <param name="query">Section query with section ID and culture</param>
+        /// <param name="query">Section query with section key and culture</param>
         /// <returns>Section data with all items</returns>
         [HttpGet("section")]
         public async Task<ActionResult<SectionResponse>> GetSection([FromQuery] SectionQuery query)
@@ -218,7 +218,7 @@ namespace PazarAtlasi.API.Controllers
                     return BadRequest($"Language with culture '{query.Culture}' not found.");
                 }
 
-                // Get section with all related data
+                // Get section with all related data by Key
                 var section = await _pazarAtlasiDbContext.Sections
                     .Include(s => s.Translations.Where(st => st.LanguageId == language.Id))
                     .Include(s => s.SectionItemValues.OrderBy(siv => siv.SectionItem.SortOrder))
@@ -233,11 +233,11 @@ namespace PazarAtlasi.API.Controllers
                         .ThenInclude(siv => siv.SectionItem)
                         .ThenInclude(si => si.SectionItemFieldValues)
                             .ThenInclude(fv => fv.Translations.Where(fvt => fvt.LanguageId == language.Id))
-                    .FirstOrDefaultAsync(s => s.Id == query.SectionId && s.Status == Status.Active && !s.IsDeleted);
+                    .FirstOrDefaultAsync(s => s.Key == query.Key && s.Status == Status.Active && !s.IsDeleted);
 
                 if (section == null)
                 {
-                    return NotFound($"Section with ID '{query.SectionId}' not found.");
+                    return NotFound($"Section with key '{query.Key}' not found.");
                 }
 
                 var sectionTranslation = section.Translations.FirstOrDefault();
