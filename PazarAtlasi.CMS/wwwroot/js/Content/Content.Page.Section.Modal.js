@@ -1207,114 +1207,6 @@ const SectionModal = (function () {
   }
 
   /**
-   * NEW: Show item type selection modal
-   */
-  function showItemTypeSelectionModal(templateId, sectionId, level) {
-    console.log("showItemTypeSelectionModal called:", {
-      templateId,
-      sectionId,
-      level,
-    });
-
-    try {
-      // Get template configuration from the page
-      const configElement = document.getElementById(
-        "templateConfiguration"
-      );
-      if (!configElement) {
-        console.error("Template configuration not found");
-        return;
-      }
-
-      const config = JSON.parse(configElement.textContent);
-      const sectionItems =
-        config.sectionConfiguration?.sectionItems || [];
-
-      if (sectionItems.length === 0) {
-        alert("No item types available");
-        return;
-      }
-
-      // Create modal HTML
-      const modalHTML = `
-                <div id="itemTypeSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg font-semibold text-slate-800">
-                                    <i class="fas fa-plus-circle mr-2 text-blue-600"></i>
-                                    Select Item Type to Add
-                                </h3>
-                                <button type="button" onclick="SectionModal.closeItemTypeSelectionModal()" 
-                                        class="text-slate-400 hover:text-slate-600">
-                                    <i class="fas fa-times text-xl"></i>
-                                </button>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                ${sectionItems
-                                  .map(
-                                    (item, index) => `
-                                    <button type="button"
-                                            onclick="SectionModal.addSectionItemByType(${templateId}, '${
-                                      item.itemType
-                                    }', ${sectionId}); SectionModal.closeItemTypeSelectionModal();"
-                                            class="p-4 border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg transition-all text-left group">
-                                        <div class="flex items-center mb-2">
-                                            <i class="fas fa-${
-                                              item.uiConfiguration
-                                                ?.iconClass || "cube"
-                                            } text-2xl text-slate-400 group-hover:text-blue-600 mr-3"></i>
-                                            <div>
-                                                <h4 class="font-medium text-slate-800 group-hover:text-blue-600">
-                                                    ${
-                                                      item
-                                                        .translations?.[0]
-                                                        ?.title ||
-                                                      item.itemType
-                                                    }
-                                                </h4>
-                                                <p class="text-xs text-slate-500">
-                                                    ${
-                                                      item
-                                                        .translations?.[0]
-                                                        ?.description ||
-                                                      "Add new " +
-                                                        item.itemType
-                                                    }
-                                                </p>
-                                            </div>
-                                        </div>
-                                        ${
-                                          item.maxItems
-                                            ? `<div class="text-xs text-slate-400">Max: ${item.maxItems}</div>`
-                                            : ""
-                                        }
-                                    </button>
-                                `
-                                  )
-                                  .join("")}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-      // Add to body
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = modalHTML;
-      document.body.appendChild(tempDiv.firstElementChild);
-      document.body.style.overflow = "hidden";
-    } catch (error) {
-      console.error(
-        "Error showing item type selection modal:",
-        error
-      );
-      alert("Failed to show item type selection. Please try again.");
-    }
-  }
-
-  /**
    * NEW: Close item type selection modal
    */
   function closeItemTypeSelectionModal() {
@@ -1514,7 +1406,6 @@ const SectionModal = (function () {
 
     // NEW: Type-based item management
     addSectionItemByType,
-    showItemTypeSelectionModal,
     closeItemTypeSelectionModal,
 
     // NEW: Template selection for items
