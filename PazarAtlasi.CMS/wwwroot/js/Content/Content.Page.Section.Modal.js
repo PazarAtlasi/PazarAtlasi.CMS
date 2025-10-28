@@ -1378,6 +1378,356 @@ const SectionModal = (function () {
     }
   }
 
+  // ==================== MEDIA UPLOAD FUNCTIONS ====================
+
+  /**
+   * Trigger image upload - opens file dialog
+   */
+  function triggerImageUpload(button) {
+    const container = button.closest(".image-upload-container");
+    const fileInput = container.querySelector(".image-file-input");
+    fileInput.click();
+  }
+
+  /**
+   * Handle image upload process
+   */
+  function handleImageUpload(fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const container = fileInput.closest(".image-upload-container");
+    const hiddenInput = container.querySelector(".image-path-input");
+    const uploadStatus = container.querySelector(".upload-status");
+    const imagePreview = container.querySelector(".image-preview");
+    const progressBar = container.querySelector(".upload-progress");
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file.");
+      fileInput.value = "";
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size must be less than 5MB.");
+      fileInput.value = "";
+      return;
+    }
+
+    // Show progress bar
+    progressBar.classList.remove("hidden");
+    const progressBarFill = progressBar.querySelector(".bg-blue-600");
+
+    // Create FormData
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "section-items");
+
+    // Upload file
+    fetch("/Content/UploadImage", {
+      method: "POST",
+      body: formData,
+      headers: {
+        RequestVerificationToken: document.querySelector(
+          'input[name="__RequestVerificationToken"]'
+        ).value,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        progressBar.classList.add("hidden");
+
+        if (data.success) {
+          // Update hidden input value
+          hiddenInput.value = data.url;
+
+          // Show success status
+          uploadStatus.innerHTML =
+            '<i class="fas fa-check mr-1"></i> Uploaded';
+          uploadStatus.className =
+            "text-xs text-green-600 upload-status";
+
+          // Show image preview
+          imagePreview.innerHTML = `<img src="${data.url}" class="max-h-20 rounded border" alt="Preview" />`;
+
+          // Add remove button if not exists
+          if (!container.querySelector(".text-red-600")) {
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className =
+              "text-xs text-red-600 hover:text-red-800 ml-2";
+            removeBtn.onclick = () => removeImage(removeBtn);
+            removeBtn.innerHTML =
+              '<i class="fas fa-times mr-1"></i> Remove';
+            uploadStatus.parentNode.appendChild(removeBtn);
+          }
+        } else {
+          alert(
+            "Upload failed: " + (data.message || "Unknown error")
+          );
+        }
+      })
+      .catch((error) => {
+        progressBar.classList.add("hidden");
+        console.error("Upload error:", error);
+        alert("Upload failed. Please try again.");
+      });
+
+    // Simulate progress (since we don't have real progress from server)
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 30;
+      if (progress > 90) progress = 90;
+      progressBarFill.style.width = progress + "%";
+    }, 200);
+
+    // Clear interval when upload completes
+    setTimeout(() => {
+      clearInterval(progressInterval);
+      progressBarFill.style.width = "100%";
+    }, 2000);
+  }
+
+  /**
+   * Remove uploaded image
+   */
+  function removeImage(button) {
+    const container = button.closest(".image-upload-container");
+    const hiddenInput = container.querySelector(".image-path-input");
+    const uploadStatus = container.querySelector(".upload-status");
+    const imagePreview = container.querySelector(".image-preview");
+    const fileInput = container.querySelector(".image-file-input");
+
+    // Clear values
+    hiddenInput.value = "";
+    fileInput.value = "";
+    imagePreview.innerHTML = "";
+
+    // Update status
+    uploadStatus.innerHTML =
+      '<i class="fas fa-check mr-1"></i> Uploaded';
+    uploadStatus.className =
+      "text-xs text-gray-500 upload-status hidden";
+
+    // Remove the remove button
+    button.remove();
+  }
+
+  /**
+   * Trigger video upload - opens file dialog
+   */
+  function triggerVideoUpload(button) {
+    const container = button.closest(".video-upload-container");
+    const fileInput = container.querySelector(".video-file-input");
+    fileInput.click();
+  }
+
+  /**
+   * Handle video upload process
+   */
+  function handleVideoUpload(fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const container = fileInput.closest(".video-upload-container");
+    const hiddenInput = container.querySelector(".video-path-input");
+    const uploadStatus = container.querySelector(".upload-status");
+    const videoPreview = container.querySelector(".video-preview");
+    const progressBar = container.querySelector(".upload-progress");
+
+    // Validate file type
+    if (!file.type.startsWith("video/")) {
+      alert("Please select a valid video file.");
+      fileInput.value = "";
+      return;
+    }
+
+    // Validate file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      alert("File size must be less than 50MB.");
+      fileInput.value = "";
+      return;
+    }
+
+    // Show progress bar
+    progressBar.classList.remove("hidden");
+
+    // Create FormData
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "section-items");
+
+    // Upload file
+    fetch("/Content/UploadVideo", {
+      method: "POST",
+      body: formData,
+      headers: {
+        RequestVerificationToken: document.querySelector(
+          'input[name="__RequestVerificationToken"]'
+        ).value,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        progressBar.classList.add("hidden");
+
+        if (data.success) {
+          hiddenInput.value = data.url;
+          uploadStatus.innerHTML =
+            '<i class="fas fa-check mr-1"></i> Uploaded';
+          uploadStatus.className =
+            "text-xs text-green-600 upload-status";
+          videoPreview.innerHTML = `<video src="${data.url}" class="mt-2 max-h-20 rounded border" controls></video>`;
+
+          if (!container.querySelector(".text-red-600")) {
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className =
+              "text-xs text-red-600 hover:text-red-800 ml-2";
+            removeBtn.onclick = () => removeVideo(removeBtn);
+            removeBtn.innerHTML =
+              '<i class="fas fa-times mr-1"></i> Remove';
+            uploadStatus.parentNode.appendChild(removeBtn);
+          }
+        } else {
+          alert(
+            "Upload failed: " + (data.message || "Unknown error")
+          );
+        }
+      })
+      .catch((error) => {
+        progressBar.classList.add("hidden");
+        console.error("Upload error:", error);
+        alert("Upload failed. Please try again.");
+      });
+  }
+
+  /**
+   * Remove uploaded video
+   */
+  function removeVideo(button) {
+    const container = button.closest(".video-upload-container");
+    const hiddenInput = container.querySelector(".video-path-input");
+    const uploadStatus = container.querySelector(".upload-status");
+    const videoPreview = container.querySelector(".video-preview");
+    const fileInput = container.querySelector(".video-file-input");
+
+    hiddenInput.value = "";
+    fileInput.value = "";
+    videoPreview.innerHTML = "";
+    uploadStatus.innerHTML =
+      '<i class="fas fa-check mr-1"></i> Uploaded';
+    uploadStatus.className =
+      "text-xs text-gray-500 upload-status hidden";
+    button.remove();
+  }
+
+  /**
+   * Trigger file upload - opens file dialog
+   */
+  function triggerFileUpload(button) {
+    const container = button.closest(".file-upload-container");
+    const fileInput = container.querySelector(".file-input");
+    fileInput.click();
+  }
+
+  /**
+   * Handle file upload process
+   */
+  function handleFileUpload(fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const container = fileInput.closest(".file-upload-container");
+    const hiddenInput = container.querySelector(".file-path-input");
+    const uploadStatus = container.querySelector(".upload-status");
+    const filePreview = container.querySelector(".file-preview");
+    const progressBar = container.querySelector(".upload-progress");
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File size must be less than 10MB.");
+      fileInput.value = "";
+      return;
+    }
+
+    // Show progress bar
+    progressBar.classList.remove("hidden");
+
+    // Create FormData
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "section-items");
+
+    // Upload file (using image upload endpoint for now)
+    fetch("/Content/UploadImage", {
+      method: "POST",
+      body: formData,
+      headers: {
+        RequestVerificationToken: document.querySelector(
+          'input[name="__RequestVerificationToken"]'
+        ).value,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        progressBar.classList.add("hidden");
+
+        if (data.success) {
+          hiddenInput.value = data.url;
+          uploadStatus.innerHTML =
+            '<i class="fas fa-check mr-1"></i> Uploaded';
+          uploadStatus.className =
+            "text-xs text-green-600 upload-status";
+          filePreview.innerHTML = `<a href="${data.url}" class="text-blue-600 hover:text-blue-800 text-sm" target="_blank">
+          <i class="fas fa-download mr-1"></i> Download File
+        </a>`;
+
+          if (!container.querySelector(".text-red-600")) {
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className =
+              "text-xs text-red-600 hover:text-red-800 ml-2";
+            removeBtn.onclick = () => removeFile(removeBtn);
+            removeBtn.innerHTML =
+              '<i class="fas fa-times mr-1"></i> Remove';
+            uploadStatus.parentNode.appendChild(removeBtn);
+          }
+        } else {
+          alert(
+            "Upload failed: " + (data.message || "Unknown error")
+          );
+        }
+      })
+      .catch((error) => {
+        progressBar.classList.add("hidden");
+        console.error("Upload error:", error);
+        alert("Upload failed. Please try again.");
+      });
+  }
+
+  /**
+   * Remove uploaded file
+   */
+  function removeFile(button) {
+    const container = button.closest(".file-upload-container");
+    const hiddenInput = container.querySelector(".file-path-input");
+    const uploadStatus = container.querySelector(".upload-status");
+    const filePreview = container.querySelector(".file-preview");
+    const fileInput = container.querySelector(".file-input");
+
+    hiddenInput.value = "";
+    fileInput.value = "";
+    filePreview.innerHTML = "";
+    uploadStatus.innerHTML =
+      '<i class="fas fa-check mr-1"></i> Uploaded';
+    uploadStatus.className =
+      "text-xs text-gray-500 upload-status hidden";
+    button.remove();
+  }
+
   // Public API
   return {
     show,
@@ -1412,11 +1762,88 @@ const SectionModal = (function () {
     showTemplateSelectionForNewItem,
     closeTemplateSelectionModal,
     addItemWithTemplate,
+
+    // NEW: Media Upload Functions
+    triggerImageUpload,
+    handleImageUpload,
+    removeImage,
+    triggerVideoUpload,
+    handleVideoUpload,
+    removeVideo,
+    triggerFileUpload,
+    handleFileUpload,
+    removeFile,
   };
 })();
 
 // Make globally available
 window.SectionModal = SectionModal;
+
+// ==================== GLOBAL UPLOAD FUNCTIONS ====================
+// These functions are called directly from HTML onclick attributes
+
+/**
+ * Global function for triggering image upload
+ */
+window.triggerImageUpload = function (button) {
+  return SectionModal.triggerImageUpload(button);
+};
+
+/**
+ * Global function for handling image upload
+ */
+window.handleImageUpload = function (fileInput) {
+  return SectionModal.handleImageUpload(fileInput);
+};
+
+/**
+ * Global function for removing image
+ */
+window.removeImage = function (button) {
+  return SectionModal.removeImage(button);
+};
+
+/**
+ * Global function for triggering video upload
+ */
+window.triggerVideoUpload = function (button) {
+  return SectionModal.triggerVideoUpload(button);
+};
+
+/**
+ * Global function for handling video upload
+ */
+window.handleVideoUpload = function (fileInput) {
+  return SectionModal.handleVideoUpload(fileInput);
+};
+
+/**
+ * Global function for removing video
+ */
+window.removeVideo = function (button) {
+  return SectionModal.removeVideo(button);
+};
+
+/**
+ * Global function for triggering file upload
+ */
+window.triggerFileUpload = function (button) {
+  return SectionModal.triggerFileUpload(button);
+};
+
+/**
+ * Global function for handling file upload
+ */
+window.handleFileUpload = function (fileInput) {
+  return SectionModal.handleFileUpload(fileInput);
+};
+
+/**
+ * Global function for removing file
+ */
+window.removeFile = function (button) {
+  return SectionModal.removeFile(button);
+};
 
 // Global functions for page sections partial
 function editSectionItems(sectionId) {
