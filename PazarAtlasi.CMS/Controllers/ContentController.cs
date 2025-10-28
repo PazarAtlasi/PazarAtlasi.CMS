@@ -2777,7 +2777,10 @@ namespace PazarAtlasi.CMS.Controllers
                                 if (fieldValue != null)
                                 {
                                     // Update existing field value
-                                    fieldValue.Value = fieldRequest.FieldValue ?? string.Empty;
+                                    var sectionItemField = await _pazarAtlasiDbContext.SectionItemFields
+                                        .FirstOrDefaultAsync(f => f.Id == fieldValue.SectionItemFieldId);
+                                    
+                                    fieldValue.Value = ProcessFieldValue(fieldRequest.FieldValue, sectionItemField?.Type ?? SectionItemFieldType.Text);
                                     fieldValue.UpdatedAt = DateTime.UtcNow;
 
                                     // Remove existing translations
@@ -2826,7 +2829,7 @@ namespace PazarAtlasi.CMS.Controllers
                                     SectionId = sectionId,
                                     SectionItemId = itemRequest.Id,
                                     SectionItemFieldId = sectionItemField.Id,
-                                    Value = fieldRequest.FieldValue ?? string.Empty,
+                                    Value = ProcessFieldValue(fieldRequest.FieldValue, sectionItemField.Type),
                                     CreatedAt = DateTime.UtcNow,
                                     IsDeleted = false
                                 };
@@ -3633,6 +3636,8 @@ namespace PazarAtlasi.CMS.Controllers
                     IsTranslatable = fieldDto.IsTranslatable,
                     ShowInUI = fieldDto.ShowInUI,
                     OptionsJson = fieldDto.OptionsJson,
+                    AcceptedFileTypes = fieldDto.AcceptedFileTypes,
+                    MaxFileSize = fieldDto.MaxFileSize,
                     SortOrder = fieldDto.SortOrder,
                     CreatedAt = DateTime.UtcNow,
                     IsDeleted = false
@@ -3663,6 +3668,87 @@ namespace PazarAtlasi.CMS.Controllers
                         _pazarAtlasiDbContext.SectionItemFieldTranslations.Add(fieldTranslation);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Process field value based on field type
+        /// </summary>
+        private string ProcessFieldValue(string fieldValue, SectionItemFieldType fieldType)
+        {
+            if (string.IsNullOrEmpty(fieldValue))
+                return string.Empty;
+
+            switch (fieldType)
+            {
+                case SectionItemFieldType.Image:
+                case SectionItemFieldType.Video:
+                case SectionItemFieldType.FileUpload:
+                    // For media fields, validate URL format and ensure it's a valid path
+                    if (Uri.TryCreate(fieldValue, UriKind.RelativeOrAbsolute, out Uri uri))
+                    {
+                        // If it's a relative path (uploaded file), ensure it starts with /
+                        if (!uri.IsAbsoluteUri && !fieldValue.StartsWith("/"))
+                        {
+                            return "/" + fieldValue.TrimStart('/');
+                        }
+                        return fieldValue;
+                    }
+                    // If not a valid URI, return empty (invalid media URL)
+                    return string.Empty;
+
+                case SectionItemFieldType.URL:
+                    // For URL fields, validate URL format
+                    if (Uri.TryCreate(fieldValue, UriKind.Absolute, out Uri urlUri))
+                    {
+                        return fieldValue;
+                    }
+                    // Try to add http:// if missing
+                    if (Uri.TryCreate("http://" + fieldValue, UriKind.Absolute, out Uri httpUri))
+                    {
+                        return "http://" + fieldValue;
+                    }
+                    return fieldValue; // Return as-is if can't validate
+
+                case SectionItemFieldType.Boolean:
+                case SectionItemFieldType.Checkbox:
+                    // Normalize boolean values
+                    var lowerValue = fieldValue.ToLower();
+                    return (lowerValue == "true" || lowerValue == "1" || lowerValue == "on") ? "true" : "false";
+
+                case SectionItemFieldType.Number:
+                    // Validate and normalize number format
+                    if (decimal.TryParse(fieldValue, out decimal number))
+                    {
+                        return number.ToString();
+                    }
+                    return "0"; // Default to 0 for invalid numbers
+
+                case SectionItemFieldType.Color:
+                    // Validate hex color format
+                    if (fieldValue.StartsWith("#") && (fieldValue.Length == 4 || fieldValue.Length == 7))
+                    {
+                        return fieldValue;
+                    }
+                    // Try to add # if missing
+                    if (fieldValue.Length == 3 || fieldValue.Length == 6)
+                    {
+                        return "#" + fieldValue;
+                    }
+                    return "#000000"; // Default to black for invalid colors
+
+                case SectionItemFieldType.Text:
+                case SectionItemFieldType.TextArea:
+                case SectionItemFieldType.Title:
+                case SectionItemFieldType.Description:
+                case SectionItemFieldType.Paragraph:
+                case SectionItemFieldType.RichText:
+                case SectionItemFieldType.Dropdown:
+                case SectionItemFieldType.MultiSelect:
+                case SectionItemFieldType.Icon:
+                default:
+                    // For text fields, just trim and return
+                    return fieldValue.Trim();
             }
         }
 

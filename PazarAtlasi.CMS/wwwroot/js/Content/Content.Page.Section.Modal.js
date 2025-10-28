@@ -440,11 +440,36 @@ const SectionModal = (function () {
       );
 
       if (!isTranslatable) {
-        // Non-translatable field - get value directly from input
-        const input = container.querySelector(
-          "input, textarea, select"
+        // Non-translatable field - get value based on field type
+        let fieldValue = "";
+
+        // Check if this is a media upload field (image, video, file)
+        const imagePathInput = container.querySelector(
+          ".image-path-input"
         );
-        const fieldValue = input ? input.value : "";
+        const videoPathInput = container.querySelector(
+          ".video-path-input"
+        );
+        const filePathInput = container.querySelector(
+          ".file-path-input"
+        );
+
+        if (imagePathInput) {
+          // Image field - get URL from hidden input
+          fieldValue = imagePathInput.value || "";
+        } else if (videoPathInput) {
+          // Video field - get URL from hidden input
+          fieldValue = videoPathInput.value || "";
+        } else if (filePathInput) {
+          // File field - get URL from hidden input
+          fieldValue = filePathInput.value || "";
+        } else {
+          // Regular field - get value from input/textarea/select
+          const input = container.querySelector(
+            "input, textarea, select"
+          );
+          fieldValue = input ? input.value : "";
+        }
 
         if (fieldKey) {
           fields.push({
@@ -469,10 +494,35 @@ const SectionModal = (function () {
 
         languagePanels.forEach((panel) => {
           const languageCode = panel.dataset.language;
-          const input = panel.querySelector(
-            "input, textarea, select"
+          let fieldValue = "";
+
+          // Check if this is a media upload field (image, video, file) in language panel
+          const imagePathInput = panel.querySelector(
+            ".image-path-input"
           );
-          const fieldValue = input ? input.value : "";
+          const videoPathInput = panel.querySelector(
+            ".video-path-input"
+          );
+          const filePathInput = panel.querySelector(
+            ".file-path-input"
+          );
+
+          if (imagePathInput) {
+            // Image field - get URL from hidden input
+            fieldValue = imagePathInput.value || "";
+          } else if (videoPathInput) {
+            // Video field - get URL from hidden input
+            fieldValue = videoPathInput.value || "";
+          } else if (filePathInput) {
+            // File field - get URL from hidden input
+            fieldValue = filePathInput.value || "";
+          } else {
+            // Regular field - get value from input/textarea/select
+            const input = panel.querySelector(
+              "input, textarea, select"
+            );
+            fieldValue = input ? input.value : "";
+          }
 
           if (fieldValue) {
             const languageTab = container.querySelector(

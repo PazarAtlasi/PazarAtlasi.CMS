@@ -61,6 +61,16 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public string? OptionsJson { get; set; }
 
         /// <summary>
+        /// Accepted file types for file upload fields (e.g., "image/*", ".jpg,.png,.gif")
+        /// </summary>
+        public string? AcceptedFileTypes { get; set; }
+
+        /// <summary>
+        /// Maximum file size in bytes for file upload fields
+        /// </summary>
+        public long? MaxFileSize { get; set; }
+
+        /// <summary>
         /// Display order for this field
         /// </summary>
         public int SortOrder { get; set; } = 0;

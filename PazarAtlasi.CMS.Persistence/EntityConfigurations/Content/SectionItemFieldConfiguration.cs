@@ -37,6 +37,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 .HasDefaultValue(true)
                 .IsRequired();
 
+            builder.Property(x => x.AcceptedFileTypes)
+                .HasMaxLength(500);
+
+            builder.Property(x => x.MaxFileSize);
+
             builder.HasMany(x => x.Translations)
                 .WithOne(x => x.SectionItemField)
                 .HasForeignKey(x => x.SectionItemFieldId)

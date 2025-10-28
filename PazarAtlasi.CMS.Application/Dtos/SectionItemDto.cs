@@ -53,6 +53,8 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public bool IsTranslatable { get; set; }
         public bool ShowInUI { get; set; } = true;
         public string? OptionsJson { get; set; }
+        public string? AcceptedFileTypes { get; set; }
+        public long? MaxFileSize { get; set; }
         public int SortOrder { get; set; }
         public List<SectionItemFieldTranslationDto> Translations { get; set; } = new List<SectionItemFieldTranslationDto>();
     }
@@ -133,6 +135,8 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public bool IsTranslatable { get; set; }
         public bool ShowInUI { get; set; } = true;
         public string? OptionsJson { get; set; }
+        public string? AcceptedFileTypes { get; set; }
+        public long? MaxFileSize { get; set; }
         public int SortOrder { get; set; }
         public List<SectionItemFieldTranslationUpdateDto> Translations { get; set; } = new List<SectionItemFieldTranslationUpdateDto>();
         
