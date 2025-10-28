@@ -1855,7 +1855,8 @@ namespace PazarAtlasi.CMS.Controllers
         {
             var languages = await _pazarAtlasiDbContext.Languages
                 .Where(l => !l.IsDeleted)
-                .OrderBy(l => l.Name)
+                .OrderByDescending(l => l.IsDefault) // Default language first
+                .ThenBy(l => l.Name)
                 .Select(l => new LanguageViewModel
                 {
                     Id = l.Id,
@@ -3619,7 +3620,8 @@ namespace PazarAtlasi.CMS.Controllers
         {
             var languages = await _pazarAtlasiDbContext.Languages
                 .Where(l => !l.IsDeleted)
-                .OrderBy(l => l.Name)
+                .OrderByDescending(l => l.IsDefault) // Default language first
+                .ThenBy(l => l.Name)
                 .Select(l => new LanguageViewModel
                 {
                     Id = l.Id,
