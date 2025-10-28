@@ -300,4 +300,302 @@ builder.HasQueryFilter(entity => !entity.IsDeleted);
 
 5. Migration OLUŞTURMADAN ÖNCE SOR! BUNU KULLANICIYA BIRAK.
 
+## 🌐 API Katmanı (`PazarAtlasi.API`)
+
+RESTful API servisleri ve endpoint'lerin bulunduğu katman.
+
+```
+PazarAtlasi.API/
+├── Controllers/
+│   └── ContentController.cs    # Content domain API endpoint'leri
+├── Models/                     # API-specific modeller (opsiyonel)
+├── Program.cs                  # API konfigürasyonu
+└── Properties/
+    └── launchSettings.json     # Geliştirme ayarları
+```
+
+### API Geliştirme Kuralları
+
+#### Request/Response Model Yapısı
+
+**✅ Doğru Kullanım:**
+
+```csharp
+// Request modelleri: PazarAtlasi.CMS.Application/Models/API/Request/
+public class PageQuery
+{
+    [Required]
+    public string Slug { get; set; } = string.Empty;
+
+    [Required]
+    public string Culture { get; set; } = "tr-TR";
+}
+
+// Response modelleri: PazarAtlasi.CMS.Application/Models/API/Response/
+public class PageResponse
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+    public List<BreadcrumbItem> Breadcrumbs { get; set; } = new List<BreadcrumbItem>();
+    public List<SectionResponse> Sections { get; set; } = new List<SectionResponse>();
+}
+```
+
+#### Endpoint Naming Convention
+
+- **Endpoint**: `PageQuery` → **HTTP Method**: `GET /api/content/page`
+- **Request Model**: `{EndpointName}Query` (GET) veya `{EndpointName}Command` (POST/PUT)
+- **Response Model**: `{EndpointName}Response`
+
+#### Controller Yapısı
+
+```csharp
+[Route("api/[controller]")]
+[ApiController]
+public class ContentController : ControllerBase
+{
+    private readonly PazarAtlasiDbContext _pazarAtlasiDbContext;
+
+    /// <summary>
+    /// Get page by slug with all sections, items, fields and values
+    /// </summary>
+    /// <param name="query">Page query with slug and culture</param>
+    /// <returns>Complete page data with breadcrumbs</returns>
+    [HttpGet("page")]
+    public async Task<ActionResult<PageResponse>> GetPage([FromQuery] PageQuery query)
+    {
+        // Implementation...
+    }
+}
+```
+
+### 🎯 Content API Endpoint'leri
+
+#### 1. **GET /api/content/page**
+
+- **Request**: `PageQuery` (slug, culture)
+- **Response**: `PageResponse` (tam sayfa verisi + breadcrumbs)
+- **Özellik**: Slug üzerinden sayfayı bulur, parent page'lerden breadcrumb oluşturur
+
+#### 2. **GET /api/content/page-sections**
+
+- **Request**: `PageSectionQuery` (pageId, culture)
+- **Response**: `PageSectionResponse` (sayfa section'ları)
+- **Özellik**: Belirli bir sayfanın tüm section'larını getirir
+
+#### 3. **GET /api/content/section**
+
+- **Request**: `SectionQuery` (key, culture)
+- **Response**: `SectionResponse` (section detayları)
+- **Özellik**: Section Key ile sorgulanır, tüm item'ları ile birlikte detayları getirir
+
+#### 4. **GET /api/content/section-item**
+
+- **Request**: `SectionItemQuery` (sectionItemId, culture)
+- **Response**: `SectionItemResponse` (section item detayları)
+- **Özellik**: Tek bir section item'ının tüm field'ları ile birlikte detaylarını getirir
+
+#### 5. **GET /api/content/section-item-field**
+
+- **Request**: `SectionItemFieldQuery` (sectionItemFieldId, culture)
+- **Response**: `SectionItemFieldResponse` (field detayları)
+- **Özellik**: Tek bir field'ın değerini ve meta bilgilerini getirir
+
+### 🌍 Çoklu Dil Desteği
+
+#### Culture Parameter Kuralları
+
+```csharp
+// Her endpoint culture parametresi almalı
+[Required]
+public string Culture { get; set; } = "tr-TR";
+
+// Language entity'si üzerinden culture kontrolü
+var language = await _pazarAtlasiDbContext.Languages
+    .FirstOrDefaultAsync(l => l.Code == query.Culture && !l.IsDeleted);
+```
+
+#### Translation Handling
+
+```csharp
+// Include'larda language filtreleme
+.Include(s => s.Translations.Where(st => st.LanguageId == language.Id))
+
+// Response'da translation değerlerini kullanma
+var sectionTranslation = section.Translations.FirstOrDefault();
+Name = sectionTranslation?.Name,
+Title = sectionTranslation?.Title,
+```
+
+### 🏗️ Hiyerarşik Yapı Yönetimi
+
+#### Breadcrumb Oluşturma
+
+```csharp
+private async Task<List<BreadcrumbItem>> BuildBreadcrumbs(Page page, int languageId)
+{
+    var breadcrumbs = new List<BreadcrumbItem>();
+    var pageHierarchy = new List<Page>();
+
+    // Parent'lardan root'a kadar hiyerarşi oluştur
+    while (currentPage != null)
+    {
+        pageHierarchy.Insert(0, currentPage);
+        currentPage = await GetParentPage(currentPage.ParentPageId);
+    }
+
+    // Breadcrumb item'larına çevir
+    return pageHierarchy.Select((page, index) => new BreadcrumbItem
+    {
+        Name = page.Name ?? string.Empty,
+        Href = page.Slug ?? string.Empty,
+        IsActive = index == pageHierarchy.Count - 1
+    }).ToList();
+}
+```
+
+#### Parent-Child İlişkileri
+
+```csharp
+// Root item'ları bul
+var rootItems = sectionItemValues
+    .Where(siv => siv.SectionItem.ParentSectionItemId == null)
+    .OrderBy(siv => siv.SectionItem.SortOrder);
+
+// Recursive olarak child'ları ekle
+foreach (var rootItem in rootItems)
+{
+    var itemResponse = await BuildSectionItemResponse(rootItem.SectionItem, allItems, languageId);
+    responses.Add(itemResponse);
+}
+```
+
+### ⚡ Performance Optimizasyonları
+
+#### Include Stratejileri
+
+```csharp
+// ✅ Doğru: Gerekli include'ları tek sorguda
+var page = await _pazarAtlasiDbContext.Pages
+    .Include(p => p.PageSections.OrderBy(ps => ps.SortOrder))
+        .ThenInclude(ps => ps.Section)
+        .ThenInclude(s => s.Translations.Where(st => st.LanguageId == language.Id))
+    .Include(p => p.PageSections)
+        .ThenInclude(ps => ps.Section)
+        .ThenInclude(s => s.SectionItemValues.OrderBy(siv => siv.SectionItem.SortOrder))
+    .FirstOrDefaultAsync(p => p.Slug == query.Slug);
+
+// ❌ Yanlış: N+1 problem yaratacak lazy loading
+foreach (var section in page.PageSections)
+{
+    var items = section.Section.SectionItemValues; // Her iterasyonda DB sorgusu
+}
+```
+
+#### Filtering at Database Level
+
+```csharp
+// ✅ Doğru: Veritabanı seviyesinde filtreleme
+.Include(s => s.Translations.Where(st => st.LanguageId == language.Id))
+
+// ❌ Yanlış: Memory'de filtreleme
+.Include(s => s.Translations)
+// Sonra memory'de: translations.Where(t => t.LanguageId == language.Id)
+```
+
+### 🛡️ Hata Yönetimi
+
+#### Standart Hata Responses
+
+```csharp
+// Model validation hatası
+if (!ModelState.IsValid)
+{
+    return BadRequest(ModelState);
+}
+
+// Business logic hatası
+if (language == null)
+{
+    return BadRequest($"Language with culture '{query.Culture}' not found.");
+}
+
+// Not found hatası
+if (page == null)
+{
+    return NotFound($"Page with slug '{query.Slug}' not found.");
+}
+
+// Server hatası
+catch (Exception ex)
+{
+    return StatusCode(500, $"Internal server error: {ex.Message}");
+}
+```
+
+### 🔧 API Konfigürasyonu
+
+#### Program.cs Setup
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+// Services
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Custom services
+builder.Services.AddPersistenceServiceRegistrations(builder.Configuration);
+builder.Services.AddInfrastructureServiceRegistrations();
+
+var app = builder.Build();
+
+// Pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+```
+
+#### Package Versiyonları (.NET 8.0)
+
+```xml
+<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
+<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+```
+
+### 📋 API Best Practices
+
+1. **Async/Await**: Tüm database işlemleri async olmalı
+2. **Model Validation**: `[Required]` attribute'ları kullan
+3. **Culture Support**: Her endpoint culture parametresi almalı
+4. **Performance**: Include'ları optimize et, N+1 probleminden kaçın
+5. **Error Handling**: Standart HTTP status kodları kullan
+6. **Documentation**: XML comments ile API dokümantasyonu yap
+7. **Naming**: RESTful naming convention'larını takip et
+8. **Versioning**: API versiyonlama stratejisi belirle
+
+### 🧪 Test Stratejileri
+
+```bash
+# Test endpoint'i
+GET /api/content/test
+
+# Swagger UI
+http://localhost:5095/swagger
+
+# Örnek API çağrıları
+GET /api/content/page?slug=home&culture=tr-TR
+GET /api/content/section?key=hero&culture=tr-TR
+GET /api/content/page-sections?pageId=1&culture=tr-TR
+```
+
 Bu rehber, projenin tutarlı ve sürdürülebilir şekilde geliştirilmesi için temel kuralları içermektedir.
