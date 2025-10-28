@@ -1848,6 +1848,120 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
+        /// Template create view - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> TemplateCreate()
+        {
+            var languages = await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .OrderBy(l => l.Name)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .ToListAsync();
+
+            var templateTypes = Enum.GetValues<TemplateType>()
+                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
+                .ToList();
+
+            var viewModel = new TemplateCreateViewModel
+            {
+                IsActive = true,
+                SortOrder = 0,
+                AvailableLanguages = languages,
+                TemplateTypes = templateTypes,
+                Translations = languages.Select(l => new TemplateTranslationCreateViewModel
+                {
+                    LanguageId = l.Id,
+                    LanguageName = l.Name,
+                    LanguageCode = l.Code,
+                    IsDefault = l.IsDefault
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// Template create POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TemplateCreate(TemplateCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await ReloadTemplateCreateViewModelData(model);
+                return View(model);
+            }
+
+            try
+            {
+                // Check if template key already exists
+                var existingTemplate = await _pazarAtlasiDbContext.Templates
+                    .FirstOrDefaultAsync(t => t.TemplateKey == model.TemplateKey && !t.IsDeleted);
+
+                if (existingTemplate != null)
+                {
+                    ModelState.AddModelError("TemplateKey", "A template with this key already exists.");
+                    await ReloadTemplateCreateViewModelData(model);
+                    return View(model);
+                }
+
+                // Create new template
+                var template = new Template
+                {
+                    TemplateType = model.TemplateType,
+                    TemplateKey = model.TemplateKey,
+                    ConfigurationSchema = model.ConfigurationSchema,
+                    IsActive = model.IsActive,
+                    SortOrder = model.SortOrder,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.Templates.Add(template);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                // Add translations
+                if (model.Translations != null && model.Translations.Any())
+                {
+                    var translations = model.Translations
+                        .Where(t => !string.IsNullOrWhiteSpace(t.Name)) // Only add translations with names
+                        .Select(t => new TemplateTranslation
+                        {
+                            TemplateId = template.Id,
+                            LanguageId = t.LanguageId,
+                            Name = t.Name,
+                            Description = t.Description,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        }).ToList();
+
+                    if (translations.Any())
+                    {
+                        _pazarAtlasiDbContext.TemplateTranslations.AddRange(translations);
+                        await _pazarAtlasiDbContext.SaveChangesAsync();
+                    }
+                }
+
+                TempData["SuccessMessage"] = "Template başarıyla oluşturuldu.";
+                return RedirectToAction(nameof(Template));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Hata oluştu: {ex.Message}";
+                await ReloadTemplateCreateViewModelData(model);
+                return View(model);
+            }
+        }
+
+        /// <summary>
         /// Template edit view
         /// </summary>
         public async Task<IActionResult> TemplateEdit(int id)
@@ -1874,7 +1988,11 @@ namespace PazarAtlasi.CMS.Controllers
                 })
                 .ToListAsync();
 
-            var viewModel = new TemplateUpdateDto
+            var templateTypes = Enum.GetValues<TemplateType>()
+                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
+                .ToList();
+
+            var viewModel = new TemplateEditViewModel
             {
                 Id = template.Id,
                 TemplateType = template.TemplateType,
@@ -1882,18 +2000,26 @@ namespace PazarAtlasi.CMS.Controllers
                 ConfigurationSchema = template.ConfigurationSchema,
                 IsActive = template.IsActive,
                 SortOrder = template.SortOrder,
-                Translations = template.Translations.Select(tt => new TemplateTranslationUpdateDto
+                CreatedAt = template.CreatedAt,
+                UpdatedAt = template.UpdatedAt,
+                AvailableLanguages = languages,
+                TemplateTypes = templateTypes,
+                Translations = languages.Select(l =>
                 {
-                    Id = tt.Id,
-                    TemplateId = tt.TemplateId,
-                    LanguageId = tt.LanguageId,
-                    Name = tt.Name,
-                    Description = tt.Description
+                    var existingTranslation = template.Translations.FirstOrDefault(t => t.LanguageId == l.Id);
+                    return new TemplateTranslationEditViewModel
+                    {
+                        Id = existingTranslation?.Id ?? 0,
+                        TemplateId = template.Id,
+                        LanguageId = l.Id,
+                        Name = existingTranslation?.Name ?? string.Empty,
+                        Description = existingTranslation?.Description,
+                        LanguageName = l.Name,
+                        LanguageCode = l.Code,
+                        IsDefault = l.IsDefault
+                    };
                 }).ToList()
             };
-
-            ViewBag.Languages = languages;
-            ViewBag.TemplateTypes = Enum.GetValues<TemplateType>();
 
             return View(viewModel);
         }
@@ -1903,17 +2029,11 @@ namespace PazarAtlasi.CMS.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> TemplateEdit(TemplateUpdateDto model)
+        public async Task<IActionResult> TemplateEdit(TemplateEditViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                var languages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .OrderBy(l => l.Name)
-                    .ToListAsync();
-
-                ViewBag.Languages = languages;
-                ViewBag.TemplateTypes = Enum.GetValues<TemplateType>();
+                await ReloadTemplateEditViewModelData(model);
                 return View(model);
             }
 
@@ -1937,9 +2057,9 @@ namespace PazarAtlasi.CMS.Controllers
                 template.UpdatedAt = DateTime.UtcNow;
 
                 // Update translations
-                foreach (var translationDto in model.Translations)
+                foreach (var translationDto in model.Translations.Where(t => !string.IsNullOrWhiteSpace(t.Name)))
                 {
-                    var translation = template.Translations.FirstOrDefault(t => t.Id == translationDto.Id);
+                    var translation = template.Translations.FirstOrDefault(t => t.LanguageId == translationDto.LanguageId);
                     if (translation != null)
                     {
                         translation.Name = translationDto.Name;
@@ -1961,6 +2081,16 @@ namespace PazarAtlasi.CMS.Controllers
                     }
                 }
 
+                // Remove translations that are now empty
+                var emptyTranslations = template.Translations
+                    .Where(t => !model.Translations.Any(mt => mt.LanguageId == t.LanguageId && !string.IsNullOrWhiteSpace(mt.Name)))
+                    .ToList();
+                
+                foreach (var emptyTranslation in emptyTranslations)
+                {
+                    _pazarAtlasiDbContext.TemplateTranslations.Remove(emptyTranslation);
+                }
+
                 await _pazarAtlasiDbContext.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Template başarıyla güncellendi.";
@@ -1969,14 +2099,7 @@ namespace PazarAtlasi.CMS.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Hata oluştu: {ex.Message}";
-
-                var languages = await _pazarAtlasiDbContext.Languages
-                    .Where(l => !l.IsDeleted)
-                    .OrderBy(l => l.Name)
-                    .ToListAsync();
-
-                ViewBag.Languages = languages;
-                ViewBag.TemplateTypes = Enum.GetValues<TemplateType>();
+                await ReloadTemplateEditViewModelData(model);
                 return View(model);
             }
         }
@@ -3486,6 +3609,107 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         #endregion Helper Methods
+
+        #region Template Helper Methods
+
+        /// <summary>
+        /// Reload TemplateCreateViewModel data for error scenarios
+        /// </summary>
+        private async Task ReloadTemplateCreateViewModelData(TemplateCreateViewModel model)
+        {
+            var languages = await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .OrderBy(l => l.Name)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .ToListAsync();
+
+            var templateTypes = Enum.GetValues<TemplateType>()
+                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
+                .ToList();
+
+            model.AvailableLanguages = languages;
+            model.TemplateTypes = templateTypes;
+
+            // Ensure translations exist for all languages
+            foreach (var language in languages)
+            {
+                if (!model.Translations.Any(t => t.LanguageId == language.Id))
+                {
+                    model.Translations.Add(new TemplateTranslationCreateViewModel
+                    {
+                        LanguageId = language.Id,
+                        LanguageName = language.Name,
+                        LanguageCode = language.Code,
+                        IsDefault = language.IsDefault
+                    });
+                }
+                else
+                {
+                    var translation = model.Translations.First(t => t.LanguageId == language.Id);
+                    translation.LanguageName = language.Name;
+                    translation.LanguageCode = language.Code;
+                    translation.IsDefault = language.IsDefault;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reload TemplateEditViewModel data for error scenarios
+        /// </summary>
+        private async Task ReloadTemplateEditViewModelData(TemplateEditViewModel model)
+        {
+            var languages = await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .OrderBy(l => l.Name)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault
+                })
+                .ToListAsync();
+
+            var templateTypes = Enum.GetValues<TemplateType>()
+                .Select(t => new TemplateTypeOption(t, t.ToString(), GetTemplateTypeDescription(t)))
+                .ToList();
+
+            model.AvailableLanguages = languages;
+            model.TemplateTypes = templateTypes;
+
+            // Update language information in translations
+            foreach (var translation in model.Translations)
+            {
+                var language = languages.FirstOrDefault(l => l.Id == translation.LanguageId);
+                if (language != null)
+                {
+                    translation.LanguageName = language.Name;
+                    translation.LanguageCode = language.Code;
+                    translation.IsDefault = language.IsDefault;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get template type description for UI
+        /// </summary>
+        private string GetTemplateTypeDescription(TemplateType templateType)
+        {
+            return templateType switch
+            {
+                TemplateType.None => "No specific type",
+                TemplateType.List => "List component template",
+                _ => templateType.ToString()
+            };
+        }
+
+        #endregion Template Helper Methods
 
         #region Page Hierarchy Helper Methods
 

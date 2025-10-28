@@ -15,6 +15,13 @@
                 </p>
             </div>
         </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <a href="@Url.Action("TemplateCreate", "Content")" class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-plus mr-2"></i> Create Template
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Statistics Cards -->
@@ -68,7 +75,21 @@
     <!-- Templates Table -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-200">
-            <h5 class="text-lg font-semibold text-slate-800">Templates</h5>
+            <div class="flex items-center justify-between">
+                <h5 class="text-lg font-semibold text-slate-800">All Templates</h5>
+                <div class="flex items-center space-x-2">
+                    <div class="relative">
+                        <input type="text" placeholder="Search templates..." 
+                               class="pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    </div>
+                    <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
         </div>
         
         @if (Model.Any())
@@ -172,6 +193,13 @@
                 </div>
                 <h3 class="mt-2 text-sm font-medium text-slate-900">No templates found</h3>
                 <p class="mt-1 text-sm text-slate-500">Get started by creating a new template.</p>
+                <div class="mt-6">
+                    <a href="@Url.Action("TemplateCreate", "Content")" 
+                       class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create Your First Template
+                    </a>
+                </div>
             </div>
         }
     </div>
@@ -200,3 +228,47 @@
         </div>
     </div>
 }
+
+<script>
+    // Search and filter functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[placeholder="Search templates..."]');
+        const statusFilter = document.querySelector('select');
+        
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusFilter = document.querySelector('select').value;
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const templateInfo = row.querySelector('td:first-child').textContent.toLowerCase();
+                const templateKey = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(5) span').textContent.trim();
+                
+                const matchesSearch = templateInfo.includes(searchTerm) || templateKey.includes(searchTerm);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
+        }
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', filterTable);
+        }
+        
+        if (statusFilter) {
+            statusFilter.addEventListener('change', filterTable);
+        }
+    });
+
+    // Auto-hide success/error messages
+    setTimeout(function() {
+        const messages = document.querySelectorAll('.fixed.top-4.right-4');
+        messages.forEach(function(message) {
+            message.style.opacity = '0';
+            setTimeout(function() {
+                message.remove();
+            }, 300);
+        });
+    }, 5000);
+</script>
