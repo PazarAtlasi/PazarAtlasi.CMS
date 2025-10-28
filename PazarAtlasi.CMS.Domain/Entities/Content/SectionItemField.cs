@@ -18,7 +18,7 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         /// <summary>
         /// Display name for this field
         /// </summary>
-        public string FieldName { get; set; } = string.Empty;
+        public string? FieldName { get; set; }
 
         /// <summary>
         /// Type of field (Text, Image, URL, etc.)

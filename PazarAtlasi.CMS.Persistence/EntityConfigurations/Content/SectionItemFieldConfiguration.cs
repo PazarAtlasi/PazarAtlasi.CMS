@@ -19,8 +19,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 .IsRequired();
 
             builder.Property(x => x.FieldName)
-                .HasMaxLength(200)
-                .IsRequired();
+                .HasMaxLength(200);
 
             builder.Property(x => x.Type)
                 .IsRequired();

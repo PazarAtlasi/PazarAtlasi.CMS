@@ -123,7 +123,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public int Id { get; set; }
         public int SectionItemId { get; set; }
         public string FieldKey { get; set; } = string.Empty;
-        public string FieldName { get; set; } = string.Empty;
+        public string? FieldName { get; set; } = string.Empty;
         public SectionItemFieldType Type { get; set; }
         public bool Required { get; set; }
         public int? MaxLength { get; set; }
