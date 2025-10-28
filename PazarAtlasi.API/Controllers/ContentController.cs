@@ -80,7 +80,7 @@ namespace PazarAtlasi.API.Controllers
                             .ThenInclude(siv => siv.SectionItem)
                             .ThenInclude(si => si.SectionItemFieldValues)
                                 .ThenInclude(fv => fv.Translations.Where(fvt => fvt.LanguageId == language.Id))
-                    .FirstOrDefaultAsync(p => p.Slug == query.Slug && p.Status == Status.Active && !p.IsDeleted);
+                    .FirstOrDefaultAsync(p => p.Slug.ToLower() == query.Slug.ToLower() && p.Status == Status.Active && !p.IsDeleted);
 
                 if (page == null)
                 {
@@ -123,175 +123,6 @@ namespace PazarAtlasi.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        #region Private Helper Methods
-
-        /// <summary>
-        /// Build breadcrumbs for the page hierarchy
-        /// </summary>
-        private async Task<List<BreadcrumbItem>> BuildBreadcrumbs(PazarAtlasi.CMS.Domain.Entities.Content.Page page, int languageId)
-        {
-            var breadcrumbs = new List<BreadcrumbItem>();
-            var currentPage = page;
-            var pageHierarchy = new List<PazarAtlasi.CMS.Domain.Entities.Content.Page>();
-
-            // Build hierarchy from current page to root
-            while (currentPage != null)
-            {
-                pageHierarchy.Insert(0, currentPage);
-                
-                if (currentPage.ParentPageId.HasValue)
-                {
-                    currentPage = await _pazarAtlasiDbContext.Pages
-                        .FirstOrDefaultAsync(p => p.Id == currentPage.ParentPageId.Value && !p.IsDeleted);
-                }
-                else
-                {
-                    currentPage = null;
-                }
-            }
-
-            // Convert to breadcrumb items
-            for (int i = 0; i < pageHierarchy.Count; i++)
-            {
-                var hierarchyPage = pageHierarchy[i];
-                var isLast = i == pageHierarchy.Count - 1;
-
-                breadcrumbs.Add(new BreadcrumbItem
-                {
-                    Name = hierarchyPage.Name ?? string.Empty,
-                    Href = hierarchyPage.Slug ?? string.Empty,
-                    IsActive = isLast
-                });
-            }
-
-            return breadcrumbs;
-        }
-
-        /// <summary>
-        /// Build sections response with all nested data
-        /// </summary>
-        private async Task<List<SectionResponse>> BuildSectionsResponse(List<PazarAtlasi.CMS.Domain.Entities.Content.Section> sections, int languageId)
-        {
-            var sectionResponses = new List<SectionResponse>();
-
-            foreach (var section in sections.OrderBy(s => s.SortOrder))
-            {
-                var sectionTranslation = section.Translations.FirstOrDefault();
-                
-                var sectionResponse = new SectionResponse
-                {
-                    Id = section.Id,
-                    Type = section.Type,
-                    Key = section.Key,
-                    Attributes = section.Attributes,
-                    Configure = section.Configure,
-                    SortOrder = section.SortOrder,
-                    Status = section.Status,
-                    Name = sectionTranslation?.Name,
-                    Title = sectionTranslation?.Title,
-                    Description = sectionTranslation?.Description,
-                    Items = await BuildSectionItemsResponse(section.SectionItemValues.ToList(), languageId)
-                };
-
-                sectionResponses.Add(sectionResponse);
-            }
-
-            return sectionResponses;
-        }
-
-        /// <summary>
-        /// Build section items response with hierarchical structure
-        /// </summary>
-        private async Task<List<SectionItemResponse>> BuildSectionItemsResponse(List<PazarAtlasi.CMS.Domain.Entities.Content.SectionItemValue> sectionItemValues, int languageId)
-        {
-            var itemResponses = new List<SectionItemResponse>();
-
-            // Group by parent-child relationship
-            var rootItems = sectionItemValues
-                .Where(siv => siv.SectionItem.ParentSectionItemId == null)
-                .OrderBy(siv => siv.SectionItem.SortOrder)
-                .ToList();
-
-            foreach (var rootItemValue in rootItems)
-            {
-                var itemResponse = await BuildSectionItemResponse(rootItemValue.SectionItem, sectionItemValues, languageId);
-                itemResponses.Add(itemResponse);
-            }
-
-            return itemResponses;
-        }
-
-        /// <summary>
-        /// Build single section item response with children
-        /// </summary>
-        private async Task<SectionItemResponse> BuildSectionItemResponse(PazarAtlasi.CMS.Domain.Entities.Content.SectionItem sectionItem, List<PazarAtlasi.CMS.Domain.Entities.Content.SectionItemValue> allSectionItemValues, int languageId)
-        {
-            var itemTranslation = sectionItem.Translations.FirstOrDefault();
-
-            var itemResponse = new SectionItemResponse
-            {
-                Id = sectionItem.Id,
-                Type = sectionItem.Type,
-                MediaType = sectionItem.MediaType,
-                SortOrder = sectionItem.SortOrder,
-                Status = sectionItem.Status,
-                Title = itemTranslation?.Title ?? sectionItem.Title,
-                Description = itemTranslation?.Description ?? sectionItem.Description,
-                Key = sectionItem.Key,
-                AllowReorder = sectionItem.AllowReorder,
-                AllowRemove = sectionItem.AllowRemove,
-                IconClass = sectionItem.IconClass,
-                Fields = BuildFieldsResponse(sectionItem.SectionItemFieldValues.ToList(), languageId)
-            };
-
-            // Build children recursively
-            var childItemValues = allSectionItemValues
-                .Where(siv => siv.SectionItem.ParentSectionItemId == sectionItem.Id)
-                .OrderBy(siv => siv.SectionItem.SortOrder)
-                .ToList();
-
-            foreach (var childItemValue in childItemValues)
-            {
-                var childResponse = await BuildSectionItemResponse(childItemValue.SectionItem, allSectionItemValues, languageId);
-                itemResponse.Children.Add(childResponse);
-            }
-
-            return itemResponse;
-        }
-
-        /// <summary>
-        /// Build fields response for section item
-        /// </summary>
-        private List<SectionItemFieldResponse> BuildFieldsResponse(List<PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValue> fieldValues, int languageId)
-        {
-            var fieldResponses = new List<SectionItemFieldResponse>();
-
-            foreach (var fieldValue in fieldValues.OrderBy(fv => fv.SectionItemField?.SortOrder ?? 0))
-            {
-                var fieldTranslation = fieldValue.SectionItemField?.Translations.FirstOrDefault();
-                var valueTranslation = fieldValue.Translations.FirstOrDefault();
-
-                var fieldResponse = new SectionItemFieldResponse
-                {
-                    Id = fieldValue.Id,
-                    FieldKey = fieldValue.SectionItemField?.FieldKey ?? string.Empty,
-                    FieldName = fieldTranslation?.Label ?? fieldValue.SectionItemField?.FieldName ?? string.Empty,
-                    Type = fieldValue.SectionItemField?.Type ?? SectionItemFieldType.Text,
-                    Required = fieldValue.SectionItemField?.Required ?? false,
-                    IsTranslatable = fieldValue.SectionItemField?.IsTranslatable ?? false,
-                    Value = valueTranslation?.Value ?? fieldValue.Value,
-                    JsonValue = valueTranslation?.JsonValue ?? fieldValue.JsonValue,
-                    SortOrder = fieldValue.SectionItemField?.SortOrder ?? 0
-                };
-
-                fieldResponses.Add(fieldResponse);
-            }
-
-            return fieldResponses;
-        }
-
-        #endregion
 
         /// <summary>
         /// Get page sections by page ID
@@ -558,5 +389,175 @@ namespace PazarAtlasi.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
+        #region Private Helper Methods
+
+        /// <summary>
+        /// Build breadcrumbs for the page hierarchy
+        /// </summary>
+        private async Task<List<BreadcrumbItem>> BuildBreadcrumbs(PazarAtlasi.CMS.Domain.Entities.Content.Page page, int languageId)
+        {
+            var breadcrumbs = new List<BreadcrumbItem>();
+            var currentPage = page;
+            var pageHierarchy = new List<PazarAtlasi.CMS.Domain.Entities.Content.Page>();
+
+            // Build hierarchy from current page to root
+            while (currentPage != null)
+            {
+                pageHierarchy.Insert(0, currentPage);
+
+                if (currentPage.ParentPageId.HasValue)
+                {
+                    currentPage = await _pazarAtlasiDbContext.Pages
+                        .FirstOrDefaultAsync(p => p.Id == currentPage.ParentPageId.Value && !p.IsDeleted);
+                }
+                else
+                {
+                    currentPage = null;
+                }
+            }
+
+            // Convert to breadcrumb items
+            for (int i = 0; i < pageHierarchy.Count; i++)
+            {
+                var hierarchyPage = pageHierarchy[i];
+                var isLast = i == pageHierarchy.Count - 1;
+
+                breadcrumbs.Add(new BreadcrumbItem
+                {
+                    Name = hierarchyPage.Name ?? string.Empty,
+                    Href = hierarchyPage.Slug ?? string.Empty,
+                    IsActive = isLast
+                });
+            }
+
+            return breadcrumbs;
+        }
+
+        /// <summary>
+        /// Build sections response with all nested data
+        /// </summary>
+        private async Task<List<SectionResponse>> BuildSectionsResponse(List<PazarAtlasi.CMS.Domain.Entities.Content.Section> sections, int languageId)
+        {
+            var sectionResponses = new List<SectionResponse>();
+
+            foreach (var section in sections.OrderBy(s => s.SortOrder))
+            {
+                var sectionTranslation = section.Translations.FirstOrDefault();
+
+                var sectionResponse = new SectionResponse
+                {
+                    Id = section.Id,
+                    Type = section.Type,
+                    Key = section.Key,
+                    Attributes = section.Attributes,
+                    Configure = section.Configure,
+                    SortOrder = section.SortOrder,
+                    Status = section.Status,
+                    Name = sectionTranslation?.Name,
+                    Title = sectionTranslation?.Title,
+                    Description = sectionTranslation?.Description,
+                    Items = await BuildSectionItemsResponse(section.SectionItemValues.ToList(), languageId)
+                };
+
+                sectionResponses.Add(sectionResponse);
+            }
+
+            return sectionResponses;
+        }
+
+        /// <summary>
+        /// Build section items response with hierarchical structure
+        /// </summary>
+        private async Task<List<SectionItemResponse>> BuildSectionItemsResponse(List<PazarAtlasi.CMS.Domain.Entities.Content.SectionItemValue> sectionItemValues, int languageId)
+        {
+            var itemResponses = new List<SectionItemResponse>();
+
+            // Group by parent-child relationship
+            var rootItems = sectionItemValues
+                .Where(siv => siv.SectionItem.ParentSectionItemId == null)
+                .OrderBy(siv => siv.SectionItem.SortOrder)
+                .ToList();
+
+            foreach (var rootItemValue in rootItems)
+            {
+                var itemResponse = await BuildSectionItemResponse(rootItemValue.SectionItem, sectionItemValues, languageId);
+                itemResponses.Add(itemResponse);
+            }
+
+            return itemResponses;
+        }
+
+        /// <summary>
+        /// Build single section item response with children
+        /// </summary>
+        private async Task<SectionItemResponse> BuildSectionItemResponse(PazarAtlasi.CMS.Domain.Entities.Content.SectionItem sectionItem, List<PazarAtlasi.CMS.Domain.Entities.Content.SectionItemValue> allSectionItemValues, int languageId)
+        {
+            var itemTranslation = sectionItem.Translations.FirstOrDefault();
+
+            var itemResponse = new SectionItemResponse
+            {
+                Id = sectionItem.Id,
+                Type = sectionItem.Type,
+                MediaType = sectionItem.MediaType,
+                SortOrder = sectionItem.SortOrder,
+                Status = sectionItem.Status,
+                Title = itemTranslation?.Title ?? sectionItem.Title,
+                Description = itemTranslation?.Description ?? sectionItem.Description,
+                Key = sectionItem.Key,
+                AllowReorder = sectionItem.AllowReorder,
+                AllowRemove = sectionItem.AllowRemove,
+                IconClass = sectionItem.IconClass,
+                Fields = BuildFieldsResponse(sectionItem.SectionItemFieldValues.ToList(), languageId)
+            };
+
+            // Build children recursively
+            var childItemValues = allSectionItemValues
+                .Where(siv => siv.SectionItem.ParentSectionItemId == sectionItem.Id)
+                .OrderBy(siv => siv.SectionItem.SortOrder)
+                .ToList();
+
+            foreach (var childItemValue in childItemValues)
+            {
+                var childResponse = await BuildSectionItemResponse(childItemValue.SectionItem, allSectionItemValues, languageId);
+                itemResponse.Children.Add(childResponse);
+            }
+
+            return itemResponse;
+        }
+
+        /// <summary>
+        /// Build fields response for section item
+        /// </summary>
+        private List<SectionItemFieldResponse> BuildFieldsResponse(List<PazarAtlasi.CMS.Domain.Entities.Content.SectionItemFieldValue> fieldValues, int languageId)
+        {
+            var fieldResponses = new List<SectionItemFieldResponse>();
+
+            foreach (var fieldValue in fieldValues.OrderBy(fv => fv.SectionItemField?.SortOrder ?? 0))
+            {
+                var fieldTranslation = fieldValue.SectionItemField?.Translations.FirstOrDefault();
+                var valueTranslation = fieldValue.Translations.FirstOrDefault();
+
+                var fieldResponse = new SectionItemFieldResponse
+                {
+                    Id = fieldValue.Id,
+                    FieldKey = fieldValue.SectionItemField?.FieldKey ?? string.Empty,
+                    FieldName = fieldTranslation?.Label ?? fieldValue.SectionItemField?.FieldName ?? string.Empty,
+                    Type = fieldValue.SectionItemField?.Type ?? SectionItemFieldType.Text,
+                    Required = fieldValue.SectionItemField?.Required ?? false,
+                    IsTranslatable = fieldValue.SectionItemField?.IsTranslatable ?? false,
+                    Value = valueTranslation?.Value ?? fieldValue.Value,
+                    JsonValue = valueTranslation?.JsonValue ?? fieldValue.JsonValue,
+                    SortOrder = fieldValue.SectionItemField?.SortOrder ?? 0
+                };
+
+                fieldResponses.Add(fieldResponse);
+            }
+
+            return fieldResponses;
+        }
+
+        #endregion
     }
 }
