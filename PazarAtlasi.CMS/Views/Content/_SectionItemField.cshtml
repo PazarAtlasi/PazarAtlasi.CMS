@@ -103,6 +103,7 @@
         switch (fieldType.ToString().ToLower())
         {
             case "text":
+            case "title":
                 inputAttributes["type"] = "text";
                 inputAttributes["placeholder"] = placeholder;
                 inputAttributes["value"] = value;
@@ -110,8 +111,17 @@
                 break;
 
             case "textarea":
+            case "description":
+            case "paragraph":
                 inputAttributes["rows"] = "3";
                 inputAttributes["placeholder"] = placeholder;
+                <textarea @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\"")))>@value</textarea>
+                break;
+
+            case "richtext":
+                inputAttributes["rows"] = "5";
+                inputAttributes["placeholder"] = placeholder;
+                inputAttributes["class"] = inputAttributes["class"] + " rich-text-editor";
                 <textarea @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\"")))>@value</textarea>
                 break;
 
@@ -120,6 +130,41 @@
                 inputAttributes["placeholder"] = placeholder;
                 inputAttributes["value"] = value;
                 <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+
+            case "number":
+                inputAttributes["type"] = "number";
+                inputAttributes["placeholder"] = placeholder;
+                inputAttributes["value"] = value;
+                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+
+            case "date":
+                inputAttributes["type"] = "date";
+                inputAttributes["value"] = value;
+                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+
+            case "color":
+                inputAttributes["type"] = "color";
+                inputAttributes["value"] = value ?? "#000000";
+                inputAttributes["class"] = "w-16 h-10 border border-slate-300 rounded cursor-pointer";
+                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                break;
+
+            case "boolean":
+            case "checkbox":
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox"
+                           class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                           checked="@(value == "true" || value == "True" || value == "1")" 
+                           data-field-id="@Model.Id" 
+                           data-field-key="@fieldKey"
+                           @if (!string.IsNullOrEmpty(languageCode)) { 
+                               <text>data-language-code="@languageCode" data-language-id="@languageId"</text>
+                           } />
+                    <span class="text-sm text-slate-600">@placeholder</span>
+                </label>
                 break;
 
             case "image":
@@ -143,20 +188,78 @@
                 </div>
                 break;
 
-            case "number":
-                inputAttributes["type"] = "number";
-                inputAttributes["placeholder"] = placeholder;
-                inputAttributes["value"] = value;
-                <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+            case "video":
+                <div class="video-upload-container">
+                    <input type="hidden" class="video-path-input" value="@value" data-field-id="@Model.Id" data-field-key="@fieldKey" />
+                    <div class="flex items-center space-x-2">
+                        <input type="file" class="hidden" accept="video/*" />
+                        <button type="button"
+                                class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
+                            <i class="fas fa-video mr-2"></i> Upload Video
+                        </button>
+                        @if (!string.IsNullOrEmpty(value))
+                        {
+                            <span class="text-xs text-green-600"><i class="fas fa-check mr-1"></i> Uploaded</span>
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(value))
+                    {
+                        <video src="@value" class="mt-2 max-h-20 rounded" controls></video>
+                    }
+                </div>
                 break;
 
-            case "checkbox":
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox"
-                           class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                           checked="@(value == "true" || value == "True")" data-field-id="@Model.Id" data-field-key="@fieldKey" />
-                    <span class="text-sm text-slate-600">@placeholder</span>
-                </label>
+            case "fileupload":
+                <div class="file-upload-container">
+                    <input type="hidden" class="file-path-input" value="@value" data-field-id="@Model.Id" data-field-key="@fieldKey" />
+                    <div class="flex items-center space-x-2">
+                        <input type="file" class="hidden" />
+                        <button type="button"
+                                class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
+                            <i class="fas fa-file-upload mr-2"></i> Upload File
+                        </button>
+                        @if (!string.IsNullOrEmpty(value))
+                        {
+                            <span class="text-xs text-green-600"><i class="fas fa-check mr-1"></i> Uploaded</span>
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(value))
+                    {
+                        <a href="@value" class="text-blue-600 hover:text-blue-800 text-sm" target="_blank">
+                            <i class="fas fa-download mr-1"></i> Download File
+                        </a>
+                    }
+                </div>
+                break;
+
+            case "dropdown":
+                inputAttributes["class"] = inputAttributes["class"].ToString().Replace("px-3 py-2", "px-3 py-2");
+                <select @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\"")))>
+                    <option value="">@placeholder</option>
+                    <!-- Options should be populated from field configuration -->
+                </select>
+                break;
+
+            case "multiselect":
+                inputAttributes["multiple"] = "multiple";
+                inputAttributes["class"] = inputAttributes["class"].ToString().Replace("px-3 py-2", "px-3 py-2");
+                <select @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\"")))>
+                    <!-- Options should be populated from field configuration -->
+                </select>
+                break;
+
+            case "icon":
+                inputAttributes["type"] = "text";
+                inputAttributes["placeholder"] = placeholder ?? "fas fa-icon-name";
+                inputAttributes["value"] = value;
+                inputAttributes["class"] = inputAttributes["class"] + " icon-picker";
+                <div class="flex items-center space-x-2">
+                    <input @Html.Raw(string.Join(" ", inputAttributes.Select(kvp => $"{kvp.Key}=\"{kvp.Value}\""))) />
+                    @if (!string.IsNullOrEmpty(value))
+                    {
+                        <i class="@value text-lg"></i>
+                    }
+                </div>
                 break;
 
             default:
