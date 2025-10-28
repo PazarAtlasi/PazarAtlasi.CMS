@@ -2198,140 +2198,6 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Build hierarchical tree structure from flat list
-        /// </summary>
-        private List<SectionItemDto> BuildSectionItemTree(List<SectionItem> sectionItems)
-        {
-            var itemDictionary = new Dictionary<int, SectionItemDto>();
-            var rootItems = new List<SectionItemDto>();
-
-            // First pass: Create all DTOs
-            foreach (var item in sectionItems)
-            {
-                var dto = MapSectionItemToDto(item);
-                itemDictionary[item.Id] = dto;
-            }
-
-            // Second pass: Build parent-child relationships
-            foreach (var item in sectionItems)
-            {
-                var dto = itemDictionary[item.Id];
-
-                if (item.ParentSectionItemId.HasValue && itemDictionary.ContainsKey(item.ParentSectionItemId.Value))
-                {
-                    var parent = itemDictionary[item.ParentSectionItemId.Value];
-                    parent.Children.Add(dto);
-                    parent.HasChildren = true;
-                    dto.IsChild = true;
-                    dto.ParentTitle = parent.Title;
-                }
-                else
-                {
-                    rootItems.Add(dto);
-                }
-            }
-
-            return rootItems.OrderBy(r => r.SortOrder).ToList();
-        }
-
-        /// <summary>
-        /// Flatten tree structure for display with proper indentation levels
-        /// </summary>
-        private void FlattenSectionItemTree(List<SectionItemDto> items, List<SectionItemDto> flatList, int level)
-        {
-            foreach (var item in items.OrderBy(i => i.SortOrder))
-            {
-                item.Level = level;
-                flatList.Add(item);
-
-                if (item.Children.Any())
-                {
-                    FlattenSectionItemTree(item.Children, flatList, level + 1);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Map SectionItem to DTO
-        /// </summary>
-        private SectionItemDto MapSectionItemToDto(SectionItem si)
-        {
-            return new SectionItemDto
-            {
-                Id = si.Id,
-                ParentSectionItemId = si.ParentSectionItemId,
-                TemplateId = si.TemplateId,
-                TemplateName = si.Template?.Translations.FirstOrDefault()?.Name ?? "No Template",
-                Type = si.Type,
-                MediaType = si.MediaType,
-                SortOrder = si.SortOrder,
-                Title = si.Translations.FirstOrDefault()?.Title ?? si.Title,
-                Key = si.Key,
-                Description = si.Translations.FirstOrDefault()?.Description ?? si.Description,
-                AllowReorder = si.AllowReorder,
-                AllowRemove = si.AllowRemove,
-                IconClass = si.IconClass,
-                Translations = si.Translations.Select(t => new SectionItemTranslationDto
-                {
-                    Id = t.Id,
-                    SectionItemId = t.SectionItemId,
-                    LanguageId = t.LanguageId,
-                    LanguageName = t.Language?.Name ?? "Unknown",
-                    LanguageCode = t.Language?.Code ?? "N/A",
-                    Title = t.Title,
-                    Description = t.Description
-                }).ToList(),
-                Fields = si.SectionItemFields.Select(f => new SectionItemFieldDto
-                {
-                    Id = f.Id,
-                    SectionItemId = f.SectionItemId,
-                    FieldKey = f.FieldKey,
-                    FieldName = f.Translations.FirstOrDefault()?.Label ?? f.FieldKey,
-                    Type = f.Type,
-                    Required = f.Required,
-                    MaxLength = f.MaxLength,
-                    Placeholder = f.Translations.FirstOrDefault()?.Placeholder ?? f.Placeholder,
-                    DefaultValue = f.DefaultValue,
-                    IsTranslatable = f.IsTranslatable,
-                    OptionsJson = f.OptionsJson,
-                    SortOrder = f.SortOrder,
-                    Translations = f.Translations.Select(ft => new SectionItemFieldTranslationDto
-                    {
-                        Id = ft.Id,
-                        SectionItemFieldId = ft.SectionItemFieldId,
-                        LanguageId = ft.LanguageId,
-                        LanguageName = ft.Language?.Name ?? "Unknown",
-                        LanguageCode = ft.Language?.Code ?? "N/A",
-                        Label = ft.Label,
-                        Description = ft.Description,
-                        Placeholder = ft.Placeholder
-                    }).ToList()
-                }).ToList(),
-                FieldValues = si.SectionItemFieldValues.Select(fv => new SectionItemFieldValueDto
-                {
-                    Id = fv.Id,
-                    SectionId = fv.SectionId,
-                    SectionItemId = fv.SectionItemId,
-                    SectionItemFieldId = fv.SectionItemFieldId,
-                    Value = fv.Value,
-                    JsonValue = fv.JsonValue,
-                    Translations = fv.Translations.Select(fvt => new SectionItemFieldValueTranslationDto
-                    {
-                        Id = fvt.Id,
-                        SectionItemFieldValueId = fvt.SectionItemFieldValueId,
-                        LanguageId = fvt.LanguageId,
-                        LanguageName = fvt.Language?.Name ?? "Unknown",
-                        LanguageCode = fvt.Language?.Code ?? "N/A",
-                        Value = fvt.Value,
-                        JsonValue = fvt.JsonValue
-                    }).ToList()
-                }).ToList()
-            };
-        }
-
-
-
-        /// <summary>
         /// Unified SectionItem form (GET) - handles both create and edit
         /// </summary>
         public async Task<IActionResult> SectionItemForm(int? id)
@@ -2781,6 +2647,52 @@ namespace PazarAtlasi.CMS.Controllers
 
         #endregion SectionItems Actions
 
+
+
+        /// <summary>
+        /// Get new field partial view for adding fields dynamically
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetNewFieldPartial(int fieldIndex)
+        {
+            try
+            {
+                var languages = await GetAvailableLanguagesAsync();
+
+                var newField = new SectionItemFieldUpdateDto
+                {
+                    Id = 0,
+                    SectionItemId = 0,
+                    FieldKey = "",
+                    FieldName = "",
+                    Type = SectionItemFieldType.Text,
+                    Required = false,
+                    IsTranslatable = false,
+                    SortOrder = fieldIndex + 1,
+                    FieldTypes = GetSectionItemFieldTypes(),
+                    Translations = languages.Select(l => new SectionItemFieldTranslationUpdateDto
+                    {
+                        Id = 0,
+                        SectionItemFieldId = 0,
+                        LanguageId = l.Id,
+                        Label = "",
+                        Description = "",
+                        Placeholder = ""
+                    }).ToList()
+                };
+
+                ViewBag.Languages = languages;
+                ViewBag.FieldIndex = fieldIndex;
+
+                return PartialView("_SectionItemDetailField", newField);
+            }
+            catch (Exception ex)
+            {
+                return Content($"<div class='text-red-500'>Error: {ex.Message}</div>");
+            }
+        }
+
+
         #region Helper Methods
 
         /// <summary>
@@ -3062,46 +2974,135 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Get new field partial view for adding fields dynamically
+        /// Build hierarchical tree structure from flat list
         /// </summary>
-        [HttpGet]
-        public async Task<IActionResult> GetNewFieldPartial(int fieldIndex)
+        private List<SectionItemDto> BuildSectionItemTree(List<SectionItem> sectionItems)
         {
-            try
-            {
-                var languages = await GetAvailableLanguagesAsync();
+            var itemDictionary = new Dictionary<int, SectionItemDto>();
+            var rootItems = new List<SectionItemDto>();
 
-                var newField = new SectionItemFieldUpdateDto
+            // First pass: Create all DTOs
+            foreach (var item in sectionItems)
+            {
+                var dto = MapSectionItemToDto(item);
+                itemDictionary[item.Id] = dto;
+            }
+
+            // Second pass: Build parent-child relationships
+            foreach (var item in sectionItems)
+            {
+                var dto = itemDictionary[item.Id];
+
+                if (item.ParentSectionItemId.HasValue && itemDictionary.ContainsKey(item.ParentSectionItemId.Value))
                 {
-                    Id = 0,
-                    SectionItemId = 0,
-                    FieldKey = "",
-                    FieldName = "",
-                    Type = SectionItemFieldType.Text,
-                    Required = false,
-                    IsTranslatable = false,
-                    SortOrder = fieldIndex + 1,
-                    FieldTypes = GetSectionItemFieldTypes(),
-                    Translations = languages.Select(l => new SectionItemFieldTranslationUpdateDto
-                    {
-                        Id = 0,
-                        SectionItemFieldId = 0,
-                        LanguageId = l.Id,
-                        Label = "",
-                        Description = "",
-                        Placeholder = ""
-                    }).ToList()
-                };
-
-                ViewBag.Languages = languages;
-                ViewBag.FieldIndex = fieldIndex;
-
-                return PartialView("_SectionItemDetailField", newField);
+                    var parent = itemDictionary[item.ParentSectionItemId.Value];
+                    parent.Children.Add(dto);
+                    parent.HasChildren = true;
+                    dto.IsChild = true;
+                    dto.ParentTitle = parent.Title;
+                }
+                else
+                {
+                    rootItems.Add(dto);
+                }
             }
-            catch (Exception ex)
+
+            return rootItems.OrderBy(r => r.SortOrder).ToList();
+        }
+
+        /// <summary>
+        /// Flatten tree structure for display with proper indentation levels
+        /// </summary>
+        private void FlattenSectionItemTree(List<SectionItemDto> items, List<SectionItemDto> flatList, int level)
+        {
+            foreach (var item in items.OrderBy(i => i.SortOrder))
             {
-                return Content($"<div class='text-red-500'>Error: {ex.Message}</div>");
+                item.Level = level;
+                flatList.Add(item);
+
+                if (item.Children.Any())
+                {
+                    FlattenSectionItemTree(item.Children, flatList, level + 1);
+                }
             }
+        }
+
+        /// <summary>
+        /// Map SectionItem to DTO
+        /// </summary>
+        private SectionItemDto MapSectionItemToDto(SectionItem si)
+        {
+            return new SectionItemDto
+            {
+                Id = si.Id,
+                ParentSectionItemId = si.ParentSectionItemId,
+                TemplateId = si.TemplateId,
+                TemplateName = si.Template?.Translations.FirstOrDefault()?.Name ?? "No Template",
+                Type = si.Type,
+                MediaType = si.MediaType,
+                SortOrder = si.SortOrder,
+                Title = si.Translations.FirstOrDefault()?.Title ?? si.Title,
+                Key = si.Key,
+                Description = si.Translations.FirstOrDefault()?.Description ?? si.Description,
+                AllowReorder = si.AllowReorder,
+                AllowRemove = si.AllowRemove,
+                IconClass = si.IconClass,
+                Translations = si.Translations.Select(t => new SectionItemTranslationDto
+                {
+                    Id = t.Id,
+                    SectionItemId = t.SectionItemId,
+                    LanguageId = t.LanguageId,
+                    LanguageName = t.Language?.Name ?? "Unknown",
+                    LanguageCode = t.Language?.Code ?? "N/A",
+                    Title = t.Title,
+                    Description = t.Description
+                }).ToList(),
+                Fields = si.SectionItemFields.Select(f => new SectionItemFieldDto
+                {
+                    Id = f.Id,
+                    SectionItemId = f.SectionItemId,
+                    FieldKey = f.FieldKey,
+                    FieldName = f.Translations.FirstOrDefault()?.Label ?? f.FieldKey,
+                    Type = f.Type,
+                    Required = f.Required,
+                    MaxLength = f.MaxLength,
+                    Placeholder = f.Translations.FirstOrDefault()?.Placeholder ?? f.Placeholder,
+                    DefaultValue = f.DefaultValue,
+                    IsTranslatable = f.IsTranslatable,
+                    OptionsJson = f.OptionsJson,
+                    SortOrder = f.SortOrder,
+                    Translations = f.Translations.Select(ft => new SectionItemFieldTranslationDto
+                    {
+                        Id = ft.Id,
+                        SectionItemFieldId = ft.SectionItemFieldId,
+                        LanguageId = ft.LanguageId,
+                        LanguageName = ft.Language?.Name ?? "Unknown",
+                        LanguageCode = ft.Language?.Code ?? "N/A",
+                        Label = ft.Label,
+                        Description = ft.Description,
+                        Placeholder = ft.Placeholder
+                    }).ToList()
+                }).ToList(),
+                FieldValues = si.SectionItemFieldValues.Select(fv => new SectionItemFieldValueDto
+                {
+                    Id = fv.Id,
+                    SectionId = fv.SectionId,
+                    SectionItemId = fv.SectionItemId,
+                    SectionItemFieldId = fv.SectionItemFieldId,
+                    Value = fv.Value,
+                    JsonValue = fv.JsonValue,
+                    Translations = fv.Translations.Select(fvt => new SectionItemFieldValueTranslationDto
+                    {
+                        Id = fvt.Id,
+                        SectionItemFieldValueId = fvt.SectionItemFieldValueId,
+                        LanguageId = fvt.LanguageId,
+                        LanguageName = fvt.Language?.Name ?? "Unknown",
+                        LanguageCode = fvt.Language?.Code ?? "N/A",
+                        Value = fvt.Value,
+                        JsonValue = fvt.JsonValue
+                    }).ToList()
+                }).ToList()
+            };
         }
 
         /// <summary>
