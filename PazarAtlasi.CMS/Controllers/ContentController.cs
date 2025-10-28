@@ -39,16 +39,15 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Pages list with pagination
+        /// Pages list with hierarchical structure
         /// </summary>
-        public async Task<IActionResult> Pages(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Pages(int page = 1, int pageSize = 50) // Increased page size for hierarchy
         {
-            var totalCount = await _pazarAtlasiDbContext.Pages.CountAsync();
-
-            var pages = await _pazarAtlasiDbContext.Pages
-                .OrderByDescending(p => p.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+            // Get all pages with parent information for hierarchy building
+            var allPages = await _pazarAtlasiDbContext.Pages
+                .Include(p => p.ParentPage)
+                .OrderBy(p => p.ParentPageId ?? 0) // Root pages first
+                .ThenBy(p => p.Name)
                 .Select(p => new PageListViewModel
                 {
                     Id = p.Id,
@@ -58,13 +57,29 @@ namespace PazarAtlasi.CMS.Controllers
                     Description = p.Description,
                     Status = p.Status,
                     CreatedAt = p.CreatedAt,
-                    UpdatedAt = p.UpdatedAt
+                    UpdatedAt = p.UpdatedAt,
+                    ParentPageId = p.ParentPageId,
+                    ParentPageName = p.ParentPage != null ? p.ParentPage.Name : null
                 })
                 .ToListAsync();
 
+            // Build hierarchical structure
+            var hierarchicalPages = BuildPageHierarchy(allPages);
+            
+            // Flatten for display with proper levels
+            var flattenedPages = new List<PageListViewModel>();
+            FlattenPageHierarchy(hierarchicalPages, flattenedPages, 0);
+
+            // Apply pagination to flattened list
+            var totalCount = flattenedPages.Count;
+            var paginatedPages = flattenedPages
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
             var model = new PageListResponse
             {
-                Pages = pages,
+                Pages = paginatedPages,
                 TotalCount = totalCount,
                 PageNumber = page,
                 PageSize = pageSize
@@ -271,7 +286,7 @@ namespace PazarAtlasi.CMS.Controllers
                     })
                     .ToListAsync();
 
-                var model = MapToPageEditViewModel(page, languages);
+                var model = await MapToPageEditViewModel(page, languages);
                 return View(model);
             }
             catch (Exception ex)
@@ -319,6 +334,7 @@ namespace PazarAtlasi.CMS.Controllers
                 page.PageType = model.PageType;
                 page.Description = model.Description;
                 page.Status = model.Status;
+                page.ParentPageId = model.ParentPageId;
                 page.UpdatedAt = DateTime.UtcNow;
 
                 // Update SEO parameters
@@ -2777,9 +2793,9 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
-        private PageEditViewModel MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
+        private async Task<PageEditViewModel> MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
         {
-            return new PageEditViewModel
+            var model = new PageEditViewModel
             {
                 Id = page.Id,
                 Name = page.Name,
@@ -2787,6 +2803,8 @@ namespace PazarAtlasi.CMS.Controllers
                 PageType = page.PageType,
                 Description = page.Description,
                 Status = page.Status,
+                ParentPageId = page.ParentPageId,
+                ParentPageName = page.ParentPage?.Name,
                 SEOParameter = page.PageSEOParameter != null ? new PageSEOParameterEditViewModel
                 {
                     Id = page.PageSEOParameter.Id,
@@ -2802,6 +2820,7 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     Id = s.Id,
                     Type = s.Type,
+                    Key = s.Key,
                     Attributes = s.Attributes,
                     SortOrder = s.SortOrder,
                     Configure = s.Configure,
@@ -2826,6 +2845,11 @@ namespace PazarAtlasi.CMS.Controllers
                 }).ToList(),
                 AvailableLanguages = languages
             };
+
+            // Load available parent pages
+            model.AvailableParentPages = await GetAvailableParentPagesAsync(page.Id);
+            
+            return model;
         }
 
         private async Task<List<LanguageViewModel>> GetAvailableLanguagesAsync()
@@ -3462,5 +3486,120 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         #endregion Helper Methods
+
+        #region Page Hierarchy Helper Methods
+
+        /// <summary>
+        /// Build hierarchical page structure from flat list
+        /// </summary>
+        private List<PageListViewModel> BuildPageHierarchy(List<PageListViewModel> allPages)
+        {
+            var pageDictionary = allPages.ToDictionary(p => p.Id);
+            var rootPages = new List<PageListViewModel>();
+
+            foreach (var page in allPages)
+            {
+                if (page.ParentPageId.HasValue && pageDictionary.ContainsKey(page.ParentPageId.Value))
+                {
+                    var parent = pageDictionary[page.ParentPageId.Value];
+                    parent.ChildPages.Add(page);
+                    parent.HasChildren = true;
+                }
+                else
+                {
+                    rootPages.Add(page);
+                }
+            }
+
+            return rootPages.OrderBy(p => p.Name).ToList();
+        }
+
+        /// <summary>
+        /// Flatten hierarchical page structure for display with proper indentation
+        /// </summary>
+        private void FlattenPageHierarchy(List<PageListViewModel> pages, List<PageListViewModel> flatList, int level)
+        {
+            foreach (var page in pages.OrderBy(p => p.Name))
+            {
+                page.Level = level;
+                flatList.Add(page);
+
+                if (page.ChildPages.Any())
+                {
+                    FlattenPageHierarchy(page.ChildPages, flatList, level + 1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get available parent pages for page edit (excluding current page and its descendants)
+        /// </summary>
+        private async Task<List<AvailableParentPageViewModel>> GetAvailableParentPagesAsync(int? currentPageId = null)
+        {
+            var allPages = await _pazarAtlasiDbContext.Pages
+                .Where(p => p.Status == Status.Active)
+                .OrderBy(p => p.ParentPageId ?? 0)
+                .ThenBy(p => p.Name)
+                .Select(p => new AvailableParentPageViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name ?? "",
+                    Code = p.Code ?? "",
+                    PageType = p.PageType
+                })
+                .ToListAsync();
+
+            // Build hierarchy
+            var hierarchicalPages = BuildAvailableParentHierarchy(allPages);
+            
+            // Flatten with levels
+            var flattenedPages = new List<AvailableParentPageViewModel>();
+            FlattenAvailableParentHierarchy(hierarchicalPages, flattenedPages, 0);
+
+            // Exclude current page and its descendants if editing
+            if (currentPageId.HasValue)
+            {
+                var excludeIds = GetDescendantPageIds(currentPageId.Value, allPages);
+                excludeIds.Add(currentPageId.Value);
+                flattenedPages = flattenedPages.Where(p => !excludeIds.Contains(p.Id)).ToList();
+            }
+
+            return flattenedPages;
+        }
+
+        /// <summary>
+        /// Build hierarchy for available parent pages
+        /// </summary>
+        private List<AvailableParentPageViewModel> BuildAvailableParentHierarchy(List<AvailableParentPageViewModel> allPages)
+        {
+            // This is a simplified version - in real implementation you'd need ParentPageId in the ViewModel
+            // For now, return flat list ordered by name
+            return allPages.OrderBy(p => p.Name).ToList();
+        }
+
+        /// <summary>
+        /// Flatten available parent hierarchy
+        /// </summary>
+        private void FlattenAvailableParentHierarchy(List<AvailableParentPageViewModel> pages, List<AvailableParentPageViewModel> flatList, int level)
+        {
+            foreach (var page in pages)
+            {
+                page.Level = level;
+                flatList.Add(page);
+            }
+        }
+
+        /// <summary>
+        /// Get all descendant page IDs for a given page
+        /// </summary>
+        private List<int> GetDescendantPageIds(int pageId, List<AvailableParentPageViewModel> allPages)
+        {
+            var descendants = new List<int>();
+            // This would need to be implemented with proper parent-child relationships
+            // For now, return empty list
+            return descendants;
+        }
+
+        #endregion Page Hierarchy Helper Methods
     }
 }

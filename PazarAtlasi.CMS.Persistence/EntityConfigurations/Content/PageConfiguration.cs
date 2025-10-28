@@ -14,6 +14,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(p => p.Id).HasColumnName("Id").IsRequired();
             builder.Property(p => p.ContentId).HasColumnName("ContentId");
             builder.Property(p => p.PageSEOParameterId).HasColumnName("PageSEOParameterId");
+            builder.Property(p => p.ParentPageId).HasColumnName("ParentPageId");
             builder.Property(p => p.PageType).HasColumnName("PageType").HasDefaultValue(PageType.None);
             builder.Property(p => p.Name).HasColumnName("Name").HasMaxLength(200);
             builder.Property(p => p.Code).HasColumnName("Code").HasMaxLength(100);
@@ -41,19 +42,28 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                    .HasForeignKey(pt => pt.PageId)
                    .OnDelete(DeleteBehavior.Cascade);
 
+            // Self-referencing relationship for hierarchical structure
+            builder.HasOne(p => p.ParentPage)
+                   .WithMany(p => p.ChildPages)
+                   .HasForeignKey(p => p.ParentPageId)
+                   .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete to avoid cycles
+
             // Indexes
             builder.HasIndex(p => p.Code).IsUnique().HasDatabaseName("IX_Pages_Code");
             builder.HasIndex(p => p.PageType).HasDatabaseName("IX_Pages_PageType");
+            builder.HasIndex(p => p.ParentPageId).HasDatabaseName("IX_Pages_ParentPageId");
 
             // Query Filter
             builder.HasQueryFilter(p => !p.IsDeleted);
 
-            // Seed Data
+            // Seed Data - Hierarchical structure
             builder.HasData(
+                // Root Pages
                 new Page
                 {
                     Id = 1,
                     ContentId = 1,
+                    ParentPageId = null, // Root page
                     PageType = PageType.Home,
                     Name = "Ana Sayfa",
                     Code = "home",
@@ -66,6 +76,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 2,
                     ContentId = 2,
+                    ParentPageId = null, // Root page
                     PageType = PageType.Blog,
                     Name = "Blog",
                     Code = "blog",
@@ -78,7 +89,8 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 {
                     Id = 3,
                     ContentId = 3,
-                    PageType = PageType.Product,
+                    ParentPageId = null, // Root page
+                    PageType = PageType.Catalog,
                     Name = "Ürünler",
                     Code = "products",
                     Description = "Ürün katalog sayfası",
@@ -89,22 +101,116 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
                 new Page
                 {
                     Id = 4,
+                    ParentPageId = null, // Root page
                     PageType = PageType.Article,
-                    Name = "Hakkımızda",
-                    Code = "about",
-                    Description = "Şirket hakkında bilgi sayfası",
+                    Name = "Kurumsal",
+                    Code = "corporate",
+                    Description = "Kurumsal sayfalar",
                     CreatedAt = new DateTime(2024, 1, 4, 10, 0, 0),
+                    Status = Status.Active,
+                    IsDeleted = false
+                },
+                
+                // Child Pages - Blog Categories
+                new Page
+                {
+                    Id = 5,
+                    ParentPageId = 2, // Child of Blog
+                    PageType = PageType.Category,
+                    Name = "Teknoloji",
+                    Code = "blog-teknoloji",
+                    Description = "Teknoloji ile ilgili blog yazıları",
+                    CreatedAt = new DateTime(2024, 1, 5, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
                 },
                 new Page
                 {
-                    Id = 5,
+                    Id = 6,
+                    ParentPageId = 2, // Child of Blog
+                    PageType = PageType.Category,
+                    Name = "Tasarım",
+                    Code = "blog-tasarim",
+                    Description = "Tasarım ile ilgili blog yazıları",
+                    CreatedAt = new DateTime(2024, 1, 6, 10, 0, 0),
+                    Status = Status.Active,
+                    IsDeleted = false
+                },
+                
+                // Child Pages - Product Categories
+                new Page
+                {
+                    Id = 7,
+                    ParentPageId = 3, // Child of Products
+                    PageType = PageType.Category,
+                    Name = "Elektronik",
+                    Code = "products-elektronik",
+                    Description = "Elektronik ürünler kategorisi",
+                    CreatedAt = new DateTime(2024, 1, 7, 10, 0, 0),
+                    Status = Status.Active,
+                    IsDeleted = false
+                },
+                new Page
+                {
+                    Id = 8,
+                    ParentPageId = 3, // Child of Products
+                    PageType = PageType.Category,
+                    Name = "Giyim",
+                    Code = "products-giyim",
+                    Description = "Giyim ürünleri kategorisi",
+                    CreatedAt = new DateTime(2024, 1, 8, 10, 0, 0),
+                    Status = Status.Active,
+                    IsDeleted = false
+                },
+                
+                // Child Pages - Corporate
+                new Page
+                {
+                    Id = 9,
+                    ParentPageId = 4, // Child of Corporate
+                    PageType = PageType.Article,
+                    Name = "Hakkımızda",
+                    Code = "about",
+                    Description = "Şirket hakkında bilgi sayfası",
+                    CreatedAt = new DateTime(2024, 1, 9, 10, 0, 0),
+                    Status = Status.Active,
+                    IsDeleted = false
+                },
+                new Page
+                {
+                    Id = 10,
+                    ParentPageId = 4, // Child of Corporate
                     PageType = PageType.Article,
                     Name = "İletişim",
                     Code = "contact",
                     Description = "İletişim bilgileri ve form sayfası",
-                    CreatedAt = new DateTime(2024, 1, 5, 10, 0, 0),
+                    CreatedAt = new DateTime(2024, 1, 10, 10, 0, 0),
+                    Status = Status.Active,
+                    IsDeleted = false
+                },
+                
+                // Sub-child Pages - Electronics subcategories
+                new Page
+                {
+                    Id = 11,
+                    ParentPageId = 7, // Child of Electronics
+                    PageType = PageType.Category,
+                    Name = "Bilgisayar",
+                    Code = "products-elektronik-bilgisayar",
+                    Description = "Bilgisayar ve aksesuarları",
+                    CreatedAt = new DateTime(2024, 1, 11, 10, 0, 0),
+                    Status = Status.Active,
+                    IsDeleted = false
+                },
+                new Page
+                {
+                    Id = 12,
+                    ParentPageId = 7, // Child of Electronics
+                    PageType = PageType.Category,
+                    Name = "Telefon",
+                    Code = "products-elektronik-telefon",
+                    Description = "Akıllı telefonlar ve aksesuarları",
+                    CreatedAt = new DateTime(2024, 1, 12, 10, 0, 0),
                     Status = Status.Active,
                     IsDeleted = false
                 }

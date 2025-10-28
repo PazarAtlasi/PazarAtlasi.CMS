@@ -11,6 +11,11 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? Description { get; set; }
         public Status Status { get; set; }
         
+        // Hierarchical properties
+        public int? ParentPageId { get; set; }
+        public string? ParentPageName { get; set; }
+        public List<AvailableParentPageViewModel> AvailableParentPages { get; set; } = new();
+        
         // SEO Parameters
         public PageSEOParameterEditViewModel? SEOParameter { get; set; }
         
@@ -22,6 +27,16 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         // Page translations
         public List<PageTranslationEditViewModel> Translations { get; set; } = new();
+    }
+
+    public class AvailableParentPageViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public PageType PageType { get; set; }
+        public int Level { get; set; } = 0;
+        public string DisplayName => $"{new string('-', Level * 2)} {Name}";
     }
 
     public class PageSEOParameterEditViewModel
