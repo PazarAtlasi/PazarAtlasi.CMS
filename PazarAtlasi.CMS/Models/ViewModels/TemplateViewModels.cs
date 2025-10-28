@@ -13,6 +13,16 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int SortOrder { get; set; } = 0;
         
         /// <summary>
+        /// Selected section types for this template
+        /// </summary>
+        public List<SectionType> SelectedSectionTypes { get; set; } = new List<SectionType>();
+        
+        /// <summary>
+        /// Available section types for selection
+        /// </summary>
+        public List<SectionTypeViewModel> AvailableSectionTypes { get; set; } = new List<SectionTypeViewModel>();
+        
+        /// <summary>
         /// Available languages for translations
         /// </summary>
         public List<LanguageViewModel> AvailableLanguages { get; set; } = new List<LanguageViewModel>();
@@ -41,6 +51,16 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
+        
+        /// <summary>
+        /// Selected section types for this template
+        /// </summary>
+        public List<SectionType> SelectedSectionTypes { get; set; } = new List<SectionType>();
+        
+        /// <summary>
+        /// Available section types for selection
+        /// </summary>
+        public List<SectionTypeViewModel> AvailableSectionTypes { get; set; } = new List<SectionTypeViewModel>();
         
         /// <summary>
         /// Available languages for translations
@@ -123,7 +143,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int Id { get; set; }
         public int TemplateId { get; set; }
         public int LanguageId { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         
         /// <summary>
@@ -212,4 +232,16 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int UsageCount { get; set; }
         public string? CustomConfiguration { get; set; }
     }
-}
+
+    /// <summary>
+    /// ViewModel for Section Type selection
+    /// </summary>
+    public class SectionTypeViewModel
+    {
+        public SectionType Value { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool IsSelected { get; set; }
+    }
+}    

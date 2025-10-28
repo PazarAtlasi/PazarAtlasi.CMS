@@ -10,6 +10,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public bool IsActive { get; set; }
         public int SortOrder { get; set; }
         public List<TemplateTranslationDto> Translations { get; set; } = new List<TemplateTranslationDto>();
+        public List<SectionType> SectionTypes { get; set; } = new List<SectionType>();
     }
 
     public class TemplateTranslationDto

@@ -100,9 +100,9 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Template</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Key</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Section Types</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Translations</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sort Order</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -128,7 +128,32 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    @template.TemplateKey
+                                    <div class="font-mono text-purple-600">@template.TemplateKey</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex flex-wrap gap-1">
+                                        @if (template.SectionTypes.Any())
+                                        {
+                                            @foreach (var sectionType in template.SectionTypes.Take(2))
+                                            {
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    @sectionType.ToString()
+                                                </span>
+                                            }
+                                            @if (template.SectionTypes.Count > 2)
+                                            {
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-200 text-blue-600">
+                                                    +@(template.SectionTypes.Count - 2)
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                                No sections
+                                            </span>
+                                        }
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex flex-wrap gap-1">
@@ -162,9 +187,7 @@
                                         </span>
                                     }
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    @template.SortOrder
-                                </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex items-center space-x-2">
                                         <a href="@Url.Action("TemplateEdit", new { id = template.Id })" 

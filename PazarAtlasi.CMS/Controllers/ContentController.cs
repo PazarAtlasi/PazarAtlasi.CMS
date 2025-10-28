@@ -65,7 +65,7 @@ namespace PazarAtlasi.CMS.Controllers
 
             // Build hierarchical structure
             var hierarchicalPages = BuildPageHierarchy(allPages);
-            
+
             // Flatten for display with proper levels
             var flattenedPages = new List<PageListViewModel>();
             FlattenPageHierarchy(hierarchicalPages, flattenedPages, 0);
@@ -450,12 +450,12 @@ namespace PazarAtlasi.CMS.Controllers
                 var sectionItemFieldValueTranslations = section.SectionItemFieldValues
                     .SelectMany(fv => fv.Translations);
                 _pazarAtlasiDbContext.SectionItemFieldValueTranslations.RemoveRange(sectionItemFieldValueTranslations);
-                
+
                 var sectionItemTranslations = section.SectionItemFieldValues
                     .Select(fv => fv.SectionItem)
                     .SelectMany(si => si.Translations);
                 _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(sectionItemTranslations);
-                
+
                 _pazarAtlasiDbContext.SectionItemFieldValues.RemoveRange(section.SectionItemFieldValues);
                 _pazarAtlasiDbContext.SectionTranslations.RemoveRange(section.Translations);
                 _pazarAtlasiDbContext.Sections.Remove(section);
@@ -878,7 +878,7 @@ namespace PazarAtlasi.CMS.Controllers
                 sectionItemViewModel.SectionId = sectionId;
                 sectionItemViewModel.SortOrder = currentCount + 1;
 
-                
+
 
                 return PartialView("~/Views/Content/_SectionItemCard.cshtml", sectionItemViewModel);
             }
@@ -1263,11 +1263,11 @@ namespace PazarAtlasi.CMS.Controllers
 
                     // Save SectionItemValues for parent section items
                     await SaveSectionItemValues(request.SectionItems, newSection.Id);
-                    
-                    string successMessage = isReusableSection 
-                        ? "Reusable section created successfully." 
+
+                    string successMessage = isReusableSection
+                        ? "Reusable section created successfully."
                         : "Section created successfully.";
-                    
+
                     return Json(new { success = true, message = successMessage, sectionId = newSection.Id });
                 }
             }
@@ -1364,12 +1364,12 @@ namespace PazarAtlasi.CMS.Controllers
                 var sectionItemFieldValueTranslations = section.SectionItemFieldValues
                     .SelectMany(fv => fv.Translations);
                 _pazarAtlasiDbContext.SectionItemFieldValueTranslations.RemoveRange(sectionItemFieldValueTranslations);
-                
+
                 var sectionItemTranslations = section.SectionItemFieldValues
                     .Select(fv => fv.SectionItem)
                     .SelectMany(si => si.Translations);
                 _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(sectionItemTranslations);
-                
+
                 _pazarAtlasiDbContext.SectionItemFieldValues.RemoveRange(section.SectionItemFieldValues);
                 _pazarAtlasiDbContext.SectionTranslations.RemoveRange(section.Translations);
                 _pazarAtlasiDbContext.Sections.Remove(section);
@@ -1820,6 +1820,7 @@ namespace PazarAtlasi.CMS.Controllers
             var templates = await _pazarAtlasiDbContext.Templates
                 .Include(t => t.Translations)
                     .ThenInclude(tt => tt.Language)
+                .Include(t => t.SectionTypeTemplates)
                 .Where(t => !t.IsDeleted)
                 .OrderBy(t => t.SortOrder)
                 .ThenBy(t => t.Id)
@@ -1830,6 +1831,7 @@ namespace PazarAtlasi.CMS.Controllers
                     ConfigurationSchema = t.ConfigurationSchema,
                     IsActive = t.IsActive,
                     SortOrder = t.SortOrder,
+                    SectionTypes = t.SectionTypeTemplates.Select(st => st.SectionType).ToList(),
                     Translations = t.Translations.Select(tt => new TemplateTranslationDto
                     {
                         Id = tt.Id,
@@ -1865,10 +1867,24 @@ namespace PazarAtlasi.CMS.Controllers
                 })
                 .ToListAsync();
 
+            // Get all available section types except None
+            var availableSectionTypes = Enum.GetValues<SectionType>()
+                .Where(st => st != SectionType.None)
+                .Select(st => new SectionTypeViewModel
+                {
+                    Value = st,
+                    Name = GetSectionTypeDisplayName(st),
+                    IsSelected = false
+                })
+                .OrderBy(st => st.Name)
+                .ToList();
+
             var viewModel = new TemplateCreateViewModel
             {
                 IsActive = true,
                 SortOrder = 0,
+                SelectedSectionTypes = new List<SectionType>(),
+                AvailableSectionTypes = availableSectionTypes,
                 AvailableLanguages = languages,
                 Translations = languages.Select(l => new TemplateTranslationCreateViewModel
                 {
@@ -1944,6 +1960,22 @@ namespace PazarAtlasi.CMS.Controllers
                     }
                 }
 
+                // Add section type templates
+                if (model.SelectedSectionTypes != null && model.SelectedSectionTypes.Any())
+                {
+                    var sectionTypeTemplates = model.SelectedSectionTypes.Select(sectionType => new SectionTypeTemplate
+                    {
+                        SectionType = sectionType,
+                        TemplateId = template.Id,
+                        Status = Status.Active,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    }).ToList();
+
+                    _pazarAtlasiDbContext.SectionTypeTemplates.AddRange(sectionTypeTemplates);
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                }
+
                 TempData["SuccessMessage"] = "Template başarıyla oluşturuldu.";
                 return RedirectToAction(nameof(Template));
             }
@@ -1963,6 +1995,7 @@ namespace PazarAtlasi.CMS.Controllers
             var template = await _pazarAtlasiDbContext.Templates
                 .Include(t => t.Translations)
                     .ThenInclude(tt => tt.Language)
+                .Include(t => t.SectionTypeTemplates)
                 .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
 
             if (template == null)
@@ -1983,6 +2016,19 @@ namespace PazarAtlasi.CMS.Controllers
                 })
                 .ToListAsync();
 
+            // Get all available section types except None
+            var selectedSectionTypes = template.SectionTypeTemplates.Select(st => st.SectionType).ToList();
+            var availableSectionTypes = Enum.GetValues<SectionType>()
+                .Where(st => st != SectionType.None)
+                .Select(st => new SectionTypeViewModel
+                {
+                    Value = st,
+                    Name = GetSectionTypeDisplayName(st),
+                    IsSelected = selectedSectionTypes.Contains(st)
+                })
+                .OrderBy(st => st.Name)
+                .ToList();
+
             var viewModel = new TemplateEditViewModel
             {
                 Id = template.Id,
@@ -1992,6 +2038,8 @@ namespace PazarAtlasi.CMS.Controllers
                 SortOrder = template.SortOrder,
                 CreatedAt = template.CreatedAt,
                 UpdatedAt = template.UpdatedAt,
+                SelectedSectionTypes = selectedSectionTypes,
+                AvailableSectionTypes = availableSectionTypes,
                 AvailableLanguages = languages,
                 Translations = languages.Select(l =>
                 {
@@ -2030,6 +2078,7 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 var template = await _pazarAtlasiDbContext.Templates
                     .Include(t => t.Translations)
+                    .Include(t => t.SectionTypeTemplates)
                     .FirstOrDefaultAsync(t => t.Id == model.Id && !t.IsDeleted);
 
                 if (template == null)
@@ -2073,10 +2122,33 @@ namespace PazarAtlasi.CMS.Controllers
                 var emptyTranslations = template.Translations
                     .Where(t => !model.Translations.Any(mt => mt.LanguageId == t.LanguageId && !string.IsNullOrWhiteSpace(mt.Name)))
                     .ToList();
-                
+
                 foreach (var emptyTranslation in emptyTranslations)
                 {
                     _pazarAtlasiDbContext.TemplateTranslations.Remove(emptyTranslation);
+                }
+
+                // Update section type templates
+                var existingSectionTypeTemplates = await _pazarAtlasiDbContext.SectionTypeTemplates
+                    .Where(st => st.TemplateId == template.Id)
+                    .ToListAsync();
+
+                // Remove existing section type templates
+                _pazarAtlasiDbContext.SectionTypeTemplates.RemoveRange(existingSectionTypeTemplates);
+
+                // Add new section type templates
+                if (model.SelectedSectionTypes != null && model.SelectedSectionTypes.Any())
+                {
+                    var newSectionTypeTemplates = model.SelectedSectionTypes.Select(sectionType => new SectionTypeTemplate
+                    {
+                        SectionType = sectionType,
+                        TemplateId = template.Id,
+                        Status = Status.Active,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    }).ToList();
+
+                    _pazarAtlasiDbContext.SectionTypeTemplates.AddRange(newSectionTypeTemplates);
                 }
 
                 await _pazarAtlasiDbContext.SaveChangesAsync();
@@ -2957,7 +3029,7 @@ namespace PazarAtlasi.CMS.Controllers
 
             // Load available parent pages
             model.AvailableParentPages = await GetAvailableParentPagesAsync(page.Id);
-            
+
             return model;
         }
 
@@ -2998,7 +3070,7 @@ namespace PazarAtlasi.CMS.Controllers
             try
             {
                 var languages = await GetAvailableLanguagesAsync();
-                
+
                 var newField = new SectionItemFieldUpdateDto
                 {
                     Id = 0,
@@ -3036,7 +3108,7 @@ namespace PazarAtlasi.CMS.Controllers
         /// Build nested section item view models from SectionItemValues and FieldValues (Optimized)
         /// </summary>
         private List<SectionItemViewModel> BuildNestedSectionItemViewModelsOptimized(
-            List<SectionItemValue> sectionItemValues, 
+            List<SectionItemValue> sectionItemValues,
             List<SectionItem> allSectionItems,
             List<SectionItemFieldValue> fieldValues)
         {
@@ -3058,7 +3130,7 @@ namespace PazarAtlasi.CMS.Controllers
         /// Build nested section item view models from SectionItemValues and FieldValues (Legacy)
         /// </summary>
         private List<SectionItemViewModel> BuildNestedSectionItemViewModels(
-            List<SectionItemValue> sectionItemValues, 
+            List<SectionItemValue> sectionItemValues,
             List<SectionItemFieldValue> fieldValues)
         {
             var result = new List<SectionItemViewModel>();
@@ -3186,8 +3258,8 @@ namespace PazarAtlasi.CMS.Controllers
         /// Build a single section item view model with its children recursively (Legacy)
         /// </summary>
         private SectionItemViewModel BuildSectionItemViewModel(
-            SectionItemValue sectionItemValue, 
-            List<SectionItemValue> allSectionItemValues, 
+            SectionItemValue sectionItemValue,
+            List<SectionItemValue> allSectionItemValues,
             List<SectionItemFieldValue> allFieldValues)
         {
             var sectionItem = sectionItemValue.SectionItem;
@@ -3333,7 +3405,7 @@ namespace PazarAtlasi.CMS.Controllers
             var existingSectionItemValues = await _pazarAtlasiDbContext.SectionItemValues
                 .Where(siv => siv.SectionId == sectionId)
                 .ToListAsync();
-            
+
             _pazarAtlasiDbContext.SectionItemValues.RemoveRange(existingSectionItemValues);
             await _pazarAtlasiDbContext.SaveChangesAsync();
 
@@ -3570,9 +3642,9 @@ namespace PazarAtlasi.CMS.Controllers
                 // Add field translations if the field is translatable
                 if (fieldDto.IsTranslatable && fieldDto.Translations != null && fieldDto.Translations.Any())
                 {
-                    foreach (var translationDto in fieldDto.Translations.Where(t => 
-                        !string.IsNullOrEmpty(t.Label) || 
-                        !string.IsNullOrEmpty(t.Description) || 
+                    foreach (var translationDto in fieldDto.Translations.Where(t =>
+                        !string.IsNullOrEmpty(t.Label) ||
+                        !string.IsNullOrEmpty(t.Description) ||
                         !string.IsNullOrEmpty(t.Placeholder)))
                     {
                         var fieldTranslation = new SectionItemFieldTranslation
@@ -3615,6 +3687,7 @@ namespace PazarAtlasi.CMS.Controllers
                 .ToListAsync();
 
             model.AvailableLanguages = languages;
+            model.AvailableSectionTypes = GetAvailableSectionTypes(model.SelectedSectionTypes);
 
             // Ensure translations exist for all languages
             foreach (var language in languages)
@@ -3657,6 +3730,7 @@ namespace PazarAtlasi.CMS.Controllers
                 .ToListAsync();
 
             model.AvailableLanguages = languages;
+            model.AvailableSectionTypes = GetAvailableSectionTypes(model.SelectedSectionTypes);
 
             // Update language information in translations
             foreach (var translation in model.Translations)
@@ -3737,7 +3811,7 @@ namespace PazarAtlasi.CMS.Controllers
 
             // Build hierarchy
             var hierarchicalPages = BuildAvailableParentHierarchy(allPages);
-            
+
             // Flatten with levels
             var flattenedPages = new List<AvailableParentPageViewModel>();
             FlattenAvailableParentHierarchy(hierarchicalPages, flattenedPages, 0);
@@ -3787,5 +3861,59 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         #endregion Page Hierarchy Helper Methods
+
+        /// <summary>
+        /// Get display name for SectionType enum
+        /// </summary>
+        /// 
+        private string GetSectionTypeDisplayName(SectionType sectionType)
+        {
+            return sectionType switch
+            {
+                SectionType.Navbar => "Navigation Bar",
+                SectionType.Header => "Header",
+                SectionType.Hero => "Hero Section",
+                SectionType.Catalog => "Catalog",
+                SectionType.Favorite => "Favorites",
+                SectionType.Featured => "Featured Content",
+                SectionType.Newsletter => "Newsletter",
+                SectionType.ContentBlock => "Content Block",
+                SectionType.Contact => "Contact",
+                SectionType.Footer => "Footer",
+                SectionType.Sidebar => "Sidebar",
+                SectionType.MainContent => "Main Content",
+                SectionType.RelatedContent => "Related Content",
+                SectionType.Advertisement => "Advertisement",
+                SectionType.Search => "Search",
+                SectionType.ContactForm => "Contact Form",
+                SectionType.WhyUs => "Why Choose Us",
+                SectionType.SocialMediaLinks => "Social Media Links",
+                SectionType.Testimonials => "Testimonials",
+                SectionType.CallToAction => "Call to Action",
+                SectionType.Breadcrumbs => "Breadcrumbs",
+                SectionType.Pagination => "Pagination",
+                SectionType.Map => "Map",
+                SectionType.Gallery => "Gallery",
+                _ => sectionType.ToString()
+            };
+        }
+
+        /// <summary>
+        /// Get available section types with selection status
+        /// </summary>
+        private List<SectionTypeViewModel> GetAvailableSectionTypes(List<SectionType> selectedTypes)
+        {
+            return Enum.GetValues<SectionType>()
+                .Where(st => st != SectionType.None)
+                .Select(st => new SectionTypeViewModel
+                {
+                    Value = st,
+                    Name = GetSectionTypeDisplayName(st),
+                    IsSelected = selectedTypes.Contains(st)
+                })
+                .OrderBy(st => st.Name)
+                .ToList();
+        }
+
     }
 }
