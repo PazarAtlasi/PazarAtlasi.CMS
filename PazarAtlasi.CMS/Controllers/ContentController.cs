@@ -2647,8 +2647,6 @@ namespace PazarAtlasi.CMS.Controllers
 
         #endregion SectionItems Actions
 
-
-
         /// <summary>
         /// Get new field partial view for adding fields dynamically
         /// </summary>
