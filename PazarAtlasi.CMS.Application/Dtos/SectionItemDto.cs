@@ -51,6 +51,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public string? Placeholder { get; set; }
         public string? DefaultValue { get; set; }
         public bool IsTranslatable { get; set; }
+        public bool ShowInUI { get; set; } = true;
         public string? OptionsJson { get; set; }
         public int SortOrder { get; set; }
         public List<SectionItemFieldTranslationDto> Translations { get; set; } = new List<SectionItemFieldTranslationDto>();
@@ -130,6 +131,7 @@ namespace PazarAtlasi.CMS.Application.Dtos
         public string? Placeholder { get; set; }
         public string? DefaultValue { get; set; }
         public bool IsTranslatable { get; set; }
+        public bool ShowInUI { get; set; } = true;
         public string? OptionsJson { get; set; }
         public int SortOrder { get; set; }
         public List<SectionItemFieldTranslationUpdateDto> Translations { get; set; } = new List<SectionItemFieldTranslationUpdateDto>();

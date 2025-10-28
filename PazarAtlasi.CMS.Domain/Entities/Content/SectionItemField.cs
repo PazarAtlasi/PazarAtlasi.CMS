@@ -51,6 +51,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
         public bool IsTranslatable { get; set; } = false;
 
         /// <summary>
+        /// Whether this field should be shown in the UI
+        /// </summary>
+        public bool ShowInUI { get; set; } = true;
+
+        /// <summary>
         /// JSON string containing options for select/radio fields
         /// </summary>
         public string? OptionsJson { get; set; }

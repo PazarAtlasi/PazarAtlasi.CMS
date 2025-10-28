@@ -31,7 +31,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         // Additional properties for better UX
         public string? SuccessMessage { get; set; }
         public string? ErrorMessage { get; set; }
-        public bool ShowTemplatePreview { get; set; } = true;
         public bool ShowFieldsSection => IsEditMode && SectionItem.Fields.Any();
         public bool ShowFieldValuesSection => IsEditMode && SectionItem.FieldValues.Any();
     }

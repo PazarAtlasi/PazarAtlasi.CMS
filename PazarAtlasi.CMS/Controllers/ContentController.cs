@@ -171,6 +171,7 @@ namespace PazarAtlasi.CMS.Controllers
                                 FieldKey = fv.SectionItemField?.FieldKey ?? "",
                                 FieldValue = fv.Value,
                                 IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
+                                ShowInUI = fv.SectionItemField?.ShowInUI ?? true,
                                 Translations = fv.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
                                 {
                                     Id = ft.Id,
@@ -3543,6 +3544,7 @@ namespace PazarAtlasi.CMS.Controllers
                     FieldKey = fv?.FieldKey ?? "",
                     FieldValue = fv.DefaultValue,
                     IsTranslatable = fv?.IsTranslatable ?? false,
+                    ShowInUI = fv?.ShowInUI ?? true,
                     Translations = fv?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
                     {
                         Id = ft.Id,
@@ -3629,6 +3631,7 @@ namespace PazarAtlasi.CMS.Controllers
                     Placeholder = fieldDto.Placeholder,
                     DefaultValue = fieldDto.DefaultValue,
                     IsTranslatable = fieldDto.IsTranslatable,
+                    ShowInUI = fieldDto.ShowInUI,
                     OptionsJson = fieldDto.OptionsJson,
                     SortOrder = fieldDto.SortOrder,
                     CreatedAt = DateTime.UtcNow,

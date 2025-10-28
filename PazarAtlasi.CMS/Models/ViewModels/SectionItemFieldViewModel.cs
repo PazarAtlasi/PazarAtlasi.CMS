@@ -37,6 +37,11 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         /// </summary>
         public bool IsTranslatable { get; set; } = false;
         
+        /// <summary>
+        /// Whether this field should be shown in the UI
+        /// </summary>
+        public bool ShowInUI { get; set; } = true;
+        
         // Value translations (for translatable field values)
         public List<SectionItemFieldTranslationViewModel> Translations { get; set; } = new();
         

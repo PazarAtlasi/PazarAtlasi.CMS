@@ -20,7 +20,7 @@ namespace PazarAtlasi.CMS.Domain.Common
         Elegant
     }
 
-    public enum  SectionItemFieldType
+    public enum SectionItemFieldType
     {
         None,
         Text,

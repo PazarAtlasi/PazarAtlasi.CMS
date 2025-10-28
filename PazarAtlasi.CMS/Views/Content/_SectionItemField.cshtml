@@ -9,82 +9,84 @@
 
     // Get field label from field definition translations
     var currentLanguageId = ViewBag.CurrentLanguageId as int? ?? 1; // Default to language ID 1
-    var fieldTranslation = Model.Translations?.FirstOrDefault(t => t.LanguageId == currentLanguageId)
-                          ?? Model.Translations?.FirstOrDefault();
+    var fieldTranslation = Model.Translations?.FirstOrDefault(t => t.LanguageId == currentLanguageId) ?? Model.Translations?.FirstOrDefault();
     var fieldLabel = fieldTranslation?.Label ?? Model.FieldKey;
     var fieldDescription = fieldTranslation?.Description;
     var fieldPlaceholder = fieldTranslation?.Placeholder;
 }
 
-<div class="field-container" data-field-id="@Model.Id" data-field-name="@Model.FieldKey" data-translatable="@Model.IsTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@((int)Model.FieldType)">
-    @if (Model.IsTranslatable && availableLanguages.Any())
-    {
-        <!-- Multi-language field with tabs -->
-        <div class="mb-3">
-            <label class="block text-sm font-medium text-slate-700 mb-1">
-                @fieldLabel
-                <span class="ml-1 text-xs text-purple-500">(Multi-language)</span>
-            </label>
-            @if (!string.IsNullOrEmpty(fieldDescription))
-            {
-                <p class="text-xs text-slate-500 mb-2">@fieldDescription</p>
-            }
+@* Only render the field if ShowInUI is true *@
+@if (Model.ShowInUI)
+{
+    <div class="field-container" data-field-id="@Model.Id" data-field-name="@Model.FieldKey" data-translatable="@Model.IsTranslatable.ToString().ToLower()" data-level="@level" data-field-type="@((int)Model.FieldType)">
+        @if (Model.IsTranslatable && availableLanguages.Any())
+        {
+            <!-- Multi-language field with tabs -->
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    @fieldLabel
+                    <span class="ml-1 text-xs text-purple-500">(Multi-language)</span>
+                </label>
+                @if (!string.IsNullOrEmpty(fieldDescription))
+                {
+                    <p class="text-xs text-slate-500 mb-2">@fieldDescription</p>
+                }
 
-            <!-- Language tabs -->
-            <div class="border-b border-slate-200 mb-2">
-                <nav class="-mb-px flex space-x-2" aria-label="Language tabs">
+                <!-- Language tabs -->
+                <div class="border-b border-slate-200 mb-2">
+                    <nav class="-mb-px flex space-x-2" aria-label="Language tabs">
+                        @foreach (var language in availableLanguages.Take(3))
+                        {
+                            <button type="button"
+                                    class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
+                                    data-language="@language.Code" data-language-id="@language.Id"
+                                    onclick="SectionModal.switchItemLanguageTab(this)">
+                                @language.Code.ToUpper()
+                                @if (language.IsDefault)
+                                {
+                                    <span class="ml-1 text-xs">●</span>
+                                }
+                            </button>
+                        }
+                    </nav>
+                </div>
+
+                <!-- Language content panels -->
+                <div class="language-panels">
                     @foreach (var language in availableLanguages.Take(3))
                     {
-                        <button type="button"
-                                class="lang-tab whitespace-nowrap py-1 px-2 border-b-2 font-medium text-xs @(language.IsDefault ? "border-purple-500 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
-                                data-language="@language.Code" data-language-id="@language.Id"
-                                onclick="SectionModal.switchItemLanguageTab(this)">
-                            @language.Code.ToUpper()
-                            @if (language.IsDefault)
-                            {
-                                <span class="ml-1 text-xs">●</span>
+                        var translation = Model.Translations?.FirstOrDefault(t => t.LanguageId == language.Id);
+                        var langValue = translation?.Value ?? Model.FieldValue;
+
+                        <div class="language-panel @(language.IsDefault ? "" : "hidden")" data-language="@language.Code">
+                            @{
+                                await RenderFieldInput(Model.FieldType, langValue, $"{Model.FieldKey} ({language.Name})", Model.FieldKey, language.Code, language.Id);
                             }
-                        </button>
+                        </div>
                     }
-                </nav>
+                </div>
             </div>
-
-            <!-- Language content panels -->
-            <div class="language-panels">
-                @foreach (var language in availableLanguages.Take(3))
+        }
+        else
+        {
+            <!-- Single language field (non-translatable) -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    @fieldLabel
+                </label>
+                @if (!string.IsNullOrEmpty(fieldDescription))
                 {
-                    var translation = Model.Translations?.FirstOrDefault(t => t.LanguageId == language.Id);
-                    var langValue = translation?.Value ?? Model.FieldValue;
+                    <p class="text-xs text-slate-500 mb-2">@fieldDescription</p>
+                }
 
-                    <div class="language-panel @(language.IsDefault ? "" : "hidden")" data-language="@language.Code">
-                        @{
-                            await RenderFieldInput(Model.FieldType, langValue, $"{Model.FieldKey} ({language.Name})", Model.FieldKey, language.Code, language.Id);
-                        }
-                    </div>
+                @{
+                    await RenderFieldInput(Model.FieldType, Model.FieldValue, fieldPlaceholder ?? fieldLabel, Model.FieldKey, null, null);
                 }
             </div>
-        </div>
-    }
-    else
-    {
-        <!-- Single language field (non-translatable) -->
-        <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">
-                @fieldLabel
-            </label>
-            @if (!string.IsNullOrEmpty(fieldDescription))
-            {
-                <p class="text-xs text-slate-500 mb-2">@fieldDescription</p>
-            }
+        }
+    </div>
 
-            @{
-                await RenderFieldInput(Model.FieldType, Model.FieldValue, fieldPlaceholder ?? fieldLabel, Model.FieldKey, null, null);
-            }
-        </div>
-    }
-</div>
 
-@{
     async Task RenderFieldInput(PazarAtlasi.CMS.Domain.Common.SectionItemFieldType fieldType, string value, string placeholder, string fieldKey, string languageCode, int? languageId)
     {
         var inputAttributes = new Dictionary<string, object>
@@ -157,12 +159,14 @@
                 <label class="flex items-center space-x-2">
                     <input type="checkbox"
                            class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                           checked="@(value == "true" || value == "True" || value == "1")" 
-                           data-field-id="@Model.Id" 
+                           checked="@(value == "true" || value == "True" || value == "1")"
+                           data-field-id="@Model.Id"
                            data-field-key="@fieldKey"
-                           @if (!string.IsNullOrEmpty(languageCode)) { 
-                               <text>data-language-code="@languageCode" data-language-id="@languageId"</text>
-                           } />
+                           @if (!string.IsNullOrEmpty(languageCode))
+                        {
+                        <text>data-language-code="@languageCode" data-language-id="@languageId"</text>
+                    }
+                 />
                     <span class="text-sm text-slate-600">@placeholder</span>
                 </label>
                 break;

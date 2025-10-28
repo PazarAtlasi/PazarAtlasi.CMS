@@ -33,6 +33,10 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Content
             builder.Property(x => x.OptionsJson)
                 .HasColumnType("nvarchar(max)");
 
+            builder.Property(x => x.ShowInUI)
+                .HasDefaultValue(true)
+                .IsRequired();
+
             builder.HasMany(x => x.Translations)
                 .WithOne(x => x.SectionItemField)
                 .HasForeignKey(x => x.SectionItemFieldId)
