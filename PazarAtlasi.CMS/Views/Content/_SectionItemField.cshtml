@@ -101,8 +101,7 @@
             inputAttributes["data-language-code"] = languageCode;
             inputAttributes["data-language-id"] = languageId;
         }
-
-        switch (fieldType.ToString().ToLower())
+        switch (fieldType.ToString().ToLower().Replace('ı', 'i'))
         {
             case "text":
             case "title":
