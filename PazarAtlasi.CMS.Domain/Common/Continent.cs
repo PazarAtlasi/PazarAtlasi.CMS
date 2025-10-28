@@ -1,13 +1,8 @@
 using PazarAtlasi.CMS.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PazarAtlasi.CMS.Domain.Common
 {
-    public class Country : Entity<int>
+    public class Continent : Entity<int>
     {
         public required string Name { get; set; }
 
@@ -17,11 +12,7 @@ namespace PazarAtlasi.CMS.Domain.Common
 
         public int SortOrder { get; set; } = 0;
 
-        public int? ContinentId { get; set; }
-
-        public bool IsPopular { get; set; } = false;
-
         // Navigation Properties
-        public virtual Continent? Continent { get; set; }
+        public virtual ICollection<Country> Countries { get; set; } = new List<Country>();
     }
 }

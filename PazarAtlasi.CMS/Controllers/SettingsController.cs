@@ -28,6 +28,7 @@ namespace PazarAtlasi.CMS.Controllers
             var totalCount = await _context.Countries.CountAsync(c => !c.IsDeleted);
 
             var countries = await _context.Countries
+                .Include(c => c.Continent)
                 .Where(c => !c.IsDeleted)
                 .OrderBy(c => c.SortOrder)
                 .ThenBy(c => c.Name)
@@ -40,6 +41,46 @@ namespace PazarAtlasi.CMS.Controllers
                     Code = c.Code,
                     IsActive = c.IsActive,
                     SortOrder = c.SortOrder,
+                    ContinentId = c.ContinentId,
+                    ContinentName = c.Continent != null ? c.Continent.Name : null,
+                    IsPopular = c.IsPopular,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
+                })
+                .ToListAsync();
+
+            // Get continents for filter
+            var continents = await _context.Continents
+                .Where(c => !c.IsDeleted && c.IsActive)
+                .OrderBy(c => c.SortOrder)
+                .Select(c => new ContinentViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Code = c.Code,
+                    IsActive = c.IsActive,
+                    SortOrder = c.SortOrder,
+                    CountryCount = c.Countries.Count(co => !co.IsDeleted),
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
+                })
+                .ToListAsync();
+
+            // Get popular countries
+            var popularCountries = await _context.Countries
+                .Include(c => c.Continent)
+                .Where(c => !c.IsDeleted && c.IsPopular && c.IsActive)
+                .OrderBy(c => c.Name)
+                .Select(c => new CountryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Code = c.Code,
+                    IsActive = c.IsActive,
+                    SortOrder = c.SortOrder,
+                    ContinentId = c.ContinentId,
+                    ContinentName = c.Continent != null ? c.Continent.Name : null,
+                    IsPopular = c.IsPopular,
                     CreatedAt = c.CreatedAt,
                     UpdatedAt = c.UpdatedAt
                 })
@@ -48,6 +89,8 @@ namespace PazarAtlasi.CMS.Controllers
             var model = new CountryListViewModel
             {
                 Countries = countries,
+                Continents = continents,
+                PopularCountries = popularCountries,
                 TotalCount = totalCount,
                 PageNumber = page,
                 PageSize = pageSize
@@ -110,9 +153,8 @@ namespace PazarAtlasi.CMS.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Json(new
-                {
-                    success = true,
+                return Json(new { 
+                    success = true, 
                     message = $"Country {(country.IsActive ? "activated" : "deactivated")} successfully.",
                     isActive = country.IsActive
                 });
@@ -150,9 +192,8 @@ namespace PazarAtlasi.CMS.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Json(new
-                {
-                    success = true,
+                return Json(new { 
+                    success = true, 
                     message = $"{language.Name} set as default language successfully."
                 });
             }

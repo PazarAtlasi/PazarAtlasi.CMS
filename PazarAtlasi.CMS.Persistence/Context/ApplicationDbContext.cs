@@ -21,6 +21,8 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<Country> Countries { get; set; }
 
+        public DbSet<Continent> Continents { get; set; }
+
         public DbSet<Layout> Layouts { get; set; }
 
         public DbSet<LayoutSection> LayoutSections { get; set; }

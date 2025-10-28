@@ -35,13 +35,23 @@
             {
                 <!-- Countries Filter -->
                 <div class="meetings-filter-results p-5 border-b border-slate-100">
-                    <div class="meetings-country-item active">
+                    <div class="meetings-country-item active" data-filter="all">
                         <span>Tümü</span>
                     </div>
-                    @foreach (var country in Model.Countries.Take(20))
+                    
+                    <!-- Continents -->
+                    @foreach (var continent in Model.Continents)
                     {
-                        <div class="meetings-country-item @(country.IsActive ? "" : "opacity-50")">
-                            <span>@country.Name</span>
+                        <div class="meetings-country-item continent-filter" data-filter="continent" data-continent-id="@continent.Id">
+                            <span>🌍 @continent.Name</span>
+                        </div>
+                    }
+                    
+                    <!-- Popular Countries -->
+                    @foreach (var country in Model.PopularCountries)
+                    {
+                        <div class="meetings-country-item country-filter @(country.IsActive ? "" : "opacity-50")" data-filter="country" data-country-id="@country.Id">
+                            <span>⭐ @country.Name</span>
                         </div>
                     }
                 </div>
@@ -53,8 +63,9 @@
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ülke</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Kod</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Kıta</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Durum</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sıra</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Popüler</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Oluşturulma</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">İşlemler</th>
                             </tr>
@@ -62,12 +73,21 @@
                         <tbody class="bg-white divide-y divide-slate-200">
                             @foreach (var country in Model.Countries)
                             {
-                                <tr class="hover:bg-slate-50">
+                                <tr class="hover:bg-slate-50 country-row" data-continent-id="@country.ContinentId" data-country-id="@country.Id">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-slate-900">@country.Name</div>
+                                        <div class="flex items-center">
+                                            <div class="text-sm font-medium text-slate-900">@country.Name</div>
+                                            @if (country.IsPopular)
+                                            {
+                                                <span class="ml-2 text-yellow-500" title="Popüler Ülke">⭐</span>
+                                            }
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-slate-500">@(country.Code ?? "-")</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-slate-600">@(country.ContinentName ?? "-")</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
@@ -75,8 +95,11 @@
                                             @(country.IsActive ? "Aktif" : "Pasif")
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                        @country.SortOrder
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            @(country.IsPopular ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800")">
+                                            @(country.IsPopular ? "Evet" : "Hayır")
+                                        </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                         @country.CreatedAt.ToString("dd.MM.yyyy")
@@ -168,6 +191,38 @@
     border-color: #7c3aed;
 }
 
+.meetings-country-item.continent-filter {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.meetings-country-item.continent-filter:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+.meetings-country-item.continent-filter.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.meetings-country-item.country-filter {
+    background: #fef3c7;
+    border-color: #fbbf24;
+}
+
+.meetings-country-item.country-filter:hover {
+    background: #fde68a;
+    border-color: #f59e0b;
+}
+
+.meetings-country-item.country-filter.active {
+    background: #f59e0b;
+    color: white;
+    border-color: #f59e0b;
+}
+
 .meetings-country-item span {
     font-weight: 500;
 }
@@ -210,15 +265,18 @@
                 $('.meetings-country-item').removeClass('active');
                 $(this).addClass('active');
                 
-                const countryName = $(this).find('span').text();
+                const filterType = $(this).data('filter');
+                const continentId = $(this).data('continent-id');
+                const countryId = $(this).data('country-id');
                 
-                if (countryName === 'Tümü') {
-                    $('tbody tr').show();
-                } else {
-                    $('tbody tr').hide();
-                    $('tbody tr').filter(function() {
-                        return $(this).find('td:first').text().indexOf(countryName) > -1;
-                    }).show();
+                if (filterType === 'all') {
+                    $('.country-row').show();
+                } else if (filterType === 'continent') {
+                    $('.country-row').hide();
+                    $(`.country-row[data-continent-id="${continentId}"]`).show();
+                } else if (filterType === 'country') {
+                    $('.country-row').hide();
+                    $(`.country-row[data-country-id="${countryId}"]`).show();
                 }
             });
         });
