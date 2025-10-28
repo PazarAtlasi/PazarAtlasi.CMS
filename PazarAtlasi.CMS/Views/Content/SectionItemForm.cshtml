@@ -368,8 +368,8 @@
                                     @Model.SectionItem.Fields.Count field(s)
                                 </span>
                             </div>
-                            <button type="button" 
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" 
+                            <button type="button"
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                                     onclick="addField()"
                                     title="Add a new field to this section item">
                                 <i class="fas fa-plus mr-2"></i>
@@ -382,8 +382,8 @@
                                 <i class="fas fa-plus-circle text-gray-400 text-3xl mb-3"></i>
                                 <h4 class="text-lg font-medium text-gray-900 mb-2">No fields yet</h4>
                                 <p class="text-gray-500 mb-4">Add fields to define the structure of this section item.</p>
-                                <button type="button" 
-                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" 
+                                <button type="button"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                                         onclick="addField()">
                                     <i class="fas fa-plus mr-2"></i>
                                     Add Your First Field
@@ -394,11 +394,12 @@
                             <div id="fieldsContainer" class="space-y-4">
                                 @if (Model.SectionItem.Fields.Any())
                                 {
-                                    @for (int i = 0; i < Model.SectionItem.Fields.Count; i++)
+                                    ViewBag.Languages = Model.AvailableLanguages.OrderByDescending(t => t.IsDefault).ThenBy(s => s.Name).ToList();
+                                    var sortedFields = Model.SectionItem.Fields.OrderBy(s => s.SortOrder).ToList();
+                                    @for (int i = 0; i < sortedFields.Count; i++)
                                     {
-                                        ViewBag.Languages = Model.AvailableLanguages;
                                         ViewBag.FieldIndex = i;
-                                        @await Html.PartialAsync("_SectionItemDetailField.cshtml", Model.SectionItem.Fields[i]);
+                                        @await Html.PartialAsync("_SectionItemDetailField.cshtml", sortedFields[i])
                                     }
                                 }
                             </div>
@@ -522,7 +523,7 @@
 
                     if (!type || !mediaType) {
                         e.preventDefault();
-                        
+
                         SwalHelper.warning(
                             'Eksik Bilgiler',
                             'Lütfen hem Type hem de Media Type seçiniz.',
@@ -530,7 +531,7 @@
                                 confirmButtonText: 'Tamam'
                             }
                         );
-                        
+
                         return false;
                     }
                 });
@@ -583,13 +584,13 @@
                         fieldCard.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
                         fieldCard.style.opacity = '0';
                         fieldCard.style.transform = 'translateX(-20px)';
-                        
+
                         setTimeout(() => {
                             fieldCard.remove();
                             updateFieldIndices();
                             fieldCounter = Math.max(0, fieldCounter - 1);
                             updateFieldCountBadge();
-                            
+
                             // Show success toast
                             SwalHelper.toast('Field başarıyla silindi', 'success');
                         }, 300);
@@ -601,7 +602,7 @@
         window.toggleFieldTranslations = function(fieldIndex) {
             const checkbox = document.getElementById('SectionItem_Fields_' + fieldIndex + '__IsTranslatable');
             const translationsDiv = document.getElementById('fieldTranslations_' + fieldIndex);
-            
+
             if (checkbox && translationsDiv) {
                 if (checkbox.checked) {
                     translationsDiv.style.display = 'block';
@@ -673,41 +674,41 @@
                 .then(html => {
                     // Remove loading indicator
                     fieldsContainer.removeChild(loadingDiv);
-                    
+
                     // Add new field HTML
                     fieldsContainer.insertAdjacentHTML('beforeend', html);
-                    
+
                     // Increment counter
                     fieldCounter++;
-                    
+
                     // Update field indices for proper form binding
                     updateFieldIndices();
-                    
+
                     // Update field count and hide placeholder
                     updateFieldCountBadge();
-                    
+
                     // Add smooth scroll to new field
                     const newField = fieldsContainer.lastElementChild;
                     if (newField) {
                         newField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        
+
                         // Add highlight effect
                         newField.classList.add('ring-2', 'ring-blue-500');
                         setTimeout(() => {
                             newField.classList.remove('ring-2', 'ring-blue-500');
                         }, 2000);
-                        
+
                         // Field added successfully - no toast needed until save
                     }
                 })
                 .catch(error => {
                     console.error('Error adding field:', error);
-                    
+
                     // Remove loading indicator
                     if (fieldsContainer.contains(loadingDiv)) {
                         fieldsContainer.removeChild(loadingDiv);
                     }
-                    
+
                     // Show error with SweetAlert2
                     SwalHelper.error(
                         'Field Eklenemedi',
@@ -724,7 +725,7 @@
             fieldCards.forEach((card, index) => {
                 // Update data attribute
                 card.setAttribute('data-field-index', index);
-                
+
                 // Update all form field names to use correct index
                 const inputs = card.querySelectorAll('input, select, textarea');
                 inputs.forEach(input => {
@@ -734,7 +735,7 @@
                         input.id = input.id ? input.id.replace(/Fields_\d+_/, `Fields_${index}_`) : '';
                     }
                 });
-                
+
                 // Update labels
                 const labels = card.querySelectorAll('label[for]');
                 labels.forEach(label => {
@@ -742,7 +743,7 @@
                         label.setAttribute('for', label.getAttribute('for').replace(/Fields_\d+_/, `Fields_${index}_`));
                     }
                 });
-                
+
                 // Update validation spans
                 const validationSpans = card.querySelectorAll('span[data-valmsg-for]');
                 validationSpans.forEach(span => {
@@ -798,15 +799,15 @@
             const fieldsContainer = document.getElementById('fieldsContainer');
             const badge = document.querySelector('.bg-blue-100.text-blue-800');
             const noFieldsPlaceholder = document.getElementById('noFieldsPlaceholder');
-            
+
             if (fieldsContainer) {
                 const fieldCount = fieldsContainer.querySelectorAll('[data-field-index]').length;
-                
+
                 // Update badge
                 if (badge) {
                     badge.textContent = `${fieldCount} field(s)`;
                 }
-                
+
                 // Show/hide no fields placeholder
                 if (noFieldsPlaceholder) {
                     if (fieldCount === 0) {
