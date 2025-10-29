@@ -16,7 +16,9 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         /// Section Item ID this field value belongs to
         /// </summary>
         public int SectionItemId { get; set; }
-        
+
+        public string? FieldName { get; set; }
+
         /// <summary>
         /// Field type (from SectionItemFieldSetting)
         /// </summary>

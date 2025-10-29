@@ -2719,14 +2719,19 @@ namespace PazarAtlasi.CMS.Controllers
                 MediaType = si.MediaType,
                 SortOrder = si.SortOrder,
                 Status = si.Status,
-                Fields = si.SectionItemFields?.Select(fv => new SectionItemFieldEditViewModel
+                Fields = si.SectionItemFields?.Select(t => 
                 {
-                    Id = fv.Id,
-                    SectionItemId = fv.SectionItemId,
-                    FieldType = fv?.Type ?? SectionItemFieldType.Text,
-                    FieldKey = fv?.FieldKey ?? "",
-                    FieldValue = fv.DefaultValue,
-                }).ToList() ?? new List<SectionItemFieldEditViewModel>(),
+                    var fv = t.SectionItemFieldValues.FirstOrDefault(sifv => sifv.SectionItemFieldId == t.Id);
+                    return new SectionItemFieldEditViewModel
+                    {
+                        Id = t.Id,
+                        SectionItemId = t.SectionItemId,
+                        FieldType = t?.Type ?? SectionItemFieldType.Text,
+                        FieldKey = t?.FieldKey ?? "",
+                        FieldValue = fv != null ? (fv.Value ?? t.DefaultValue) : t.DefaultValue,
+                    };
+                }
+                ).ToList() ?? new List<SectionItemFieldEditViewModel>(),
                 Translations = si.Translations?.Select(sit => new SectionItemTranslationEditViewModel
                 {
                     Id = sit.Id,
@@ -3174,9 +3179,10 @@ namespace PazarAtlasi.CMS.Controllers
 
                 var fieldViewModel = new SectionItemFieldViewModel
                 {
-                    Id = existingFieldValue?.Id ?? 0,
+                    Id = existingFieldValue?.SectionItemFieldId ?? 0,
                     SectionItemId = sectionItem.Id,
                     FieldType = field.Type,
+                    FieldName = field.FieldName,
                     FieldKey = field.FieldKey,
                     FieldValue = existingFieldValue?.Value ?? field.DefaultValue ?? "",
                     IsTranslatable = field.IsTranslatable,
@@ -3189,7 +3195,7 @@ namespace PazarAtlasi.CMS.Controllers
                     fieldViewModel.Translations = existingFieldValue.Translations.Select(ft => new SectionItemFieldTranslationViewModel
                     {
                         Id = ft.Id,
-                        SectionItemFieldId = ft.SectionItemFieldValueId,
+                        SectionItemFieldId = ft.SectionItemFieldValueId,    // TODO - SECTION ITEM FIELD VALUE ID KONULACAK.
                         LanguageId = ft.LanguageId,
                         LanguageCode = ft.Language?.Code ?? "",
                         LanguageName = ft.Language?.Name ?? "",
@@ -3602,72 +3608,149 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Update section item fields and their translations
+        /// Update section item fields and their translations (Smart Update - preserves field values)
         /// </summary>
         private async Task UpdateSectionItemFields(SectionItem sectionItem, List<SectionItemFieldUpdateDto> fieldDtos)
         {
             if (fieldDtos == null || !fieldDtos.Any())
                 return;
 
-            // Remove existing fields and their translations
+            // Get existing fields with their field values to preserve data
             var existingFields = await _pazarAtlasiDbContext.SectionItemFields
                 .Include(f => f.Translations)
+                .Include(f => f.SectionItemFieldValues) // Include field values to check usage
                 .Where(f => f.SectionItemId == sectionItem.Id)
                 .ToListAsync();
 
-            foreach (var existingField in existingFields)
-            {
-                _pazarAtlasiDbContext.SectionItemFieldTranslations.RemoveRange(existingField.Translations);
-                _pazarAtlasiDbContext.SectionItemFields.Remove(existingField);
-            }
+            var incomingFieldKeys = fieldDtos.Where(f => !string.IsNullOrEmpty(f.FieldKey))
+                                           .Select(f => f.FieldKey)
+                                           .ToList();
 
-            // Add new fields
+            // 1. Update existing fields that are still present
             foreach (var fieldDto in fieldDtos.Where(f => !string.IsNullOrEmpty(f.FieldKey)))
             {
-                var newField = new SectionItemField
+                var existingField = existingFields.FirstOrDefault(f => f.Id == fieldDto.Id);
+                
+                if (existingField != null)
                 {
-                    SectionItemId = sectionItem.Id,
-                    FieldKey = fieldDto.FieldKey,
-                    FieldName = fieldDto.FieldName,
-                    Type = fieldDto.Type,
-                    Required = fieldDto.Required,
-                    MaxLength = fieldDto.MaxLength,
-                    Placeholder = fieldDto.Placeholder,
-                    DefaultValue = fieldDto.DefaultValue,
-                    IsTranslatable = fieldDto.IsTranslatable,
-                    ShowInUI = fieldDto.ShowInUI,
-                    OptionsJson = fieldDto.OptionsJson,
-                    AcceptedFileTypes = fieldDto.AcceptedFileTypes,
-                    MaxFileSize = fieldDto.MaxFileSize,
-                    SortOrder = fieldDto.SortOrder,
-                    CreatedAt = DateTime.UtcNow,
-                    IsDeleted = false
-                };
+                    // Update existing field properties
+                    existingField.FieldName = fieldDto.FieldName;
+                    existingField.Type = fieldDto.Type;
+                    existingField.Required = fieldDto.Required;
+                    existingField.MaxLength = fieldDto.MaxLength;
+                    existingField.Placeholder = fieldDto.Placeholder;
+                    existingField.DefaultValue = fieldDto.DefaultValue;
+                    existingField.IsTranslatable = fieldDto.IsTranslatable;
+                    existingField.ShowInUI = fieldDto.ShowInUI;
+                    existingField.OptionsJson = fieldDto.OptionsJson;
+                    existingField.AcceptedFileTypes = fieldDto.AcceptedFileTypes;
+                    existingField.MaxFileSize = fieldDto.MaxFileSize;
+                    existingField.SortOrder = fieldDto.SortOrder;
+                    existingField.UpdatedAt = DateTime.UtcNow;
 
-                _pazarAtlasiDbContext.SectionItemFields.Add(newField);
-                await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get the ID
-
-                // Add field translations if the field is translatable
-                if (fieldDto.IsTranslatable && fieldDto.Translations != null && fieldDto.Translations.Any())
-                {
-                    foreach (var translationDto in fieldDto.Translations.Where(t =>
-                        !string.IsNullOrEmpty(t.Label) ||
-                        !string.IsNullOrEmpty(t.Description) ||
-                        !string.IsNullOrEmpty(t.Placeholder)))
+                    // Update field translations
+                    _pazarAtlasiDbContext.SectionItemFieldTranslations.RemoveRange(existingField.Translations);
+                    
+                    if (fieldDto.IsTranslatable && fieldDto.Translations != null && fieldDto.Translations.Any())
                     {
-                        var fieldTranslation = new SectionItemFieldTranslation
+                        foreach (var translationDto in fieldDto.Translations.Where(t =>
+                            !string.IsNullOrEmpty(t.Label) ||
+                            !string.IsNullOrEmpty(t.Description) ||
+                            !string.IsNullOrEmpty(t.Placeholder)))
                         {
-                            SectionItemFieldId = newField.Id,
-                            LanguageId = translationDto.LanguageId,
-                            Label = translationDto.Label ?? "",
-                            Description = translationDto.Description,
-                            Placeholder = translationDto.Placeholder,
-                            CreatedAt = DateTime.UtcNow,
-                            IsDeleted = false
-                        };
+                            var fieldTranslation = new SectionItemFieldTranslation
+                            {
+                                SectionItemFieldId = existingField.Id,
+                                LanguageId = translationDto.LanguageId,
+                                Label = translationDto.Label ?? "",
+                                Description = translationDto.Description,
+                                Placeholder = translationDto.Placeholder,
+                                CreatedAt = DateTime.UtcNow,
+                                IsDeleted = false
+                            };
 
-                        _pazarAtlasiDbContext.SectionItemFieldTranslations.Add(fieldTranslation);
+                            _pazarAtlasiDbContext.SectionItemFieldTranslations.Add(fieldTranslation);
+                        }
                     }
+                }
+                else
+                {
+                    // Add new field
+                    var newField = new SectionItemField
+                    {
+                        SectionItemId = sectionItem.Id,
+                        FieldKey = fieldDto.FieldKey,
+                        FieldName = fieldDto.FieldName,
+                        Type = fieldDto.Type,
+                        Required = fieldDto.Required,
+                        MaxLength = fieldDto.MaxLength,
+                        Placeholder = fieldDto.Placeholder,
+                        DefaultValue = fieldDto.DefaultValue,
+                        IsTranslatable = fieldDto.IsTranslatable,
+                        ShowInUI = fieldDto.ShowInUI,
+                        OptionsJson = fieldDto.OptionsJson,
+                        AcceptedFileTypes = fieldDto.AcceptedFileTypes,
+                        MaxFileSize = fieldDto.MaxFileSize,
+                        SortOrder = fieldDto.SortOrder,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+
+                    _pazarAtlasiDbContext.SectionItemFields.Add(newField);
+                    await _pazarAtlasiDbContext.SaveChangesAsync(); // Save to get the ID
+
+                    // Add field translations if the field is translatable
+                    if (fieldDto.IsTranslatable && fieldDto.Translations != null && fieldDto.Translations.Any())
+                    {
+                        foreach (var translationDto in fieldDto.Translations.Where(t =>
+                            !string.IsNullOrEmpty(t.Label) ||
+                            !string.IsNullOrEmpty(t.Description) ||
+                            !string.IsNullOrEmpty(t.Placeholder)))
+                        {
+                            var fieldTranslation = new SectionItemFieldTranslation
+                            {
+                                SectionItemFieldId = newField.Id,
+                                LanguageId = translationDto.LanguageId,
+                                Label = translationDto.Label ?? "",
+                                Description = translationDto.Description,
+                                Placeholder = translationDto.Placeholder,
+                                CreatedAt = DateTime.UtcNow,
+                                IsDeleted = false
+                            };
+
+                            _pazarAtlasiDbContext.SectionItemFieldTranslations.Add(fieldTranslation);
+                        }
+                    }
+                }
+            }
+
+            // 2. Handle removed fields - check if they have values before deleting
+            var fieldsToRemove = existingFields.Where(f => !incomingFieldKeys.Contains(f.FieldKey)).ToList();
+            
+            foreach (var fieldToRemove in fieldsToRemove)
+            {
+                // Check if this field has any values across all sections
+                var hasFieldValues = await _pazarAtlasiDbContext.SectionItemFieldValues
+                    .AnyAsync(fv => fv.SectionItemFieldId == fieldToRemove.Id && !fv.IsDeleted);
+
+                if (hasFieldValues)
+                {
+                    // Don't delete the field, just mark it as hidden or deprecated
+                    // This preserves existing field values in other sections
+                    fieldToRemove.ShowInUI = false;
+                    fieldToRemove.UpdatedAt = DateTime.UtcNow;
+                    
+                    // Optionally add a comment to the field name to indicate it's deprecated
+                    if (!fieldToRemove.FieldName.Contains("[DEPRECATED]"))
+                    {
+                        fieldToRemove.FieldName = $"{fieldToRemove.FieldName} [DEPRECATED]";
+                    }
+                }
+                else
+                {
+                    // Safe to delete - no field values exist
+                    _pazarAtlasiDbContext.SectionItemFieldTranslations.RemoveRange(fieldToRemove.Translations);
+                    _pazarAtlasiDbContext.SectionItemFields.Remove(fieldToRemove);
                 }
             }
         }

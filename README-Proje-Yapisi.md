@@ -273,6 +273,59 @@ public bool IsDeleted { get; set; } = false;
 builder.HasQueryFilter(entity => !entity.IsDeleted);
 ```
 
+## � Gelişmiş Field Management Sistemi
+
+### Smart Field Update Algoritması
+
+`UpdateSectionItemFields` metodunda field'ları güncellerken veri kaybını önleyen akıllı algoritma:
+
+#### 🛡️ Veri Koruma Stratejisi
+
+**Sorun**: Eski sistemde field'lar güncellenirken tüm mevcut field'lar silinip yeniden oluşturuluyordu. Bu, diğer sayfalardaki field value'ların kaybolmasına neden oluyordu.
+
+**Çözüm**: Smart Update algoritması ile:
+
+```csharp
+// 1. Mevcut field'ları güncelle (value'ları koru)
+foreach (var fieldDto in fieldDtos)
+{
+    var existingField = existingFields.FirstOrDefault(f => f.FieldKey == fieldDto.FieldKey);
+    if (existingField != null)
+    {
+        // Field properties'ini güncelle, value'ları koru
+        existingField.FieldName = fieldDto.FieldName;
+        existingField.Type = fieldDto.Type;
+        // ... diğer properties
+    }
+}
+
+// 2. Kaldırılan field'ları kontrol et
+foreach (var fieldToRemove in fieldsToRemove)
+{
+    var hasFieldValues = await _pazarAtlasiDbContext.SectionItemFieldValues
+        .AnyAsync(fv => fv.SectionItemFieldId == fieldToRemove.Id);
+
+    if (hasFieldValues)
+    {
+        // Value'ları olan field'ları sil değil, gizle
+        fieldToRemove.ShowInUI = false;
+        fieldToRemove.FieldName += " [DEPRECATED]";
+    }
+    else
+    {
+        // Güvenli silme - hiç value yok
+        _pazarAtlasiDbContext.SectionItemFields.Remove(fieldToRemove);
+    }
+}
+```
+
+#### ✅ Avantajları
+
+1. **Veri Kaybı Önleme**: Mevcut field value'ları korunur
+2. **Güvenli Silme**: Sadece kullanılmayan field'lar silinir
+3. **Backward Compatibility**: Eski field'lar deprecated olarak işaretlenir
+4. **Performance**: Gereksiz silme/ekleme işlemleri azalır
+
 ## 🚀 Best Practices
 
 1. **Naming Convention**: PascalCase kullan
@@ -281,6 +334,7 @@ builder.HasQueryFilter(entity => !entity.IsDeleted);
 4. **Validation**: Domain seviyesinde validation ekle
 5. **Performance**: Lazy loading yerine explicit loading tercih et
 6. **Translations**: Çoklu dil desteği için ayrı translation entity'leri kullan
+7. **Field Management**: Smart update algoritması ile veri kaybını önle
 
 ## 🔍 Debugging ve Troubleshooting
 
@@ -299,6 +353,104 @@ builder.HasQueryFilter(entity => !entity.IsDeleted);
 4. Gerekli indeksleri ekle
 
 5. Migration OLUŞTURMADAN ÖNCE SOR! BUNU KULLANICIYA BIRAK.
+
+## � Gelişmimş Section Preview Sistemi
+
+### Section Preview Geliştirmeleri
+
+PageEdit sayfasında (`/Content/PageEdit/{id}`) section'ların görsel preview'ları önemli ölçüde geliştirildi:
+
+#### 🔧 Yeni Özellikler
+
+**1. Gelişmiş Section Header**
+
+- Section type'a göre dinamik ikonlar
+- Status badge'leri (Active/Draft/Pending)
+- Section key gösterimi (`hero`, `navbar`, `footer` vb.)
+- Hierarchical bilgi gösterimi (Order, Status, Item Count)
+
+**2. Zengin Field Preview Sistemi**
+
+- **Image Preview**: Tıklanabilir thumbnail'ler, modal preview
+- **Video Preview**: Play button ile video önizleme
+- **URL Preview**: Tıklanabilir linkler
+- **Color Preview**: Renk kutuları ile görsel gösterim
+- **Boolean/Checkbox**: Yeşil/kırmızı status göstergeleri
+- **Icon Preview**: Gerçek ikon gösterimi
+- **File Preview**: Download linkleri
+- **Date/Number**: Formatlanmış gösterim
+
+**3. İnteraktif Section Items Preview**
+
+- Her item için type-specific ikonlar
+- Field preview'ları responsive grid layout'ta
+- Child items göstergesi
+- Hover efektleri ve smooth animasyonlar
+
+**4. Gelişmiş Section Settings Panel**
+
+- Animasyonlu açılır/kapanır panel
+- Gelişmiş form kontrolleri
+- JSON editörleri (Attributes, Configure)
+- Quick action butonları (Edit, Duplicate, Delete)
+
+#### 📁 Yeni Dosyalar
+
+```
+PazarAtlasi.CMS/Views/Content/
+├── _FieldPreview.cshtml        # Field preview partial view
+├── _PageSectionsPartial.cshtml # Geliştirilmiş section preview
+└── _SectionItemCard.cshtml     # Section item card component
+
+PazarAtlasi.CMS/wwwroot/css/
+└── page-edit.css              # Geliştirilmiş CSS stilleri
+
+PazarAtlasi.CMS/wwwroot/js/Content/
+└── Content.Page.js            # Preview JavaScript fonksiyonları
+```
+
+#### 🎨 CSS & JavaScript Geliştirmeleri
+
+**CSS Özellikleri:**
+
+- Smooth animasyonlar ve transitions
+- Hover efektleri ve shadow'lar
+- Responsive grid layouts
+- Field-specific styling
+- Modal preview stilleri
+
+**JavaScript Fonksiyonları:**
+
+- `previewImage()` - Image modal preview
+- `previewVideo()` - Video modal preview
+- `editSectionItems()` - Section item editor
+- `toggleSectionSettings()` - Settings panel toggle
+- Enhanced notification sistemi
+
+#### 🔄 Field Preview Mapping
+
+```csharp
+// _FieldPreview.cshtml - Field type'a göre preview
+switch (fieldType)
+{
+    case "image":
+        // Thumbnail + modal preview + filename
+        break;
+    case "video":
+        // Video thumbnail + play button + modal
+        break;
+    case "url":
+        // Clickable link with external icon
+        break;
+    case "color":
+        // Color box + hex value
+        break;
+    case "boolean":
+        // Green/red status indicators
+        break;
+    // ... diğer field tipleri
+}
+```
 
 ## 🌐 API Katmanı (`PazarAtlasi.API`)
 
