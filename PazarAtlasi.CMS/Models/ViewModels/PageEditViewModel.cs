@@ -96,6 +96,21 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? MediaAttributes { get; set; }
         
         public Status Status { get; set; }
+
+        /// <summary>
+        /// Display title for this item
+        /// </summary>
+        public string? Title { get; set; }
+
+        /// <summary>
+        /// Description for this item
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Icon class for UI display
+        /// </summary>
+        public string? IconClass { get; set; }
         
         // Nested structure support
         public List<SectionItemEditViewModel> ChildItems { get; set; } = new();

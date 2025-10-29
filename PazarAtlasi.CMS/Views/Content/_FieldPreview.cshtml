@@ -1,0 +1,258 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SectionItemFieldEditViewModel
+
+@{
+    var fieldValue = Model.FieldValue ?? "";
+    var fieldKey = Model.FieldKey ?? "";
+    var fieldType = Model.FieldType.ToString().ToLower().Replace('ı', 'i');
+}
+
+<div class="field-preview-item bg-slate-50 rounded p-2 text-xs">
+    <div class="flex items-center justify-between mb-1">
+        <span class="font-medium text-slate-600 truncate">@fieldKey</span>
+        <span class="text-slate-400 text-xs">
+            @switch (fieldType)
+            {
+                case "image":
+                    <i class="fas fa-image"></i>
+                    break;
+                case "video":
+                    <i class="fas fa-video"></i>
+                    break;
+                case "url":
+                    <i class="fas fa-link"></i>
+                    break;
+                case "text":
+                case "title":
+                    <i class="fas fa-font"></i>
+                    break;
+                case "textarea":
+                case "description":
+                case "paragraph":
+                    <i class="fas fa-align-left"></i>
+                    break;
+                case "richtext":
+                    <i class="fas fa-edit"></i>
+                    break;
+                case "number":
+                    <i class="fas fa-hashtag"></i>
+                    break;
+                case "date":
+                    <i class="fas fa-calendar"></i>
+                    break;
+                case "boolean":
+                case "checkbox":
+                    <i class="fas fa-check-square"></i>
+                    break;
+                case "color":
+                    <i class="fas fa-palette"></i>
+                    break;
+                case "icon":
+                    <i class="fas fa-icons"></i>
+                    break;
+                case "fileupload":
+                    <i class="fas fa-file-upload"></i>
+                    break;
+                case "dropdown":
+                    <i class="fas fa-chevron-down"></i>
+                    break;
+                case "multiselect":
+                    <i class="fas fa-list"></i>
+                    break;
+                default:
+                    <i class="fas fa-cube"></i>
+                    break;
+            }
+        </span>
+    </div>
+
+    <div class="field-preview-content">
+        @switch (fieldType)
+        {
+            case "image":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="relative cursor-pointer" onclick="previewImage('@fieldValue', '@fieldKey')">
+                        <img src="@fieldValue" alt="Preview" class="w-full h-12 object-cover rounded border" />
+                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all rounded flex items-center justify-center">
+                            <i class="fas fa-search-plus text-white opacity-0 hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </div>
+                    <p class="text-slate-500 mt-1 truncate" title="@System.IO.Path.GetFileName(fieldValue)">@System.IO.Path.GetFileName(fieldValue)</p>
+                }
+                else
+                {
+                    <div class="w-full h-12 bg-slate-200 rounded border-2 border-dashed border-slate-300 flex items-center justify-center">
+                        <i class="fas fa-image text-slate-400"></i>
+                    </div>
+                    <p class="text-slate-400 mt-1">No image</p>
+                }
+                break;
+
+            case "video":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="relative cursor-pointer" onclick="previewVideo('@fieldValue', '@fieldKey')">
+                        <video class="w-full h-12 object-cover rounded border" muted>
+                            <source src="@fieldValue" />
+                        </video>
+                        <div class="absolute inset-0 bg-black bg-opacity-30 rounded flex items-center justify-center hover:bg-opacity-50 transition-all">
+                            <i class="fas fa-play text-white text-lg"></i>
+                        </div>
+                    </div>
+                    <p class="text-slate-500 mt-1 truncate" title="@System.IO.Path.GetFileName(fieldValue)">@System.IO.Path.GetFileName(fieldValue)</p>
+                }
+                else
+                {
+                    <div class="w-full h-12 bg-slate-200 rounded border-2 border-dashed border-slate-300 flex items-center justify-center">
+                        <i class="fas fa-video text-slate-400"></i>
+                    </div>
+                    <p class="text-slate-400 mt-1">No video</p>
+                }
+                break;
+
+            case "url":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-external-link-alt text-blue-500"></i>
+                        <a href="@fieldValue" target="_blank" class="text-blue-600 hover:text-blue-800 truncate">
+                            @(fieldValue.Length > 25 ? fieldValue.Substring(0, 25) + "..." : fieldValue)
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-slate-400">No URL</p>
+                }
+                break;
+
+            case "color":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 rounded border border-slate-300" style="background-color: @fieldValue"></div>
+                        <span class="text-slate-600 font-mono">@fieldValue</span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-slate-400">No color</p>
+                }
+                break;
+
+            case "boolean":
+            case "checkbox":
+                <div class="flex items-center space-x-2">
+                    @if (fieldValue == "true" || fieldValue == "True" || fieldValue == "1")
+                    {
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span class="text-green-600">Enabled</span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-times-circle text-red-500"></i>
+                        <span class="text-red-600">Disabled</span>
+                    }
+                </div>
+                break;
+
+            case "icon":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="flex items-center space-x-2">
+                        <i class="@fieldValue text-lg text-slate-600"></i>
+                        <span class="text-slate-600 font-mono text-xs">@fieldValue</span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-slate-400">No icon</p>
+                }
+                break;
+
+            case "fileupload":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-file text-blue-500"></i>
+                        <a href="@fieldValue" target="_blank" class="text-blue-600 hover:text-blue-800 truncate">
+                            @System.IO.Path.GetFileName(fieldValue)
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-slate-400">No file</p>
+                }
+                break;
+
+            case "number":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-hashtag text-slate-500"></i>
+                        <span class="text-slate-700 font-mono">@fieldValue</span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-slate-400">No number</p>
+                }
+                break;
+
+            case "date":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-calendar text-slate-500"></i>
+                        <span class="text-slate-700">
+                            @if (DateTime.TryParse(fieldValue, out DateTime date))
+                            {
+                                @date.ToString("MMM dd, yyyy")
+                            }
+                            else
+                            {
+                                @fieldValue
+                            }
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-slate-400">No date</p>
+                }
+                break;
+
+            case "textarea":
+            case "description":
+            case "paragraph":
+            case "richtext":
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <p class="text-slate-700 line-clamp-2">
+                        @(fieldValue.Length > 50 ? fieldValue.Substring(0, 50) + "..." : fieldValue)
+                    </p>
+                }
+                else
+                {
+                    <p class="text-slate-400">No content</p>
+                }
+                break;
+
+            case "text":
+            case "title":
+            default:
+                @if (!string.IsNullOrEmpty(fieldValue))
+                {
+                    <p class="text-slate-700 truncate" title="@fieldValue">
+                        @(fieldValue.Length > 30 ? fieldValue.Substring(0, 30) + "..." : fieldValue)
+                    </p>
+                }
+                else
+                {
+                    <p class="text-slate-400">No value</p>
+                }
+                break;
+        }
+    </div>
+</div>

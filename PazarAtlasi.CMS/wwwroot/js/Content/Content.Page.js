@@ -855,3 +855,294 @@ async function addLayoutSection(pageId, sectionConfig) {
 // Make functions globally available
 window.handlePageTypeChange = handlePageTypeChange;
 window.handleLayoutChange = handleLayoutChange;
+
+// Enhanced Section Preview Functions
+function editSectionItems(sectionId) {
+  try {
+    if (typeof SectionModal !== "undefined" && SectionModal.show) {
+      const pageId =
+        window.currentPageId ||
+        document.querySelector('input[name="Id"]').value;
+      SectionModal.show(sectionId, parseInt(pageId));
+    } else {
+      console.warn(
+        "SectionModal not available, redirecting to section edit page"
+      );
+      window.location.href = `/Content/SectionDetails/${sectionId}`;
+    }
+  } catch (error) {
+    console.error("Error opening section items editor:", error);
+    // Fallback to direct navigation
+    window.location.href = `/Content/SectionDetails/${sectionId}`;
+  }
+}
+
+function duplicateSection(sectionId) {
+  if (!confirm("Are you sure you want to duplicate this section?")) {
+    return;
+  }
+
+  // Show loading state
+  const sectionElement = document.querySelector(
+    `[data-section-id="${sectionId}"]`
+  );
+  if (sectionElement) {
+    sectionElement.classList.add("loading");
+  }
+
+  ContentServices.duplicateSection(sectionId)
+    .then((result) => {
+      if (result.success) {
+        // Reload page to show duplicated section
+        location.reload();
+      } else {
+        alert("Error duplicating section: " + result.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error duplicating section:", error);
+      alert("An error occurred while duplicating the section.");
+    })
+    .finally(() => {
+      if (sectionElement) {
+        sectionElement.classList.remove("loading");
+      }
+    });
+}
+
+// Field Preview Enhancement Functions
+function previewImage(imageUrl, fieldKey) {
+  if (!imageUrl) return;
+
+  // Create modal for image preview
+  const modal = document.createElement("div");
+  modal.className =
+    "fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4";
+  modal.onclick = () => modal.remove();
+
+  const img = document.createElement("img");
+  img.src = imageUrl;
+  img.className = "max-w-full max-h-full rounded-lg shadow-2xl";
+  img.onclick = (e) => e.stopPropagation();
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className =
+    "absolute top-4 right-4 text-white hover:text-gray-300 text-2xl";
+  closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+  closeBtn.onclick = () => modal.remove();
+
+  const info = document.createElement("div");
+  info.className =
+    "absolute bottom-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded";
+  info.innerHTML = `<i class="fas fa-image mr-2"></i>${fieldKey}`;
+
+  modal.appendChild(img);
+  modal.appendChild(closeBtn);
+  modal.appendChild(info);
+  document.body.appendChild(modal);
+}
+
+function previewVideo(videoUrl, fieldKey) {
+  if (!videoUrl) return;
+
+  // Create modal for video preview
+  const modal = document.createElement("div");
+  modal.className =
+    "fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4";
+  modal.onclick = () => modal.remove();
+
+  const video = document.createElement("video");
+  video.src = videoUrl;
+  video.className = "max-w-full max-h-full rounded-lg shadow-2xl";
+  video.controls = true;
+  video.autoplay = true;
+  video.onclick = (e) => e.stopPropagation();
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className =
+    "absolute top-4 right-4 text-white hover:text-gray-300 text-2xl";
+  closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+  closeBtn.onclick = () => modal.remove();
+
+  const info = document.createElement("div");
+  info.className =
+    "absolute bottom-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded";
+  info.innerHTML = `<i class="fas fa-video mr-2"></i>${fieldKey}`;
+
+  modal.appendChild(video);
+  modal.appendChild(closeBtn);
+  modal.appendChild(info);
+  document.body.appendChild(modal);
+}
+
+// Section Settings Animation
+function toggleSectionSettings(sectionId) {
+  const settings = document.getElementById(
+    `sectionSettings_${sectionId}`
+  );
+  if (!settings) return;
+
+  const isHidden =
+    settings.style.display === "none" ||
+    settings.classList.contains("hidden");
+
+  if (isHidden) {
+    // Show with animation
+    settings.style.display = "block";
+    settings.classList.remove("hidden");
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      settings.style.opacity = "0";
+      settings.style.transform = "translateY(-10px)";
+
+      requestAnimationFrame(() => {
+        settings.style.transition = "all 0.3s ease-out";
+        settings.style.opacity = "1";
+        settings.style.transform = "translateY(0)";
+      });
+    });
+  } else {
+    // Hide with animation
+    settings.style.transition = "all 0.3s ease-out";
+    settings.style.opacity = "0";
+    settings.style.transform = "translateY(-10px)";
+
+    setTimeout(() => {
+      settings.style.display = "none";
+      settings.classList.add("hidden");
+    }, 300);
+  }
+}
+
+// Enhanced Section Type Icons
+function getSectionTypeIcon(sectionType) {
+  const icons = {
+    navbar: "fas fa-bars",
+    header: "fas fa-heading",
+    hero: "fas fa-star",
+    footer: "fas fa-grip-lines",
+    gallery: "fas fa-images",
+    contact: "fas fa-envelope",
+    newsletter: "fas fa-newspaper",
+    contentblock: "fas fa-cube",
+    featured: "fas fa-trophy",
+    catalog: "fas fa-th-large",
+    sidebar: "fas fa-columns",
+    maincontent: "fas fa-file-alt",
+    relatedcontent: "fas fa-link",
+    advertisement: "fas fa-ad",
+    search: "fas fa-search",
+    contactform: "fas fa-wpforms",
+    whyus: "fas fa-thumbs-up",
+    socialmedialinks: "fas fa-share-alt",
+    testimonials: "fas fa-quote-left",
+    calltoaction: "fas fa-bullhorn",
+    breadcrumbs: "fas fa-route",
+    pagination: "fas fa-ellipsis-h",
+    map: "fas fa-map-marker-alt",
+  };
+
+  return icons[sectionType.toLowerCase()] || "fas fa-layer-group";
+}
+
+// Field Type Icons
+function getFieldTypeIcon(fieldType) {
+  const icons = {
+    text: "fas fa-font",
+    textarea: "fas fa-align-left",
+    title: "fas fa-heading",
+    description: "fas fa-align-left",
+    paragraph: "fas fa-paragraph",
+    richtext: "fas fa-edit",
+    image: "fas fa-image",
+    video: "fas fa-video",
+    url: "fas fa-link",
+    number: "fas fa-hashtag",
+    date: "fas fa-calendar",
+    boolean: "fas fa-check-square",
+    checkbox: "fas fa-check-square",
+    color: "fas fa-palette",
+    icon: "fas fa-icons",
+    fileupload: "fas fa-file-upload",
+    dropdown: "fas fa-chevron-down",
+    multiselect: "fas fa-list",
+  };
+
+  return icons[fieldType.toLowerCase()] || "fas fa-cube";
+}
+
+// Utility function to truncate text
+function truncateText(text, maxLength = 50) {
+  if (!text || text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + "...";
+}
+
+// Enhanced notification system for section operations
+function showSectionNotification(
+  message,
+  type = "info",
+  duration = 5000
+) {
+  const notification = document.createElement("div");
+  notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 ${getNotificationClasses(
+    type
+  )}`;
+
+  notification.innerHTML = `
+    <div class="flex items-center">
+      <span class="mr-3">${getNotificationIcon(type)}</span>
+      <div class="flex-1">
+        <p class="font-medium">${message}</p>
+      </div>
+      <button class="ml-4 text-current hover:opacity-75" onclick="this.parentElement.parentElement.remove()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `;
+
+  // Add entrance animation
+  notification.style.transform = "translateX(100%)";
+  document.body.appendChild(notification);
+
+  requestAnimationFrame(() => {
+    notification.style.transform = "translateX(0)";
+  });
+
+  // Auto remove
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.style.transform = "translateX(100%)";
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, duration);
+}
+
+function getNotificationClasses(type) {
+  const classes = {
+    success: "bg-green-500 text-white",
+    error: "bg-red-500 text-white",
+    warning: "bg-yellow-500 text-white",
+    info: "bg-blue-500 text-white",
+  };
+  return classes[type] || classes.info;
+}
+
+function getNotificationIcon(type) {
+  const icons = {
+    success: '<i class="fas fa-check-circle"></i>',
+    error: '<i class="fas fa-exclamation-circle"></i>',
+    warning: '<i class="fas fa-exclamation-triangle"></i>',
+    info: '<i class="fas fa-info-circle"></i>',
+  };
+  return icons[type] || icons.info;
+}
+
+// Make functions globally available
+window.editSectionItems = editSectionItems;
+window.duplicateSection = duplicateSection;
+window.previewImage = previewImage;
+window.previewVideo = previewVideo;
+window.getSectionTypeIcon = getSectionTypeIcon;
+window.getFieldTypeIcon = getFieldTypeIcon;
+window.showSectionNotification = showSectionNotification;

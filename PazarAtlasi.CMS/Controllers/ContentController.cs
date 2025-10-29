@@ -2217,7 +2217,8 @@ namespace PazarAtlasi.CMS.Controllers
                         Code = l.Code,
                         IsDefault = l.IsDefault
                     })
-                    .OrderBy(l => l.Name)
+                    .OrderByDescending(s => s.IsDefault)
+                    .ThenBy(t => t.Name)
                     .ToListAsync();
 
                 var templates = await _pazarAtlasiDbContext.Templates
