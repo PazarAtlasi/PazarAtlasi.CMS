@@ -107,7 +107,7 @@
                                     </label>
                                     <div class="relative">
                                         <select asp-for="SectionItem.TemplateId" id="SectionItem_TemplateId"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 pr-10">
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 pr-10 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed">
                                         <option value="">No Template</option>
                                         @foreach (var template in Model.Templates)
                                         {
@@ -119,10 +119,17 @@
                                         <div id="templateAutoIndicator" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" style="display: none;">
                                             <i class="fas fa-magic text-blue-500 animate-pulse" title="Auto-selected from parent"></i>
                                         </div>
+                                        <div id="templateLockedIndicator" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" style="display: none;">
+                                            <i class="fas fa-lock text-gray-500" title="Inherited from parent - cannot be changed"></i>
+                                        </div>
                                     </div>
-                                    <p class="mt-1 text-sm text-gray-500">
+                                    <p class="mt-1 text-sm text-gray-500" id="templateHelpText">
                                         Select a template to inherit field definitions. 
                                         <span class="text-blue-600 font-medium">Auto-selects when parent is chosen.</span>
+                                    </p>
+                                    <p class="mt-1 text-sm text-orange-600" id="templateLockedText" style="display: none;">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Template is inherited from parent and cannot be changed. Clear parent selection to choose a different template.
                                     </p>
                                     <span asp-validation-for="SectionItem.TemplateId" class="text-red-600 text-sm"></span>
                                 </div>
@@ -498,6 +505,12 @@
             border-color: #3b82f6 !important;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
         }
+        
+        select:disabled {
+            background-color: #f9fafb !important;
+            color: #6b7280 !important;
+            cursor: not-allowed !important;
+        }
     </style>
 }
 
@@ -518,6 +531,10 @@
             if (parentSelect && templateSelect) {
                 parentSelect.addEventListener('change', function() {
                     const selectedParentId = this.value;
+                    const templateAutoIndicator = document.getElementById('templateAutoIndicator');
+                    const templateLockedIndicator = document.getElementById('templateLockedIndicator');
+                    const templateHelpText = document.getElementById('templateHelpText');
+                    const templateLockedText = document.getElementById('templateLockedText');
                     
                     if (selectedParentId) {
                         // Find the parent item data
@@ -527,35 +544,59 @@
                             // Auto-select the parent's template
                             templateSelect.value = parentData.templateId;
                             
+                            // Disable template selection
+                            templateSelect.disabled = true;
+                            
+                            // Show locked indicator and hide auto indicator
+                            if (templateLockedIndicator) {
+                                templateLockedIndicator.style.display = 'flex';
+                            }
+                            if (templateAutoIndicator) {
+                                templateAutoIndicator.style.display = 'none';
+                            }
+                            
+                            // Update help text
+                            if (templateHelpText) {
+                                templateHelpText.style.display = 'none';
+                            }
+                            if (templateLockedText) {
+                                templateLockedText.style.display = 'block';
+                            }
+                            
                             // Add visual feedback to template select
                             templateSelect.classList.add('template-auto-selected');
                             setTimeout(() => {
                                 templateSelect.classList.remove('template-auto-selected');
                             }, 2000);
                             
-                            // Show visual indicator
-                            const indicator = document.getElementById('templateAutoIndicator');
-                            if (indicator) {
-                                indicator.style.display = 'flex';
-                                setTimeout(() => {
-                                    indicator.style.display = 'none';
-                                }, 3000);
-                            }
-                            
                             // Show a subtle notification
-                            showTemplateAutoSelection(parentData.Title, parentData.templateId);
-                        } else if (!selectedParentId) {
-                            // If parent is cleared, optionally clear template too
-                            // templateSelect.value = '';
-                            
-                            // Hide indicator
-                            const indicator = document.getElementById('templateAutoIndicator');
-                            if (indicator) {
-                                indicator.style.display = 'none';
-                            }
+                            showTemplateAutoSelection(parentData.title, parentData.templateId);
+                        }
+                    } else {
+                        // Parent is cleared - enable template selection
+                        templateSelect.disabled = false;
+                        
+                        // Hide locked indicator
+                        if (templateLockedIndicator) {
+                            templateLockedIndicator.style.display = 'none';
+                        }
+                        
+                        // Show normal help text
+                        if (templateHelpText) {
+                            templateHelpText.style.display = 'block';
+                        }
+                        if (templateLockedText) {
+                            templateLockedText.style.display = 'none';
                         }
                     }
                 });
+                
+                // Check initial state on page load
+                const initialParentId = parentSelect.value;
+                if (initialParentId) {
+                    // Trigger change event to set initial state
+                    parentSelect.dispatchEvent(new Event('change'));
+                }
             }
             
             // Form validation
