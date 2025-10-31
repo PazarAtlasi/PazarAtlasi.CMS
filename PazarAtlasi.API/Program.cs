@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 // Add Persistence Layer
 builder.Services.AddPersistenceServiceRegistrations(builder.Configuration);
-builder.Services.AddInfrastructureServiceRegistrations();
+builder.Services.AddInfrastructureServiceRegistrations(builder.Configuration);
 
 var app = builder.Build();
 

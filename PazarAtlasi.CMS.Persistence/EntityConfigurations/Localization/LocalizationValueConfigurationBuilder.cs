@@ -125,7 +125,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 { "Common.Info", "Bilgi" },
                 { "Common.Refresh", "Yenile" },
                 { "Common.Settings", "Ayarlar" },
-                { "Common.ViewAll", "Tümünü Gör" }
+                { "Common.ViewAll", "Tümünü Gör" },
+                { "Common.All", "Tümü" },
+                { "Common.Actions", "İşlemler" },
+                { "Common.AreYouSure", "Emin misiniz?" },
+                { "Common.UnexpectedError", "Beklenmeyen bir hata oluştu" }
             };
 
             // Common keys - English
@@ -164,7 +168,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 { "Common.Info", "Info" },
                 { "Common.Refresh", "Refresh" },
                 { "Common.Settings", "Settings" },
-                { "Common.ViewAll", "View All" }
+                { "Common.ViewAll", "View All" },
+                { "Common.All", "All" },
+                { "Common.Actions", "Actions" },
+                { "Common.AreYouSure", "Are you sure?" },
+                { "Common.UnexpectedError", "An unexpected error occurred" }
             };
 
             // Page keys - Turkish
@@ -307,6 +315,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 { "Navigation.GeneralSettings", "Genel Ayarlar" },
                 { "Navigation.Countries", "Ülkeler" },
                 { "Navigation.Languages", "Diller" },
+                { "Navigation.Localization", "Lokalizasyon" },
                 { "Navigation.Profile", "Profil" },
                 { "Navigation.Help", "Yardım" },
                 { "Navigation.Logout", "Çıkış" }
@@ -340,6 +349,7 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 { "Navigation.GeneralSettings", "General Settings" },
                 { "Navigation.Countries", "Countries" },
                 { "Navigation.Languages", "Languages" },
+                { "Navigation.Localization", "Localization" },
                 { "Navigation.Profile", "Profile" },
                 { "Navigation.Help", "Help" },
                 { "Navigation.Logout", "Logout" }
@@ -357,6 +367,66 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
             {
                 { "Language.English", "English" },
                 { "Language.Turkish", "Turkish" }
+            };
+
+            // Localization keys - Turkish
+            var localizationKeysTr = new Dictionary<string, string>
+            {
+                { "Localization.SystemDescription", "Sistem genelinde kullanılan metin çevirilerini yönetin" },
+                { "Localization.Keys", "Lokalizasyon Anahtarları" },
+                { "Localization.Key", "Anahtar" },
+                { "Localization.AddKey", "Yeni Anahtar Ekle" },
+                { "Localization.EditKey", "Anahtar Düzenle" },
+                { "Localization.KeyDetails", "Anahtar Detayları" },
+                { "Localization.AddKeyDescription", "Yeni bir lokalizasyon anahtarı ve çevirilerini ekleyin" },
+                { "Localization.EditKeyDescription", "Mevcut lokalizasyon anahtarını ve çevirilerini düzenleyin" },
+                { "Localization.KeyPlaceholder", "örn: Common.Save" },
+                { "Localization.KeyHint", "Nokta ile ayrılmış hiyerarşik anahtar kullanın" },
+                { "Localization.KeyReadonly", "Anahtar değiştirilemez" },
+                { "Localization.Description", "Açıklama" },
+                { "Localization.DescriptionPlaceholder", "Bu anahtarın ne için kullanıldığını açıklayın" },
+                { "Localization.SelectCategory", "Kategori Seçin" },
+                { "Localization.Translations", "Çeviriler" },
+                { "Localization.TranslationPlaceholder", "{0} dilinde çeviri girin" },
+                { "Localization.Translated", "Çevrildi" },
+                { "Localization.NotTranslated", "Çevrilmedi" },
+                { "Localization.LastUpdated", "Son Güncelleme" },
+                { "Localization.SearchPlaceholder", "Anahtar veya değer ara..." },
+                { "Localization.ShowingResults", "{0}-{1} / {2} sonuç gösteriliyor" },
+                { "Localization.NoKeys", "Lokalizasyon anahtarı bulunamadı" },
+                { "Localization.NoKeysDescription", "Henüz hiç lokalizasyon anahtarı eklenmemiş" },
+                { "Localization.AddFirstKey", "İlk Anahtarı Ekle" },
+                { "Localization.DeleteConfirmation", "Bu anahtarı ve tüm çevirilerini silmek istediğinizden emin misiniz?" }
+            };
+
+            // Localization keys - English
+            var localizationKeysEn = new Dictionary<string, string>
+            {
+                { "Localization.SystemDescription", "Manage text translations used throughout the system" },
+                { "Localization.Keys", "Localization Keys" },
+                { "Localization.Key", "Key" },
+                { "Localization.AddKey", "Add New Key" },
+                { "Localization.EditKey", "Edit Key" },
+                { "Localization.KeyDetails", "Key Details" },
+                { "Localization.AddKeyDescription", "Add a new localization key and its translations" },
+                { "Localization.EditKeyDescription", "Edit existing localization key and its translations" },
+                { "Localization.KeyPlaceholder", "e.g: Common.Save" },
+                { "Localization.KeyHint", "Use dot-separated hierarchical key" },
+                { "Localization.KeyReadonly", "Key cannot be changed" },
+                { "Localization.Description", "Description" },
+                { "Localization.DescriptionPlaceholder", "Describe what this key is used for" },
+                { "Localization.SelectCategory", "Select Category" },
+                { "Localization.Translations", "Translations" },
+                { "Localization.TranslationPlaceholder", "Enter translation in {0}" },
+                { "Localization.Translated", "Translated" },
+                { "Localization.NotTranslated", "Not Translated" },
+                { "Localization.LastUpdated", "Last Updated" },
+                { "Localization.SearchPlaceholder", "Search key or value..." },
+                { "Localization.ShowingResults", "Showing {0}-{1} of {2} results" },
+                { "Localization.NoKeys", "No localization keys found" },
+                { "Localization.NoKeysDescription", "No localization keys have been added yet" },
+                { "Localization.AddFirstKey", "Add First Key" },
+                { "Localization.DeleteConfirmation", "Are you sure you want to delete this key and all its translations?" }
             };
 
             // Dashboard keys - Turkish
@@ -538,6 +608,22 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 });
             }
 
+            foreach (var kvp in localizationKeysTr)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 1, // Turkish
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"Turkish translation for {kvp.Key}",
+                    Category = "Localization",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
             // Add English keys
             foreach (var kvp in commonKeysEn)
             {
@@ -645,6 +731,22 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                     Value = kvp.Value,
                     Description = $"English translation for {kvp.Key}",
                     Category = "Dashboard",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            foreach (var kvp in localizationKeysEn)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 2, // English
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"English translation for {kvp.Key}",
+                    Category = "Localization",
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow,
                     IsDeleted = false
