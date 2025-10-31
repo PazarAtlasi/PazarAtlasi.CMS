@@ -2305,6 +2305,7 @@ namespace PazarAtlasi.CMS.Controllers
                             IsTranslatable = f.IsTranslatable,
                             OptionsJson = f.OptionsJson,
                             SortOrder = f.SortOrder,
+                            ShowInUI = f.ShowInUI,
                             FieldTypes = GetSectionItemFieldTypes(),
                             Translations = f.Translations.Select(ft => new SectionItemFieldTranslationUpdateDto
                             {
@@ -3647,7 +3648,7 @@ namespace PazarAtlasi.CMS.Controllers
                     existingField.MaxFileSize = fieldDto.MaxFileSize;
                     existingField.SortOrder = fieldDto.SortOrder;
                     existingField.UpdatedAt = DateTime.UtcNow;
-
+                    existingField.ShowInUI = fieldDto.ShowInUI;
                     // Update field translations
                     _pazarAtlasiDbContext.SectionItemFieldTranslations.RemoveRange(existingField.Translations);
                     
