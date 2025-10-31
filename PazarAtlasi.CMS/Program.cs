@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using PazarAtlasi.CMS.Persistence.Context;
-using PazarAtlasi.CMS.Infrastructure.ServiceRegistrations;
 using PazarAtlasi.CMS.Infrastructure.Middleware;
+using PazarAtlasi.CMS.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
