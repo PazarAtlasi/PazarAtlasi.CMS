@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using PazarAtlasi.CMS.Application.Interfaces.Services;
 
 namespace PazarAtlasi.CMS.Helpers

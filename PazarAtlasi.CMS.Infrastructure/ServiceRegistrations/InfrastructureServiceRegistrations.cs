@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
 using PazarAtlasi.CMS.Application.Interfaces.Services;
 using PazarAtlasi.CMS.Application.Services;

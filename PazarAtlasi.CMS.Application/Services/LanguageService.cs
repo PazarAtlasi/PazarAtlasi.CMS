@@ -5,6 +5,7 @@ using PazarAtlasi.CMS.Application.Interfaces.Infrastructure;
 using PazarAtlasi.CMS.Application.Interfaces.Services;
 using PazarAtlasi.CMS.Application.Models.Localization;
 using PazarAtlasi.CMS.Persistence.Context;
+using PazarAtlasi.CMS.Domain.Entities.Localization;
 
 namespace PazarAtlasi.CMS.Application.Services
 {

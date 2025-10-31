@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PazarAtlasi.CMS.Application.Interfaces.Services;
 using PazarAtlasi.CMS.Application.Models.Localization;
 using PazarAtlasi.CMS.Application.Constants;
