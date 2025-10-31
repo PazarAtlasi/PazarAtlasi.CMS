@@ -12,7 +12,7 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    [Migration("20251031122909_init")]
+    [Migration("20251031125121_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -1658,7 +1658,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 1,
                             Code = "tr-TR",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7393),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 466, DateTimeKind.Utc).AddTicks(7253),
                             Flag = "🇹🇷",
                             IsActive = true,
                             IsDefault = true,
@@ -1672,7 +1672,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 2,
                             Code = "en-US",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7397),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 466, DateTimeKind.Utc).AddTicks(7257),
                             Flag = "🇺🇸",
                             IsActive = true,
                             IsDefault = false,
@@ -1686,7 +1686,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 3,
                             Code = "de-DE",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7400),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 466, DateTimeKind.Utc).AddTicks(7259),
                             Flag = "🇩🇪",
                             IsActive = true,
                             IsDefault = false,
@@ -1700,7 +1700,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 4,
                             Code = "fr-FR",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7402),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 466, DateTimeKind.Utc).AddTicks(7261),
                             Flag = "🇫🇷",
                             IsActive = true,
                             IsDefault = false,
@@ -1714,7 +1714,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 5,
                             Code = "es-ES",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7403),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 466, DateTimeKind.Utc).AddTicks(7263),
                             Flag = "🇪🇸",
                             IsActive = true,
                             IsDefault = false,
@@ -10596,6 +10596,3466 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDatabaseName("IX_LocalizationValues_Key_LanguageId");
 
                     b.ToTable("LocalizationValues", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2546),
+                            Description = "Turkish translation for Common.Save",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Save",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kaydet"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2573),
+                            Description = "Turkish translation for Common.Cancel",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Cancel",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İptal"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2574),
+                            Description = "Turkish translation for Common.Delete",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Delete",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sil"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2576),
+                            Description = "Turkish translation for Common.Edit",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Edit",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Düzenle"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2576),
+                            Description = "Turkish translation for Common.Add",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Add",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ekle"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2579),
+                            Description = "Turkish translation for Common.Update",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Update",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Güncelle"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2579),
+                            Description = "Turkish translation for Common.Create",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Create",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Oluştur"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2580),
+                            Description = "Turkish translation for Common.Remove",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Remove",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kaldır"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2581),
+                            Description = "Turkish translation for Common.Search",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Search",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ara"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2582),
+                            Description = "Turkish translation for Common.Filter",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Filter",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Filtrele"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2583),
+                            Description = "Turkish translation for Common.Export",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Export",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Dışa Aktar"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2584),
+                            Description = "Turkish translation for Common.Import",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Import",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İçe Aktar"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2585),
+                            Description = "Turkish translation for Common.Upload",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Upload",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Yükle"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2586),
+                            Description = "Turkish translation for Common.Download",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Download",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İndir"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2587),
+                            Description = "Turkish translation for Common.Preview",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Preview",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Önizle"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2588),
+                            Description = "Turkish translation for Common.Publish",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Publish",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Yayınla"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2588),
+                            Description = "Turkish translation for Common.Draft",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Draft",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Taslak"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2590),
+                            Description = "Turkish translation for Common.Active",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Active",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Aktif"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2590),
+                            Description = "Turkish translation for Common.Inactive",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Inactive",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Pasif"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2591),
+                            Description = "Turkish translation for Common.Yes",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Yes",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Evet"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2592),
+                            Description = "Turkish translation for Common.No",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.No",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Hayır"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2593),
+                            Description = "Turkish translation for Common.OK",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.OK",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Tamam"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2594),
+                            Description = "Turkish translation for Common.Close",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Close",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kapat"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2594),
+                            Description = "Turkish translation for Common.Back",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Back",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Geri"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2595),
+                            Description = "Turkish translation for Common.Next",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Next",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İleri"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2596),
+                            Description = "Turkish translation for Common.Previous",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Previous",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Önceki"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2597),
+                            Description = "Turkish translation for Common.Loading",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Loading",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Yükleniyor..."
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2598),
+                            Description = "Turkish translation for Common.Success",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Success",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Başarılı"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2598),
+                            Description = "Turkish translation for Common.Error",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Error",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Hata"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2599),
+                            Description = "Turkish translation for Common.Warning",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Warning",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Uyarı"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2600),
+                            Description = "Turkish translation for Common.Info",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Info",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bilgi"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2601),
+                            Description = "Turkish translation for Common.Refresh",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Refresh",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Yenile"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2602),
+                            Description = "Turkish translation for Common.Settings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Settings",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ayarlar"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2624),
+                            Description = "Turkish translation for Common.ViewAll",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.ViewAll",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Tümünü Gör"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2627),
+                            Description = "Turkish translation for Page.Title",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Title",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sayfa Başlığı"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2628),
+                            Description = "Turkish translation for Page.Content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Content",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sayfa İçeriği"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2629),
+                            Description = "Turkish translation for Page.Description",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Description",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sayfa Açıklaması"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2630),
+                            Description = "Turkish translation for Page.Keywords",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Keywords",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Anahtar Kelimeler"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2631),
+                            Description = "Turkish translation for Page.Author",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Author",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Yazar"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2632),
+                            Description = "Turkish translation for Page.CreatedAt",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.CreatedAt",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Oluşturulma Tarihi"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2632),
+                            Description = "Turkish translation for Page.UpdatedAt",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.UpdatedAt",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Güncellenme Tarihi"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2633),
+                            Description = "Turkish translation for Page.Status",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Status",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Durum"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2634),
+                            Description = "Turkish translation for Page.Type",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Type",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sayfa Tipi"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2635),
+                            Description = "Turkish translation for Page.Layout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Layout",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Düzen"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2636),
+                            Description = "Turkish translation for Page.Template",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Template",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Şablon"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2636),
+                            Description = "Turkish translation for Page.SEO",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.SEO",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "SEO Ayarları"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2637),
+                            Description = "Turkish translation for Page.Sections",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Sections",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bölümler"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2638),
+                            Description = "Turkish translation for Page.Items",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Items",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Öğeler"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2639),
+                            Description = "Turkish translation for Page.Fields",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Fields",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Alanlar"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2642),
+                            Description = "Turkish translation for Section.Name",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Name",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bölüm Adı"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2643),
+                            Description = "Turkish translation for Section.Type",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Type",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bölüm Tipi"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2644),
+                            Description = "Turkish translation for Section.Key",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Key",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bölüm Anahtarı"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2645),
+                            Description = "Turkish translation for Section.Order",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Order",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sıralama"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2646),
+                            Description = "Turkish translation for Section.Settings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Settings",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ayarlar"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2647),
+                            Description = "Turkish translation for Section.Items",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Items",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Öğeler"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2647),
+                            Description = "Turkish translation for Section.AddItem",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.AddItem",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Öğe Ekle"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2648),
+                            Description = "Turkish translation for Section.EditItems",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.EditItems",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Öğeleri Düzenle"
+                        },
+                        new
+                        {
+                            Id = 58,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2649),
+                            Description = "Turkish translation for Section.Duplicate",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Duplicate",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kopyala"
+                        },
+                        new
+                        {
+                            Id = 59,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2650),
+                            Description = "Turkish translation for Section.Remove",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Remove",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kaldır"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2650),
+                            Description = "Turkish translation for Section.Hero",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Hero",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ana Bölüm"
+                        },
+                        new
+                        {
+                            Id = 61,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2651),
+                            Description = "Turkish translation for Section.Navbar",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Navbar",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Navigasyon"
+                        },
+                        new
+                        {
+                            Id = 62,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2652),
+                            Description = "Turkish translation for Section.Footer",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Footer",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Alt Bilgi"
+                        },
+                        new
+                        {
+                            Id = 63,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2653),
+                            Description = "Turkish translation for Section.Content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Content",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İçerik"
+                        },
+                        new
+                        {
+                            Id = 64,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2654),
+                            Description = "Turkish translation for Section.Gallery",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Gallery",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Galeri"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2654),
+                            Description = "Turkish translation for Section.Contact",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Contact",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İletişim"
+                        },
+                        new
+                        {
+                            Id = 66,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2658),
+                            Description = "Turkish translation for Validation.Required",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Required",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bu alan zorunludur"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2673),
+                            Description = "Turkish translation for Validation.Email",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Email",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Geçerli bir e-posta adresi giriniz"
+                        },
+                        new
+                        {
+                            Id = 68,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2674),
+                            Description = "Turkish translation for Validation.MinLength",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.MinLength",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "En az {0} karakter olmalıdır"
+                        },
+                        new
+                        {
+                            Id = 69,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2675),
+                            Description = "Turkish translation for Validation.MaxLength",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.MaxLength",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "En fazla {0} karakter olmalıdır"
+                        },
+                        new
+                        {
+                            Id = 70,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2676),
+                            Description = "Turkish translation for Validation.Range",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Range",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "{0} ile {1} arasında olmalıdır"
+                        },
+                        new
+                        {
+                            Id = 71,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2677),
+                            Description = "Turkish translation for Validation.Numeric",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Numeric",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sayısal bir değer giriniz"
+                        },
+                        new
+                        {
+                            Id = 72,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2678),
+                            Description = "Turkish translation for Validation.Date",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Date",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Geçerli bir tarih giriniz"
+                        },
+                        new
+                        {
+                            Id = 73,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2678),
+                            Description = "Turkish translation for Validation.Url",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Url",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Geçerli bir URL giriniz"
+                        },
+                        new
+                        {
+                            Id = 74,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2679),
+                            Description = "Turkish translation for Validation.Phone",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Phone",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Geçerli bir telefon numarası giriniz"
+                        },
+                        new
+                        {
+                            Id = 75,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2680),
+                            Description = "Turkish translation for Validation.Password",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Password",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Şifre en az 8 karakter olmalıdır"
+                        },
+                        new
+                        {
+                            Id = 76,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2682),
+                            Description = "Turkish translation for Navigation.Dashboard",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Dashboard",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Dashboard"
+                        },
+                        new
+                        {
+                            Id = 77,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2683),
+                            Description = "Turkish translation for Navigation.Announcements",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Announcements",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Duyurular"
+                        },
+                        new
+                        {
+                            Id = 78,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2684),
+                            Description = "Turkish translation for Navigation.Campaigns",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Campaigns",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kampanyalar"
+                        },
+                        new
+                        {
+                            Id = 79,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2685),
+                            Description = "Turkish translation for Navigation.Content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Content",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İçerik"
+                        },
+                        new
+                        {
+                            Id = 80,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2686),
+                            Description = "Turkish translation for Navigation.Pages",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Pages",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sayfalar"
+                        },
+                        new
+                        {
+                            Id = 81,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2687),
+                            Description = "Turkish translation for Navigation.Sections",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Sections",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bölümler"
+                        },
+                        new
+                        {
+                            Id = 82,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2688),
+                            Description = "Turkish translation for Navigation.Layouts",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Layouts",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Düzenler"
+                        },
+                        new
+                        {
+                            Id = 83,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2689),
+                            Description = "Turkish translation for Navigation.WebUrlManagement",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.WebUrlManagement",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Web URL Yönetimi"
+                        },
+                        new
+                        {
+                            Id = 84,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2689),
+                            Description = "Turkish translation for Navigation.News",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.News",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Haberler"
+                        },
+                        new
+                        {
+                            Id = 85,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2690),
+                            Description = "Turkish translation for Navigation.Blog",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Blog",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Blog"
+                        },
+                        new
+                        {
+                            Id = 86,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2691),
+                            Description = "Turkish translation for Navigation.Templates",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Templates",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Şablonlar"
+                        },
+                        new
+                        {
+                            Id = 87,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2692),
+                            Description = "Turkish translation for Navigation.SectionItems",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.SectionItems",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bölüm Öğeleri"
+                        },
+                        new
+                        {
+                            Id = 88,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2692),
+                            Description = "Turkish translation for Navigation.ECommerce",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ECommerce",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "E-Ticaret"
+                        },
+                        new
+                        {
+                            Id = 89,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2693),
+                            Description = "Turkish translation for Navigation.Products",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Products",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ürünler"
+                        },
+                        new
+                        {
+                            Id = 90,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2694),
+                            Description = "Turkish translation for Navigation.Categories",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Categories",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kategoriler"
+                        },
+                        new
+                        {
+                            Id = 91,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2695),
+                            Description = "Turkish translation for Navigation.Orders",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Orders",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Siparişler"
+                        },
+                        new
+                        {
+                            Id = 92,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2696),
+                            Description = "Turkish translation for Navigation.Users",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Users",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kullanıcılar"
+                        },
+                        new
+                        {
+                            Id = 93,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2696),
+                            Description = "Turkish translation for Navigation.ManageUsers",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ManageUsers",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kullanıcı Yönetimi"
+                        },
+                        new
+                        {
+                            Id = 94,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2697),
+                            Description = "Turkish translation for Navigation.ManageRoles",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ManageRoles",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Rol Yönetimi"
+                        },
+                        new
+                        {
+                            Id = 95,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2698),
+                            Description = "Turkish translation for Navigation.ManagePermissions",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ManagePermissions",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İzin Yönetimi"
+                        },
+                        new
+                        {
+                            Id = 96,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2699),
+                            Description = "Turkish translation for Navigation.Analytics",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Analytics",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Analitik"
+                        },
+                        new
+                        {
+                            Id = 97,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2699),
+                            Description = "Turkish translation for Navigation.Settings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Settings",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ayarlar"
+                        },
+                        new
+                        {
+                            Id = 98,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2700),
+                            Description = "Turkish translation for Navigation.GeneralSettings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.GeneralSettings",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Genel Ayarlar"
+                        },
+                        new
+                        {
+                            Id = 99,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2701),
+                            Description = "Turkish translation for Navigation.Countries",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Countries",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ülkeler"
+                        },
+                        new
+                        {
+                            Id = 100,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2702),
+                            Description = "Turkish translation for Navigation.Languages",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Languages",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Diller"
+                        },
+                        new
+                        {
+                            Id = 101,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2739),
+                            Description = "Turkish translation for Navigation.Profile",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Profile",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Profil"
+                        },
+                        new
+                        {
+                            Id = 102,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2741),
+                            Description = "Turkish translation for Navigation.Help",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Help",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Yardım"
+                        },
+                        new
+                        {
+                            Id = 103,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2741),
+                            Description = "Turkish translation for Navigation.Logout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Logout",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Çıkış"
+                        },
+                        new
+                        {
+                            Id = 104,
+                            Category = "Language",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2744),
+                            Description = "Turkish translation for Language.English",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Language.English",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "İngilizce"
+                        },
+                        new
+                        {
+                            Id = 105,
+                            Category = "Language",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2745),
+                            Description = "Turkish translation for Language.Turkish",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Language.Turkish",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Türkçe"
+                        },
+                        new
+                        {
+                            Id = 106,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2747),
+                            Description = "Turkish translation for Dashboard.Title",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Title",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Dashboard"
+                        },
+                        new
+                        {
+                            Id = 107,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2748),
+                            Description = "Turkish translation for Dashboard.WelcomeMessage",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.WelcomeMessage",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Hoş geldin! CMS analitiklerin ve son aktivitelerin özeti burada."
+                        },
+                        new
+                        {
+                            Id = 108,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2749),
+                            Description = "Turkish translation for Dashboard.Last7Days",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Last7Days",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Son 7 gün"
+                        },
+                        new
+                        {
+                            Id = 109,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2750),
+                            Description = "Turkish translation for Dashboard.Last30Days",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Last30Days",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Son 30 gün"
+                        },
+                        new
+                        {
+                            Id = 110,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2751),
+                            Description = "Turkish translation for Dashboard.Last90Days",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Last90Days",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Son 90 gün"
+                        },
+                        new
+                        {
+                            Id = 111,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2752),
+                            Description = "Turkish translation for Dashboard.TotalUsers",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.TotalUsers",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Toplam Kullanıcı"
+                        },
+                        new
+                        {
+                            Id = 112,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2752),
+                            Description = "Turkish translation for Dashboard.TotalRevenue",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.TotalRevenue",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Toplam Gelir"
+                        },
+                        new
+                        {
+                            Id = 113,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2753),
+                            Description = "Turkish translation for Dashboard.Products",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Products",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ürünler"
+                        },
+                        new
+                        {
+                            Id = 114,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2754),
+                            Description = "Turkish translation for Dashboard.SupportTickets",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.SupportTickets",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Destek Biletleri"
+                        },
+                        new
+                        {
+                            Id = 115,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2755),
+                            Description = "Turkish translation for Dashboard.FromLastMonth",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.FromLastMonth",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "geçen aydan"
+                        },
+                        new
+                        {
+                            Id = 116,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2755),
+                            Description = "Turkish translation for Dashboard.SalesOverview",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.SalesOverview",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Satış Genel Bakış"
+                        },
+                        new
+                        {
+                            Id = 117,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2756),
+                            Description = "Turkish translation for Dashboard.Monthly",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Monthly",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Aylık"
+                        },
+                        new
+                        {
+                            Id = 118,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2757),
+                            Description = "Turkish translation for Dashboard.ChartVisualization",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.ChartVisualization",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Grafik görselleştirmesi burada olacak"
+                        },
+                        new
+                        {
+                            Id = 119,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2758),
+                            Description = "Turkish translation for Dashboard.ThisYear",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.ThisYear",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bu Yıl"
+                        },
+                        new
+                        {
+                            Id = 120,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2759),
+                            Description = "Turkish translation for Dashboard.LastYear",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.LastYear",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Geçen Yıl"
+                        },
+                        new
+                        {
+                            Id = 121,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2759),
+                            Description = "Turkish translation for Dashboard.RecentActivities",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.RecentActivities",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Son Aktiviteler"
+                        },
+                        new
+                        {
+                            Id = 122,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2760),
+                            Description = "Turkish translation for Dashboard.TopProducts",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.TopProducts",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "En İyi Ürünler"
+                        },
+                        new
+                        {
+                            Id = 123,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2761),
+                            Description = "Turkish translation for Dashboard.Product",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Product",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Ürün"
+                        },
+                        new
+                        {
+                            Id = 124,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2762),
+                            Description = "Turkish translation for Dashboard.Category",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Category",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Kategori"
+                        },
+                        new
+                        {
+                            Id = 125,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2762),
+                            Description = "Turkish translation for Dashboard.Sales",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Sales",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Satışlar"
+                        },
+                        new
+                        {
+                            Id = 126,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2763),
+                            Description = "Turkish translation for Dashboard.Status",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Status",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Durum"
+                        },
+                        new
+                        {
+                            Id = 127,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2764),
+                            Description = "Turkish translation for Dashboard.LatestOrders",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.LatestOrders",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Son Siparişler"
+                        },
+                        new
+                        {
+                            Id = 128,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2765),
+                            Description = "Turkish translation for Dashboard.Today",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Today",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Bugün"
+                        },
+                        new
+                        {
+                            Id = 129,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2766),
+                            Description = "Turkish translation for Dashboard.Yesterday",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Yesterday",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Dün"
+                        },
+                        new
+                        {
+                            Id = 130,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2794),
+                            Description = "Turkish translation for Dashboard.OrderId",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.OrderId",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Sipariş ID"
+                        },
+                        new
+                        {
+                            Id = 131,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2795),
+                            Description = "Turkish translation for Dashboard.Customer",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Customer",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Müşteri"
+                        },
+                        new
+                        {
+                            Id = 132,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2796),
+                            Description = "Turkish translation for Dashboard.Date",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Date",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Tarih"
+                        },
+                        new
+                        {
+                            Id = 133,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2797),
+                            Description = "Turkish translation for Dashboard.Amount",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Amount",
+                            LanguageId = 1,
+                            Status = 0,
+                            Value = "Tutar"
+                        },
+                        new
+                        {
+                            Id = 134,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2799),
+                            Description = "English translation for Common.Save",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Save",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Save"
+                        },
+                        new
+                        {
+                            Id = 135,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2800),
+                            Description = "English translation for Common.Cancel",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Cancel",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Cancel"
+                        },
+                        new
+                        {
+                            Id = 136,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2801),
+                            Description = "English translation for Common.Delete",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Delete",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Delete"
+                        },
+                        new
+                        {
+                            Id = 137,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2802),
+                            Description = "English translation for Common.Edit",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Edit",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Edit"
+                        },
+                        new
+                        {
+                            Id = 138,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2802),
+                            Description = "English translation for Common.Add",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Add",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Add"
+                        },
+                        new
+                        {
+                            Id = 139,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2803),
+                            Description = "English translation for Common.Update",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Update",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Update"
+                        },
+                        new
+                        {
+                            Id = 140,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2804),
+                            Description = "English translation for Common.Create",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Create",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Create"
+                        },
+                        new
+                        {
+                            Id = 141,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2805),
+                            Description = "English translation for Common.Remove",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Remove",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Remove"
+                        },
+                        new
+                        {
+                            Id = 142,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2806),
+                            Description = "English translation for Common.Search",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Search",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Search"
+                        },
+                        new
+                        {
+                            Id = 143,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2807),
+                            Description = "English translation for Common.Filter",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Filter",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Filter"
+                        },
+                        new
+                        {
+                            Id = 144,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2808),
+                            Description = "English translation for Common.Export",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Export",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Export"
+                        },
+                        new
+                        {
+                            Id = 145,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2808),
+                            Description = "English translation for Common.Import",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Import",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Import"
+                        },
+                        new
+                        {
+                            Id = 146,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2809),
+                            Description = "English translation for Common.Upload",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Upload",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Upload"
+                        },
+                        new
+                        {
+                            Id = 147,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2810),
+                            Description = "English translation for Common.Download",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Download",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Download"
+                        },
+                        new
+                        {
+                            Id = 148,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2811),
+                            Description = "English translation for Common.Preview",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Preview",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Preview"
+                        },
+                        new
+                        {
+                            Id = 149,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2812),
+                            Description = "English translation for Common.Publish",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Publish",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Publish"
+                        },
+                        new
+                        {
+                            Id = 150,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2813),
+                            Description = "English translation for Common.Draft",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Draft",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Draft"
+                        },
+                        new
+                        {
+                            Id = 151,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2814),
+                            Description = "English translation for Common.Active",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Active",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Active"
+                        },
+                        new
+                        {
+                            Id = 152,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2814),
+                            Description = "English translation for Common.Inactive",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Inactive",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Inactive"
+                        },
+                        new
+                        {
+                            Id = 153,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2815),
+                            Description = "English translation for Common.Yes",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Yes",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Yes"
+                        },
+                        new
+                        {
+                            Id = 154,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2816),
+                            Description = "English translation for Common.No",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.No",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "No"
+                        },
+                        new
+                        {
+                            Id = 155,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2817),
+                            Description = "English translation for Common.OK",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.OK",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "OK"
+                        },
+                        new
+                        {
+                            Id = 156,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2818),
+                            Description = "English translation for Common.Close",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Close",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Close"
+                        },
+                        new
+                        {
+                            Id = 157,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2818),
+                            Description = "English translation for Common.Back",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Back",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Back"
+                        },
+                        new
+                        {
+                            Id = 158,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2819),
+                            Description = "English translation for Common.Next",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Next",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Next"
+                        },
+                        new
+                        {
+                            Id = 159,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2820),
+                            Description = "English translation for Common.Previous",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Previous",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Previous"
+                        },
+                        new
+                        {
+                            Id = 160,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2821),
+                            Description = "English translation for Common.Loading",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Loading",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Loading..."
+                        },
+                        new
+                        {
+                            Id = 161,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2822),
+                            Description = "English translation for Common.Success",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Success",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Success"
+                        },
+                        new
+                        {
+                            Id = 162,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2822),
+                            Description = "English translation for Common.Error",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Error",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Error"
+                        },
+                        new
+                        {
+                            Id = 163,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2823),
+                            Description = "English translation for Common.Warning",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Warning",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Warning"
+                        },
+                        new
+                        {
+                            Id = 164,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2824),
+                            Description = "English translation for Common.Info",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Info",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Info"
+                        },
+                        new
+                        {
+                            Id = 165,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2846),
+                            Description = "English translation for Common.Refresh",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Refresh",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Refresh"
+                        },
+                        new
+                        {
+                            Id = 166,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2847),
+                            Description = "English translation for Common.Settings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.Settings",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Settings"
+                        },
+                        new
+                        {
+                            Id = 167,
+                            Category = "Common",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2848),
+                            Description = "English translation for Common.ViewAll",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Common.ViewAll",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "View All"
+                        },
+                        new
+                        {
+                            Id = 168,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2851),
+                            Description = "English translation for Page.Title",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Title",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Page Title"
+                        },
+                        new
+                        {
+                            Id = 169,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2852),
+                            Description = "English translation for Page.Content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Content",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Page Content"
+                        },
+                        new
+                        {
+                            Id = 170,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2852),
+                            Description = "English translation for Page.Description",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Description",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Page Description"
+                        },
+                        new
+                        {
+                            Id = 171,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2853),
+                            Description = "English translation for Page.Keywords",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Keywords",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Keywords"
+                        },
+                        new
+                        {
+                            Id = 172,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2854),
+                            Description = "English translation for Page.Author",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Author",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Author"
+                        },
+                        new
+                        {
+                            Id = 173,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2855),
+                            Description = "English translation for Page.CreatedAt",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.CreatedAt",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Created At"
+                        },
+                        new
+                        {
+                            Id = 174,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2856),
+                            Description = "English translation for Page.UpdatedAt",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.UpdatedAt",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Updated At"
+                        },
+                        new
+                        {
+                            Id = 175,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2856),
+                            Description = "English translation for Page.Status",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Status",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Status"
+                        },
+                        new
+                        {
+                            Id = 176,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2857),
+                            Description = "English translation for Page.Type",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Type",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Page Type"
+                        },
+                        new
+                        {
+                            Id = 177,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2858),
+                            Description = "English translation for Page.Layout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Layout",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Layout"
+                        },
+                        new
+                        {
+                            Id = 178,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2859),
+                            Description = "English translation for Page.Template",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Template",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Template"
+                        },
+                        new
+                        {
+                            Id = 179,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2860),
+                            Description = "English translation for Page.SEO",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.SEO",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "SEO Settings"
+                        },
+                        new
+                        {
+                            Id = 180,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2860),
+                            Description = "English translation for Page.Sections",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Sections",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Sections"
+                        },
+                        new
+                        {
+                            Id = 181,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2861),
+                            Description = "English translation for Page.Items",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Items",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Items"
+                        },
+                        new
+                        {
+                            Id = 182,
+                            Category = "Page",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2862),
+                            Description = "English translation for Page.Fields",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Page.Fields",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Fields"
+                        },
+                        new
+                        {
+                            Id = 183,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2864),
+                            Description = "English translation for Section.Name",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Name",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Section Name"
+                        },
+                        new
+                        {
+                            Id = 184,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2865),
+                            Description = "English translation for Section.Type",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Type",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Section Type"
+                        },
+                        new
+                        {
+                            Id = 185,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2866),
+                            Description = "English translation for Section.Key",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Key",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Section Key"
+                        },
+                        new
+                        {
+                            Id = 186,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2867),
+                            Description = "English translation for Section.Order",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Order",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Order"
+                        },
+                        new
+                        {
+                            Id = 187,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2906),
+                            Description = "English translation for Section.Settings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Settings",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Settings"
+                        },
+                        new
+                        {
+                            Id = 188,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2907),
+                            Description = "English translation for Section.Items",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Items",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Items"
+                        },
+                        new
+                        {
+                            Id = 189,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2908),
+                            Description = "English translation for Section.AddItem",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.AddItem",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Add Item"
+                        },
+                        new
+                        {
+                            Id = 190,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2909),
+                            Description = "English translation for Section.EditItems",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.EditItems",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Edit Items"
+                        },
+                        new
+                        {
+                            Id = 191,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2909),
+                            Description = "English translation for Section.Duplicate",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Duplicate",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Duplicate"
+                        },
+                        new
+                        {
+                            Id = 192,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2910),
+                            Description = "English translation for Section.Remove",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Remove",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Remove"
+                        },
+                        new
+                        {
+                            Id = 193,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2911),
+                            Description = "English translation for Section.Hero",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Hero",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Hero Section"
+                        },
+                        new
+                        {
+                            Id = 194,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2912),
+                            Description = "English translation for Section.Navbar",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Navbar",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Navigation"
+                        },
+                        new
+                        {
+                            Id = 195,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2913),
+                            Description = "English translation for Section.Footer",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Footer",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Footer"
+                        },
+                        new
+                        {
+                            Id = 196,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2913),
+                            Description = "English translation for Section.Content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Content",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Content"
+                        },
+                        new
+                        {
+                            Id = 197,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2914),
+                            Description = "English translation for Section.Gallery",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Gallery",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Gallery"
+                        },
+                        new
+                        {
+                            Id = 198,
+                            Category = "Section",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2915),
+                            Description = "English translation for Section.Contact",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Section.Contact",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Contact"
+                        },
+                        new
+                        {
+                            Id = 199,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2918),
+                            Description = "English translation for Validation.Required",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Required",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "This field is required"
+                        },
+                        new
+                        {
+                            Id = 200,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2919),
+                            Description = "English translation for Validation.Email",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Email",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Please enter a valid email address"
+                        },
+                        new
+                        {
+                            Id = 201,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2919),
+                            Description = "English translation for Validation.MinLength",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.MinLength",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Must be at least {0} characters"
+                        },
+                        new
+                        {
+                            Id = 202,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2957),
+                            Description = "English translation for Validation.MaxLength",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.MaxLength",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Must be at most {0} characters"
+                        },
+                        new
+                        {
+                            Id = 203,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2958),
+                            Description = "English translation for Validation.Range",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Range",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Must be between {0} and {1}"
+                        },
+                        new
+                        {
+                            Id = 204,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2959),
+                            Description = "English translation for Validation.Numeric",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Numeric",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Please enter a numeric value"
+                        },
+                        new
+                        {
+                            Id = 205,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2960),
+                            Description = "English translation for Validation.Date",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Date",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Please enter a valid date"
+                        },
+                        new
+                        {
+                            Id = 206,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2961),
+                            Description = "English translation for Validation.Url",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Url",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Please enter a valid URL"
+                        },
+                        new
+                        {
+                            Id = 207,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2962),
+                            Description = "English translation for Validation.Phone",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Phone",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Please enter a valid phone number"
+                        },
+                        new
+                        {
+                            Id = 208,
+                            Category = "Validation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2963),
+                            Description = "English translation for Validation.Password",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Validation.Password",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Password must be at least 8 characters"
+                        },
+                        new
+                        {
+                            Id = 209,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2965),
+                            Description = "English translation for Navigation.Dashboard",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Dashboard",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Dashboard"
+                        },
+                        new
+                        {
+                            Id = 210,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2966),
+                            Description = "English translation for Navigation.Announcements",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Announcements",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Announcements"
+                        },
+                        new
+                        {
+                            Id = 211,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2967),
+                            Description = "English translation for Navigation.Campaigns",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Campaigns",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Campaigns"
+                        },
+                        new
+                        {
+                            Id = 212,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2968),
+                            Description = "English translation for Navigation.Content",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Content",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Content"
+                        },
+                        new
+                        {
+                            Id = 213,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2969),
+                            Description = "English translation for Navigation.Pages",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Pages",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Pages"
+                        },
+                        new
+                        {
+                            Id = 214,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2970),
+                            Description = "English translation for Navigation.Sections",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Sections",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Sections"
+                        },
+                        new
+                        {
+                            Id = 215,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2971),
+                            Description = "English translation for Navigation.Layouts",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Layouts",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Layouts"
+                        },
+                        new
+                        {
+                            Id = 216,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2971),
+                            Description = "English translation for Navigation.WebUrlManagement",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.WebUrlManagement",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Web URL Management"
+                        },
+                        new
+                        {
+                            Id = 217,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2972),
+                            Description = "English translation for Navigation.News",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.News",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "News"
+                        },
+                        new
+                        {
+                            Id = 218,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2973),
+                            Description = "English translation for Navigation.Blog",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Blog",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Blog"
+                        },
+                        new
+                        {
+                            Id = 219,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2974),
+                            Description = "English translation for Navigation.Templates",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Templates",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Templates"
+                        },
+                        new
+                        {
+                            Id = 220,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2974),
+                            Description = "English translation for Navigation.SectionItems",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.SectionItems",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Section Items"
+                        },
+                        new
+                        {
+                            Id = 221,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2975),
+                            Description = "English translation for Navigation.ECommerce",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ECommerce",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "E-Commerce"
+                        },
+                        new
+                        {
+                            Id = 222,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2976),
+                            Description = "English translation for Navigation.Products",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Products",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Products"
+                        },
+                        new
+                        {
+                            Id = 223,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2977),
+                            Description = "English translation for Navigation.Categories",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Categories",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Categories"
+                        },
+                        new
+                        {
+                            Id = 224,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2977),
+                            Description = "English translation for Navigation.Orders",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Orders",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Orders"
+                        },
+                        new
+                        {
+                            Id = 225,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2978),
+                            Description = "English translation for Navigation.Users",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Users",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Users"
+                        },
+                        new
+                        {
+                            Id = 226,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2979),
+                            Description = "English translation for Navigation.ManageUsers",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ManageUsers",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Manage Users"
+                        },
+                        new
+                        {
+                            Id = 227,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2980),
+                            Description = "English translation for Navigation.ManageRoles",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ManageRoles",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Manage Roles"
+                        },
+                        new
+                        {
+                            Id = 228,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2981),
+                            Description = "English translation for Navigation.ManagePermissions",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.ManagePermissions",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Manage Permissions"
+                        },
+                        new
+                        {
+                            Id = 229,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2982),
+                            Description = "English translation for Navigation.Analytics",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Analytics",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Analytics"
+                        },
+                        new
+                        {
+                            Id = 230,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2982),
+                            Description = "English translation for Navigation.Settings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Settings",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Settings"
+                        },
+                        new
+                        {
+                            Id = 231,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2983),
+                            Description = "English translation for Navigation.GeneralSettings",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.GeneralSettings",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "General Settings"
+                        },
+                        new
+                        {
+                            Id = 232,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2984),
+                            Description = "English translation for Navigation.Countries",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Countries",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Countries"
+                        },
+                        new
+                        {
+                            Id = 233,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2985),
+                            Description = "English translation for Navigation.Languages",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Languages",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Languages"
+                        },
+                        new
+                        {
+                            Id = 234,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2985),
+                            Description = "English translation for Navigation.Profile",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Profile",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Profile"
+                        },
+                        new
+                        {
+                            Id = 235,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2986),
+                            Description = "English translation for Navigation.Help",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Help",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Help"
+                        },
+                        new
+                        {
+                            Id = 236,
+                            Category = "Navigation",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(2987),
+                            Description = "English translation for Navigation.Logout",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Navigation.Logout",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Logout"
+                        },
+                        new
+                        {
+                            Id = 237,
+                            Category = "Language",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3011),
+                            Description = "English translation for Language.English",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Language.English",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "English"
+                        },
+                        new
+                        {
+                            Id = 238,
+                            Category = "Language",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3012),
+                            Description = "English translation for Language.Turkish",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Language.Turkish",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Turkish"
+                        },
+                        new
+                        {
+                            Id = 239,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3015),
+                            Description = "English translation for Dashboard.Title",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Title",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Dashboard"
+                        },
+                        new
+                        {
+                            Id = 240,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3016),
+                            Description = "English translation for Dashboard.WelcomeMessage",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.WelcomeMessage",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Welcome back! Here's a summary of your CMS analytics and recent activity."
+                        },
+                        new
+                        {
+                            Id = 241,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3017),
+                            Description = "English translation for Dashboard.Last7Days",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Last7Days",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Last 7 days"
+                        },
+                        new
+                        {
+                            Id = 242,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3017),
+                            Description = "English translation for Dashboard.Last30Days",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Last30Days",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Last 30 days"
+                        },
+                        new
+                        {
+                            Id = 243,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3018),
+                            Description = "English translation for Dashboard.Last90Days",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Last90Days",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Last 90 days"
+                        },
+                        new
+                        {
+                            Id = 244,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3019),
+                            Description = "English translation for Dashboard.TotalUsers",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.TotalUsers",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Total Users"
+                        },
+                        new
+                        {
+                            Id = 245,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3020),
+                            Description = "English translation for Dashboard.TotalRevenue",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.TotalRevenue",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Total Revenue"
+                        },
+                        new
+                        {
+                            Id = 246,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3021),
+                            Description = "English translation for Dashboard.Products",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Products",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Products"
+                        },
+                        new
+                        {
+                            Id = 247,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3021),
+                            Description = "English translation for Dashboard.SupportTickets",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.SupportTickets",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Support Tickets"
+                        },
+                        new
+                        {
+                            Id = 248,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3022),
+                            Description = "English translation for Dashboard.FromLastMonth",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.FromLastMonth",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "from last month"
+                        },
+                        new
+                        {
+                            Id = 249,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3023),
+                            Description = "English translation for Dashboard.SalesOverview",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.SalesOverview",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Sales Overview"
+                        },
+                        new
+                        {
+                            Id = 250,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3023),
+                            Description = "English translation for Dashboard.Monthly",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Monthly",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Monthly"
+                        },
+                        new
+                        {
+                            Id = 251,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3024),
+                            Description = "English translation for Dashboard.ChartVisualization",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.ChartVisualization",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Chart visualization goes here"
+                        },
+                        new
+                        {
+                            Id = 252,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3025),
+                            Description = "English translation for Dashboard.ThisYear",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.ThisYear",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "This Year"
+                        },
+                        new
+                        {
+                            Id = 253,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3026),
+                            Description = "English translation for Dashboard.LastYear",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.LastYear",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Last Year"
+                        },
+                        new
+                        {
+                            Id = 254,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3027),
+                            Description = "English translation for Dashboard.RecentActivities",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.RecentActivities",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Recent Activities"
+                        },
+                        new
+                        {
+                            Id = 255,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3028),
+                            Description = "English translation for Dashboard.TopProducts",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.TopProducts",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Top Products"
+                        },
+                        new
+                        {
+                            Id = 256,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3029),
+                            Description = "English translation for Dashboard.Product",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Product",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Product"
+                        },
+                        new
+                        {
+                            Id = 257,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3029),
+                            Description = "English translation for Dashboard.Category",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Category",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Category"
+                        },
+                        new
+                        {
+                            Id = 258,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3054),
+                            Description = "English translation for Dashboard.Sales",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Sales",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Sales"
+                        },
+                        new
+                        {
+                            Id = 259,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3055),
+                            Description = "English translation for Dashboard.Status",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Status",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Status"
+                        },
+                        new
+                        {
+                            Id = 260,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3056),
+                            Description = "English translation for Dashboard.LatestOrders",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.LatestOrders",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Latest Orders"
+                        },
+                        new
+                        {
+                            Id = 261,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3057),
+                            Description = "English translation for Dashboard.Today",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Today",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Today"
+                        },
+                        new
+                        {
+                            Id = 262,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3058),
+                            Description = "English translation for Dashboard.Yesterday",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Yesterday",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Yesterday"
+                        },
+                        new
+                        {
+                            Id = 263,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3059),
+                            Description = "English translation for Dashboard.OrderId",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.OrderId",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Order ID"
+                        },
+                        new
+                        {
+                            Id = 264,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3060),
+                            Description = "English translation for Dashboard.Customer",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Customer",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Customer"
+                        },
+                        new
+                        {
+                            Id = 265,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3061),
+                            Description = "English translation for Dashboard.Date",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Date",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Date"
+                        },
+                        new
+                        {
+                            Id = 266,
+                            Category = "Dashboard",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 51, 20, 467, DateTimeKind.Utc).AddTicks(3062),
+                            Description = "English translation for Dashboard.Amount",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Key = "Dashboard.Amount",
+                            LanguageId = 2,
+                            Status = 0,
+                            Value = "Amount"
+                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Common.Country", b =>

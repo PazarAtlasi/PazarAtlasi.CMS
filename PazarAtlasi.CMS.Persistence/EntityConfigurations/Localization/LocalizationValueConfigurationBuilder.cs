@@ -122,7 +122,10 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 { "Common.Success", "Başarılı" },
                 { "Common.Error", "Hata" },
                 { "Common.Warning", "Uyarı" },
-                { "Common.Info", "Bilgi" }
+                { "Common.Info", "Bilgi" },
+                { "Common.Refresh", "Yenile" },
+                { "Common.Settings", "Ayarlar" },
+                { "Common.ViewAll", "Tümünü Gör" }
             };
 
             // Common keys - English
@@ -158,7 +161,10 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 { "Common.Success", "Success" },
                 { "Common.Error", "Error" },
                 { "Common.Warning", "Warning" },
-                { "Common.Info", "Info" }
+                { "Common.Info", "Info" },
+                { "Common.Refresh", "Refresh" },
+                { "Common.Settings", "Settings" },
+                { "Common.ViewAll", "View All" }
             };
 
             // Page keys - Turkish
@@ -273,6 +279,152 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 { "Validation.Password", "Password must be at least 8 characters" }
             };
 
+            // Navigation keys - Turkish
+            var navigationKeysTr = new Dictionary<string, string>
+            {
+                { "Navigation.Dashboard", "Dashboard" },
+                { "Navigation.Announcements", "Duyurular" },
+                { "Navigation.Campaigns", "Kampanyalar" },
+                { "Navigation.Content", "İçerik" },
+                { "Navigation.Pages", "Sayfalar" },
+                { "Navigation.Sections", "Bölümler" },
+                { "Navigation.Layouts", "Düzenler" },
+                { "Navigation.WebUrlManagement", "Web URL Yönetimi" },
+                { "Navigation.News", "Haberler" },
+                { "Navigation.Blog", "Blog" },
+                { "Navigation.Templates", "Şablonlar" },
+                { "Navigation.SectionItems", "Bölüm Öğeleri" },
+                { "Navigation.ECommerce", "E-Ticaret" },
+                { "Navigation.Products", "Ürünler" },
+                { "Navigation.Categories", "Kategoriler" },
+                { "Navigation.Orders", "Siparişler" },
+                { "Navigation.Users", "Kullanıcılar" },
+                { "Navigation.ManageUsers", "Kullanıcı Yönetimi" },
+                { "Navigation.ManageRoles", "Rol Yönetimi" },
+                { "Navigation.ManagePermissions", "İzin Yönetimi" },
+                { "Navigation.Analytics", "Analitik" },
+                { "Navigation.Settings", "Ayarlar" },
+                { "Navigation.GeneralSettings", "Genel Ayarlar" },
+                { "Navigation.Countries", "Ülkeler" },
+                { "Navigation.Languages", "Diller" },
+                { "Navigation.Profile", "Profil" },
+                { "Navigation.Help", "Yardım" },
+                { "Navigation.Logout", "Çıkış" }
+            };
+
+            // Navigation keys - English
+            var navigationKeysEn = new Dictionary<string, string>
+            {
+                { "Navigation.Dashboard", "Dashboard" },
+                { "Navigation.Announcements", "Announcements" },
+                { "Navigation.Campaigns", "Campaigns" },
+                { "Navigation.Content", "Content" },
+                { "Navigation.Pages", "Pages" },
+                { "Navigation.Sections", "Sections" },
+                { "Navigation.Layouts", "Layouts" },
+                { "Navigation.WebUrlManagement", "Web URL Management" },
+                { "Navigation.News", "News" },
+                { "Navigation.Blog", "Blog" },
+                { "Navigation.Templates", "Templates" },
+                { "Navigation.SectionItems", "Section Items" },
+                { "Navigation.ECommerce", "E-Commerce" },
+                { "Navigation.Products", "Products" },
+                { "Navigation.Categories", "Categories" },
+                { "Navigation.Orders", "Orders" },
+                { "Navigation.Users", "Users" },
+                { "Navigation.ManageUsers", "Manage Users" },
+                { "Navigation.ManageRoles", "Manage Roles" },
+                { "Navigation.ManagePermissions", "Manage Permissions" },
+                { "Navigation.Analytics", "Analytics" },
+                { "Navigation.Settings", "Settings" },
+                { "Navigation.GeneralSettings", "General Settings" },
+                { "Navigation.Countries", "Countries" },
+                { "Navigation.Languages", "Languages" },
+                { "Navigation.Profile", "Profile" },
+                { "Navigation.Help", "Help" },
+                { "Navigation.Logout", "Logout" }
+            };
+
+            // Language keys - Turkish
+            var languageKeysTr = new Dictionary<string, string>
+            {
+                { "Language.English", "İngilizce" },
+                { "Language.Turkish", "Türkçe" }
+            };
+
+            // Language keys - English
+            var languageKeysEn = new Dictionary<string, string>
+            {
+                { "Language.English", "English" },
+                { "Language.Turkish", "Turkish" }
+            };
+
+            // Dashboard keys - Turkish
+            var dashboardKeysTr = new Dictionary<string, string>
+            {
+                { "Dashboard.Title", "Dashboard" },
+                { "Dashboard.WelcomeMessage", "Hoş geldin! CMS analitiklerin ve son aktivitelerin özeti burada." },
+                { "Dashboard.Last7Days", "Son 7 gün" },
+                { "Dashboard.Last30Days", "Son 30 gün" },
+                { "Dashboard.Last90Days", "Son 90 gün" },
+                { "Dashboard.TotalUsers", "Toplam Kullanıcı" },
+                { "Dashboard.TotalRevenue", "Toplam Gelir" },
+                { "Dashboard.Products", "Ürünler" },
+                { "Dashboard.SupportTickets", "Destek Biletleri" },
+                { "Dashboard.FromLastMonth", "geçen aydan" },
+                { "Dashboard.SalesOverview", "Satış Genel Bakış" },
+                { "Dashboard.Monthly", "Aylık" },
+                { "Dashboard.ChartVisualization", "Grafik görselleştirmesi burada olacak" },
+                { "Dashboard.ThisYear", "Bu Yıl" },
+                { "Dashboard.LastYear", "Geçen Yıl" },
+                { "Dashboard.RecentActivities", "Son Aktiviteler" },
+                { "Dashboard.TopProducts", "En İyi Ürünler" },
+                { "Dashboard.Product", "Ürün" },
+                { "Dashboard.Category", "Kategori" },
+                { "Dashboard.Sales", "Satışlar" },
+                { "Dashboard.Status", "Durum" },
+                { "Dashboard.LatestOrders", "Son Siparişler" },
+                { "Dashboard.Today", "Bugün" },
+                { "Dashboard.Yesterday", "Dün" },
+                { "Dashboard.OrderId", "Sipariş ID" },
+                { "Dashboard.Customer", "Müşteri" },
+                { "Dashboard.Date", "Tarih" },
+                { "Dashboard.Amount", "Tutar" }
+            };
+
+            // Dashboard keys - English
+            var dashboardKeysEn = new Dictionary<string, string>
+            {
+                { "Dashboard.Title", "Dashboard" },
+                { "Dashboard.WelcomeMessage", "Welcome back! Here's a summary of your CMS analytics and recent activity." },
+                { "Dashboard.Last7Days", "Last 7 days" },
+                { "Dashboard.Last30Days", "Last 30 days" },
+                { "Dashboard.Last90Days", "Last 90 days" },
+                { "Dashboard.TotalUsers", "Total Users" },
+                { "Dashboard.TotalRevenue", "Total Revenue" },
+                { "Dashboard.Products", "Products" },
+                { "Dashboard.SupportTickets", "Support Tickets" },
+                { "Dashboard.FromLastMonth", "from last month" },
+                { "Dashboard.SalesOverview", "Sales Overview" },
+                { "Dashboard.Monthly", "Monthly" },
+                { "Dashboard.ChartVisualization", "Chart visualization goes here" },
+                { "Dashboard.ThisYear", "This Year" },
+                { "Dashboard.LastYear", "Last Year" },
+                { "Dashboard.RecentActivities", "Recent Activities" },
+                { "Dashboard.TopProducts", "Top Products" },
+                { "Dashboard.Product", "Product" },
+                { "Dashboard.Category", "Category" },
+                { "Dashboard.Sales", "Sales" },
+                { "Dashboard.Status", "Status" },
+                { "Dashboard.LatestOrders", "Latest Orders" },
+                { "Dashboard.Today", "Today" },
+                { "Dashboard.Yesterday", "Yesterday" },
+                { "Dashboard.OrderId", "Order ID" },
+                { "Dashboard.Customer", "Customer" },
+                { "Dashboard.Date", "Date" },
+                { "Dashboard.Amount", "Amount" }
+            };
+
             // Add Turkish keys
             foreach (var kvp in commonKeysTr)
             {
@@ -332,6 +484,54 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                     Value = kvp.Value,
                     Description = $"Turkish translation for {kvp.Key}",
                     Category = "Validation",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            foreach (var kvp in navigationKeysTr)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 1, // Turkish
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"Turkish translation for {kvp.Key}",
+                    Category = "Navigation",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            foreach (var kvp in languageKeysTr)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 1, // Turkish
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"Turkish translation for {kvp.Key}",
+                    Category = "Language",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            foreach (var kvp in dashboardKeysTr)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 1, // Turkish
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"Turkish translation for {kvp.Key}",
+                    Category = "Dashboard",
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow,
                     IsDeleted = false
@@ -403,6 +603,55 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 });
             }
 
+            foreach (var kvp in navigationKeysEn)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 2, // English
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"English translation for {kvp.Key}",
+                    Category = "Navigation",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            foreach (var kvp in languageKeysEn)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 2, // English
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"English translation for {kvp.Key}",
+                    Category = "Language",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            foreach (var kvp in dashboardKeysEn)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 2, // English
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"English translation for {kvp.Key}",
+                    Category = "Dashboard",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            builder.HasData(seedData);
             // Seed data will be added via data seeder service instead of migration
             // This prevents conflicts with existing data
         }

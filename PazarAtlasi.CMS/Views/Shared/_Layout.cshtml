@@ -138,7 +138,7 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-tachometer-alt w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Dashboard"]</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Dashboard")</span>
                     </a>
                 </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
@@ -146,7 +146,7 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-bullhorn w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">Duyurular</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Announcements")</span>
                     </a>
                 </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
@@ -154,7 +154,7 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-ad w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">Kampanyalar</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Campaigns")</span>
                     </a>
                 </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
@@ -162,35 +162,35 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-file-alt w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Content"]</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Content")</span>
                         <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
                     </a>
                     <ul
                         class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
                         <li><a href="/Content/Pages"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-list w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Pages"]</a></li>
+                                    class="fas fa-list w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Pages")</a></li>
                         <li><a href="/Content/Sections"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> Sections</a></li>
+                                    class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Sections")</a></li>
                         <li><a href="/Content/Layouts"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-th-large w-[18px] mr-2.5 text-center text-sm"></i> Layouts</a></li>
+                                    class="fas fa-th-large w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Layouts")</a></li>
                         <li><a href="/Content/WebUrl"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-link w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["WebUrl Management"]</a></li>
+                                    class="fas fa-link w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.WebUrlManagement")</a></li>
                         <li><a href="#"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-newspaper w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["News"]</a></li>
+                                    class="fas fa-newspaper w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.News")</a></li>
                         <li><a href="@Url.Action("Index", "Blog")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-blog w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Blog"]</a></li>
+                                    class="fas fa-blog w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Blog")</a></li>
                         <li><a href="@Url.Action("Template", "Content")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> Templates</a></li>
+                                    class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Templates")</a></li>
                         <li><a href="@Url.Action("SectionItems", "Content")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-list-ul w-[18px] mr-2.5 text-center text-sm"></i> Section Items</a></li>
+                                    class="fas fa-list-ul w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.SectionItems")</a></li>
                     </ul>
                 </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
@@ -198,20 +198,20 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-shopping-cart w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["E-Commerce"]</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.ECommerce")</span>
                         <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
                     </a>
                     <ul
                         class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
                         <li><a href="@Url.Action("Index", "Products")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-box w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Products"]</a></li>
+                                    class="fas fa-box w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Products")</a></li>
                         <li><a href="@Url.Action("Index", "Categories")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-tags w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Categories"]</a></li>
+                                    class="fas fa-tags w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Categories")</a></li>
                         <li><a href="#"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-receipt w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["Orders"]</a></li>
+                                    class="fas fa-receipt w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Orders")</a></li>
                     </ul>
                 </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
@@ -219,21 +219,21 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-users w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Users"]</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Users")</span>
                         <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
                     </a>
                     <ul
                         class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
                         <li><a href="@Url.Action("Index", "Users")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-plus w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["ManageUsers"]</a>
+                                    class="fas fa-user-plus w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.ManageUsers")</a>
                         </li>
                         <li><a href="@Url.Action("Index", "Roles")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-shield w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["ManageRoles"]</a></li>
+                                    class="fas fa-user-shield w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.ManageRoles")</a></li>
                         <li><a href="@Url.Action("Index", "Permissions")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-cog w-[18px] mr-2.5 text-center text-sm"></i> @Localizer["ManagePermissions"]</a>
+                                    class="fas fa-user-cog w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.ManagePermissions")</a>
                         </li>
                     </ul>
                 </li>
@@ -242,7 +242,7 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-chart-line w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Analytics"]</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Analytics")</span>
                     </a>
                 </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
@@ -250,20 +250,20 @@
                         class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
                         <i class="fas fa-cog w-5 mr-3 text-center text-lg"></i>
                         <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Localizer["Settings"]</span>
+                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Settings")</span>
                         <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
                     </a>
                     <ul
                         class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
                         <li><a href="@Url.Action("Index", "Settings")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-cogs w-[18px] mr-2.5 text-center text-sm"></i> Genel Ayarlar</a></li>
+                                    class="fas fa-cogs w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.GeneralSettings")</a></li>
                         <li><a href="@Url.Action("Countries", "Settings")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-globe w-[18px] mr-2.5 text-center text-sm"></i> Ülkeler</a></li>
+                                    class="fas fa-globe w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Countries")</a></li>
                         <li><a href="@Url.Action("Languages", "Settings")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-language w-[18px] mr-2.5 text-center text-sm"></i> Diller</a></li>
+                                    class="fas fa-language w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Languages")</a></li>
                     </ul>
                 </li>
             </ul>
@@ -286,7 +286,7 @@
                     <div class="relative w-full search-box">
                         <i
                             class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 text-sm"></i>
-                        <input type="text" placeholder="Search..."
+                        <input type="text" placeholder="@Html.L("Common.Search")..."
                             class="w-full h-10 py-2 pl-10 pr-4 border-0 bg-slate-100 rounded-full text-sm transition-all focus:outline-none focus:bg-white focus:ring-2 focus:ring-purple-800/20" />
                     </div>
                 </div>
@@ -331,12 +331,12 @@
 
                                 <button type="submit" name="culture" value="en-US"
                                     class="flex items-center w-full py-2 px-3 text-slate-800 hover:bg-slate-50 hover:text-purple-800 transition-all text-sm rounded-md cursor-pointer">
-                                    <span class="flag-icon flag-en"></span> English
+                                    <span class="flag-icon flag-en"></span> @Html.L("Language.English")
                                 </button>
 
                                 <button type="submit" name="culture" value="tr-TR"
                                     class="flex items-center w-full py-2 px-3 text-slate-800 hover:bg-slate-50 hover:text-purple-800 transition-all text-sm rounded-md cursor-pointer">
-                                    <span class="flag-icon flag-tr"></span> Türkçe
+                                    <span class="flag-icon flag-tr"></span> @Html.L("Language.Turkish")
                                 </button>
                             </form>
                         </div>
@@ -359,18 +359,18 @@
                             class="hidden absolute right-0 top-[calc(100%+0.5rem)] min-w-[200px] bg-white rounded-lg shadow-lg p-2 z-[1000] border border-slate-100 dropdown-menu">
                             <li><a href="#"
                                     class="flex items-center py-3 px-5 text-slate-800 hover:bg-slate-50 hover:text-purple-800 transition-all text-sm rounded-md"><i
-                                        class="fas fa-user w-5 mr-2.5 text-center text-slate-500"></i> @Localizer["Profile"]</a></li>
+                                        class="fas fa-user w-5 mr-2.5 text-center text-slate-500"></i> @Html.L("Navigation.Profile")</a></li>
                             <li><a href="#"
                                     class="flex items-center py-3 px-5 text-slate-800 hover:bg-slate-50 hover:text-purple-800 transition-all text-sm rounded-md"><i
-                                        class="fas fa-cog w-5 mr-2.5 text-center text-slate-500"></i> @Localizer["Settings"]</a></li>
+                                        class="fas fa-cog w-5 mr-2.5 text-center text-slate-500"></i> @Html.L("Navigation.Settings")</a></li>
                             <li><a href="#"
                                     class="flex items-center py-3 px-5 text-slate-800 hover:bg-slate-50 hover:text-purple-800 transition-all text-sm rounded-md"><i
                                         class="fas fa-question-circle w-5 mr-2.5 text-center text-slate-500"></i>
-                                    @Localizer["Help"]</a></li>
+                                    @Html.L("Navigation.Help")</a></li>
                             <li class="h-0 my-2 overflow-hidden border-t border-slate-100 dropdown-divider"></li>
                             <li><a href="#"
                                     class="flex items-center py-3 px-5 text-red-600 hover:bg-red-50 transition-all text-sm rounded-md"><i
-                                        class="fas fa-sign-out-alt w-5 mr-2.5 text-center text-red-500"></i> @Localizer["Logout"]</a>
+                                        class="fas fa-sign-out-alt w-5 mr-2.5 text-center text-red-500"></i> @Html.L("Navigation.Logout")</a>
                             </li>
                         </ul>
                     </div>
