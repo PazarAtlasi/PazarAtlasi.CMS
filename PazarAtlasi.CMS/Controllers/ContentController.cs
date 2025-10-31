@@ -3195,7 +3195,7 @@ namespace PazarAtlasi.CMS.Controllers
                     fieldViewModel.Translations = existingFieldValue.Translations.Select(ft => new SectionItemFieldTranslationViewModel
                     {
                         Id = ft.Id,
-                        SectionItemFieldId = ft.SectionItemFieldValueId,    // TODO - SECTION ITEM FIELD VALUE ID KONULACAK.
+                        SectionItemFieldValueId = ft.SectionItemFieldValueId,    // TODO - SECTION ITEM FIELD VALUE ID KONULACAK.
                         LanguageId = ft.LanguageId,
                         LanguageCode = ft.Language?.Code ?? "",
                         LanguageName = ft.Language?.Name ?? "",
@@ -3210,7 +3210,7 @@ namespace PazarAtlasi.CMS.Controllers
                     fieldViewModel.Translations = field.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
                     {
                         Id = 0,
-                        SectionItemFieldId = 0,
+                        SectionItemFieldValueId = 0,
                         LanguageId = ft.LanguageId,
                         LanguageCode = ft.Language?.Code ?? "",
                         LanguageName = ft.Language?.Name ?? "",

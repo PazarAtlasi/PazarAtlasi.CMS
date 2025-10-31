@@ -8,7 +8,9 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int Id { get; set; }
 
         public int SectionItemFieldId { get; set; }
-        
+
+        public int SectionItemFieldValueId { get; set; }
+
         public int LanguageId { get; set; }
         
         public string LanguageCode { get; set; } = string.Empty;
