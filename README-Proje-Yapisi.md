@@ -750,7 +750,7 @@ GET /api/content/section?key=hero&culture=tr-TR
 GET /api/content/page-sections?pageId=1&culture=tr-TR
 ```
 
-## 🌐 Localization Sistemi
+## 🌐 Gelişmiş Localization ve Cache Sistemi
 
 ### Localization Entity Yapısı
 
@@ -789,6 +789,63 @@ public class Language : Entity<int>
     // Navigation Properties
     public virtual ICollection<LocalizationValue> LocalizationValues { get; set; }
 }
+```
+
+### Gelişmiş Cache Management Sistemi
+
+#### Cache Interface Yapısı
+
+```csharp
+public interface ICacheService
+{
+    // Reference types
+    Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class;
+    Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : class;
+
+    // Value types
+    Task<T?> GetValueAsync<T>(string key, CancellationToken cancellationToken = default) where T : struct;
+    Task SetValueAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct;
+
+    // Group Cache Management
+    Task SetWithGroupAsync<T>(string key, T value, string groupKey, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : class;
+    Task SetValueWithGroupAsync<T>(string key, T value, string groupKey, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct;
+    Task RemoveGroupAsync(string groupKey, CancellationToken cancellationToken = default);
+}
+```
+
+#### Cache Implementations
+
+1. **InMemoryCacheService**: Tek sunucu için hızlı cache
+2. **RedisCacheService**: Dağıtık sistemler için Redis cache
+3. **HybridCacheService**: L1 (Memory) + L2 (Redis) katmanlı cache
+
+#### Cache Configuration
+
+```json
+{
+  "Cache": {
+    "Type": "Hybrid", // InMemory, Redis, Hybrid
+    "ConnectionString": "localhost:6379",
+    "DefaultExpirationMinutes": 30,
+    "MemoryCacheExpirationMinutes": 5,
+    "EnableCompression": true,
+    "EnableLogging": true
+  }
+}
+```
+
+#### Grup Cache Kullanımı
+
+```csharp
+// Cache'e grup ile ekleme
+await _cacheService.SetWithGroupAsync("Navbar.GetMenus", menuData, "Navbar", TimeSpan.FromHours(1));
+await _cacheService.SetValueWithGroupAsync("Navbar.ItemCount", 5, "Navbar", TimeSpan.FromHours(1));
+
+// Grup cache'ini temizleme
+await _cacheService.RemoveGroupAsync("Navbar"); // Navbar grubundaki tüm cache'ler silinir
+
+// Grup anahtarlarını alma
+var groupKeys = await _cacheService.GetGroupKeysAsync("Navbar");
 ```
 
 ### Language Service Kullanımı
@@ -977,5 +1034,84 @@ Localization: {
 3. **Fallback**: Key bulunamazsa key'in kendisini döndür
 4. **Cache**: Grup cache ile ilgili verileri toplu yönet
 5. **Async**: Mümkün olduğunca async metodları kullan
+
+## 🚀 Build ve Migration İşlemleri
+
+### Proje Build Etme
+
+```bash
+# Tüm projeyi build et
+dotnet build
+
+# Sadece belirli projeyi build et
+dotnet build PazarAtlasi.CMS
+```
+
+### Migration İşlemleri
+
+```bash
+# Yeni migration oluştur
+dotnet ef migrations add AddLocalizationEntities -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+
+# Database güncelle
+dotnet ef database update -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+
+# Migration geri al
+dotnet ef database update PreviousMigrationName -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+```
+
+### Seed Data
+
+Localization sistemi otomatik olarak temel dil verilerini ve localization key'lerini seed eder:
+
+- **Languages**: Türkçe (default), İngilizce, Almanca, Fransızca, İspanyolca
+- **LocalizationValues**: Common.Save, Common.Cancel, Common.Delete vb. temel key'ler
+
+### Cache Test Etme
+
+```csharp
+// InMemory Cache Test
+services.Configure<CacheConfiguration>(config => config.Type = CacheType.InMemory);
+
+// Redis Cache Test (Redis server gerekli)
+services.Configure<CacheConfiguration>(config => {
+    config.Type = CacheType.Redis;
+    config.ConnectionString = "localhost:6379";
+});
+
+// Hybrid Cache Test (En performanslı)
+services.Configure<CacheConfiguration>(config => {
+    config.Type = CacheType.Hybrid;
+    config.ConnectionString = "localhost:6379";
+});
+```
+
+### Localization Test Etme
+
+```bash
+# Localization controller'ı test et
+GET /Localization
+
+# API endpoint'lerini test et
+GET /Localization/GetValue?key=Common.Save
+GET /Localization/GetDictionary?language=tr-TR
+POST /Localization/RefreshCache
+```
+
+## 📋 Troubleshooting
+
+### Yaygın Hatalar ve Çözümleri
+
+1. **Redis Connection Error**: Redis server'ın çalıştığından emin ol
+2. **Migration Error**: Database connection string'ini kontrol et
+3. **Cache Error**: Cache configuration'ını kontrol et
+4. **Localization Key Not Found**: Seed data'nın çalıştığından emin ol
+
+### Performance İpuçları
+
+1. **Hybrid Cache** kullan (L1 + L2)
+2. **Group Cache** ile ilgili cache'leri toplu yönet
+3. **Async metodları** tercih et
+4. **Cache expiration** sürelerini optimize et
 
 Bu rehber, projenin tutarlı ve sürdürülebilir şekilde geliştirilmesi için temel kuralları içermektedir.

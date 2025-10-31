@@ -12,8 +12,8 @@ using PazarAtlasi.CMS.Persistence.Context;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     [DbContext(typeof(PazarAtlasiDbContext))]
-    [Migration("20251028222929_hd")]
-    partial class hd
+    [Migration("20251031122909_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1569,17 +1569,30 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
+                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("Code");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("CreatedAt");
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<int?>("CreatedBy")
-                        .HasColumnType("int")
-                        .HasColumnName("CreatedBy");
+                        .HasColumnType("int");
+
+                    b.Property<string>("Flag")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("Flag");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true)
+                        .HasColumnName("IsActive");
 
                     b.Property<bool>("IsDefault")
                         .ValueGeneratedOnAdd()
@@ -1599,29 +1612,44 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("Name");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("NativeName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("NativeName");
+
+                    b.Property<int>("SortOrder")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0)
-                        .HasColumnName("Status");
+                        .HasColumnName("SortOrder");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UpdatedAt");
 
                     b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int")
-                        .HasColumnName("UpdatedBy");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
                         .IsUnique()
-                        .HasDatabaseName("IX_Languages_Code")
-                        .HasFilter("[Code] IS NOT NULL");
+                        .HasDatabaseName("IX_Languages_Code");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Languages_IsActive");
 
                     b.HasIndex("IsDefault")
                         .HasDatabaseName("IX_Languages_IsDefault");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_Languages_IsDeleted");
+
+                    b.HasIndex("SortOrder")
+                        .HasDatabaseName("IX_Languages_SortOrder");
 
                     b.ToTable("Languages", (string)null);
 
@@ -1630,31 +1658,71 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 1,
                             Code = "tr-TR",
-                            CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7393),
+                            Flag = "🇹🇷",
+                            IsActive = true,
                             IsDefault = true,
                             IsDeleted = false,
                             Name = "Türkçe",
-                            Status = 1
+                            NativeName = "Türkçe",
+                            SortOrder = 1,
+                            Status = 0
                         },
                         new
                         {
                             Id = 2,
                             Code = "en-US",
-                            CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7397),
+                            Flag = "🇺🇸",
+                            IsActive = true,
                             IsDefault = false,
                             IsDeleted = false,
                             Name = "English",
-                            Status = 1
+                            NativeName = "English",
+                            SortOrder = 2,
+                            Status = 0
                         },
                         new
                         {
                             Id = 3,
                             Code = "de-DE",
-                            CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7400),
+                            Flag = "🇩🇪",
+                            IsActive = true,
                             IsDefault = false,
                             IsDeleted = false,
                             Name = "Deutsch",
-                            Status = 1
+                            NativeName = "Deutsch",
+                            SortOrder = 3,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "fr-FR",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7402),
+                            Flag = "🇫🇷",
+                            IsActive = true,
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Français",
+                            NativeName = "Français",
+                            SortOrder = 4,
+                            Status = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "es-ES",
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7403),
+                            Flag = "🇪🇸",
+                            IsActive = true,
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Español",
+                            NativeName = "Español",
+                            SortOrder = 5,
+                            Status = 0
                         });
                 });
 
@@ -10440,6 +10508,96 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Localization.LocalizationValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Category");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("Description");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true)
+                        .HasColumnName("IsActive");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("Key");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int")
+                        .HasColumnName("LanguageId");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)")
+                        .HasColumnName("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Category")
+                        .HasDatabaseName("IX_LocalizationValues_Category");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_LocalizationValues_IsActive");
+
+                    b.HasIndex("IsDeleted")
+                        .HasDatabaseName("IX_LocalizationValues_IsDeleted");
+
+                    b.HasIndex("Key")
+                        .HasDatabaseName("IX_LocalizationValues_Key");
+
+                    b.HasIndex("LanguageId")
+                        .HasDatabaseName("IX_LocalizationValues_LanguageId");
+
+                    b.HasIndex("Key", "LanguageId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_LocalizationValues_Key_LanguageId");
+
+                    b.ToTable("LocalizationValues", (string)null);
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Common.Country", b =>
                 {
                     b.HasOne("PazarAtlasi.CMS.Domain.Common.Continent", "Continent")
@@ -10742,9 +10900,25 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("Template");
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Localization.LocalizationValue", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Common.Language", "Language")
+                        .WithMany("LocalizationValues")
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Common.Continent", b =>
                 {
                     b.Navigation("Countries");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Common.Language", b =>
+                {
+                    b.Navigation("LocalizationValues");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Announcement.Announcement", b =>

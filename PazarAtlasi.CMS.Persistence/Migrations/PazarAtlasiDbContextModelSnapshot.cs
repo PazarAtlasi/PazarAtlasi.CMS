@@ -1655,7 +1655,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 1,
                             Code = "tr-TR",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(1023),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7393),
                             Flag = "🇹🇷",
                             IsActive = true,
                             IsDefault = true,
@@ -1669,7 +1669,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 2,
                             Code = "en-US",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(1028),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7397),
                             Flag = "🇺🇸",
                             IsActive = true,
                             IsDefault = false,
@@ -1683,7 +1683,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 3,
                             Code = "de-DE",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(1030),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7400),
                             Flag = "🇩🇪",
                             IsActive = true,
                             IsDefault = false,
@@ -1697,7 +1697,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 4,
                             Code = "fr-FR",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(1032),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7402),
                             Flag = "🇫🇷",
                             IsActive = true,
                             IsDefault = false,
@@ -1711,7 +1711,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 5,
                             Code = "es-ES",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(1034),
+                            CreatedAt = new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7403),
                             Flag = "🇪🇸",
                             IsActive = true,
                             IsDefault = false,
@@ -10593,86 +10593,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDatabaseName("IX_LocalizationValues_Key_LanguageId");
 
                     b.ToTable("LocalizationValues", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Category = "Common",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(8956),
-                            Description = "Save button text",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Key = "Common.Save",
-                            LanguageId = 1,
-                            Status = 0,
-                            Value = "Kaydet"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Category = "Common",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(8960),
-                            Description = "Save button text",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Key = "Common.Save",
-                            LanguageId = 2,
-                            Status = 0,
-                            Value = "Save"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Category = "Common",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(8962),
-                            Description = "Cancel button text",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Key = "Common.Cancel",
-                            LanguageId = 1,
-                            Status = 0,
-                            Value = "İptal"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Category = "Common",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(8964),
-                            Description = "Cancel button text",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Key = "Common.Cancel",
-                            LanguageId = 2,
-                            Status = 0,
-                            Value = "Cancel"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Category = "Common",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(8965),
-                            Description = "Delete button text",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Key = "Common.Delete",
-                            LanguageId = 1,
-                            Status = 0,
-                            Value = "Sil"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Category = "Common",
-                            CreatedAt = new DateTime(2025, 10, 31, 12, 14, 0, 601, DateTimeKind.Utc).AddTicks(8967),
-                            Description = "Delete button text",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Key = "Common.Delete",
-                            LanguageId = 2,
-                            Status = 0,
-                            Value = "Delete"
-                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Common.Country", b =>

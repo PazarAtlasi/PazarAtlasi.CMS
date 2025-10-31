@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PazarAtlasi.CMS.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,14 +88,18 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    NativeName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Flag = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     IsDefault = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -152,7 +156,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TemplateType = table.Column<int>(type: "int", nullable: false),
                     TemplateKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ConfigurationSchema = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
@@ -228,6 +231,36 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AnnouncementTranslations_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LocalizationValues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Category = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LocalizationValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LocalizationValues_Languages_LanguageId",
                         column: x => x.LanguageId,
                         principalTable: "Languages",
                         principalColumn: "Id",
@@ -563,14 +596,17 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SectionItemId = table.Column<int>(type: "int", nullable: false),
                     FieldKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FieldName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    FieldName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Required = table.Column<bool>(type: "bit", nullable: false),
                     MaxLength = table.Column<int>(type: "int", nullable: true),
                     Placeholder = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     DefaultValue = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IsTranslatable = table.Column<bool>(type: "bit", nullable: false),
+                    ShowInUI = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     OptionsJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AcceptedFileTypes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    MaxFileSize = table.Column<long>(type: "bigint", nullable: true),
                     SortOrder = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
@@ -798,16 +834,18 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Languages",
-                columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "IsDefault", "Name", "Status", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, "tr-TR", new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, "Türkçe", 1, null, null });
+                columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "Flag", "IsActive", "IsDefault", "Name", "NativeName", "SortOrder", "Status", "UpdatedAt", "UpdatedBy" },
+                values: new object[] { 1, "tr-TR", new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7393), null, "🇹🇷", true, true, "Türkçe", "Türkçe", 1, 0, null, null });
 
             migrationBuilder.InsertData(
                 table: "Languages",
-                columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "Name", "Status", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "Flag", "IsActive", "Name", "NativeName", "SortOrder", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 2, "en-US", new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "English", 1, null, null },
-                    { 3, "de-DE", new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "Deutsch", 1, null, null }
+                    { 2, "en-US", new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7397), null, "🇺🇸", true, "English", "English", 2, 0, null, null },
+                    { 3, "de-DE", new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7400), null, "🇩🇪", true, "Deutsch", "Deutsch", 3, 0, null, null },
+                    { 4, "fr-FR", new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7402), null, "🇫🇷", true, "Français", "Français", 4, 0, null, null },
+                    { 5, "es-ES", new DateTime(2025, 10, 31, 12, 29, 8, 681, DateTimeKind.Utc).AddTicks(7403), null, "🇪🇸", true, "Español", "Español", 5, 0, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -845,23 +883,23 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Templates",
-                columns: new[] { "Id", "ConfigurationSchema", "CreatedAt", "CreatedBy", "IsActive", "IsDeleted", "SortOrder", "Status", "TemplateKey", "TemplateType", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "ConfigurationSchema", "CreatedAt", "CreatedBy", "IsActive", "IsDeleted", "SortOrder", "Status", "TemplateKey", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 1, 0, "navbar-simple", 1, null, null },
-                    { 2, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#1a1a1a\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"megaMenuColumns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":4,\"default\":3},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"showImages\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 2, 0, "navbar-megamenu", 11, null, null },
-                    { 3, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#2d3748\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"pills\"},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 3, 0, "navbar-servicetabs", 10, null, null },
-                    { 4, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#4a5568\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"categoryStyle\":{\"type\":\"string\",\"enum\":[\"sidebar\",\"dropdown\",\"tabs\"],\"default\":\"sidebar\"},\"showCategoryIcons\":{\"type\":\"boolean\",\"default\":true},\"itemsPerCategory\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":8,\"default\":4}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 4, 0, "navbar-categorized", 6, null, null },
-                    { 5, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"padding\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 5, 0, "default", 1, null, null },
-                    { 6, "{\"type\":\"object\",\"properties\":{\"direction\":{\"type\":\"string\",\"enum\":[\"horizontal\",\"vertical\"],\"default\":\"vertical\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showNumbers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 6, 0, "sequential", 2, null, null },
-                    { 7, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":6,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"showExcerpts\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 7, 0, "grid", 3, null, null },
-                    { 8, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":5,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"imageAspectRatio\":{\"type\":\"string\",\"enum\":[\"auto\",\"square\",\"landscape\",\"portrait\"],\"default\":\"auto\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 8, 0, "masonry", 4, null, null },
-                    { 9, "{\"type\":\"object\",\"properties\":{\"autoPlay\":{\"type\":\"boolean\",\"default\":true},\"interval\":{\"type\":\"integer\",\"minimum\":2000,\"maximum\":10000,\"default\":5000},\"showIndicators\":{\"type\":\"boolean\",\"default\":true},\"showArrows\":{\"type\":\"boolean\",\"default\":true},\"transitionEffect\":{\"type\":\"string\",\"enum\":[\"fade\",\"slide\",\"zoom\"],\"default\":\"slide\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 9, 0, "carousel", 5, null, null },
-                    { 10, "{\"type\":\"object\",\"properties\":{\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"iconPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"right\"],\"default\":\"left\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"compact\",\"comfortable\",\"spacious\"],\"default\":\"comfortable\"},\"showDividers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 10, 0, "list", 6, null, null },
-                    { 11, "{\"type\":\"object\",\"properties\":{\"alignment\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"center\"},\"showImage\":{\"type\":\"boolean\",\"default\":true},\"imageSize\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showDescription\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 11, 0, "single-item", 7, null, null },
-                    { 12, "{\"type\":\"object\",\"properties\":{\"itemsPerRow\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":6,\"default\":3},\"showTitles\":{\"type\":\"boolean\",\"default\":true},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"equalHeight\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 12, 0, "multi-item", 8, null, null },
-                    { 13, "{\"type\":\"object\",\"properties\":{\"allowMultiple\":{\"type\":\"boolean\",\"default\":false},\"defaultOpen\":{\"type\":\"integer\",\"minimum\":0,\"default\":0},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 13, 0, "accordion", 9, null, null },
-                    { 14, "{\"type\":\"object\",\"properties\":{\"tabPosition\":{\"type\":\"string\",\"enum\":[\"top\",\"bottom\",\"left\",\"right\"],\"default\":\"top\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"underline\"},\"showIcons\":{\"type\":\"boolean\",\"default\":false},\"defaultTab\":{\"type\":\"integer\",\"minimum\":0,\"default\":0}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 14, 0, "tabs", 10, null, null }
+                    { 1, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 1, 0, "navbar-simple", null, null },
+                    { 2, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#1a1a1a\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"megaMenuColumns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":4,\"default\":3},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"showImages\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 2, 0, "navbar-megamenu", null, null },
+                    { 3, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#2d3748\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"pills\"},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 3, 0, "navbar-servicetabs", null, null },
+                    { 4, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#4a5568\"},\"textColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"showLogo\":{\"type\":\"boolean\",\"default\":true},\"logoPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"left\"},\"categoryStyle\":{\"type\":\"string\",\"enum\":[\"sidebar\",\"dropdown\",\"tabs\"],\"default\":\"sidebar\"},\"showCategoryIcons\":{\"type\":\"boolean\",\"default\":true},\"itemsPerCategory\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":8,\"default\":4}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 4, 0, "navbar-categorized", null, null },
+                    { 5, "{\"type\":\"object\",\"properties\":{\"backgroundColor\":{\"type\":\"string\",\"default\":\"#ffffff\"},\"textColor\":{\"type\":\"string\",\"default\":\"#333333\"},\"padding\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 5, 0, "default", null, null },
+                    { 6, "{\"type\":\"object\",\"properties\":{\"direction\":{\"type\":\"string\",\"enum\":[\"horizontal\",\"vertical\"],\"default\":\"vertical\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showNumbers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 6, 0, "sequential", null, null },
+                    { 7, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":1,\"maximum\":6,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"showExcerpts\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 7, 0, "grid", null, null },
+                    { 8, "{\"type\":\"object\",\"properties\":{\"columns\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":5,\"default\":3},\"gap\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showImages\":{\"type\":\"boolean\",\"default\":true},\"imageAspectRatio\":{\"type\":\"string\",\"enum\":[\"auto\",\"square\",\"landscape\",\"portrait\"],\"default\":\"auto\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 8, 0, "masonry", null, null },
+                    { 9, "{\"type\":\"object\",\"properties\":{\"autoPlay\":{\"type\":\"boolean\",\"default\":true},\"interval\":{\"type\":\"integer\",\"minimum\":2000,\"maximum\":10000,\"default\":5000},\"showIndicators\":{\"type\":\"boolean\",\"default\":true},\"showArrows\":{\"type\":\"boolean\",\"default\":true},\"transitionEffect\":{\"type\":\"string\",\"enum\":[\"fade\",\"slide\",\"zoom\"],\"default\":\"slide\"}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 9, 0, "carousel", null, null },
+                    { 10, "{\"type\":\"object\",\"properties\":{\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"iconPosition\":{\"type\":\"string\",\"enum\":[\"left\",\"right\"],\"default\":\"left\"},\"spacing\":{\"type\":\"string\",\"enum\":[\"compact\",\"comfortable\",\"spacious\"],\"default\":\"comfortable\"},\"showDividers\":{\"type\":\"boolean\",\"default\":false}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 10, 0, "list", null, null },
+                    { 11, "{\"type\":\"object\",\"properties\":{\"alignment\":{\"type\":\"string\",\"enum\":[\"left\",\"center\",\"right\"],\"default\":\"center\"},\"showImage\":{\"type\":\"boolean\",\"default\":true},\"imageSize\":{\"type\":\"string\",\"enum\":[\"small\",\"medium\",\"large\"],\"default\":\"medium\"},\"showDescription\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 11, 0, "single-item", null, null },
+                    { 12, "{\"type\":\"object\",\"properties\":{\"itemsPerRow\":{\"type\":\"integer\",\"minimum\":2,\"maximum\":6,\"default\":3},\"showTitles\":{\"type\":\"boolean\",\"default\":true},\"showDescriptions\":{\"type\":\"boolean\",\"default\":true},\"equalHeight\":{\"type\":\"boolean\",\"default\":true}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 12, 0, "multi-item", null, null },
+                    { 13, "{\"type\":\"object\",\"properties\":{\"allowMultiple\":{\"type\":\"boolean\",\"default\":false},\"defaultOpen\":{\"type\":\"integer\",\"minimum\":0,\"default\":0},\"showIcons\":{\"type\":\"boolean\",\"default\":true},\"animationDuration\":{\"type\":\"integer\",\"minimum\":100,\"maximum\":1000,\"default\":300}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 13, 0, "accordion", null, null },
+                    { 14, "{\"type\":\"object\",\"properties\":{\"tabPosition\":{\"type\":\"string\",\"enum\":[\"top\",\"bottom\",\"left\",\"right\"],\"default\":\"top\"},\"tabStyle\":{\"type\":\"string\",\"enum\":[\"pills\",\"underline\",\"background\"],\"default\":\"underline\"},\"showIcons\":{\"type\":\"boolean\",\"default\":false},\"defaultTab\":{\"type\":\"integer\",\"minimum\":0,\"default\":0}}}", new DateTime(2024, 10, 14, 10, 0, 0, 0, DateTimeKind.Unspecified), null, true, false, 14, 0, "tabs", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1462,28 +1500,28 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemFields",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AcceptedFileTypes", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxFileSize", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "ShowInUI", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, 100, null, "Enter menu label", true, 1, 1, 0, 1, null, null },
-                    { 2, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "megamenu", "type", "Menu Type", false, null, null, "Menu type (megamenu, dropdown, etc.)", false, 1, 2, 0, 1, null, null },
-                    { 3, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "url", "Menu URL", false, null, null, "Enter menu URL (optional for dropdowns)", false, 1, 3, 0, 13, null, null },
-                    { 24, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, 100, null, "Enter menu label", true, 12, 1, 0, 1, null, null },
-                    { 25, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "servicetabs", "type", "Menu Type", false, null, null, "Menu type", false, 12, 2, 0, 1, null, null },
-                    { 42, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, 100, null, "Enter menu label", true, 23, 1, 0, 1, null, null },
-                    { 43, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "categorized", "type", "Menu Type", false, null, null, "Menu type", false, 23, 2, 0, 1, null, null },
-                    { 46, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, 100, null, "Enter menu label", true, 33, 1, 0, 1, null, null },
-                    { 47, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "megamenu", "type", "Menu Type", false, null, null, "Menu type", false, 33, 2, 0, 1, null, null },
-                    { 56, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Link Label", true, 100, null, "Enter link label", true, 43, 1, 0, 1, null, null },
-                    { 57, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, "Enter link URL", true, 43, 2, 0, 13, null, null },
-                    { 58, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Link Label", true, 100, null, "Enter link label", true, 44, 1, 0, 1, null, null },
-                    { 59, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, "Enter link URL", true, 44, 2, 0, 13, null, null },
-                    { 60, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "true", "showStatus", "Show Status", false, null, null, null, false, 44, 3, 0, 10, null, null },
-                    { 61, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "online", "status", "Status", false, null, null, "Enter status", false, 44, 4, 0, 1, null, null },
-                    { 62, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Link Label", true, 100, null, "Enter link label", true, 45, 1, 0, 1, null, null },
-                    { 63, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, "Enter link URL", true, 45, 2, 0, 13, null, null },
-                    { 64, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, 100, null, "Enter menu label", true, 46, 1, 0, 1, null, null },
-                    { 65, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "dropdown", "type", "Menu Type", false, null, null, "Menu type", false, 46, 2, 0, 1, null, null }
+                    { 1, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, null, 100, null, "Enter menu label", true, 1, true, 1, 0, 1, null, null },
+                    { 2, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "megamenu", "type", "Menu Type", false, null, null, null, "Menu type (megamenu, dropdown, etc.)", false, 1, true, 2, 0, 1, null, null },
+                    { 3, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "url", "Menu URL", false, null, null, null, "Enter menu URL (optional for dropdowns)", false, 1, true, 3, 0, 13, null, null },
+                    { 24, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, null, 100, null, "Enter menu label", true, 12, true, 1, 0, 1, null, null },
+                    { 25, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "servicetabs", "type", "Menu Type", false, null, null, null, "Menu type", false, 12, true, 2, 0, 1, null, null },
+                    { 42, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, null, 100, null, "Enter menu label", true, 23, true, 1, 0, 1, null, null },
+                    { 43, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "categorized", "type", "Menu Type", false, null, null, null, "Menu type", false, 23, true, 2, 0, 1, null, null },
+                    { 46, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, null, 100, null, "Enter menu label", true, 33, true, 1, 0, 1, null, null },
+                    { 47, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "megamenu", "type", "Menu Type", false, null, null, null, "Menu type", false, 33, true, 2, 0, 1, null, null },
+                    { 56, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Link Label", true, null, 100, null, "Enter link label", true, 43, true, 1, 0, 1, null, null },
+                    { 57, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, null, "Enter link URL", true, 43, true, 2, 0, 13, null, null },
+                    { 58, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Link Label", true, null, 100, null, "Enter link label", true, 44, true, 1, 0, 1, null, null },
+                    { 59, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, null, "Enter link URL", true, 44, true, 2, 0, 13, null, null },
+                    { 60, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "true", "showStatus", "Show Status", false, null, null, null, null, false, 44, true, 3, 0, 10, null, null },
+                    { 61, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "online", "status", "Status", false, null, null, null, "Enter status", false, 44, true, 4, 0, 1, null, null },
+                    { 62, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Link Label", true, null, 100, null, "Enter link label", true, 45, true, 1, 0, 1, null, null },
+                    { 63, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, null, "Enter link URL", true, 45, true, 2, 0, 13, null, null },
+                    { 64, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Menu Label", true, null, 100, null, "Enter menu label", true, 46, true, 1, 0, 1, null, null },
+                    { 65, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "dropdown", "type", "Menu Type", false, null, null, null, "Menu type", false, 46, true, 2, 0, 1, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1577,42 +1615,42 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemFields",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AcceptedFileTypes", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxFileSize", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "ShowInUI", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 4, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Description Title", true, 200, null, "Enter description title", true, 2, 1, 0, 1, null, null },
-                    { 5, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Description Text", true, 500, null, "Enter description text", true, 2, 2, 0, 2, null, null },
-                    { 6, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "linkText", "Link Text", true, 50, null, "Enter link text", false, 2, 3, 0, 1, null, null },
-                    { 7, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "linkUrl", "Link URL", false, null, null, "Enter link URL", false, 2, 4, 0, 13, null, null },
-                    { 8, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Section Title", true, 100, null, "Enter section title", true, 3, 1, 0, 1, null, null },
-                    { 17, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Section Title", true, 100, null, "Enter section title", true, 8, 1, 0, 1, null, null },
-                    { 26, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, 100, null, "Enter tab label", true, 13, 1, 0, 1, null, null },
-                    { 27, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-server", "icon", "Tab Icon", false, null, null, "Enter icon class", false, 13, 2, 0, 1, null, null },
-                    { 28, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, 100, null, "Enter tab label", true, 14, 1, 0, 1, null, null },
-                    { 29, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-cloud", "icon", "Tab Icon", false, null, null, "Enter icon class", false, 14, 2, 0, 1, null, null },
-                    { 30, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, 100, null, "Enter tab label", true, 15, 1, 0, 1, null, null },
-                    { 31, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-shield-alt", "icon", "Tab Icon", false, null, null, "Enter icon class", false, 15, 2, 0, 1, null, null },
-                    { 32, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, 100, null, "Enter tab label", true, 16, 1, 0, 1, null, null },
-                    { 33, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-database", "icon", "Tab Icon", false, null, null, "Enter icon class", false, 16, 2, 0, 1, null, null },
-                    { 34, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, 100, null, "Enter tab label", true, 17, 1, 0, 1, null, null },
-                    { 35, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-chart-line", "icon", "Tab Icon", false, null, null, "Enter icon class", false, 17, 2, 0, 1, null, null },
-                    { 36, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, 100, null, "Enter tab label", true, 18, 1, 0, 1, null, null },
-                    { 37, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-crown", "icon", "Tab Icon", false, null, null, "Enter icon class", false, 18, 2, 0, 1, null, null },
-                    { 38, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "true", "isPremium", "Is Premium", false, null, null, null, false, 18, 3, 0, 10, null, null },
-                    { 44, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Category Label", true, 100, null, "Enter category label", true, 24, 1, 0, 1, null, null },
-                    { 45, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-code", "icon", "Category Icon", false, null, null, "Enter icon class", false, 24, 2, 0, 1, null, null },
-                    { 48, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Description Title", true, 200, null, "Enter description title", true, 34, 1, 0, 1, null, null },
-                    { 49, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Description Text", true, 500, null, "Enter description text", true, 34, 2, 0, 2, null, null },
-                    { 50, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "linkText", "Link Text", true, 50, null, "Enter link text", false, 34, 3, 0, 1, null, null },
-                    { 51, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "linkUrl", "Link URL", false, null, null, "Enter link URL", false, 34, 4, 0, 13, null, null },
-                    { 66, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Contact Label", true, 100, null, "Enter contact label", true, 47, 1, 0, 1, null, null },
-                    { 67, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "value", "Contact Value", true, 200, null, "Enter contact value", true, 47, 2, 0, 1, null, null },
-                    { 68, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "email", "type", "Contact Type", false, null, null, "Enter contact type", false, 47, 3, 0, 1, null, null },
-                    { 69, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-envelope", "icon", "Contact Icon", false, null, null, "Enter icon class", false, 47, 4, 0, 1, null, null },
-                    { 70, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Contact Label", true, 100, null, "Enter contact label", true, 48, 1, 0, 1, null, null },
-                    { 71, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "value", "Contact Value", true, 200, null, "Enter contact value", true, 48, 2, 0, 1, null, null },
-                    { 72, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "address", "type", "Contact Type", false, null, null, "Enter contact type", false, 48, 3, 0, 1, null, null },
-                    { 73, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-map-marker-alt", "icon", "Contact Icon", false, null, null, "Enter icon class", false, 48, 4, 0, 1, null, null }
+                    { 4, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Description Title", true, null, 200, null, "Enter description title", true, 2, true, 1, 0, 1, null, null },
+                    { 5, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Description Text", true, null, 500, null, "Enter description text", true, 2, true, 2, 0, 2, null, null },
+                    { 6, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "linkText", "Link Text", true, null, 50, null, "Enter link text", false, 2, true, 3, 0, 1, null, null },
+                    { 7, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "linkUrl", "Link URL", false, null, null, null, "Enter link URL", false, 2, true, 4, 0, 13, null, null },
+                    { 8, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Section Title", true, null, 100, null, "Enter section title", true, 3, true, 1, 0, 1, null, null },
+                    { 17, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Section Title", true, null, 100, null, "Enter section title", true, 8, true, 1, 0, 1, null, null },
+                    { 26, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, null, 100, null, "Enter tab label", true, 13, true, 1, 0, 1, null, null },
+                    { 27, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-server", "icon", "Tab Icon", false, null, null, null, "Enter icon class", false, 13, true, 2, 0, 1, null, null },
+                    { 28, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, null, 100, null, "Enter tab label", true, 14, true, 1, 0, 1, null, null },
+                    { 29, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-cloud", "icon", "Tab Icon", false, null, null, null, "Enter icon class", false, 14, true, 2, 0, 1, null, null },
+                    { 30, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, null, 100, null, "Enter tab label", true, 15, true, 1, 0, 1, null, null },
+                    { 31, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-shield-alt", "icon", "Tab Icon", false, null, null, null, "Enter icon class", false, 15, true, 2, 0, 1, null, null },
+                    { 32, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, null, 100, null, "Enter tab label", true, 16, true, 1, 0, 1, null, null },
+                    { 33, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-database", "icon", "Tab Icon", false, null, null, null, "Enter icon class", false, 16, true, 2, 0, 1, null, null },
+                    { 34, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, null, 100, null, "Enter tab label", true, 17, true, 1, 0, 1, null, null },
+                    { 35, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-chart-line", "icon", "Tab Icon", false, null, null, null, "Enter icon class", false, 17, true, 2, 0, 1, null, null },
+                    { 36, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Tab Label", true, null, 100, null, "Enter tab label", true, 18, true, 1, 0, 1, null, null },
+                    { 37, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-crown", "icon", "Tab Icon", false, null, null, null, "Enter icon class", false, 18, true, 2, 0, 1, null, null },
+                    { 38, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "true", "isPremium", "Is Premium", false, null, null, null, null, false, 18, true, 3, 0, 10, null, null },
+                    { 44, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Category Label", true, null, 100, null, "Enter category label", true, 24, true, 1, 0, 1, null, null },
+                    { 45, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-code", "icon", "Category Icon", false, null, null, null, "Enter icon class", false, 24, true, 2, 0, 1, null, null },
+                    { 48, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Description Title", true, null, 200, null, "Enter description title", true, 34, true, 1, 0, 1, null, null },
+                    { 49, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Description Text", true, null, 500, null, "Enter description text", true, 34, true, 2, 0, 2, null, null },
+                    { 50, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "linkText", "Link Text", true, null, 50, null, "Enter link text", false, 34, true, 3, 0, 1, null, null },
+                    { 51, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "#", "linkUrl", "Link URL", false, null, null, null, "Enter link URL", false, 34, true, 4, 0, 13, null, null },
+                    { 66, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Contact Label", true, null, 100, null, "Enter contact label", true, 47, true, 1, 0, 1, null, null },
+                    { 67, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "value", "Contact Value", true, null, 200, null, "Enter contact value", true, 47, true, 2, 0, 1, null, null },
+                    { 68, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "email", "type", "Contact Type", false, null, null, null, "Enter contact type", false, 47, true, 3, 0, 1, null, null },
+                    { 69, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-envelope", "icon", "Contact Icon", false, null, null, null, "Enter icon class", false, 47, true, 4, 0, 1, null, null },
+                    { 70, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "label", "Contact Label", true, null, 100, null, "Enter contact label", true, 48, true, 1, 0, 1, null, null },
+                    { 71, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "value", "Contact Value", true, null, 200, null, "Enter contact value", true, 48, true, 2, 0, 1, null, null },
+                    { 72, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "address", "type", "Contact Type", false, null, null, null, "Enter contact type", false, 48, true, 3, 0, 1, null, null },
+                    { 73, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-map-marker-alt", "icon", "Contact Icon", false, null, null, null, "Enter icon class", false, 48, true, 4, 0, 1, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1727,30 +1765,30 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SectionItemFields",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "AcceptedFileTypes", "CreatedAt", "CreatedBy", "DefaultValue", "FieldKey", "FieldName", "IsTranslatable", "MaxFileSize", "MaxLength", "OptionsJson", "Placeholder", "Required", "SectionItemId", "ShowInUI", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 9, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, 100, null, "Enter link text", true, 4, 1, 0, 1, null, null },
-                    { 10, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, "Enter link URL", true, 4, 2, 0, 13, null, null },
-                    { 11, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, 100, null, "Enter link text", true, 5, 1, 0, 1, null, null },
-                    { 12, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, "Enter link URL", true, 5, 2, 0, 13, null, null },
-                    { 13, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, 100, null, "Enter link text", true, 6, 1, 0, 1, null, null },
-                    { 14, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, "Enter link URL", true, 6, 2, 0, 13, null, null },
-                    { 15, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, 100, null, "Enter link text", true, 7, 1, 0, 1, null, null },
-                    { 16, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, "Enter link URL", true, 7, 2, 0, 13, null, null },
-                    { 18, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Feature Title", true, 100, null, "Enter feature title", true, 9, 1, 0, 1, null, null },
-                    { 19, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Feature Description", true, 300, null, "Enter feature description", true, 9, 2, 0, 2, null, null },
-                    { 20, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Feature Title", true, 100, null, "Enter feature title", true, 10, 1, 0, 1, null, null },
-                    { 21, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Feature Description", true, 300, null, "Enter feature description", true, 10, 2, 0, 2, null, null },
-                    { 22, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Feature Title", true, 100, null, "Enter feature title", true, 11, 1, 0, 1, null, null },
-                    { 23, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Feature Description", true, 300, null, "Enter feature description", true, 11, 2, 0, 2, null, null },
-                    { 39, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Service Title", true, 100, null, "Enter service title", true, 19, 1, 0, 1, null, null },
-                    { 40, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Service Description", true, 300, null, "Enter service description", true, 19, 2, 0, 2, null, null },
-                    { 41, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-cloud", "icon", "Service Icon", false, null, null, "Enter icon class", false, 19, 3, 0, 1, null, null },
-                    { 52, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Post Title", true, 200, null, "Enter post title", true, 41, 1, 0, 1, null, null },
-                    { 53, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "/api/placeholder/400/300", "image", "Post Image", false, null, null, "Enter image URL", false, 41, 2, 0, 11, null, null },
-                    { 54, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "date", "Post Date", true, null, null, "Enter post date", false, 41, 3, 0, 9, null, null },
-                    { 55, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "readTime", "Read Time", true, 20, null, "Enter read time", false, 41, 4, 0, 1, null, null }
+                    { 9, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, null, 100, null, "Enter link text", true, 4, true, 1, 0, 1, null, null },
+                    { 10, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, null, "Enter link URL", true, 4, true, 2, 0, 13, null, null },
+                    { 11, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, null, 100, null, "Enter link text", true, 5, true, 1, 0, 1, null, null },
+                    { 12, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, null, "Enter link URL", true, 5, true, 2, 0, 13, null, null },
+                    { 13, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, null, 100, null, "Enter link text", true, 6, true, 1, 0, 1, null, null },
+                    { 14, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, null, "Enter link URL", true, 6, true, 2, 0, 13, null, null },
+                    { 15, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "text", "Link Text", true, null, 100, null, "Enter link text", true, 7, true, 1, 0, 1, null, null },
+                    { 16, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "url", "Link URL", false, null, null, null, "Enter link URL", true, 7, true, 2, 0, 13, null, null },
+                    { 18, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Feature Title", true, null, 100, null, "Enter feature title", true, 9, true, 1, 0, 1, null, null },
+                    { 19, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Feature Description", true, null, 300, null, "Enter feature description", true, 9, true, 2, 0, 2, null, null },
+                    { 20, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Feature Title", true, null, 100, null, "Enter feature title", true, 10, true, 1, 0, 1, null, null },
+                    { 21, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Feature Description", true, null, 300, null, "Enter feature description", true, 10, true, 2, 0, 2, null, null },
+                    { 22, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Feature Title", true, null, 100, null, "Enter feature title", true, 11, true, 1, 0, 1, null, null },
+                    { 23, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Feature Description", true, null, 300, null, "Enter feature description", true, 11, true, 2, 0, 2, null, null },
+                    { 39, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Service Title", true, null, 100, null, "Enter service title", true, 19, true, 1, 0, 1, null, null },
+                    { 40, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "description", "Service Description", true, null, 300, null, "Enter service description", true, 19, true, 2, 0, 2, null, null },
+                    { 41, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "fas fa-cloud", "icon", "Service Icon", false, null, null, null, "Enter icon class", false, 19, true, 3, 0, 1, null, null },
+                    { 52, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "title", "Post Title", true, null, 200, null, "Enter post title", true, 41, true, 1, 0, 1, null, null },
+                    { 53, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, "/api/placeholder/400/300", "image", "Post Image", false, null, null, null, "Enter image URL", false, 41, true, 2, 0, 11, null, null },
+                    { 54, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "date", "Post Date", true, null, null, null, "Enter post date", false, 41, true, 3, 0, 9, null, null },
+                    { 55, null, new DateTime(2024, 10, 25, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, "readTime", "Read Time", true, null, 20, null, "Enter read time", false, 41, true, 4, 0, 1, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1895,13 +1933,27 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "IX_Languages_Code",
                 table: "Languages",
                 column: "Code",
-                unique: true,
-                filter: "[Code] IS NOT NULL");
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Languages_IsActive",
+                table: "Languages",
+                column: "IsActive");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Languages_IsDefault",
                 table: "Languages",
                 column: "IsDefault");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Languages_IsDeleted",
+                table: "Languages",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Languages_SortOrder",
+                table: "Languages",
+                column: "SortOrder");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Layouts_IsDefault",
@@ -1938,6 +1990,37 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "IX_LayoutSections_Status_IsDeleted",
                 table: "LayoutSections",
                 columns: new[] { "Status", "IsDeleted" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LocalizationValues_Category",
+                table: "LocalizationValues",
+                column: "Category");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LocalizationValues_IsActive",
+                table: "LocalizationValues",
+                column: "IsActive");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LocalizationValues_IsDeleted",
+                table: "LocalizationValues",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LocalizationValues_Key",
+                table: "LocalizationValues",
+                column: "Key");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LocalizationValues_Key_LanguageId",
+                table: "LocalizationValues",
+                columns: new[] { "Key", "LanguageId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LocalizationValues_LanguageId",
+                table: "LocalizationValues",
+                column: "LanguageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pages_Code",
@@ -2131,11 +2214,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Templates_TemplateType_IsActive",
-                table: "Templates",
-                columns: new[] { "TemplateType", "IsActive" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TemplateTranslations_LanguageId",
                 table: "TemplateTranslations",
                 column: "LanguageId");
@@ -2158,6 +2236,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "LayoutSections");
+
+            migrationBuilder.DropTable(
+                name: "LocalizationValues");
 
             migrationBuilder.DropTable(
                 name: "PageSections");

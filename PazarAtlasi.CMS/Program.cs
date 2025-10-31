@@ -17,27 +17,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddPersistenceServiceRegistrations(builder.Configuration);
 builder.Services.AddInfrastructureServiceRegistrations(builder.Configuration);
 
-// Add localization services
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddMvc()
-    .AddViewLocalization()
-    .AddDataAnnotationsLocalization();
+// Localization is now handled by LanguageService and LanguageMiddleware
 
 var app = builder.Build();
 
-// Configure localization
-var supportedCultures = new[]
-{
-    new CultureInfo("tr-TR"),
-    new CultureInfo("en-US"),
-};
-
-app.UseRequestLocalization(new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("tr-TR"),
-    SupportedCultures = supportedCultures,
-    SupportedUICultures = supportedCultures
-});
+// Localization is now handled by LanguageMiddleware
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
