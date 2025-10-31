@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Domain.Entities.Announcement;
 using PazarAtlasi.CMS.Domain.Entities.Content;
+using PazarAtlasi.CMS.Domain.Entities.Localization;
 
 namespace PazarAtlasi.CMS.Persistence.Context
 {
@@ -62,6 +63,9 @@ namespace PazarAtlasi.CMS.Persistence.Context
         public DbSet<Announcement> Announcements { get; set; }
 
         public DbSet<AnnouncementTranslation> AnnouncementTranslations { get; set; }
+
+        // Localization
+        public DbSet<LocalizationValue> LocalizationValues { get; set; }
 
 
 

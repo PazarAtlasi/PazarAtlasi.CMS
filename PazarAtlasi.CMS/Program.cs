@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using PazarAtlasi.CMS.Persistence.Context;
 using PazarAtlasi.CMS.Infrastructure;
+using PazarAtlasi.CMS.Infrastructure.ServiceRegistrations;
+using PazarAtlasi.CMS.Infrastructure.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,7 @@ builder.Services.AddControllersWithViews();
 
 // Add Persistence Layer
 builder.Services.AddPersistenceServiceRegistrations(builder.Configuration);
-builder.Services.AddInfrastructureServiceRegistrations();
+builder.Services.AddInfrastructureServiceRegistrations(builder.Configuration);
 
 // Add localization services
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -48,6 +50,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Add Language Middleware
+app.UseLanguageMiddleware();
 
 app.UseRouting();
 

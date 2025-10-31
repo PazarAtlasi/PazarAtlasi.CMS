@@ -750,4 +750,232 @@ GET /api/content/section?key=hero&culture=tr-TR
 GET /api/content/page-sections?pageId=1&culture=tr-TR
 ```
 
+## 🌐 Localization Sistemi
+
+### Localization Entity Yapısı
+
+Çoklu dil desteği için gelişmiş localization sistemi kuruldu:
+
+#### 1. LocalizationValue Entity
+
+```csharp
+public class LocalizationValue : Entity<int>
+{
+    public int LanguageId { get; set; }
+    public string Key { get; set; } = string.Empty;
+    public string Value { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? Category { get; set; }
+    public bool IsActive { get; set; } = true;
+
+    // Navigation Properties
+    public virtual Language Language { get; set; } = null!;
+}
+```
+
+#### 2. Language Entity
+
+```csharp
+public class Language : Entity<int>
+{
+    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string? NativeName { get; set; }
+    public string? Flag { get; set; }
+    public bool IsDefault { get; set; } = false;
+    public bool IsActive { get; set; } = true;
+    public int SortOrder { get; set; } = 0;
+
+    // Navigation Properties
+    public virtual ICollection<LocalizationValue> LocalizationValues { get; set; }
+}
+```
+
+### Language Service Kullanımı
+
+#### Temel Kullanım
+
+```csharp
+// Constructor injection
+private readonly ILanguageService _languageService;
+
+// Mevcut dil ile değer alma
+string saveText = _languageService.GetLangValue("Common.Save");
+
+// Belirli dil ile değer alma
+string saveTextEn = _languageService.GetLangValue("Common.Save", "en-US");
+
+// Async kullanım
+string saveTextAsync = await _languageService.GetLangValueAsync("Common.Save");
+```
+
+#### Gelişmiş Özellikler
+
+```csharp
+// Arama
+var searchResults = await _languageService.SearchAsync("Common");
+
+// Yeni değer ekleme
+bool added = await _languageService.AddLangValueAsync(
+    "Common.NewButton",
+    "Yeni",
+    "New button text",
+    "tr-TR"
+);
+
+// Değer güncelleme
+bool updated = await _languageService.UpdateLangValueAsync(
+    "Common.Save",
+    "Kaydet Et",
+    "tr-TR"
+);
+
+// Cache yenileme
+await _languageService.RefreshCacheAsync();
+
+// Dil sözlüğü alma
+var dictionary = await _languageService.GetLanguageDictionaryAsync("tr-TR");
+```
+
+### View'larda Kullanım
+
+#### HTML Helper ile
+
+```html
+<!-- Temel kullanım -->
+<button>@Html.L("Common.Save")</button>
+
+<!-- Belirli dil ile -->
+<button>@Html.L("Common.Save", "en-US")</button>
+
+<!-- Formatlanmış metin -->
+<p>@Html.LFormat("Common.WelcomeMessage", Model.UserName)</p>
+
+<!-- Fallback ile -->
+<span>@Html.LOrDefault("Common.OptionalText", "Default Text")</span>
+
+<!-- Mevcut dil kodu -->
+<div data-lang="@Html.GetCurrentLanguage()">Content</div>
+
+<!-- Key kontrolü -->
+@if (Html.HasKey("Common.AdvancedFeature")) {
+<div>@Html.L("Common.AdvancedFeature")</div>
+}
+```
+
+#### Static Helper ile
+
+```html
+@using PazarAtlasi.CMS.Helpers
+
+<h1>
+  @LocalizationHelper.L(ViewContext.HttpContext.RequestServices,
+  "Page.Title")
+</h1>
+```
+
+### Cache Management Sistemi
+
+#### Cache Tipleri
+
+1. **InMemory Cache**: Tek sunucu için hızlı cache
+2. **Redis Cache**: Dağıtık sistemler için
+3. **Hybrid Cache**: L1 (Memory) + L2 (Redis) kombinasyonu
+
+#### Configuration
+
+```json
+{
+  "Cache": {
+    "Type": "Hybrid", // InMemory, Redis, Hybrid
+    "ConnectionString": "localhost:6379",
+    "DefaultExpirationMinutes": 30,
+    "MemoryCacheExpirationMinutes": 5,
+    "EnableCompression": true,
+    "EnableLogging": true
+  }
+}
+```
+
+#### Grup Cache Kullanımı
+
+```csharp
+// Cache'e grup ile ekleme
+await _cacheService.SetWithGroupAsync("Navbar.GetMenus", menuData, "Navbar", TimeSpan.FromHours(1));
+await _cacheService.SetWithGroupAsync("Navbar.GetTemplate", templateData, "Navbar", TimeSpan.FromHours(1));
+
+// Grup cache'ini temizleme
+await _cacheService.RemoveGroupAsync("Navbar"); // Navbar grubundaki tüm cache'ler silinir
+
+// Grup anahtarlarını alma
+var groupKeys = await _cacheService.GetGroupKeysAsync("Navbar");
+```
+
+### Middleware Kullanımı
+
+Language detection middleware otomatik olarak:
+
+1. Query parameter'dan dil algılar (`?lang=en-US`)
+2. Accept-Language header'ından dil algılar
+3. Cookie'den dil algılar
+4. Default dili kullanır
+
+```csharp
+// Program.cs veya Startup.cs
+app.UseLanguageMiddleware();
+```
+
+### Desteklenen Diller
+
+```csharp
+public static class LanguageList
+{
+    public const string DefaultLang = "tr-TR";
+    public const string English = "en-US";
+    public const string Turkish = "tr-TR";
+    public const string German = "de-DE";
+    public const string French = "fr-FR";
+    public const string Spanish = "es-ES";
+    // ...
+}
+```
+
+### Cache Grup Örnekleri
+
+```
+Navbar: {
+    Navbar.GetMenus,
+    Navbar.GetTemplate,
+    Navbar.GetSettings
+}
+
+Hero: {
+    Hero.GetContent,
+    Hero.GetTemplate,
+    Hero.GetImages
+}
+
+Localization: {
+    LocalizationValues,
+    LanguageDictionary_tr-TR,
+    LanguageDictionary_en-US
+}
+```
+
+### Performance Optimizasyonları
+
+1. **Smart Caching**: 24 saat cache süresi
+2. **Grup Cache**: İlgili cache'leri toplu temizleme
+3. **Hybrid Cache**: L1 (5dk) + L2 (30dk) katmanlı cache
+4. **Lazy Loading**: İhtiyaç duyulduğunda cache yükleme
+5. **Compression**: Redis'te veri sıkıştırma
+
+### Localization Best Practices
+
+1. **Key Naming**: `Category.SpecificKey` formatı kullan
+2. **Categories**: Common, Page, Section, Error, Validation vb.
+3. **Fallback**: Key bulunamazsa key'in kendisini döndür
+4. **Cache**: Grup cache ile ilgili verileri toplu yönet
+5. **Async**: Mümkün olduğunca async metodları kullan
+
 Bu rehber, projenin tutarlı ve sürdürülebilir şekilde geliştirilmesi için temel kuralları içermektedir.
