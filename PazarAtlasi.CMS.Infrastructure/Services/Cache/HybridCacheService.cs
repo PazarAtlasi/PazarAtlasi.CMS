@@ -52,6 +52,38 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             }
         }
 
+        public async Task<T?> GetValueAsync<T>(string key, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                // First try memory cache (L1)
+                var memoryResult = await _memoryCache.GetValueAsync<T>(key, cancellationToken);
+                if (memoryResult.HasValue)
+                {
+                    _logger.LogDebug($"Hybrid Cache L1 VALUE HIT -> Key: {key}");
+                    return memoryResult;
+                }
+
+                // Then try Redis cache (L2)
+                var redisResult = await _redisCache.GetValueAsync<T>(key, cancellationToken);
+                if (redisResult.HasValue)
+                {
+                    // Store in memory cache for faster access next time
+                    await _memoryCache.SetValueAsync(key, redisResult.Value, _memoryExpiration, cancellationToken);
+                    _logger.LogDebug($"Hybrid Cache L2 VALUE HIT -> Key: {key} (promoted to L1)");
+                    return redisResult;
+                }
+
+                _logger.LogDebug($"Hybrid Cache VALUE MISS -> Key: {key}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting hybrid cache value key: {key}");
+                return null;
+            }
+        }
+
         public async Task<string?> GetStringAsync(string key, CancellationToken cancellationToken = default)
         {
             try
@@ -103,6 +135,28 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error setting hybrid cache key: {key}");
+            }
+        }
+
+        public async Task SetValueAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                // Set in both caches
+                var memoryExpiration = expiration.HasValue && expiration.Value < _memoryExpiration 
+                    ? expiration.Value 
+                    : _memoryExpiration;
+
+                await Task.WhenAll(
+                    _memoryCache.SetValueAsync(key, value, memoryExpiration, cancellationToken),
+                    _redisCache.SetValueAsync(key, value, expiration, cancellationToken)
+                );
+
+                _logger.LogDebug($"Hybrid Cache SET VALUE -> Key: {key}, Expiration: {expiration?.TotalMinutes ?? 30} minutes");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error setting hybrid cache value key: {key}");
             }
         }
 
@@ -183,6 +237,28 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error setting hybrid cache with group - Key: {key}, Group: {groupKey}");
+            }
+        }
+
+        public async Task SetValueWithGroupAsync<T>(string key, T value, string groupKey, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                // Set in both caches with group
+                var memoryExpiration = expiration.HasValue && expiration.Value < _memoryExpiration 
+                    ? expiration.Value 
+                    : _memoryExpiration;
+
+                await Task.WhenAll(
+                    _memoryCache.SetValueWithGroupAsync(key, value, groupKey, memoryExpiration, cancellationToken),
+                    _redisCache.SetValueWithGroupAsync(key, value, groupKey, expiration, cancellationToken)
+                );
+
+                _logger.LogDebug($"Hybrid Cache SET VALUE WITH GROUP -> Key: {key}, Group: {groupKey}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error setting hybrid cache value with group - Key: {key}, Group: {groupKey}");
             }
         }
 

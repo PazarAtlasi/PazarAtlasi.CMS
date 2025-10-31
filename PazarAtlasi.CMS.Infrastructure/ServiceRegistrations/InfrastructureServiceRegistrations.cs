@@ -17,7 +17,16 @@ namespace PazarAtlasi.CMS.Infrastructure.ServiceRegistrations
         public static IServiceCollection AddInfrastructureServiceRegistrations(this IServiceCollection services, IConfiguration configuration)
         {
             // Cache Configuration
-            var cacheConfig = configuration.GetSection("Cache").Get<CacheConfiguration>() ?? new CacheConfiguration();
+            var cacheSection = configuration.GetSection("Cache");
+            var cacheConfig = new CacheConfiguration
+            {
+                Type = Enum.TryParse<CacheType>(cacheSection["Type"], out var cacheType) ? cacheType : CacheType.InMemory,
+                ConnectionString = cacheSection["ConnectionString"],
+                DefaultExpirationMinutes = int.TryParse(cacheSection["DefaultExpirationMinutes"], out var defaultExp) ? defaultExp : 30,
+                MemoryCacheExpirationMinutes = int.TryParse(cacheSection["MemoryCacheExpirationMinutes"], out var memoryExp) ? memoryExp : 5,
+                EnableCompression = bool.TryParse(cacheSection["EnableCompression"], out var compression) && compression,
+                EnableLogging = bool.TryParse(cacheSection["EnableLogging"], out var logging) && logging
+            };
             services.AddSingleton(cacheConfig);
 
             // Register cache services based on configuration

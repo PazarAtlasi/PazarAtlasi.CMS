@@ -35,6 +35,21 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             }
         }
 
+        public Task<T?> GetValueAsync<T>(string key, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                var result = _memoryCache.Get<T?>(key);
+                _logger.LogDebug($"Cache GET VALUE -> Key: {key}, Found: {result.HasValue}");
+                return Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting cache value key: {key}");
+                return Task.FromResult<T?>(null);
+            }
+        }
+
         public Task<string?> GetStringAsync(string key, CancellationToken cancellationToken = default)
         {
             try
@@ -78,6 +93,38 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error setting cache key: {key}");
+                return Task.CompletedTask;
+            }
+        }
+
+        public Task SetValueAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                var options = new MemoryCacheEntryOptions();
+                
+                if (expiration.HasValue)
+                {
+                    options.SlidingExpiration = expiration.Value;
+                }
+                else
+                {
+                    options.SlidingExpiration = TimeSpan.FromMinutes(30);
+                }
+
+                _memoryCache.Set(key, value, options);
+                
+                lock (_lockObject)
+                {
+                    _cacheKeys.Add(key);
+                }
+
+                _logger.LogDebug($"Cache SET VALUE -> Key: {key}, Expiration: {expiration?.TotalMinutes ?? 30} minutes");
+                return Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error setting cache value key: {key}");
                 return Task.CompletedTask;
             }
         }
@@ -184,6 +231,24 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             }
         }
 
+        public async Task SetValueWithGroupAsync<T>(string key, T value, string groupKey, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                // Set the actual cache value
+                await SetValueAsync(key, value, expiration, cancellationToken);
+
+                // Add key to group
+                await AddCacheKeyToGroupAsync(key, groupKey, expiration ?? TimeSpan.FromMinutes(30), cancellationToken);
+
+                _logger.LogDebug($"Cache SET VALUE WITH GROUP -> Key: {key}, Group: {groupKey}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error setting cache value with group - Key: {key}, Group: {groupKey}");
+            }
+        }
+
         public async Task RemoveGroupAsync(string groupKey, CancellationToken cancellationToken = default)
         {
             try
@@ -284,12 +349,12 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
                 await SetAsync(groupKey, cacheKeysInGroup, slidingExpiration, cancellationToken);
 
                 // Store group expiration info
-                var currentExpiration = await GetAsync<int?>($"{groupKey}SlidingExpiration", cancellationToken);
+                var currentExpiration = await GetValueAsync<int>($"{groupKey}SlidingExpiration", cancellationToken);
                 var newExpirationSeconds = (int)slidingExpiration.TotalSeconds;
 
                 if (currentExpiration == null || newExpirationSeconds > currentExpiration.Value)
                 {
-                    await SetAsync($"{groupKey}SlidingExpiration", newExpirationSeconds, slidingExpiration, cancellationToken);
+                    await SetValueAsync($"{groupKey}SlidingExpiration", newExpirationSeconds, slidingExpiration, cancellationToken);
                 }
 
                 _logger.LogDebug($"Added to Cache Group -> Group: {groupKey}, Key: {cacheKey}");

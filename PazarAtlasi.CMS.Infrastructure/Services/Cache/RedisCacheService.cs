@@ -50,6 +50,31 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             }
         }
 
+        public async Task<T?> GetValueAsync<T>(string key, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                var cachedValue = await _distributedCache.GetAsync(key, cancellationToken);
+                
+                if (cachedValue == null)
+                {
+                    _logger.LogDebug($"Redis Cache VALUE MISS -> Key: {key}");
+                    return null;
+                }
+
+                var jsonString = Encoding.UTF8.GetString(cachedValue);
+                var result = JsonSerializer.Deserialize<T?>(jsonString);
+                
+                _logger.LogDebug($"Redis Cache VALUE HIT -> Key: {key}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting Redis cache value key: {key}");
+                return null;
+            }
+        }
+
         public async Task<string?> GetStringAsync(string key, CancellationToken cancellationToken = default)
         {
             try
@@ -90,6 +115,34 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error setting Redis cache key: {key}");
+            }
+        }
+
+        public async Task SetValueAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                var jsonString = JsonSerializer.Serialize(value);
+                var encodedValue = Encoding.UTF8.GetBytes(jsonString);
+
+                var options = new DistributedCacheEntryOptions();
+                
+                if (expiration.HasValue)
+                {
+                    options.SlidingExpiration = expiration.Value;
+                }
+                else
+                {
+                    options.SlidingExpiration = TimeSpan.FromMinutes(30);
+                }
+
+                await _distributedCache.SetAsync(key, encodedValue, options, cancellationToken);
+                
+                _logger.LogDebug($"Redis Cache SET VALUE -> Key: {key}, Expiration: {expiration?.TotalMinutes ?? 30} minutes");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error setting Redis cache value key: {key}");
             }
         }
 
@@ -165,6 +218,24 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error setting Redis cache with group - Key: {key}, Group: {groupKey}");
+            }
+        }
+
+        public async Task SetValueWithGroupAsync<T>(string key, T value, string groupKey, TimeSpan? expiration = null, CancellationToken cancellationToken = default) where T : struct
+        {
+            try
+            {
+                // Set the actual cache value
+                await SetValueAsync(key, value, expiration, cancellationToken);
+
+                // Add key to group
+                await AddCacheKeyToGroupAsync(key, groupKey, expiration ?? TimeSpan.FromMinutes(30), cancellationToken);
+
+                _logger.LogDebug($"Redis Cache SET VALUE WITH GROUP -> Key: {key}, Group: {groupKey}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error setting Redis cache value with group - Key: {key}, Group: {groupKey}");
             }
         }
 
@@ -263,12 +334,12 @@ namespace PazarAtlasi.CMS.Infrastructure.Services.Cache
                 await SetAsync(groupKey, cacheKeysInGroup, slidingExpiration, cancellationToken);
 
                 // Store group expiration info
-                var currentExpiration = await GetAsync<int?>($"{groupKey}SlidingExpiration", cancellationToken);
+                var currentExpiration = await GetValueAsync<int>($"{groupKey}SlidingExpiration", cancellationToken);
                 var newExpirationSeconds = (int)slidingExpiration.TotalSeconds;
 
                 if (currentExpiration == null || newExpirationSeconds > currentExpiration.Value)
                 {
-                    await SetAsync($"{groupKey}SlidingExpiration", newExpirationSeconds, slidingExpiration, cancellationToken);
+                    await SetValueAsync($"{groupKey}SlidingExpiration", newExpirationSeconds, slidingExpiration, cancellationToken);
                 }
 
                 _logger.LogDebug($"Added to Redis Cache Group -> Group: {groupKey}, Key: {cacheKey}");

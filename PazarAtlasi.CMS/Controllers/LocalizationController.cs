@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PazarAtlasi.CMS.Application.Interfaces.Services;
 using PazarAtlasi.CMS.Application.Models.Localization;
 using PazarAtlasi.CMS.Application.Constants;
+using System.Text.Json;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -384,7 +385,7 @@ namespace PazarAtlasi.CMS.Controllers
                     data = allData.ToDictionary(item => $"{item.LangKey}_{item.LangCode}", item => item.LangVal);
                 }
 
-                var json = System.Text.Json.JsonSerializer.Serialize(data, new System.Text.Json.JsonSerializerOptions
+                var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
