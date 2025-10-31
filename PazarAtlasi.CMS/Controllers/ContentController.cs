@@ -3187,6 +3187,7 @@ namespace PazarAtlasi.CMS.Controllers
                     FieldType = field.Type,
                     FieldName = field.FieldName,
                     FieldKey = field.FieldKey,
+                    ShowInUI = field.ShowInUI,
                     FieldValue = existingFieldValue?.Value ?? field.DefaultValue ?? "",
                     IsTranslatable = field.IsTranslatable,
                     Translations = new List<SectionItemFieldTranslationViewModel>()
@@ -3556,6 +3557,7 @@ namespace PazarAtlasi.CMS.Controllers
                     FieldType = fv?.Type ?? SectionItemFieldType.Text,
                     FieldKey = fv?.FieldKey ?? "",
                     FieldValue = fv.DefaultValue,
+                    FieldName = fv.FieldName,
                     IsTranslatable = fv?.IsTranslatable ?? false,
                     ShowInUI = fv?.ShowInUI ?? true,
                     Translations = fv?.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
