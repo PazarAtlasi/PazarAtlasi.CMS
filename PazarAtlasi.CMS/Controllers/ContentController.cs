@@ -2342,6 +2342,7 @@ namespace PazarAtlasi.CMS.Controllers
                         {
                             Id = si.Id,
                             Title = si.Title,
+                            TemplateId = si.TemplateId,
                             Translations = si.Translations.Select(t => new SectionItemTranslationDto
                             {
                                 Id = t.Id,
@@ -2433,6 +2434,7 @@ namespace PazarAtlasi.CMS.Controllers
                         {
                             Id = si.Id,
                             Title = si.Title,
+                            TemplateId = si.TemplateId,
                             Translations = si.Translations.Select(t => new SectionItemTranslationDto
                             {
                                 Id = t.Id,
