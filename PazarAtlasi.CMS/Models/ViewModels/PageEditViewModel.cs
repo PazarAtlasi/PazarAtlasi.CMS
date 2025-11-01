@@ -116,7 +116,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public List<SectionItemEditViewModel> ChildItems { get; set; } = new();
         
         // Fields for this section item
-        public List<SectionItemFieldEditViewModel> Fields { get; set; } = new();
+        public List<SectionItemFieldViewModel> Fields { get; set; } = new();
         
         // Section item translations
         public List<SectionItemTranslationEditViewModel> Translations { get; set; } = new();
@@ -149,41 +149,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public bool IsNested => ParentSectionItemId.HasValue;
         
         public bool HasChildren => ChildItems.Any();
-    }
-
-    public class SectionItemFieldEditViewModel
-    {
-        public int Id { get; set; }
-        
-        public int SectionItemId { get; set; }
-        
-        public int SectionItemFieldId { get; set; }
-        
-        public SectionItemFieldType FieldType { get; set; }
-        
-        public string FieldKey { get; set; } = string.Empty;
-        
-        public string FieldValue { get; set; } = string.Empty;
-        
-        // Field value translations
-        public List<SectionItemFieldValueTranslationEditViewModel> Translations { get; set; } = new();
-    }
-
-    public class SectionItemFieldValueTranslationEditViewModel
-    {
-        public int Id { get; set; }
-        
-        public int SectionItemFieldValueId { get; set; }
-        
-        public int LanguageId { get; set; }
-        
-        public string? LanguageName { get; set; }
-        
-        public string? LanguageCode { get; set; }
-        
-        public string Value { get; set; } = string.Empty;
-        
-        public string FieldValue { get; set; } = string.Empty;
     }
 
     public class PageTranslationEditViewModel
@@ -230,6 +195,4 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         
         public string? Description { get; set; }
     }
-
-
 }

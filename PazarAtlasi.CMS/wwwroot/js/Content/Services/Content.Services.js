@@ -146,11 +146,11 @@ const ContentServices = (function () {
   /**
    * Get section modal
    */
-  function getSectionModal(id, pageId) {
+  function getSectionModal(id, pageId, layoutId) {
     return $.ajax({
       url: `${config.baseUrl}/GetSectionModal`,
       type: "GET",
-      data: { id, pageId },
+      data: { id, pageId, layoutId },
       dataType: "html",
     });
   }

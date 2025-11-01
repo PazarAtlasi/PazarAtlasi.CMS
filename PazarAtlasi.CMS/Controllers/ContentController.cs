@@ -684,7 +684,7 @@ namespace PazarAtlasi.CMS.Controllers
         /// Get section modal for editing/creating with items
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetSectionModal(int id, int pageId = 0)
+        public async Task<IActionResult> GetSectionModal(int id, int pageId = 0, int layoutId = 0)
         {
             try
             {
@@ -704,6 +704,13 @@ namespace PazarAtlasi.CMS.Controllers
                             .FirstOrDefaultAsync(ps => ps.SectionId == id && ps.PageId == pageId);
 
                         section = pageSection?.Section;
+                    }
+                    else if (layoutId > 0)
+                    {
+                        var layoutSection = await _pazarAtlasiDbContext.LayoutSections.Include(ls => ls.Section)
+                            .ThenInclude(lss => lss.Translations)
+                            .ThenInclude(lsss => lsss.Language).FirstOrDefaultAsync(ls => ls.SectionId == id && ls.LayoutId == layoutId);
+                        section = layoutSection.Section;
                     }
                     else
                     {
@@ -756,6 +763,7 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = section.Id,
                         PageId = pageId,
+                        LayoutId = layoutId,
                         Type = section.Type,
                         Key = section.Key,
                         Attributes = section.Attributes,
@@ -781,6 +789,7 @@ namespace PazarAtlasi.CMS.Controllers
                     {
                         Id = 0,
                         PageId = pageId,
+                        LayoutId = layoutId, // Layout ID eklendi
                         Type = SectionType.None,
                         Key = "",
                         SortOrder = 1,
@@ -1131,8 +1140,12 @@ namespace PazarAtlasi.CMS.Controllers
         {
             try
             {
-                // Handle case where PageId is null or 0 (for reusable sections)
+                if (request.PageId == null && request.LayoutId == null)
+                    return Json(new { success = false, message = "No page or layout is found." });
+
+                // Handle case where PageId is null or 0 (for reusable sections or layout sections)
                 bool isReusableSection = request.PageId == null || request.PageId == 0;
+                bool isLayoutSection = request.LayoutId != null && request.LayoutId > 0;
 
                 if (request.Id > 0)
                 {
@@ -1166,7 +1179,7 @@ namespace PazarAtlasi.CMS.Controllers
 
                     // Add new items
                     await ProcessSectionItems(request.SectionItems, section.Id);
-                    
+
 
                     // Update section translations
                     if (request.Translations != null)
@@ -1211,14 +1224,31 @@ namespace PazarAtlasi.CMS.Controllers
                     _pazarAtlasiDbContext.Sections.Add(newSection);
                     await _pazarAtlasiDbContext.SaveChangesAsync();
 
-                    // Only add to PageSection if PageId is provided (not for reusable sections)
-                    if (!isReusableSection)
+                    // Add to PageSection if PageId is provided
+                    if (!isReusableSection && request.PageId.HasValue)
                     {
                         _pazarAtlasiDbContext.PageSections.Add(new PageSection
                         {
                             PageId = request.PageId.Value,
                             SectionId = newSection.Id,
                             SortOrder = request.SortOrder,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        });
+
+                        await _pazarAtlasiDbContext.SaveChangesAsync();
+                    }
+
+                    // Add to LayoutSection if LayoutId is provided
+                    if (isLayoutSection && request.LayoutId.HasValue)
+                    {
+                        _pazarAtlasiDbContext.Set<LayoutSection>().Add(new LayoutSection
+                        {
+                            LayoutId = request.LayoutId.Value,
+                            SectionId = newSection.Id,
+                            SortOrder = request.SortOrder,
+                            Position = "content", // Default position
+                            IsRequired = false,
                             CreatedAt = DateTime.UtcNow,
                             IsDeleted = false
                         });
@@ -1251,9 +1281,11 @@ namespace PazarAtlasi.CMS.Controllers
                     // Save SectionItemValues for parent section items
                     await SaveSectionItemValues(request.SectionItems, newSection.Id);
 
-                    string successMessage = isReusableSection
-                        ? "Reusable section created successfully."
-                        : "Section created successfully.";
+                    string successMessage = isLayoutSection
+                        ? "Section added to layout successfully."
+                        : (isReusableSection
+                            ? "Reusable section created successfully."
+                            : "Section created successfully.");
 
                     return Json(new { success = true, message = successMessage, sectionId = newSection.Id });
                 }
@@ -1593,6 +1625,199 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
+        /// Layout edit form - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> LayoutEdit(int id)
+        {
+            try
+            {
+                var layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                    .Include(l => l.LayoutSections.OrderBy(ls => ls.SortOrder))
+                        .ThenInclude(ls => ls.Section)
+                            .ThenInclude(s => s.Translations)
+                    .Include(l => l.LayoutSections)
+                        .ThenInclude(ls => ls.Section)
+                            .ThenInclude(s => s.SectionItemValues)
+                                .ThenInclude(siv => siv.SectionItem)
+                                    .ThenInclude(si => si.Translations)
+                    .Include(l => l.LayoutSections)
+                        .ThenInclude(ls => ls.Section)
+                            .ThenInclude(s => s.SectionItemValues)
+                                .ThenInclude(siv => siv.SectionItem)
+                                    .ThenInclude(si => si.SectionItemFieldValues)
+                                        .ThenInclude(fv => fv.SectionItemField)
+                                            .ThenInclude(f => f.Translations)
+                    .Include(l => l.LayoutSections)
+                        .ThenInclude(ls => ls.Section)
+                            .ThenInclude(s => s.SectionItemValues)
+                                .ThenInclude(siv => siv.SectionItem)
+                                    .ThenInclude(si => si.SectionItemFieldValues)
+                                        .ThenInclude(fv => fv.Translations)
+                    .FirstOrDefaultAsync(l => l.Id == id);
+
+                if (layout == null)
+                {
+                    TempData["ErrorMessage"] = "Layout not found.";
+                    return RedirectToAction("Layouts");
+                }
+
+                // Get available languages
+                var languages = await _pazarAtlasiDbContext.Languages
+                    .Where(l => !l.IsDeleted)
+                    .Select(l => new LanguageViewModel
+                    {
+                        Id = l.Id,
+                        Name = l.Name,
+                        Code = l.Code,
+                        IsDefault = l.IsDefault
+                    })
+                    .ToListAsync();
+
+                var model = new LayoutEditViewModel
+                {
+                    Id = layout.Id,
+                    Name = layout.Name,
+                    Description = layout.Description,
+                    Status = layout.Status,
+                    IsDefault = layout.IsDefault,
+                    CreatedAt = layout.CreatedAt,
+                    UpdatedAt = layout.UpdatedAt,
+                    AvailableLanguages = languages,
+                    Sections = layout.LayoutSections.Select(ls => new LayoutSectionEditViewModel
+                    {
+                        Id = ls.Id,
+                        LayoutId = ls.LayoutId,
+                        SectionId = ls.SectionId,
+                        SortOrder = ls.SortOrder,
+                        Position = ls.Position,
+                        IsRequired = ls.IsRequired,
+                        Type = ls.Section.Type,
+                        Key = ls.Section.Key,
+                        Attributes = ls.Section.Attributes,
+                        Configure = ls.Section.Configure,
+                        Status = ls.Section.Status,
+                        SectionItems = ls.Section.SectionItemValues
+                            .Select(siv => new SectionItemViewModel
+                            {
+                                Id = siv.SectionItem.Id,
+                                Type = siv.SectionItem.Type,
+                                SortOrder = siv.SectionItem.SortOrder,
+                                Status = siv.SectionItem.Status,
+                                Title = siv.SectionItem.Title,
+                                Description = siv.SectionItem.Description,
+                                AllowReorder = siv.SectionItem.AllowReorder,
+                                AllowRemove = siv.SectionItem.AllowRemove,
+                                IconClass = siv.SectionItem.IconClass,
+                                Fields = siv.SectionItem.SectionItemFieldValues.Select(fv => new SectionItemFieldViewModel
+                                {
+                                    Id = fv.Id,
+                                    SectionItemId = fv.SectionItemId,
+                                    FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
+                                    FieldKey = fv.SectionItemField?.FieldKey ?? "",
+                                    FieldValue = fv.Value,
+                                    IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
+                                    ShowInUI = fv.SectionItemField?.ShowInUI ?? true,
+                                    Translations = fv.Translations?.Select(ft => new SectionItemFieldTranslationViewModel
+                                    {
+                                        Id = ft.Id,
+                                        SectionItemFieldId = ft.SectionItemFieldValueId,
+                                        LanguageId = ft.LanguageId,
+                                        LanguageCode = ft.Language?.Code ?? "",
+                                        LanguageName = ft.Language?.Name ?? "",
+                                        Label = ft.Value,
+                                        Description = ft.Value,
+                                        Placeholder = ft.Value
+                                    }).ToList() ?? new List<SectionItemFieldTranslationViewModel>(),
+                                }).ToList(),
+                                Translations = siv.SectionItem.Translations.Select(sit => new SectionItemTranslationViewModel
+                                {
+                                    Id = sit.Id,
+                                    LanguageId = sit.LanguageId,
+                                    Name = sit.Title,
+                                    Title = sit.Title,
+                                    Description = sit.Description
+                                }).ToList()
+                            }).ToList(),
+                        Translations = ls.Section.Translations.Select(st => new SectionTranslationViewModel
+                        {
+                            Id = st.Id,
+                            LanguageId = st.LanguageId,
+                            Name = st.Name,
+                            Title = st.Title,
+                            Description = st.Description
+                        }).ToList()
+                    }).ToList()
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the layout.";
+                return RedirectToAction("Layouts");
+            }
+        }
+
+        /// <summary>
+        /// Layout edit form - POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LayoutEdit(LayoutEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Reload languages for dropdown
+                model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                return View(model);
+            }
+
+            try
+            {
+                var layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                    .FirstOrDefaultAsync(l => l.Id == model.Id);
+
+                if (layout == null)
+                {
+                    TempData["ErrorMessage"] = "Layout not found.";
+                    return RedirectToAction("Layouts");
+                }
+
+                // Update layout properties
+                layout.Name = model.Name;
+                layout.Description = model.Description;
+                layout.Status = model.Status;
+                layout.IsDefault = model.IsDefault;
+                layout.UpdatedAt = DateTime.UtcNow;
+
+                // If this is set as default, remove default from others
+                if (model.IsDefault)
+                {
+                    var otherLayouts = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                        .Where(l => l.Id != layout.Id && l.IsDefault)
+                        .ToListAsync();
+
+                    foreach (var otherLayout in otherLayouts)
+                    {
+                        otherLayout.IsDefault = false;
+                    }
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Layout updated successfully.";
+                return RedirectToAction("LayoutDetails", new { id = model.Id });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while saving the layout.");
+                model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                return View(model);
+            }
+        }
+
+        /// <summary>
         /// Create a new layout
         /// </summary>
         [HttpGet]
@@ -1788,6 +2013,69 @@ namespace PazarAtlasi.CMS.Controllers
                     .ToListAsync();
 
                 return Json(new { success = true, sections = layoutSections });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Add reusable section to layout
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> AddReusableSectionToLayout([FromBody] AddReusableSectionToLayoutRequest request)
+        {
+            try
+            {
+                // Check if layout exists
+                var layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                    .FirstOrDefaultAsync(l => l.Id == request.LayoutId);
+
+                if (layout == null)
+                {
+                    return Json(new { success = false, message = "Layout not found." });
+                }
+
+                // Check if section exists
+                var section = await _pazarAtlasiDbContext.Sections
+                    .FirstOrDefaultAsync(s => s.Id == request.SectionId);
+
+                if (section == null)
+                {
+                    return Json(new { success = false, message = "Section not found." });
+                }
+
+                // Check if section is already in layout
+                var existingLayoutSection = await _pazarAtlasiDbContext.Set<LayoutSection>()
+                    .FirstOrDefaultAsync(ls => ls.LayoutId == request.LayoutId && ls.SectionId == request.SectionId);
+
+                if (existingLayoutSection != null)
+                {
+                    return Json(new { success = false, message = "Section is already added to this layout." });
+                }
+
+                // Get next sort order
+                var maxSortOrder = await _pazarAtlasiDbContext.Set<LayoutSection>()
+                    .Where(ls => ls.LayoutId == request.LayoutId)
+                    .MaxAsync(ls => (int?)ls.SortOrder) ?? 0;
+
+                // Add section to layout
+                var layoutSection = new LayoutSection
+                {
+                    LayoutId = request.LayoutId,
+                    SectionId = request.SectionId,
+                    SortOrder = maxSortOrder + 1,
+                    Position = "content", // Default position
+                    IsRequired = false,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.Set<LayoutSection>().Add(layoutSection);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Section added to layout successfully." });
             }
             catch (Exception ex)
             {
@@ -2708,10 +2996,10 @@ namespace PazarAtlasi.CMS.Controllers
                 MediaType = si.MediaType,
                 SortOrder = si.SortOrder,
                 Status = si.Status,
-                Fields = si.SectionItemFields?.Select(t => 
+                Fields = si.SectionItemFields?.Select(t =>
                 {
                     var fv = t.SectionItemFieldValues.FirstOrDefault(sifv => sifv.SectionItemFieldId == t.Id);
-                    return new SectionItemFieldEditViewModel
+                    return new SectionItemFieldViewModel
                     {
                         Id = t.Id,
                         SectionItemId = t.SectionItemId,
@@ -2720,7 +3008,7 @@ namespace PazarAtlasi.CMS.Controllers
                         FieldValue = fv != null ? (fv.Value ?? t.DefaultValue) : t.DefaultValue,
                     };
                 }
-                ).ToList() ?? new List<SectionItemFieldEditViewModel>(),
+                ).ToList() ?? new List<SectionItemFieldViewModel>(),
                 Translations = si.Translations?.Select(sit => new SectionItemTranslationEditViewModel
                 {
                     Id = sit.Id,
@@ -2767,14 +3055,15 @@ namespace PazarAtlasi.CMS.Controllers
                                 // Update existing field value
                                 fieldValue = await _pazarAtlasiDbContext.SectionItemFieldValues
                                     .Include(fv => fv.Translations)
-                                    .FirstOrDefaultAsync(fv => fv.SectionItemFieldId == fieldRequest.Id);
+                                    .FirstOrDefaultAsync(fv => fv.SectionItemFieldId == fieldRequest.Id && fv.SectionId == sectionId);
 
                                 if (fieldValue != null)
                                 {
+
                                     // Update existing field value
                                     var sectionItemField = await _pazarAtlasiDbContext.SectionItemFields
                                         .FirstOrDefaultAsync(f => f.Id == fieldValue.SectionItemFieldId);
-                                    
+
                                     fieldValue.Value = ProcessFieldValue(fieldRequest.FieldValue, sectionItemField?.Type ?? SectionItemFieldType.Text);
                                     fieldValue.UpdatedAt = DateTime.UtcNow;
 
@@ -3513,9 +3802,11 @@ namespace PazarAtlasi.CMS.Controllers
         {
             // Get child items for this section item
             var childItems = allSectionItems
-                .Where(si => si.ParentSectionItemId == sectionItem.Id)
-                .Select(child => MapToSectionItemViewModel(child, allSectionItems, allFields, availableLanguages))
+                .Where(si => si.ParentSectionItemId == sectionItem.Id).ToList();
+
+            var childItemsMapped = childItems.Select(child => MapToSectionItemViewModel(child, allSectionItems, allFields, availableLanguages))
                 .ToList();
+
 
             // Get field values for this specific section item
             var itemFields = allFields.Where(fv => fv.SectionItemId == sectionItem.Id).ToList();
@@ -3558,7 +3849,7 @@ namespace PazarAtlasi.CMS.Controllers
                         Placeholder = ft.Placeholder
                     }).ToList() ?? new List<SectionItemFieldTranslationViewModel>()
                 }).ToList(),
-                ChildItems = childItems, // Recursive child items
+                ChildItems = childItemsMapped, // Recursive child items
                 Translations = sectionItem.Translations?.Select(sit => new SectionItemTranslationViewModel
                 {
                     Id = sit.Id,
@@ -3621,7 +3912,7 @@ namespace PazarAtlasi.CMS.Controllers
             foreach (var fieldDto in fieldDtos.Where(f => !string.IsNullOrEmpty(f.FieldKey)))
             {
                 var existingField = existingFields.FirstOrDefault(f => f.Id == fieldDto.Id);
-                
+
                 if (existingField != null)
                 {
                     // Update existing field properties
@@ -3641,7 +3932,7 @@ namespace PazarAtlasi.CMS.Controllers
                     existingField.ShowInUI = fieldDto.ShowInUI;
                     // Update field translations
                     _pazarAtlasiDbContext.SectionItemFieldTranslations.RemoveRange(existingField.Translations);
-                    
+
                     if (fieldDto.IsTranslatable && fieldDto.Translations != null && fieldDto.Translations.Any())
                     {
                         foreach (var translationDto in fieldDto.Translations.Where(t =>
@@ -3717,7 +4008,7 @@ namespace PazarAtlasi.CMS.Controllers
 
             // 2. Handle removed fields - check if they have values before deleting
             var fieldsToRemove = existingFields.Where(f => !incomingFieldKeys.Contains(f.FieldKey)).ToList();
-            
+
             foreach (var fieldToRemove in fieldsToRemove)
             {
                 // Check if this field has any values across all sections
@@ -3730,7 +4021,7 @@ namespace PazarAtlasi.CMS.Controllers
                     // This preserves existing field values in other sections
                     fieldToRemove.ShowInUI = false;
                     fieldToRemove.UpdatedAt = DateTime.UtcNow;
-                    
+
                     // Optionally add a comment to the field name to indicate it's deprecated
                     if (!fieldToRemove.FieldName.Contains("[DEPRECATED]"))
                     {

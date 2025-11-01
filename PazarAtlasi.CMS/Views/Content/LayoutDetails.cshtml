@@ -3,6 +3,11 @@
     ViewData["Title"] = $"Layout Details - {Model.Name}";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/page-edit.css" />
+    <link rel="stylesheet" href="~/css/section-item-modal.css" />
+}
+
 <div class="layout-details">
     <!-- Header -->
     <div class="flex flex-wrap items-center mb-8">
@@ -22,31 +27,9 @@
                             </span>
                         }
                     </h4>
-                    @{
-                        var css = "";
-                        switch (Model.Status)
-                        {
-                            case PazarAtlasi.CMS.Domain.Common.Status.Active:
-                                css = "bg-green-100 text-green-800";
-                                break;
-                            case PazarAtlasi.CMS.Domain.Common.Status.Pending:
-                                css = "bg-blue-100 text-blue-800";
-                                break;
-                            case PazarAtlasi.CMS.Domain.Common.Status.Draft:
-                                css = "bg-yellow-100 text-yellow-800";
-                                break;
-                            case PazarAtlasi.CMS.Domain.Common.Status.Archived:
-                                css = "bg-gray-100 text-gray-800";
-                                break;
-                            default:
-                                css = "bg-red-100 text-red-800";
-                                break;
-                        }
-
-                        <span class="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(css)">
-                            @Model.Status.ToString()
-                        </span>
-                    }
+                    <span class="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium status-badge @Html.Raw(GetStatusCssClass(Model.Status))">
+                        @Model.Status.ToString()
+                    </span>
                 </div>
                 <p class="text-slate-500 mt-3 max-w-xl">
                     @if (!string.IsNullOrEmpty(Model.Description))
@@ -62,10 +45,16 @@
         </div>
         <div class="w-full lg:w-1/3 text-left lg:text-right">
             <div class="inline-flex items-center space-x-2">
-                <button onclick="editLayout(@Model.Id)" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                <button type="button" onclick="editLayout(@Model.Id)" 
+                    class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
                     <i class="fas fa-edit mr-2"></i> Edit Layout
                 </button>
-                <button onclick="duplicateLayout(@Model.Id)" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                <button type="button" onclick="addNewSection()" 
+                    class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-plus mr-2"></i> Add Section
+                </button>
+                <button type="button" onclick="duplicateLayout(@Model.Id)" 
+                    class="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
                     <i class="fas fa-copy mr-2"></i> Duplicate
                 </button>
             </div>
@@ -173,6 +162,9 @@
                     <button onclick="duplicateLayout(@Model.Id)" class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
                         <i class="fas fa-copy mr-2"></i> Duplicate Layout
                     </button>
+                    <button onclick="addNewSection()" class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i> Add Section
+                    </button>
                     <button onclick="previewLayout(@Model.Id)" class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
                         <i class="fas fa-eye mr-2"></i> Preview Layout
                     </button>
@@ -186,84 +178,144 @@
 
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
-            <!-- Layout Structure -->
+            <!-- Layout Sections -->
             <div class="bg-white rounded-xl shadow-md">
                 <div class="p-6 border-b border-slate-100">
-                    <h5 class="text-lg font-semibold text-slate-800 flex items-center">
-                        <i class="fas fa-sitemap mr-2 text-purple-600"></i>
-                        Layout Structure (@Model.LayoutSections.Count sections)
-                    </h5>
+                    <div class="flex items-center justify-between">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-layer-group mr-2 text-purple-600"></i>
+                            Layout Sections (@Model.LayoutSections.Count)
+                        </h5>
+                        <button type="button" class="text-green-600 hover:text-green-700 text-sm" onclick="addNewSection()">
+                            <i class="fas fa-plus mr-1"></i> Add Section
+                        </button>
+                    </div>
                 </div>
                 <div class="p-6">
-                    @if (Model.LayoutSections.Any())
-                    {
-                        <div class="space-y-4">
+                    <div id="sectionsContainer" class="space-y-6">
+                        @if (Model.LayoutSections.Any())
+                        {
                             @foreach (var layoutSection in Model.LayoutSections.OrderBy(ls => ls.SortOrder))
                             {
-                                <div class="border border-slate-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <div class="flex items-center">
-                                            <span class="inline-flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-600 rounded-full text-sm font-medium mr-3">
-                                                @layoutSection.SortOrder
-                                            </span>
-                                            <div>
-                                                <p class="text-sm font-medium text-slate-900">@layoutSection.SectionName</p>
-                                                <p class="text-xs text-slate-500">@layoutSection.SectionType.ToString() - Position: @layoutSection.Position</p>
+                                <div class="section-editor border border-slate-200 rounded-lg p-6" data-section-id="@layoutSection.SectionId">
+                                    <!-- Section Header -->
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="drag-handle cursor-move p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                                                <i class="fas fa-grip-vertical"></i>
+                                            </div>
+                                            
+                                            <!-- Section Icon & Info -->
+                                            <div class="flex items-center space-x-3">
+                                                <div>
+                                                    <h6 class="font-semibold text-slate-800 flex items-center">
+                                                        @layoutSection.SectionName
+                                                    </h6>
+                                                    <div class="flex items-center space-x-3 mt-1">
+                                                        <p class="text-sm text-slate-500">@layoutSection.SectionType.ToString()</p>
+                                                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                        <span class="text-sm text-slate-500">Order: @layoutSection.SortOrder</span>
+                                                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                        <span class="text-sm text-slate-500">Position: @layoutSection.Position</span>
+                                                        @if (layoutSection.IsRequired)
+                                                        {
+                                                            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                                <i class="fas fa-exclamation-circle mr-1"></i> Required
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="flex items-center space-x-2">
-                                            @if (layoutSection.IsRequired)
-                                            {
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                                                    <i class="fas fa-exclamation-circle mr-1"></i> Required
-                                                </span>
-                                            }
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                                @layoutSection.Position
-                                            </span>
+                                        
+                                        <!-- Action Buttons -->
+                                        <div class="flex items-center space-x-1">
+                                            <button type="button" class="p-2 text-slate-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" onclick="editSectionItems(@layoutSection.SectionId)" title="Edit Section Items">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="p-2 text-slate-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors" onclick="duplicateSection(@layoutSection.SectionId)" title="Duplicate Section">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                            <button type="button" class="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" onclick="removeSection(@layoutSection.SectionId)" title="Remove Section">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Section Preview -->
+                                    <div class="section-preview bg-slate-50 rounded-lg p-4">
+                                        <div class="text-center py-4 text-slate-500">
+                                            <i class="fas fa-eye text-2xl mb-2"></i>
+                                            <p class="text-sm">Section preview will be shown here</p>
+                                            <button type="button" class="mt-2 text-xs text-blue-600 hover:text-blue-800" onclick="editSectionItems(@layoutSection.SectionId)">
+                                                Edit Section Content
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             }
-                        </div>
-                        
-                        <!-- Layout Preview -->
-                        <div class="mt-8 p-6 bg-slate-50 rounded-lg">
-                            <h6 class="text-sm font-medium text-slate-700 mb-4">Layout Preview</h6>
-                            <div class="space-y-2">
-                                @foreach (var group in Model.LayoutSections.GroupBy(ls => ls.Position).OrderBy(g => g.Key))
-                                {
-                                    <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg p-3">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="text-xs font-medium text-slate-600 uppercase">@group.Key</span>
-                                            <span class="text-xs text-slate-500">@group.Count() section(s)</span>
-                                        </div>
-                                        <div class="space-y-1">
-                                            @foreach (var layoutSection in group.OrderBy(s => s.SortOrder))
-                                            {
-                                                <div class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">
-                                                    @layoutSection.SectionName
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                }
+                        }
+                        else
+                        {
+                            <div class="text-center py-12 text-slate-500">
+                                <i class="fas fa-layer-group text-4xl mb-4"></i>
+                                <h6 class="text-lg font-medium mb-2">No sections yet</h6>
+                                <p class="text-sm mb-4">Start building your layout by adding sections</p>
+                                <button type="button" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors" onclick="addNewSection()">
+                                    <i class="fas fa-plus mr-2"></i> Add Your First Section
+                                </button>
                             </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-8 text-slate-400">
-                            <i class="fas fa-sitemap text-4xl mb-4"></i>
-                            <p class="text-lg font-medium">No sections in this layout</p>
-                            <p class="text-sm">Add sections to define the structure of this layout.</p>
-                            <button onclick="editLayout(@Model.Id)" class="mt-4 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors inline-flex items-center">
-                                <i class="fas fa-plus mr-2"></i> Add Sections
-                            </button>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
+
+            <!-- Layout Preview -->
+            @if (Model.LayoutSections.Any())
+            {
+                <div class="bg-white rounded-xl shadow-md">
+                    <div class="p-6 border-b border-slate-100">
+                        <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                            <i class="fas fa-eye mr-2 text-purple-600"></i>
+                            Layout Structure Preview
+                        </h5>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-2">
+                            @foreach (var group in Model.LayoutSections.GroupBy(ls => ls.Position).OrderBy(g => g.Key))
+                            {
+                                <div class="bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm font-medium text-slate-700 uppercase">@group.Key</span>
+                                        <span class="text-xs text-slate-500">@group.Count() section(s)</span>
+                                    </div>
+                                    <div class="space-y-2">
+                                        @foreach (var layoutSection in group.OrderBy(s => s.SortOrder))
+                                        {
+                                            <div class="bg-white border border-slate-200 rounded px-3 py-2 flex items-center justify-between">
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="w-6 h-6 bg-purple-100 text-purple-600 rounded-full text-xs flex items-center justify-center font-medium">
+                                                        @layoutSection.SortOrder
+                                                    </span>
+                                                    <span class="text-sm font-medium text-slate-800">@layoutSection.SectionName</span>
+                                                    <span class="text-xs text-slate-500">(@layoutSection.SectionType)</span>
+                                                </div>
+                                                @if (layoutSection.IsRequired)
+                                                {
+                                                    <span class="text-xs text-red-600">
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                    </span>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
 
             <!-- Usage Information -->
             <div class="bg-white rounded-xl shadow-md">
@@ -287,9 +339,7 @@
 
 <script>
     function editLayout(layoutId) {
-        // For now, redirect to create layout page with edit mode
-        console.log('Edit layout:', layoutId);
-        alert('Edit functionality will be implemented.');
+        window.location.href = `/Content/LayoutEdit/${layoutId}`;
     }
 
     function duplicateLayout(layoutId) {
@@ -319,4 +369,269 @@
             }
         }
     }
+
+    // Add new section function for layout
+    function addNewSection() {
+        openSectionSelectionModal();
+    }
+
+    // Open section selection modal
+    function openSectionSelectionModal() {
+        const modal = document.getElementById('sectionSelectionModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+    }
+
+    // Close section selection modal
+    function closeSectionSelectionModal() {
+        const modal = document.getElementById('sectionSelectionModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+        
+        // Hide reusable sections list
+        const reusableList = document.getElementById('reusableSectionsList');
+        if (reusableList) {
+            reusableList.classList.add('hidden');
+        }
+    }
+
+    // Create new section for layout
+    function createNewSection() {
+        // Set global layout ID for section modal
+        window.currentLayoutId = @Model.Id;
+        window.currentPageId = null; // No page ID for layout sections
+        
+        closeSectionSelectionModal();
+        
+        // Open section modal with layout ID instead of page ID
+        if (typeof SectionModal !== 'undefined') {
+            SectionModal.show(0, 0, @Model.Id); // sectionId=0, pageId=0, layoutId=@Model.Id
+        } else {
+            console.error('SectionModal not available');
+        }
+    }
+
+    // Edit section items
+    function editSectionItems(sectionId) {
+        if (typeof SectionModal !== 'undefined') {
+            SectionModal.show(sectionId, 0, @Model.Id);
+        } else {
+            console.error('SectionModal not available');
+        }
+    }
+
+    // Duplicate section
+    function duplicateSection(sectionId) {
+        if (confirm('Are you sure you want to duplicate this section?')) {
+            console.log('Duplicate section:', sectionId);
+            alert('Duplicate functionality will be implemented.');
+        }
+    }
+
+    // Remove section
+    function removeSection(sectionId) {
+        if (confirm('Are you sure you want to remove this section from the layout?')) {
+            console.log('Remove section:', sectionId);
+            alert('Remove functionality will be implemented.');
+        }
+    }
+
+    // ContentServices object for API calls
+    window.ContentServices = {
+        getSectionModal: async function(sectionId, pageId, layoutId) {
+            const params = new URLSearchParams();
+            params.append('id', sectionId);
+            if (pageId) params.append('pageId', pageId);
+            if (layoutId) params.append('layoutId', layoutId);
+            
+            const response = await fetch(`/Content/GetSectionModal?${params}`);
+            return await response.text();
+        },
+        
+        saveSection: async function(sectionData) {
+            const response = await fetch('/Content/SaveSectionAjax', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify(sectionData)
+            });
+            return await response.json();
+        },
+        
+        getReusableSections: async function() {
+            const response = await fetch('/Content/GetReusableSections');
+            return await response.json();
+        },
+        
+        addReusableSectionToLayout: async function(layoutId, sectionId) {
+            const response = await fetch('/Content/AddReusableSectionToLayout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({ layoutId: layoutId, sectionId: sectionId })
+            });
+            return await response.json();
+        },
+        
+        getTemplatesBySectionType: async function(sectionType) {
+            const response = await fetch(`/Content/GetTemplatesBySectionType?sectionType=${sectionType}`);
+            return await response.json();
+        },
+        
+        getNewSectionItemCard: async function(templateId, sectionId, currentCount) {
+            const response = await fetch(`/Content/GetNewSectionItemCard?templateId=${templateId}&sectionId=${sectionId}&currentCount=${currentCount}`);
+            return await response.text();
+        }
+    };
+
+    // Show reusable sections
+    async function showReusableSections() {
+        const reusableList = document.getElementById('reusableSectionsList');
+        const container = document.getElementById('reusableSectionsContainer');
+        
+        if (reusableList && container) {
+            reusableList.classList.remove('hidden');
+            
+            try {
+                // Load reusable sections
+                const result = await ContentServices.getReusableSections();
+                
+                if (result.success && result.sections) {
+                    container.innerHTML = '';
+                    
+                    result.sections.forEach(section => {
+                        const sectionCard = document.createElement('div');
+                        sectionCard.className = 'border border-slate-200 rounded-lg p-4 hover:border-purple-400 transition-colors cursor-pointer';
+                        sectionCard.onclick = () => addReusableSection(section.id);
+                        
+                        sectionCard.innerHTML = `
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-layer-group text-blue-600"></i>
+                                </div>
+                                <h5 class="font-medium text-slate-800 mb-1">${section.name}</h5>
+                                <p class="text-xs text-slate-500">${section.type}</p>
+                            </div>
+                        `;
+                        
+                        container.appendChild(sectionCard);
+                    });
+                } else {
+                    container.innerHTML = '<div class="text-center py-4 text-slate-400"><p>No reusable sections available</p></div>';
+                }
+            } catch (error) {
+                console.error('Error loading reusable sections:', error);
+                container.innerHTML = '<div class="text-center py-4 text-red-400"><p>Error loading sections</p></div>';
+            }
+        }
+    }
+
+    // Add reusable section to layout
+    async function addReusableSection(sectionId) {
+        try {
+            const result = await ContentServices.addReusableSectionToLayout(@Model.Id, sectionId);
+            
+            if (result.success) {
+                closeSectionSelectionModal();
+                location.reload(); // Refresh to show new section
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error adding reusable section:', error);
+            alert('An error occurred while adding the section.');
+        }
+    }
 </script>
+
+@section Scripts {
+    @Html.AntiForgeryToken()
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="~/js/Content/Content.Page.Section.Modal.js"></script>
+    <script src="~/js/Content/Content.Layout.js"></script>
+    <script>
+        // Set global layout ID for section modal
+        window.currentLayoutId = @Model.Id;
+        window.currentPageId = null; // No page ID for layout sections
+    </script>
+}
+
+<!-- Section Selection Modal -->
+<div id="sectionSelectionModal"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden"
+    onclick="closeSectionSelectionModal()">
+    <div class="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 z-10">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-slate-800">
+                    <i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Section to Layout
+                </h3>
+                <button type="button" onclick="closeSectionSelectionModal()"
+                    class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <p class="text-sm text-slate-500 mt-1">Choose to create a new section or use an existing reusable section for this layout</p>
+        </div>
+
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Create New Section -->
+                <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-purple-400 transition-colors cursor-pointer"
+                    onclick="createNewSection()">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-plus text-2xl text-purple-600"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-slate-800 mb-2">Create New Section</h4>
+                        <p class="text-sm text-slate-500">Build a custom section from scratch with your own content and layout</p>
+                    </div>
+                </div>
+
+                <!-- Use Reusable Section -->
+                <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-green-400 transition-colors cursor-pointer"
+                    onclick="showReusableSections()">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-recycle text-2xl text-green-600"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-slate-800 mb-2">Use Reusable Section</h4>
+                        <p class="text-sm text-slate-500">Choose from pre-built sections like navbar, footer, or custom components</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reusable Sections List (Initially Hidden) -->
+            <div id="reusableSectionsList" class="hidden mt-6">
+                <div class="border-t border-slate-200 pt-6">
+                    <h4 class="text-lg font-semibold text-slate-800 mb-4">Available Reusable Sections</h4>
+                    <div id="reusableSectionsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="text-center py-8 text-slate-400">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p class="text-sm">Loading sections...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@functions {
+    private string GetStatusCssClass(PazarAtlasi.CMS.Domain.Common.Status status)
+    {
+        return status switch
+        {
+            PazarAtlasi.CMS.Domain.Common.Status.Active => "bg-green-100 text-green-800",
+            PazarAtlasi.CMS.Domain.Common.Status.Pending => "bg-blue-100 text-blue-800",
+            PazarAtlasi.CMS.Domain.Common.Status.Draft => "bg-yellow-100 text-yellow-800",
+            PazarAtlasi.CMS.Domain.Common.Status.Archived => "bg-gray-100 text-gray-800",
+            _ => "bg-red-100 text-red-800"
+        };
+    }
+}

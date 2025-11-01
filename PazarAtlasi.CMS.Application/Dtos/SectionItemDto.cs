@@ -156,21 +156,21 @@ namespace PazarAtlasi.CMS.Application.Dtos
 
     public class SectionItemFieldValueUpdateDto
     {
-        public int Id { get; set; }
-        public int SectionId { get; set; }
-        public int SectionItemId { get; set; }
-        public int SectionItemFieldId { get; set; }
-        public string Value { get; set; } = string.Empty;
+        public int? Id { get; set; }
+        public int? SectionId { get; set; }
+        public int? SectionItemId { get; set; }
+        public int? SectionItemFieldId { get; set; }
+        public string? Value { get; set; } = string.Empty;
         public string? JsonValue { get; set; }
         public List<SectionItemFieldValueTranslationUpdateDto> Translations { get; set; } = new List<SectionItemFieldValueTranslationUpdateDto>();
     }
 
     public class SectionItemFieldValueTranslationUpdateDto
     {
-        public int Id { get; set; }
-        public int SectionItemFieldValueId { get; set; }
-        public int LanguageId { get; set; }
-        public string Value { get; set; } = string.Empty;
+        public int? Id { get; set; }
+        public int? SectionItemFieldValueId { get; set; }
+        public int? LanguageId { get; set; }
+        public string? Value { get; set; } = string.Empty;
         public string? JsonValue { get; set; }
     }
 }

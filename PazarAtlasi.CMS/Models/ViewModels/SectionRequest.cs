@@ -11,6 +11,8 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
         public int? PageId { get; set; }
         
+        public int? LayoutId { get; set; } // Layout ID eklendi
+        
         public object? TemplateConfiguration { get; set; } // Will be deserialized from JSON
         
         public SectionType Type { get; set; }

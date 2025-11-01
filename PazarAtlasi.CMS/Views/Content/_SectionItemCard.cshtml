@@ -1,6 +1,8 @@
 @model PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel
 @{
     var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
+    var title = Model.Description ?? Model.Translations.FirstOrDefault(t => t.LanguageId == 1).Title;
+    var description = Model.Description ?? Model.Translations.FirstOrDefault(t => t.LanguageId == 1).Description;
 }
 
 <div class="section-item-card border-2 border-slate-300 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
@@ -23,11 +25,11 @@
                     {
                         <i class="@Model.IconClass mr-2"></i>
                     }
-                    @(Model.Title ?? Model.Type.ToString()) #@Model.SortOrder
+                    @(title ?? Model.Type.ToString()) #@Model.SortOrder
                 </h5>
-                @if (!string.IsNullOrEmpty(Model.Description))
+                @if (!string.IsNullOrEmpty(description))
                 {
-                    <p class="text-xs text-slate-500 mt-0.5">@Model.Description</p>
+                    <p class="text-xs text-slate-500 mt-0.5">@description</p>
                 }
             </div>
         </div>

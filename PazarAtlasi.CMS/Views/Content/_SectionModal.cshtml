@@ -7,11 +7,25 @@
             <h3 class="text-xl font-semibold text-slate-800">
                 @if (Model.Id > 0)
                 {
-                    <span><i class="fas fa-edit mr-2 text-purple-600"></i> Edit Page Section</span>
+                    @if (Model.LayoutId > 0)
+                    {
+                        <span><i class="fas fa-edit mr-2 text-purple-600"></i> Edit Layout Section</span>
+                    }
+                    else
+                    {
+                        <span><i class="fas fa-edit mr-2 text-purple-600"></i> Edit Page Section</span>
+                    }
                 }
                 else
                 {
-                    <span><i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Page Section</span>
+                    @if (Model.LayoutId > 0)
+                    {
+                        <span><i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Layout Section</span>
+                    }
+                    else
+                    {
+                        <span><i class="fas fa-plus-circle mr-2 text-purple-600"></i> Add Page Section</span>
+                    }
                 }
             </h3>
             <button type="button" onclick="SectionModal.close()" class="text-slate-400 hover:text-slate-600">
@@ -24,6 +38,7 @@
     <form id="sectionForm" class="p-6 space-y-6">
         <input type="hidden" id="sectionId" value="@Model.Id" />
         <input type="hidden" id="pageId" value="@Model.PageId" />
+        <input type="hidden" id="layoutId" value="@Model.LayoutId" />
 
         <!-- Section Settings -->
         <div class="bg-slate-50 rounded-lg p-4">

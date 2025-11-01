@@ -1,0 +1,384 @@
+@model PazarAtlasi.CMS.Models.ViewModels.LayoutEditViewModel
+
+<!-- Layout Sections -->
+<div class="bg-white rounded-xl shadow-md">
+    <div class="p-6 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+            <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                <i class="fas fa-layer-group mr-2 text-purple-600"></i>
+                Layout Sections (@(Model.Sections?.Count ?? 0))
+            </h5>
+            <button type="button" class="text-green-600 hover:text-green-700 text-sm" onclick="addNewSection()">
+                <i class="fas fa-plus mr-1"></i> Add Section
+            </button>
+        </div>
+    </div>
+    <div class="p-6">
+        <div id="sectionsContainer" class="space-y-6">
+            @if (Model.Sections != null && Model.Sections.Any())
+            {
+                @for (int i = 0; i < Model.Sections.Count; i++)
+                {
+                    var currentSection = Model.Sections[i];
+                    <div class="section-editor border border-slate-200 rounded-lg p-6" data-section-id="@currentSection.SectionId">
+                        <!-- Section Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="drag-handle cursor-move p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                                    <i class="fas fa-grip-vertical"></i>
+                                </div>
+                                
+                                <!-- Section Icon & Info -->
+                                <div class="flex items-center space-x-3">
+                                    <div>
+                                        <h6 class="font-semibold text-slate-800 flex items-center">
+                                            @(currentSection.Translations?.FirstOrDefault()?.Title ?? currentSection.Type.ToString())
+                                            @if (!string.IsNullOrEmpty(currentSection.Key))
+                                            {
+                                                <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded font-mono">@currentSection.Key</span>
+                                            }
+                                        </h6>
+                                        <div class="flex items-center space-x-3 mt-1">
+                                            <p class="text-sm text-slate-500">@currentSection.Type.ToString()</p>
+                                            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                            <span class="text-sm text-slate-500">Order: @currentSection.SortOrder</span>
+                                            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                            <span class="text-sm text-slate-500">Position: @currentSection.Position</span>
+                                            @if (currentSection.Status == PazarAtlasi.CMS.Domain.Common.Status.Active)
+                                            {
+                                                <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <i class="fas fa-check-circle mr-1"></i> Active
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <i class="fas fa-clock mr-1"></i> @currentSection.Status.ToString()
+                                                </span>
+                                            }
+                                            @if (currentSection.IsRequired)
+                                            {
+                                                <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                    <i class="fas fa-exclamation-circle mr-1"></i> Required
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Items Count Badge -->
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-full font-medium">
+                                        <i class="fas fa-cubes mr-2 text-xs"></i>
+                                        @(currentSection.SectionItems?.Count ?? 0) 
+                                        @(currentSection.SectionItems?.Count == 1 ? "item" : "items")
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-1">
+                                <button type="button" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" onclick="toggleSectionSettings(@currentSection.SectionId)" title="Section Settings">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <button type="button" class="p-2 text-slate-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors" onclick="duplicateSection(@currentSection.SectionId)" title="Duplicate Section">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button type="button" class="p-2 text-slate-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" onclick="editSectionItems(@currentSection.SectionId)" title="Edit Section Items">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" onclick="removeSection(@currentSection.SectionId)" title="Remove Section">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Section Settings (Hidden by default) -->
+                        <div id="sectionSettings_@currentSection.SectionId" class="section-settings mb-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-lg border border-slate-200" style="display: none;">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-cog text-blue-600 mr-2"></i>
+                                <h6 class="font-semibold text-slate-800">Section Settings</h6>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-tag mr-1 text-slate-500"></i> Section Type
+                                    </label>
+                                    <select name="Sections[@i].Type" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        @foreach (var sectionType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.SectionType>())
+                                        {
+                                            @if (currentSection.Type == sectionType)
+                                            {
+                                                <option value="@sectionType" selected>@sectionType.ToString()</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@sectionType">@sectionType.ToString()</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-key mr-1 text-slate-500"></i> Section Key
+                                    </label>
+                                    <input type="text" name="Sections[@i].Key" value="@currentSection.Key" 
+                                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                                           placeholder="e.g., hero, navbar, footer">
+                                    <p class="text-xs text-slate-500 mt-1">Unique identifier for this section</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-sort-numeric-up mr-1 text-slate-500"></i> Sort Order
+                                    </label>
+                                    <input type="number" name="Sections[@i].SortOrder" value="@currentSection.SortOrder" 
+                                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                           min="0" max="999">
+                                    <p class="text-xs text-slate-500 mt-1">Display order in layout</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-map-marker-alt mr-1 text-slate-500"></i> Position
+                                    </label>
+                                    <select name="Sections[@i].Position" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <!option value="header" @(currentSection.Position == "header" ? "selected" : "")>Header</!option>
+                                        <!option value="content" @(currentSection.Position == "content" ? "selected" : "")>Content</!option>
+                                        <!option value="sidebar" @(currentSection.Position == "sidebar" ? "selected" : "")>Sidebar</!option>
+                                        <!option value="footer" @(currentSection.Position == "footer" ? "selected" : "")>Footer</!option>
+                                    </select>
+                                    <p class="text-xs text-slate-500 mt-1">Where to place this section</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-toggle-on mr-1 text-slate-500"></i> Status
+                                    </label>
+                                    <select name="Sections[@i].Status" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
+                                        {
+                                            @if (currentSection.Status == status)
+                                            {
+                                                <option value="@status" selected>@status.ToString()</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@status">@status.ToString()</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-exclamation-triangle mr-1 text-slate-500"></i> Required
+                                    </label>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" name="Sections[@i].IsRequired" value="true" @(currentSection.IsRequired ? "checked" : "")
+                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" />
+                                        <input type="hidden" name="Sections[@i].IsRequired" value="false" />
+                                        <label class="ml-2 block text-sm text-slate-700">Required section</label>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-1">Cannot be removed from layout</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Advanced Settings -->
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                                            <i class="fas fa-code mr-1 text-slate-500"></i> Attributes (JSON)
+                                        </label>
+                                        <textarea name="Sections[@i].Attributes" rows="3" 
+                                                  class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                                                  placeholder='{"class": "custom-class", "id": "section-id"}'>@currentSection.Attributes</textarea>
+                                        <p class="text-xs text-slate-500 mt-1">Custom HTML attributes as JSON</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                                            <i class="fas fa-cogs mr-1 text-slate-500"></i> Configuration (JSON)
+                                        </label>
+                                        <textarea name="Sections[@i].Configure" rows="3" 
+                                                  class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                                                  placeholder='{"theme": "dark", "animation": "fade"}'>@currentSection.Configure</textarea>
+                                        <p class="text-xs text-slate-500 mt-1">Section-specific configuration</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Items Preview -->
+                        <div class="section-items-preview">
+                            @if (currentSection.SectionItems != null && currentSection.SectionItems.Any())
+                            {
+                                <div class="space-y-3">
+                                    @foreach (var item in currentSection.SectionItems.Take(4))
+                                    {
+                                        <div class="border border-slate-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                                            <div class="flex items-start space-x-4">
+                                                <!-- Item Content -->
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <div class="flex items-center space-x-2">
+                                                            <h4 class="text-sm font-semibold text-slate-800 truncate">
+                                                                @(item.Translations?.FirstOrDefault()?.Title ?? item.Title ?? "Untitled")
+                                                            </h4>
+                                                            <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded">
+                                                                @item.Type.ToString()
+                                                            </span>
+                                                        </div>
+                                                        <button type="button" class="text-blue-600 hover:text-blue-800 text-xs p-1 rounded hover:bg-blue-50" onclick="editSectionItems(@currentSection.SectionId)" title="Edit Items">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    @if (!string.IsNullOrEmpty(item.Translations?.FirstOrDefault()?.Description ?? item.Description))
+                                                    {
+                                                        <p class="text-xs text-slate-500 mb-3 line-clamp-2">
+                                                            @(item.Translations?.FirstOrDefault()?.Description ?? item.Description)
+                                                        </p>
+                                                    }
+
+                                                    <!-- Field Previews -->
+                                                    @if (item.Fields != null && item.Fields.Any())
+                                                    {
+                                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                            @foreach (var field in item.Fields.Take(4))
+                                                            {
+                                                                <div class="field-preview">
+                                                                    @await Html.PartialAsync("~/Views/Content/_FieldPreview.cshtml", field)
+                                                                </div>
+                                                            }
+                                                            @if (item.Fields.Count > 4)
+                                                            {
+                                                                <div class="text-xs text-slate-400 italic">
+                                                                    +@(item.Fields.Count - 4) more fields...
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    }
+
+                                                    <!-- Child Items Indicator -->
+                                                    @if (item.ChildItems?.Any() == true)
+                                                    {
+                                                        <div class="mt-2 flex items-center text-xs text-slate-500">
+                                                            <i class="fas fa-sitemap mr-1"></i>
+                                                            <span>@item.ChildItems.Count child item(s)</span>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (currentSection.SectionItems.Count > 4)
+                                    {
+                                        <div class="border border-dashed border-slate-300 rounded-lg p-4 flex items-center justify-center">
+                                            <div class="text-center">
+                                                <i class="fas fa-ellipsis-h text-slate-400 mb-1"></i>
+                                                <p class="text-sm text-slate-500">+@(currentSection.SectionItems.Count - 4) more items</p>
+                                                <button type="button" class="mt-1 text-xs text-blue-600 hover:text-blue-800" onclick="editSectionItems(@currentSection.SectionId)">
+                                                    View All
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="mt-4 pt-4 border-t border-slate-100 text-center">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors" onclick="editSectionItems(@currentSection.SectionId)">
+                                        <i class="fas fa-edit mr-2"></i> Edit Section Items
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-8 text-slate-500">
+                                    <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-plus-circle text-2xl text-slate-400"></i>
+                                    </div>
+                                    <h4 class="text-sm font-medium text-slate-700 mb-1">No items in this section</h4>
+                                    <p class="text-xs text-slate-500 mb-3">Add content items to make this section visible</p>
+                                    <button type="button" class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors" onclick="addSectionItem(@currentSection.SectionId)">
+                                        <i class="fas fa-plus mr-2"></i> Add First Item
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-12 text-slate-500">
+                    <i class="fas fa-layer-group text-4xl mb-4"></i>
+                    <h6 class="text-lg font-medium mb-2">No sections yet</h6>
+                    <p class="text-sm mb-4">Start building your layout by adding sections</p>
+                    <button type="button" class="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors" onclick="addNewSection()">
+                        <i class="fas fa-plus mr-2"></i> Add Your First Section
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Form Actions -->
+<div class="bg-white rounded-xl shadow-md">
+    <div class="p-6">
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-slate-500">
+                Last saved: <span class="font-medium">@DateTime.Now.ToString("MMM dd, yyyy HH:mm")</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button type="button" class="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" class="py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                    <i class="fas fa-save mr-2"></i> Save Layout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle section settings
+    function toggleSectionSettings(sectionId) {
+        const settings = document.getElementById(`sectionSettings_${sectionId}`);
+        if (settings) {
+            if (settings.style.display === 'none') {
+                settings.style.display = 'block';
+            } else {
+                settings.style.display = 'none';
+            }
+        }
+    }
+
+    // Add section item
+    function addSectionItem(sectionId) {
+        editSectionItems(sectionId);
+    }
+
+    // Duplicate section
+    function duplicateSection(sectionId) {
+        if (confirm('Are you sure you want to duplicate this section?')) {
+            console.log('Duplicate section:', sectionId);
+            alert('Duplicate functionality will be implemented.');
+        }
+    }
+
+    // Remove section
+    function removeSection(sectionId) {
+        if (confirm('Are you sure you want to remove this section from the layout?')) {
+            console.log('Remove section:', sectionId);
+            alert('Remove functionality will be implemented.');
+        }
+    }
+</script>
