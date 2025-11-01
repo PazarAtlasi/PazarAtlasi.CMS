@@ -53,7 +53,7 @@ namespace PazarAtlasi.CMS.Infrastructure.Services
                     return result;
                 }
 
-                var uploadFolder = Path.Combine(_environment.ContentRootPath, "uploads", "images", folder ?? "general");
+                var uploadFolder = Path.Combine(_environment.ContentRootPath,"wwwroot", "uploads", "images", folder ?? "general");
 
                 if (!Directory.Exists(uploadFolder))
                 {

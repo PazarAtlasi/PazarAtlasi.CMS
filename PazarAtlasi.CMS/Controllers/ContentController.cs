@@ -1176,11 +1176,12 @@ namespace PazarAtlasi.CMS.Controllers
                         _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(existingItem.Translations);
                     }
 
-                    // Add new items
-                    await ProcessSectionItems(request.SectionItems, section.Id);
-
                     // Save SectionItemValues for parent section items
                     await SaveSectionItemValues(request.SectionItems, section.Id);
+
+                    // Add new items
+                    await ProcessSectionItems(request.SectionItems, section.Id);
+                    
 
                     // Update section translations
                     if (request.Translations != null)
@@ -3182,7 +3183,7 @@ namespace PazarAtlasi.CMS.Controllers
 
                 var fieldViewModel = new SectionItemFieldViewModel
                 {
-                    Id = existingFieldValue?.SectionItemFieldId ?? 0,
+                    Id = field.Id,
                     SectionItemId = sectionItem.Id,
                     FieldType = field.Type,
                     FieldName = field.FieldName,
