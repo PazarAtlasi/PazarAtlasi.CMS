@@ -1146,3 +1146,192 @@ window.previewVideo = previewVideo;
 window.getSectionTypeIcon = getSectionTypeIcon;
 window.getFieldTypeIcon = getFieldTypeIcon;
 window.showSectionNotification = showSectionNotification;
+// Layout View Management Functions
+window.PageLayoutManager = {
+  // Toggle layout structure view
+  toggleLayoutView: function () {
+    const layoutStructure =
+      document.getElementById("layoutStructure");
+    const toggleText = document.getElementById("layoutToggleText");
+
+    if (layoutStructure && toggleText) {
+      if (layoutStructure.style.display === "none") {
+        layoutStructure.style.display = "block";
+        toggleText.textContent = "Hide Layout";
+      } else {
+        layoutStructure.style.display = "none";
+        toggleText.textContent = "Show Layout";
+      }
+    }
+  },
+
+  // Toggle page sections within layout view
+  togglePageSections: function () {
+    const container = document.getElementById(
+      "pageSectionsContainer"
+    );
+    const toggleIcon = document.getElementById(
+      "pageSectionsToggleIcon"
+    );
+    const toggleText = document.getElementById(
+      "pageSectionsToggleText"
+    );
+
+    if (container && toggleIcon && toggleText) {
+      if (container.style.display === "none") {
+        container.style.display = "block";
+        toggleIcon.className = "fas fa-chevron-up mr-1";
+        toggleText.textContent = "Hide Page Sections";
+      } else {
+        container.style.display = "none";
+        toggleIcon.className = "fas fa-chevron-down mr-1";
+        toggleText.textContent = "Show Page Sections";
+      }
+    }
+  },
+
+  // Toggle between layout view and traditional view
+  toggleTraditionalView: function () {
+    const layoutView = document.querySelector(
+      ".bg-white.rounded-xl.shadow-md.mb-6"
+    );
+    const traditionalView = document.getElementById(
+      "traditionalSectionsView"
+    );
+
+    if (layoutView && traditionalView) {
+      if (traditionalView.style.display === "none") {
+        layoutView.style.display = "none";
+        traditionalView.style.display = "block";
+      } else {
+        layoutView.style.display = "block";
+        traditionalView.style.display = "none";
+      }
+    }
+  },
+
+  // Initialize layout view
+  init: function () {
+    console.log("Page Layout Manager initialized");
+
+    // Add smooth transitions
+    const layoutElements = document.querySelectorAll(
+      ".layout-position-section"
+    );
+    layoutElements.forEach((element) => {
+      element.style.transition = "all 0.3s ease";
+    });
+
+    // Initialize section cards hover effects
+    this.initializeSectionCards();
+  },
+
+  // Initialize section card interactions
+  initializeSectionCards: function () {
+    // Layout section cards
+    const layoutCards = document.querySelectorAll(
+      ".layout-section-card"
+    );
+    layoutCards.forEach((card) => {
+      card.addEventListener("mouseenter", function () {
+        this.style.transform = "translateY(-2px)";
+        this.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
+      });
+
+      card.addEventListener("mouseleave", function () {
+        this.style.transform = "translateY(0)";
+        this.style.boxShadow = "";
+      });
+    });
+
+    // Page section cards
+    const pageCards = document.querySelectorAll(".page-section-card");
+    pageCards.forEach((card) => {
+      card.addEventListener("mouseenter", function () {
+        this.style.transform = "translateY(-1px)";
+        this.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.1)";
+      });
+
+      card.addEventListener("mouseleave", function () {
+        this.style.transform = "translateY(0)";
+        this.style.boxShadow = "";
+      });
+    });
+  },
+
+  // Show notification
+  showNotification: function (message, type = "info") {
+    const notification = document.createElement("div");
+    notification.className = `fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 ${this.getNotificationClass(
+      type
+    )}`;
+    notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas ${this.getNotificationIcon(
+                  type
+                )} mr-2"></i>
+                <span>${message}</span>
+                <button type="button" class="ml-3 text-white hover:text-gray-200" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.remove();
+      }
+    }, 3000);
+  },
+
+  // Get notification CSS class
+  getNotificationClass: function (type) {
+    switch (type) {
+      case "success":
+        return "bg-green-500 text-white";
+      case "error":
+        return "bg-red-500 text-white";
+      case "warning":
+        return "bg-yellow-500 text-white";
+      default:
+        return "bg-blue-500 text-white";
+    }
+  },
+
+  // Get notification icon
+  getNotificationIcon: function (type) {
+    switch (type) {
+      case "success":
+        return "fa-check-circle";
+      case "error":
+        return "fa-exclamation-circle";
+      case "warning":
+        return "fa-exclamation-triangle";
+      default:
+        return "fa-info-circle";
+    }
+  },
+};
+
+// Global functions for backward compatibility
+function toggleLayoutView() {
+  PageLayoutManager.toggleLayoutView();
+}
+
+function togglePageSections() {
+  PageLayoutManager.togglePageSections();
+}
+
+function toggleTraditionalView() {
+  PageLayoutManager.toggleTraditionalView();
+}
+
+// Initialize when DOM is ready
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof PageLayoutManager !== "undefined") {
+    PageLayoutManager.init();
+  }
+});

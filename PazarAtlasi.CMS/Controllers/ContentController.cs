@@ -3232,6 +3232,20 @@ namespace PazarAtlasi.CMS.Controllers
             // Load available parent pages
             model.AvailableParentPages = await GetAvailableParentPagesAsync(page.Id);
 
+            // Load available layouts
+            model.AvailableLayouts = await GetAvailableLayoutsAsync();
+
+            // Load layout information if page has a layout
+            if (page.LayoutId.HasValue)
+            {
+                model.LayoutId = page.LayoutId;
+                model.LayoutSections = await GetLayoutSectionsForPageAsync(page.LayoutId.Value);
+
+                var layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                    .FirstOrDefaultAsync(l => l.Id == page.LayoutId.Value);
+                model.LayoutName = layout?.Name;
+            }
+
             return model;
         }
 
@@ -4490,6 +4504,103 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 return Json(new { success = false, message = "An error occurred while loading layout schema." });
             }
+        }
+
+        /// <summary>
+        /// Get available layouts for page selection
+        /// </summary>
+        private async Task<List<AvailableLayoutViewModel>> GetAvailableLayoutsAsync()
+        {
+            return await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                .Where(l => !l.IsDeleted && l.Status == Status.Active)
+                .Select(l => new AvailableLayoutViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Description = l.Description,
+                    IsDefault = l.IsDefault,
+                    Status = l.Status
+                })
+                .OrderByDescending(l => l.IsDefault)
+                .ThenBy(l => l.Name)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get layout sections organized by position for page editing
+        /// </summary>
+        private async Task<LayoutSectionsViewModel> GetLayoutSectionsForPageAsync(int layoutId)
+        {
+            var layoutSections = await _pazarAtlasiDbContext.LayoutSections
+                .Include(ls => ls.Section)
+                    .ThenInclude(s => s.Translations)
+                .Include(ls => ls.Section)
+                    .ThenInclude(s => s.SectionItemValues)
+                        .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.Translations)
+                .Include(ls => ls.Section)
+                    .ThenInclude(s => s.SectionItemValues)
+                        .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.SectionItemFieldValues)
+                                .ThenInclude(fv => fv.SectionItemField)
+                                    .ThenInclude(f => f.Translations)
+                .Include(ls => ls.Section)
+                    .ThenInclude(s => s.SectionItemValues)
+                        .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.SectionItemFieldValues)
+                                .ThenInclude(fv => fv.Translations)
+                .Where(ls => ls.LayoutId == layoutId)
+                .OrderBy(ls => ls.SortOrder)
+                .ToListAsync();
+
+            var layoutSectionsViewModel = new LayoutSectionsViewModel();
+
+            foreach (var ls in layoutSections)
+            {
+                var sectionViewModel = new LayoutSectionViewModel
+                {
+                    Id = ls.Id,
+                    SectionId = ls.SectionId,
+                    SectionType = ls.Section.Type,
+                    Key = ls.Section.Key,
+                    SectionName = ls.Section.Translations.FirstOrDefault()?.Name,
+                    Title = ls.Section.Translations.FirstOrDefault()?.Title,
+                    Position = ls.Position,
+                    SortOrder = ls.SortOrder,
+                    IsRequired = ls.IsRequired,
+                    Status = ls.Section.Status,
+                    SectionItems = MapSectionItemsToViewModel(
+                        ls.Section.SectionItemValues.Select(siv => siv.SectionItem).ToList(),
+                        ls.SectionId
+                    ),
+                    Translations = ls.Section.Translations.Select(st => new SectionTranslationEditViewModel
+                    {
+                        Id = st.Id,
+                        LanguageId = st.LanguageId,
+                        Name = st.Name,
+                        Title = st.Title,
+                        Description = st.Description
+                    }).ToList()
+                };
+
+                switch (ls.Position.ToLower())
+                {
+                    case "header":
+                        layoutSectionsViewModel.HeaderSections.Add(sectionViewModel);
+                        break;
+                    case "content":
+                        layoutSectionsViewModel.ContentSections.Add(sectionViewModel);
+                        break;
+                    case "sidebar":
+                        layoutSectionsViewModel.SidebarSections.Add(sectionViewModel);
+                        break;
+                    case "footer":
+                        layoutSectionsViewModel.FooterSections.Add(sectionViewModel);
+                        break;
+                }
+            }
+
+            return layoutSectionsViewModel;
         }
     }
 }

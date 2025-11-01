@@ -19,11 +19,37 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int Id { get; set; }
         public int LayoutId { get; set; }
         public int SectionId { get; set; }
+        public string Key { get; set; } = string.Empty;
         public string SectionName { get; set; } = string.Empty;
+        public string? Title { get; set; }
         public SectionType SectionType { get; set; }
+        public Status Status { get; set; }
         public int SortOrder { get; set; }
         public bool IsRequired { get; set; } // e.g., navbar and footer might be required
-        public string Position { get; set; } = string.Empty; // "header", "content", "footer", "sidebar"
+        public string Position { get; set; } = string.Empty; // "header", "content", "footer", "sidebar",
+        public List<SectionItemEditViewModel> SectionItems { get; set; } = new();
+        public List<SectionTranslationEditViewModel> Translations { get; set; } = new();
+
+    }
+
+    public class AvailableLayoutViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public bool IsDefault { get; set; }
+        public Status Status { get; set; }
+    }
+
+    public class LayoutSectionsViewModel
+    {
+        public List<LayoutSectionViewModel> HeaderSections { get; set; } = new();
+
+        public List<LayoutSectionViewModel> ContentSections { get; set; } = new();
+
+        public List<LayoutSectionViewModel> SidebarSections { get; set; } = new();
+
+        public List<LayoutSectionViewModel> FooterSections { get; set; } = new();
     }
 
     public class LayoutListViewModel

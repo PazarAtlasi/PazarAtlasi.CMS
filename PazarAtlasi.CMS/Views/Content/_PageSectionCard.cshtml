@@ -1,0 +1,135 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SectionEditViewModel
+
+<div class="page-section-card bg-white border border-yellow-200 rounded-lg p-4 hover:shadow-sm transition-shadow" data-section-id="@Model.Id">
+    <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-3">
+            <div class="drag-handle cursor-move p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
+                <i class="fas fa-grip-vertical text-sm"></i>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-layer-group text-yellow-600 text-sm"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-slate-800">
+                        @(Model.Translations?.FirstOrDefault()?.Title ?? Model.Type.ToString())
+                        @if (!string.IsNullOrEmpty(Model.Key))
+                        {
+                            <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded font-mono">@Model.Key</span>
+                        }
+                    </h4>
+                    <div class="flex items-center space-x-2 text-xs text-slate-500">
+                        <span>@Model.Type.ToString()</span>
+                        <span>•</span>
+                        <span>Order: @Model.SortOrder</span>
+                        <span>•</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium @(GetStatusClass(Model.Status))">
+                            @Model.Status.ToString()
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex items-center space-x-1">
+            <button type="button" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" onclick="toggleSectionSettings(@Model.Id)" title="Section Settings">
+                <i class="fas fa-cog text-sm"></i>
+            </button>
+            <button type="button" class="p-2 text-slate-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors" onclick="duplicateSection(@Model.Id)" title="Duplicate Section">
+                <i class="fas fa-copy text-sm"></i>
+            </button>
+            <button type="button" class="p-2 text-slate-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" onclick="editSectionItems(@Model.Id)" title="Edit Section Items">
+                <i class="fas fa-edit text-sm"></i>
+            </button>
+            <button type="button" class="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" onclick="removeSection(@Model.Id)" title="Remove Section">
+                <i class="fas fa-trash text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Section Items Preview -->
+    @if (Model.SectionItems != null && Model.SectionItems.Any())
+    {
+        <div class="space-y-2">
+            @foreach (var item in Model.SectionItems.Take(3))
+            {
+                <div class="bg-yellow-50 border border-yellow-200 rounded p-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <div class="flex items-center space-x-2">
+                                    <h5 class="text-sm font-medium text-slate-800 truncate">
+                                        @(item.Translations?.FirstOrDefault()?.Title ?? item.Title ?? "Untitled")
+                                    </h5>
+                                    <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded">
+                                        @item.Type.ToString()
+                                    </span>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(item.Translations?.FirstOrDefault()?.Description ?? item.Description))
+                            {
+                                <p class="text-xs text-slate-500 mb-2 line-clamp-2">
+                                    @(item.Translations?.FirstOrDefault()?.Description ?? item.Description)
+                                </p>
+                            }
+
+                            <!-- Field Previews -->
+                            @if (item.Fields != null && item.Fields.Any())
+                            {
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    @foreach (var field in item.Fields.Take(4))
+                                    {
+                                        <div class="field-preview">
+                                            @await Html.PartialAsync("~/Views/Content/_FieldPreview.cshtml", field)
+                                        </div>
+                                    }
+                                    @if (item.Fields.Count > 4)
+                                    {
+                                        <div class="text-xs text-slate-400 italic">
+                                            +@(item.Fields.Count - 4) more fields...
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.SectionItems.Count > 3)
+            {
+                <div class="text-center py-2 bg-yellow-50 border border-dashed border-yellow-300 rounded">
+                    <span class="text-xs text-yellow-600">+@(Model.SectionItems.Count - 3) more items</span>
+                    <button type="button" class="ml-2 text-xs text-yellow-700 hover:text-yellow-900" onclick="editSectionItems(@Model.Id)">
+                        View All
+                    </button>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-4 bg-yellow-50 border border-dashed border-yellow-300 rounded">
+            <i class="fas fa-plus-circle text-yellow-400 text-lg mb-2"></i>
+            <p class="text-sm text-yellow-600 mb-2">No items in this section</p>
+            <button type="button" class="text-xs text-yellow-700 hover:text-yellow-900" onclick="addSectionItem(@Model.Id)">
+                Add First Item
+            </button>
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetStatusClass(PazarAtlasi.CMS.Domain.Common.Status status)
+    {
+        return status switch
+        {
+            PazarAtlasi.CMS.Domain.Common.Status.Active => "bg-green-100 text-green-800",
+            PazarAtlasi.CMS.Domain.Common.Status.Draft => "bg-yellow-100 text-yellow-800",
+            PazarAtlasi.CMS.Domain.Common.Status.Pending => "bg-blue-100 text-blue-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+}

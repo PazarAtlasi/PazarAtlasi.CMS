@@ -1,16 +1,155 @@
 @model PazarAtlasi.CMS.Models.ViewModels.PageEditViewModel
 
-<!-- Page Sections -->
-<div class="bg-white rounded-xl shadow-md">
+@if (Model.LayoutId.HasValue && Model.LayoutSections != null)
+{
+    <!-- Layout-Based Page Structure -->
+    <div class="bg-white rounded-xl shadow-md mb-6">
+        <div class="p-6 border-b border-slate-100">
+            <div class="flex items-center justify-between">
+                <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                    <i class="fas fa-sitemap mr-2 text-blue-600"></i>
+                    Layout: @Model.LayoutName
+                </h5>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-slate-500">Layout-based structure</span>
+                    <button type="button" class="text-blue-600 hover:text-blue-700 text-sm" onclick="toggleLayoutView()">
+                        <i class="fas fa-eye mr-1"></i> <span id="layoutToggleText">Hide Layout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="p-6" id="layoutStructure">
+            <!-- Header Sections -->
+            @if (Model.LayoutSections.HeaderSections.Any())
+            {
+                <div class="layout-position-section mb-6">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-arrow-up text-blue-500 mr-2"></i>
+                        <h6 class="text-sm font-medium text-slate-700">Header Sections</h6>
+                        <span class="ml-2 text-xs text-slate-500">(@Model.LayoutSections.HeaderSections.Count)</span>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+                        @foreach (var section in Model.LayoutSections.HeaderSections.OrderBy(s => s.SortOrder))
+                        {
+                            @await Html.PartialAsync("_LayoutSectionCard", section)
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Content Sections (Layout + Page) -->
+            <div class="layout-position-section mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="fas fa-align-center text-green-500 mr-2"></i>
+                    <h6 class="text-sm font-medium text-slate-700">Content Area</h6>
+                    <span class="ml-2 text-xs text-slate-500">
+                        (@(Model.LayoutSections.ContentSections.Count) layout + @(Model.Sections?.Count ?? 0) page sections)
+                    </span>
+                </div>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 space-y-3">
+                    <!-- Layout Content Sections -->
+                    @foreach (var section in Model.LayoutSections.ContentSections.OrderBy(s => s.SortOrder))
+                    {
+                        @await Html.PartialAsync("_LayoutSectionCard", section)
+                    }
+                    
+                    <!-- Page Dynamic Content Placeholder -->
+                    <div class="bg-yellow-100 border-2 border-dashed border-yellow-300 rounded-lg p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-alt text-yellow-600 mr-2"></i>
+                                <span class="text-sm font-medium text-yellow-700">Page Content (Dynamic)</span>
+                                <span class="ml-2 text-xs text-yellow-600">@(Model.Sections?.Count ?? 0) sections</span>
+                            </div>
+                            <button type="button" class="text-yellow-600 hover:text-yellow-800 text-sm" onclick="togglePageSections()">
+                                <i class="fas fa-chevron-down mr-1" id="pageSectionsToggleIcon"></i>
+                                <span id="pageSectionsToggleText">Show Page Sections</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Page Sections (Initially Hidden) -->
+                        <div id="pageSectionsContainer" class="mt-4 space-y-3" style="display: none;">
+                            @if (Model.Sections != null && Model.Sections.Any())
+                            {
+                                @for (int i = 0; i < Model.Sections.Count; i++)
+                                {
+                                    var currentSection = Model.Sections[i];
+                                    @await Html.PartialAsync("_PageSectionCard", currentSection)
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-center py-4 text-yellow-600">
+                                    <i class="fas fa-plus-circle text-2xl mb-2"></i>
+                                    <p class="text-sm">No page-specific sections yet</p>
+                                    <button type="button" class="mt-2 text-xs text-yellow-700 hover:text-yellow-900" onclick="addNewSection()">
+                                        Add First Section
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Sections -->
+            @if (Model.LayoutSections.SidebarSections.Any())
+            {
+                <div class="layout-position-section mb-6">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-columns text-purple-500 mr-2"></i>
+                        <h6 class="text-sm font-medium text-slate-700">Sidebar Sections</h6>
+                        <span class="ml-2 text-xs text-slate-500">(@Model.LayoutSections.SidebarSections.Count)</span>
+                    </div>
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 space-y-3">
+                        @foreach (var section in Model.LayoutSections.SidebarSections.OrderBy(s => s.SortOrder))
+                        {
+                            @await Html.PartialAsync("_LayoutSectionCard", section)
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Footer Sections -->
+            @if (Model.LayoutSections.FooterSections.Any())
+            {
+                <div class="layout-position-section">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-arrow-down text-orange-500 mr-2"></i>
+                        <h6 class="text-sm font-medium text-slate-700">Footer Sections</h6>
+                        <span class="ml-2 text-xs text-slate-500">(@Model.LayoutSections.FooterSections.Count)</span>
+                    </div>
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 space-y-3">
+                        @foreach (var section in Model.LayoutSections.FooterSections.OrderBy(s => s.SortOrder))
+                        {
+                            @await Html.PartialAsync("_LayoutSectionCard", section)
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Page Sections (Traditional View or No Layout) -->
+<div class="bg-white rounded-xl shadow-md" id="traditionalSectionsView" style="display: @(Model.LayoutId.HasValue ? "none" : "block")">
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center justify-between">
             <h5 class="text-lg font-semibold text-slate-800 flex items-center">
                 <i class="fas fa-layer-group mr-2 text-purple-600"></i>
                 @Html.L("Page.Sections") (@(Model.Sections?.Count ?? 0))
             </h5>
-            <button type="button" class="text-green-600 hover:text-green-700 text-sm" onclick="addNewSection()">
-                <i class="fas fa-plus mr-1"></i> @Html.L("Section.AddItem")
-            </button>
+            <div class="flex items-center space-x-2">
+                @if (Model.LayoutId.HasValue)
+                {
+                    <button type="button" class="text-blue-600 hover:text-blue-700 text-sm" onclick="toggleTraditionalView()">
+                        <i class="fas fa-list mr-1"></i> Traditional View
+                    </button>
+                }
+                <button type="button" class="text-green-600 hover:text-green-700 text-sm" onclick="addNewSection()">
+                    <i class="fas fa-plus mr-1"></i> @Html.L("Section.AddItem")
+                </button>
+            </div>
         </div>
     </div>
     <div class="p-6">
