@@ -1161,21 +1161,6 @@ namespace PazarAtlasi.CMS.Controllers
                     section.Status = request.Status;
                     section.UpdatedAt = DateTime.UtcNow;
 
-                    // Remove existing field values and their translations
-                    foreach (var existingFieldValue in section.SectionItemFieldValues.ToList())
-                    {
-                        // Remove field value translations
-                        _pazarAtlasiDbContext.SectionItemFieldValueTranslations.RemoveRange(existingFieldValue.Translations);
-                        _pazarAtlasiDbContext.SectionItemFieldValues.Remove(existingFieldValue);
-                    }
-
-                    // Remove existing section item translations
-                    var existingSectionItems = section.SectionItemFieldValues.Select(fv => fv.SectionItem).Distinct().ToList();
-                    foreach (var existingItem in existingSectionItems)
-                    {
-                        _pazarAtlasiDbContext.SectionItemTranslations.RemoveRange(existingItem.Translations);
-                    }
-
                     // Save SectionItemValues for parent section items
                     await SaveSectionItemValues(request.SectionItems, section.Id);
 
