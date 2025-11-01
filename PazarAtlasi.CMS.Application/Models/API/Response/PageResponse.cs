@@ -10,6 +10,8 @@ namespace PazarAtlasi.CMS.Application.Models.API.Response
         public PageType PageType { get; set; }
         public string? Description { get; set; }
         public Status Status { get; set; }
+        public int? LayoutId { get; set; }
+        public string? LayoutName { get; set; }
         public List<BreadcrumbItem> Breadcrumbs { get; set; } = new List<BreadcrumbItem>();
         public List<SectionResponse> Sections { get; set; } = new List<SectionResponse>();
         public PageSEOResponse? SEO { get; set; }
@@ -36,6 +38,9 @@ namespace PazarAtlasi.CMS.Application.Models.API.Response
         public string? Name { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
+        public string? Position { get; set; } // Layout position (header, content, sidebar, footer)
+        public bool IsLayoutSection { get; set; } = false; // Is this from layout or page-specific
+        public bool IsRequired { get; set; } = false; // Is this section required (for layout sections)
         public List<SectionItemResponse> Items { get; set; } = new List<SectionItemResponse>();
     }
 

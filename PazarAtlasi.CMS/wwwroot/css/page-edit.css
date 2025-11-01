@@ -1018,4 +1018,132 @@ ction Insertion Points */
 
 .section-editor:hover .section-type-indicator {
   transform: scale(1.05);
+}/*
+ Translation Panel Styles */
+#translationsPanel {
+  transition: all 0.3s ease;
+}
+
+#translationsPanel.show {
+  animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Language Tabs */
+.language-tab {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.language-tab:hover {
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.language-tab.active {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+/* Translation Content */
+.translation-content {
+  transition: opacity 0.3s ease;
+}
+
+.translation-content.hidden {
+  display: none;
+}
+
+/* Translation Form Fields */
+.translation-content input,
+.translation-content textarea {
+  transition: all 0.2s ease;
+}
+
+.translation-content input:focus,
+.translation-content textarea:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+
+/* Character Counter */
+.char-counter {
+  font-size: 0.75rem;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.char-counter.warning {
+  color: #f59e0b;
+}
+
+.char-counter.danger {
+  color: #ef4444;
+}
+
+/* Translation Actions */
+.translation-actions {
+  background: linear-gradient(to right, #f8fafc, #f1f5f9);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Default Language Badge */
+.default-language-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Translation Panel Responsive */
+@media (max-width: 768px) {
+  .language-tab {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .language-tab span {
+    display: none;
+  }
+  
+  .language-tab i {
+    margin: 0;
+  }
+  
+  #translationsPanel .p-6 {
+    padding: 1rem;
+  }
+}
+
+/* Translation Validation States */
+.translation-field-valid {
+  border-color: #10b981;
+  background-color: #f0fdf4;
+}
+
+.translation-field-invalid {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.translation-field-warning {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
 }

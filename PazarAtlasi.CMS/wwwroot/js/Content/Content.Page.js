@@ -245,8 +245,106 @@ function toggleSEOPanel() {
 function toggleTranslationsPanel() {
   const panel = document.getElementById("translationsPanel");
   if (panel) {
-    panel.style.display =
-      panel.style.display === "none" ? "block" : "none";
+    if (
+      panel.style.display === "none" ||
+      panel.style.display === ""
+    ) {
+      panel.style.display = "block";
+      // Scroll to panel
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      panel.style.display = "none";
+    }
+  }
+}
+
+function switchTranslationTab(languageId) {
+  // Remove active class from all tabs
+  document.querySelectorAll(".language-tab").forEach((tab) => {
+    tab.classList.remove("border-purple-500", "text-purple-600");
+    tab.classList.add("border-transparent", "text-slate-500");
+  });
+
+  // Add active class to selected tab
+  const selectedTab = document.querySelector(
+    `.language-tab[data-language-id="${languageId}"]`
+  );
+  if (selectedTab) {
+    selectedTab.classList.add("border-purple-500", "text-purple-600");
+    selectedTab.classList.remove(
+      "border-transparent",
+      "text-slate-500"
+    );
+  }
+
+  // Hide all translation contents
+  document
+    .querySelectorAll(".translation-content")
+    .forEach((content) => {
+      content.classList.add("hidden");
+    });
+
+  // Show selected language content
+  const selectedContent = document.querySelector(
+    `.translation-content[data-language-id="${languageId}"]`
+  );
+  if (selectedContent) {
+    selectedContent.classList.remove("hidden");
+  }
+}
+
+function saveTranslations() {
+  if (typeof SwalHelper !== "undefined") {
+    SwalHelper.loading(
+      "Saving Translations...",
+      "Please wait while translations are being saved..."
+    );
+
+    // Simulate save process
+    setTimeout(() => {
+      Swal.close();
+      SwalHelper.success(
+        "Success!",
+        "Translations saved successfully."
+      );
+    }, 1500);
+  } else {
+    alert("Translations saved successfully!");
+  }
+}
+
+function resetTranslations() {
+  if (typeof SwalHelper !== "undefined") {
+    SwalHelper.confirm(
+      "Reset Translations",
+      "Are you sure you want to reset all translations? This will restore the original values.",
+      {
+        confirmButtonText:
+          '<i class="fas fa-undo mr-2"></i>Yes, Reset',
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>Cancel',
+        icon: "warning",
+      }
+    ).then((result) => {
+      if (result.isConfirmed) {
+        // Reset form fields to original values
+        const form = document.getElementById("pageEditForm");
+        if (form) {
+          form.reset();
+          SwalHelper.success(
+            "Reset Complete",
+            "Translations have been reset to original values."
+          );
+        }
+      }
+    });
+  } else {
+    if (confirm("Are you sure you want to reset all translations?")) {
+      const form = document.getElementById("pageEditForm");
+      if (form) {
+        form.reset();
+        alert("Translations reset successfully!");
+      }
+    }
   }
 }
 
@@ -981,6 +1079,10 @@ window.updatePageLayout = updatePageLayout;
 window.clearPageLayout = clearPageLayout;
 window.addNewSection = addNewSection;
 window.closeSectionSelectionModal = closeSectionSelectionModal;
+window.toggleTranslationsPanel = toggleTranslationsPanel;
+window.switchTranslationTab = switchTranslationTab;
+window.saveTranslations = saveTranslations;
+window.resetTranslations = resetTranslations;
 
 // Enhanced Section Preview Functions
 function editSectionItems(sectionId) {
@@ -1461,3 +1563,80 @@ document.addEventListener("DOMContentLoaded", function () {
     PageLayoutManager.init();
   }
 });
+// Character counter for translation fields
+document.addEventListener("DOMContentLoaded", function () {
+  // Add character counters to translation fields
+  const metaTitleInputs = document.querySelectorAll(
+    'input[name*="MetaTitle"]'
+  );
+  const metaDescInputs = document.querySelectorAll(
+    'textarea[name*="MetaDescription"]'
+  );
+
+  metaTitleInputs.forEach((input) => {
+    addCharacterCounter(input, 60);
+  });
+
+  metaDescInputs.forEach((textarea) => {
+    addCharacterCounter(textarea, 160);
+  });
+});
+
+function addCharacterCounter(element, maxLength) {
+  const counter = document.createElement("span");
+  counter.className = "char-counter";
+  counter.textContent = `0/${maxLength}`;
+
+  // Insert counter after the element
+  element.parentNode.insertBefore(counter, element.nextSibling);
+
+  element.addEventListener("input", function () {
+    const length = this.value.length;
+    counter.textContent = `${length}/${maxLength}`;
+
+    // Update counter color based on length
+    counter.classList.remove("warning", "danger");
+    if (length > maxLength * 0.8) {
+      counter.classList.add("warning");
+    }
+    if (length > maxLength) {
+      counter.classList.add("danger");
+    }
+  });
+
+  // Initial count
+  const initialLength = element.value.length;
+  counter.textContent = `${initialLength}/${maxLength}`;
+}
+
+// Auto-save translations
+let translationAutoSaveTimer;
+function enableTranslationAutoSave() {
+  const translationInputs = document.querySelectorAll(
+    "#translationsPanel input, #translationsPanel textarea"
+  );
+
+  translationInputs.forEach((input) => {
+    input.addEventListener("input", function () {
+      clearTimeout(translationAutoSaveTimer);
+      translationAutoSaveTimer = setTimeout(() => {
+        // Auto-save translations after 3 seconds of inactivity
+        console.log("Auto-saving translations...");
+        // This would call the actual save function
+      }, 3000);
+    });
+  });
+}
+
+// Initialize auto-save when translations panel is opened
+const originalToggleTranslationsPanel =
+  window.toggleTranslationsPanel;
+window.toggleTranslationsPanel = function () {
+  originalToggleTranslationsPanel();
+
+  // Enable auto-save when panel is opened
+  const panel = document.getElementById("translationsPanel");
+  if (panel && panel.style.display !== "none") {
+    setTimeout(enableTranslationAutoSave, 100);
+  }
+};

@@ -169,6 +169,12 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? LanguageCode { get; set; }
 
         public string Value { get; set; } = string.Empty;
+
+        public string? Description { get; set; }
+
+        public string? MetaTitle { get; set; }
+
+        public string? MetaDescription { get; set; }
     }
 
     public class SectionTranslationEditViewModel

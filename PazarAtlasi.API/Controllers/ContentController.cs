@@ -32,10 +32,10 @@ namespace PazarAtlasi.API.Controllers
         }
 
         /// <summary>
-        /// Get page by slug with all sections, items, fields and values
+        /// Get page by slug with all sections, items, fields and values (including layout sections)
         /// </summary>
         /// <param name="query">Page query with slug and culture</param>
-        /// <returns>Complete page data with breadcrumbs</returns>
+        /// <returns>Complete page data with breadcrumbs and layout sections</returns>
         [HttpGet("page")]
         public async Task<ActionResult<PageResponse>> GetPage([FromQuery] PageQuery query)
         {
@@ -55,10 +55,11 @@ namespace PazarAtlasi.API.Controllers
                     return BadRequest($"Language with culture '{query.Culture}' not found.");
                 }
 
-                // Get page by slug with all related data
+                // Get page by slug with all related data including layout
                 var page = await _pazarAtlasiDbContext.Pages
                     .Include(p => p.ParentPage)
                     .Include(p => p.PageSEOParameter)
+                    .Include(p => p.Layout) // Include layout
                     .Include(p => p.PageSections.OrderBy(ps => ps.SortOrder))
                         .ThenInclude(ps => ps.Section)
                         .ThenInclude(s => s.Translations.Where(st => st.LanguageId == language.Id))
@@ -90,6 +91,9 @@ namespace PazarAtlasi.API.Controllers
                 // Build breadcrumbs
                 var breadcrumbs = await BuildBreadcrumbs(page, language.Id);
 
+                // Build sections response with layout integration
+                var allSections = await BuildPageSectionsWithLayout(page, language.Id);
+
                 // Build response
                 var response = new PageResponse
                 {
@@ -99,8 +103,10 @@ namespace PazarAtlasi.API.Controllers
                     PageType = page.PageType,
                     Description = page.Description,
                     Status = page.Status,
+                    LayoutId = page.LayoutId,
+                    LayoutName = page.Layout?.Name,
                     Breadcrumbs = breadcrumbs,
-                    Sections = await BuildSectionsResponse(page.PageSections.Select(ps => ps.Section).ToList(), language.Id),
+                    Sections = allSections,
                     SEO = page.PageSEOParameter != null ? new PageSEOResponse
                     {
                         Id = page.PageSEOParameter.Id,
@@ -125,10 +131,10 @@ namespace PazarAtlasi.API.Controllers
         }
 
         /// <summary>
-        /// Get page sections by page ID
+        /// Get page sections by page ID (including layout sections)
         /// </summary>
         /// <param name="query">Page section query with page ID and culture</param>
-        /// <returns>Page sections data</returns>
+        /// <returns>Page sections data with layout sections integrated</returns>
         [HttpGet("page-sections")]
         public async Task<ActionResult<PageSectionResponse>> GetPageSections([FromQuery] PageSectionQuery query)
         {
@@ -148,8 +154,9 @@ namespace PazarAtlasi.API.Controllers
                     return BadRequest($"Language with culture '{query.Culture}' not found.");
                 }
 
-                // Get page with sections
+                // Get page with sections and layout
                 var page = await _pazarAtlasiDbContext.Pages
+                    .Include(p => p.Layout) // Include layout
                     .Include(p => p.PageSections.OrderBy(ps => ps.SortOrder))
                         .ThenInclude(ps => ps.Section)
                         .ThenInclude(s => s.Translations.Where(st => st.LanguageId == language.Id))
@@ -178,12 +185,17 @@ namespace PazarAtlasi.API.Controllers
                     return NotFound($"Page with ID '{query.PageId}' not found.");
                 }
 
+                // Build sections response with layout integration
+                var allSections = await BuildPageSectionsWithLayout(page, language.Id);
+
                 var response = new PageSectionResponse
                 {
                     PageId = page.Id,
                     PageName = page.Name ?? string.Empty,
                     PageSlug = page.Slug ?? string.Empty,
-                    Sections = await BuildSectionsResponse(page.PageSections.Select(ps => ps.Section).ToList(), language.Id)
+                    LayoutId = page.LayoutId,
+                    LayoutName = page.Layout?.Name,
+                    Sections = allSections
                 };
 
                 return Ok(response);
@@ -394,6 +406,114 @@ namespace PazarAtlasi.API.Controllers
         #region Private Helper Methods
 
         /// <summary>
+        /// Build page sections with layout integration
+        /// </summary>
+        private async Task<List<SectionResponse>> BuildPageSectionsWithLayout(PazarAtlasi.CMS.Domain.Entities.Content.Page page, int languageId)
+        {
+            var allSections = new List<SectionResponse>();
+
+            // If page has a layout, get layout sections
+            if (page.LayoutId.HasValue)
+            {
+                var layoutSections = await _pazarAtlasiDbContext.Set<PazarAtlasi.CMS.Domain.Entities.Content.LayoutSection>()
+                    .Include(ls => ls.Section)
+                        .ThenInclude(s => s.Translations.Where(st => st.LanguageId == languageId))
+                    .Include(ls => ls.Section)
+                        .ThenInclude(s => s.SectionItemValues.OrderBy(siv => siv.SectionItem.SortOrder))
+                            .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.Translations.Where(sit => sit.LanguageId == languageId))
+                    .Include(ls => ls.Section)
+                        .ThenInclude(s => s.SectionItemValues)
+                            .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.SectionItemFieldValues.OrderBy(fv => fv.SectionItemField.SortOrder))
+                                .ThenInclude(fv => fv.SectionItemField)
+                                .ThenInclude(f => f.Translations.Where(ft => ft.LanguageId == languageId))
+                    .Include(ls => ls.Section)
+                        .ThenInclude(s => s.SectionItemValues)
+                            .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.SectionItemFieldValues)
+                                .ThenInclude(fv => fv.Translations.Where(fvt => fvt.LanguageId == languageId))
+                    .Where(ls => ls.LayoutId == page.LayoutId.Value && ls.Section.Status == Status.Active && !ls.Section.IsDeleted)
+                    .OrderBy(ls => ls.SortOrder)
+                    .ToListAsync();
+
+                // Group layout sections by position
+                var headerSections = layoutSections.Where(ls => ls.Position.ToLower() == "header").ToList();
+                var contentSections = layoutSections.Where(ls => ls.Position.ToLower() == "content").ToList();
+                var sidebarSections = layoutSections.Where(ls => ls.Position.ToLower() == "sidebar").ToList();
+                var footerSections = layoutSections.Where(ls => ls.Position.ToLower() == "footer").ToList();
+
+                // Add header sections first
+                foreach (var layoutSection in headerSections)
+                {
+                    var sectionResponse = await BuildLayoutSectionResponse(layoutSection, languageId);
+                    allSections.Add(sectionResponse);
+                }
+
+                // Add layout content sections
+                foreach (var layoutSection in contentSections)
+                {
+                    var sectionResponse = await BuildLayoutSectionResponse(layoutSection, languageId);
+                    allSections.Add(sectionResponse);
+                }
+
+                // Add page-specific sections (these go in the content area)
+                var pageSections = await BuildSectionsResponse(page.PageSections.Select(ps => ps.Section).ToList(), languageId);
+                allSections.AddRange(pageSections);
+
+                // Add sidebar sections
+                foreach (var layoutSection in sidebarSections)
+                {
+                    var sectionResponse = await BuildLayoutSectionResponse(layoutSection, languageId);
+                    allSections.Add(sectionResponse);
+                }
+
+                // Add footer sections last
+                foreach (var layoutSection in footerSections)
+                {
+                    var sectionResponse = await BuildLayoutSectionResponse(layoutSection, languageId);
+                    allSections.Add(sectionResponse);
+                }
+            }
+            else
+            {
+                // No layout, just return page sections
+                allSections = await BuildSectionsResponse(page.PageSections.Select(ps => ps.Section).ToList(), languageId);
+            }
+
+            return allSections;
+        }
+
+        /// <summary>
+        /// Build layout section response
+        /// </summary>
+        private async Task<SectionResponse> BuildLayoutSectionResponse(PazarAtlasi.CMS.Domain.Entities.Content.LayoutSection layoutSection, int languageId)
+        {
+            var section = layoutSection.Section;
+            var sectionTranslation = section.Translations.FirstOrDefault();
+
+            var sectionResponse = new SectionResponse
+            {
+                Id = section.Id,
+                Type = section.Type,
+                Key = section.Key,
+                Attributes = section.Attributes,
+                Configure = section.Configure,
+                SortOrder = layoutSection.SortOrder, // Use layout sort order
+                Status = section.Status,
+                Name = sectionTranslation?.Name,
+                Title = sectionTranslation?.Title,
+                Description = sectionTranslation?.Description,
+                Position = layoutSection.Position, // Add position information
+                IsLayoutSection = true, // Mark as layout section
+                IsRequired = layoutSection.IsRequired,
+                Items = await BuildSectionItemsResponse(section.SectionItemValues.ToList(), languageId)
+            };
+
+            return sectionResponse;
+        }
+
+        /// <summary>
         /// Build breadcrumbs for the page hierarchy
         /// </summary>
         private async Task<List<BreadcrumbItem>> BuildBreadcrumbs(PazarAtlasi.CMS.Domain.Entities.Content.Page page, int languageId)
@@ -458,6 +578,9 @@ namespace PazarAtlasi.API.Controllers
                     Name = sectionTranslation?.Name,
                     Title = sectionTranslation?.Title,
                     Description = sectionTranslation?.Description,
+                    Position = "content", // Page sections are always in content area
+                    IsLayoutSection = false, // Page-specific sections
+                    IsRequired = false,
                     Items = await BuildSectionItemsResponse(section.SectionItemValues.ToList(), languageId)
                 };
 
@@ -559,5 +682,100 @@ namespace PazarAtlasi.API.Controllers
         }
 
         #endregion
+
+        /// <summary>
+        /// Get layout sections by layout ID
+        /// </summary>
+        /// <param name="layoutId">Layout ID</param>
+        /// <param name="culture">Culture code</param>
+        /// <returns>Layout sections organized by position</returns>
+        [HttpGet("layout-sections")]
+        public async Task<ActionResult<LayoutSectionsResponse>> GetLayoutSections([FromQuery] int layoutId, [FromQuery] string culture = "tr-TR")
+        {
+            try
+            {
+                // Get language by culture
+                var language = await _pazarAtlasiDbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == culture && !l.IsDeleted);
+
+                if (language == null)
+                {
+                    return BadRequest($"Language with culture '{culture}' not found.");
+                }
+
+                // Get layout with sections
+                var layout = await _pazarAtlasiDbContext.Set<PazarAtlasi.CMS.Domain.Entities.Content.Layout>()
+                    .Include(l => l.LayoutSections.OrderBy(ls => ls.SortOrder))
+                        .ThenInclude(ls => ls.Section)
+                        .ThenInclude(s => s.Translations.Where(st => st.LanguageId == language.Id))
+                    .Include(l => l.LayoutSections)
+                        .ThenInclude(ls => ls.Section)
+                        .ThenInclude(s => s.SectionItemValues.OrderBy(siv => siv.SectionItem.SortOrder))
+                            .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.Translations.Where(sit => sit.LanguageId == language.Id))
+                    .Include(l => l.LayoutSections)
+                        .ThenInclude(ls => ls.Section)
+                        .ThenInclude(s => s.SectionItemValues)
+                            .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.SectionItemFieldValues.OrderBy(fv => fv.SectionItemField.SortOrder))
+                                .ThenInclude(fv => fv.SectionItemField)
+                                .ThenInclude(f => f.Translations.Where(ft => ft.LanguageId == language.Id))
+                    .Include(l => l.LayoutSections)
+                        .ThenInclude(ls => ls.Section)
+                        .ThenInclude(s => s.SectionItemValues)
+                            .ThenInclude(siv => siv.SectionItem)
+                            .ThenInclude(si => si.SectionItemFieldValues)
+                                .ThenInclude(fv => fv.Translations.Where(fvt => fvt.LanguageId == language.Id))
+                    .FirstOrDefaultAsync(l => l.Id == layoutId && l.Status == Status.Active && !l.IsDeleted);
+
+                if (layout == null)
+                {
+                    return NotFound($"Layout with ID '{layoutId}' not found.");
+                }
+
+                // Group sections by position
+                var headerSections = new List<SectionResponse>();
+                var contentSections = new List<SectionResponse>();
+                var sidebarSections = new List<SectionResponse>();
+                var footerSections = new List<SectionResponse>();
+
+                foreach (var layoutSection in layout.LayoutSections.Where(ls => ls.Section.Status == Status.Active && !ls.Section.IsDeleted))
+                {
+                    var sectionResponse = await BuildLayoutSectionResponse(layoutSection, language.Id);
+
+                    switch (layoutSection.Position.ToLower())
+                    {
+                        case "header":
+                            headerSections.Add(sectionResponse);
+                            break;
+                        case "content":
+                            contentSections.Add(sectionResponse);
+                            break;
+                        case "sidebar":
+                            sidebarSections.Add(sectionResponse);
+                            break;
+                        case "footer":
+                            footerSections.Add(sectionResponse);
+                            break;
+                    }
+                }
+
+                var response = new LayoutSectionsResponse
+                {
+                    LayoutId = layout.Id,
+                    LayoutName = layout.Name,
+                    HeaderSections = headerSections,
+                    ContentSections = contentSections,
+                    SidebarSections = sidebarSections,
+                    FooterSections = footerSections
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }
