@@ -757,6 +757,9 @@ async function loadAvailableLayouts() {
     const result = await ContentServices.getAvailableLayouts();
 
     if (result.success && result.layouts) {
+      // Store current value before clearing
+      const currentValue = layoutSelect.value;
+
       // Clear existing options except the first one
       while (layoutSelect.children.length > 1) {
         layoutSelect.removeChild(layoutSelect.lastChild);
@@ -772,6 +775,17 @@ async function loadAvailableLayouts() {
         }
         layoutSelect.appendChild(option);
       });
+
+      // Restore current value if it exists
+      if (currentValue) {
+        layoutSelect.value = currentValue;
+      }
+
+      // Set layout value from server-side model if available
+      const pageLayoutId = window.pageLayoutId;
+      if (pageLayoutId) {
+        layoutSelect.value = pageLayoutId;
+      }
     }
   } catch (error) {
     console.error("Error loading layouts:", error);
@@ -780,81 +794,193 @@ async function loadAvailableLayouts() {
 
 async function handleLayoutChange(layoutId) {
   if (!layoutId || layoutId === "") {
+    // Clear layout if no layout selected
+    await clearPageLayout();
     return;
   }
 
   try {
-    // Get layout sections
-    const result = await ContentServices.getLayoutSections(layoutId);
+    // Use SwalHelper for better UX
+    if (typeof SwalHelper !== "undefined") {
+      const confirmResult = await SwalHelper.confirm(
+        "Layout Seçimi",
+        `Bu layout'u sayfaya uygulamak istiyor musunuz? Sayfa yeniden yüklenecektir.`,
+        {
+          confirmButtonText:
+            '<i class="fas fa-check mr-2"></i>Evet, Uygula',
+          cancelButtonText: '<i class="fas fa-times mr-2"></i>Hayır',
+          icon: "question",
+        }
+      );
 
-    if (
-      result.success &&
-      result.sections &&
-      result.sections.length > 0
-    ) {
-      // Ask user if they want to add layout sections
-      const confirmMessage = `This layout has ${result.sections.length} predefined section(s). Would you like to add them to the page?`;
-
-      if (!confirm(confirmMessage)) {
+      if (!confirmResult.isConfirmed) {
+        // Reset layout selection if user cancels
+        const layoutSelect = document.getElementById("layoutSelect");
+        if (layoutSelect) {
+          layoutSelect.value = window.pageLayoutId || "";
+        }
         return;
       }
-
-      // Get page ID
-      const pageId = document.querySelector(
-        'input[name="Id"]'
-      )?.value;
-      if (!pageId) {
-        console.error("Page ID not found");
-        return;
-      }
-
-      // Add each section
-      for (const section of result.sections) {
-        await addLayoutSection(pageId, section);
-      }
-
-      // Reload page sections to show the newly added sections
-      location.reload();
     } else {
-      console.log("No sections found for this layout");
+      // Fallback to native confirm
+      const confirmMessage = `Bu layout'u sayfaya uygulamak istiyor musunuz? Sayfa yeniden yüklenecektir.`;
+      if (!confirm(confirmMessage)) {
+        // Reset layout selection if user cancels
+        const layoutSelect = document.getElementById("layoutSelect");
+        if (layoutSelect) {
+          layoutSelect.value = window.pageLayoutId || "";
+        }
+        return;
+      }
+    }
+
+    // Show loading
+    if (typeof SwalHelper !== "undefined") {
+      SwalHelper.loading(
+        "Layout Uygulanıyor...",
+        "Layout sayfaya uygulanıyor, lütfen bekleyin..."
+      );
+    }
+
+    // Get page ID
+    const pageId = document.querySelector('input[name="Id"]')?.value;
+    if (!pageId) {
+      console.error("Page ID not found");
+      if (typeof SwalHelper !== "undefined") {
+        Swal.close();
+        SwalHelper.error("Hata", "Sayfa ID bulunamadı.");
+      }
+      return;
+    }
+
+    // Update page layout in backend
+    const result = await updatePageLayout(pageId, layoutId);
+
+    if (result.success) {
+      // Close loading and show success, then reload
+      if (typeof SwalHelper !== "undefined") {
+        Swal.close();
+        SwalHelper.success(
+          "Başarılı!",
+          "Layout başarıyla uygulandı. Sayfa yenileniyor..."
+        );
+
+        // Reload page after a short delay
+        setTimeout(() => {
+          location.reload();
+        }, 450);
+      } else {
+        // Immediate reload for fallback
+        location.reload();
+      }
+    } else {
+      throw new Error(
+        result.message || "Layout güncellenirken hata oluştu"
+      );
     }
   } catch (error) {
-    console.error("Error loading layout sections:", error);
-    alert("An error occurred while loading layout sections.");
+    console.error("Error updating layout:", error);
+
+    if (typeof SwalHelper !== "undefined") {
+      Swal.close();
+      SwalHelper.error(
+        "Hata",
+        "Layout uygulanırken bir hata oluştu: " + error.message
+      );
+    } else {
+      alert("Layout uygulanırken bir hata oluştu: " + error.message);
+    }
+
+    // Reset layout selection on error
+    const layoutSelect = document.getElementById("layoutSelect");
+    if (layoutSelect) {
+      layoutSelect.value = window.pageLayoutId || "";
+    }
   }
 }
 
-async function addLayoutSection(pageId, sectionConfig) {
-  const data = {
-    pageId: parseInt(pageId),
-    sectionType: sectionConfig.sectionType,
-    TemplateType: "", // Will be set based on section type
-  };
+// Layout management helper functions
+async function updatePageLayout(pageId, layoutId) {
+  try {
+    const response = await fetch("/Content/UpdatePageLayout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        RequestVerificationToken: document.querySelector(
+          'input[name="__RequestVerificationToken"]'
+        )?.value,
+      },
+      body: JSON.stringify({
+        pageId: parseInt(pageId),
+        layoutId: layoutId ? parseInt(layoutId) : null,
+      }),
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error updating page layout:", error);
+    throw error;
+  }
+}
+
+async function clearPageLayout() {
+  const pageId = document.querySelector('input[name="Id"]')?.value;
+  if (!pageId) return;
 
   try {
-    const result = await ContentServices.addSection(data);
+    // Show loading
+    if (typeof SwalHelper !== "undefined") {
+      SwalHelper.loading(
+        "Layout Kaldırılıyor...",
+        "Layout sayfadan kaldırılıyor, lütfen bekleyin..."
+      );
+    }
+
+    const result = await updatePageLayout(pageId, null);
 
     if (result.success) {
-      console.log(
-        `Section ${sectionConfig.sectionType} added successfully`
-      );
+      // Close loading and reload page
+      if (typeof SwalHelper !== "undefined") {
+        Swal.close();
+        SwalHelper.success(
+          "Başarılı!",
+          "Layout kaldırıldı. Sayfa yenileniyor..."
+        );
+
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
+      } else {
+        location.reload();
+      }
     } else {
-      console.error(
-        `Failed to add section ${sectionConfig.sectionType}:`,
-        result.message
+      throw new Error(
+        result.message || "Layout kaldırılırken hata oluştu"
       );
     }
   } catch (error) {
-    console.error(
-      `Error adding section ${sectionConfig.sectionType}:`,
-      error
-    );
+    console.error("Error clearing layout:", error);
+
+    if (typeof SwalHelper !== "undefined") {
+      Swal.close();
+      SwalHelper.error(
+        "Hata",
+        "Layout kaldırılırken bir hata oluştu: " + error.message
+      );
+    } else {
+      alert("Layout kaldırılırken bir hata oluştu: " + error.message);
+    }
   }
 }
 
 // Make functions globally available
 window.handlePageTypeChange = handlePageTypeChange;
 window.handleLayoutChange = handleLayoutChange;
+window.updatePageLayout = updatePageLayout;
+window.clearPageLayout = clearPageLayout;
+window.addNewSection = addNewSection;
+window.closeSectionSelectionModal = closeSectionSelectionModal;
 
 // Enhanced Section Preview Functions
 function editSectionItems(sectionId) {

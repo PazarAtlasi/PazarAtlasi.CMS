@@ -90,10 +90,30 @@
             <select name="LayoutId" id="layoutSelect" onchange="handleLayoutChange(this.value)"
                 class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                 <option value="">No Layout (Custom)</option>
-                <!-- Layouts will be loaded dynamically -->
+                @if (Model.AvailableLayouts != null)
+                {
+                    @foreach (var layout in Model.AvailableLayouts)
+                    {
+                        @if (Model.LayoutId == layout.Id)
+                        {
+                            <option value="@layout.Id" selected>@layout.Name @(layout.IsDefault ? " (Default)" : "")</option>
+                        }
+                        else
+                        {
+                            <option value="@layout.Id">@layout.Name @(layout.IsDefault ? " (Default)" : "")</option>
+                        }
+                    }
+                }
             </select>
             <p class="text-xs text-slate-500 mt-1">Choose a layout template with pre-defined sections like navbar and
                 footer.</p>
+            @if (!string.IsNullOrEmpty(Model.LayoutName))
+            {
+                <p class="text-xs text-blue-600 mt-1">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Current layout: @Model.LayoutName
+                </p>
+            }
         </div>
 
         <div>

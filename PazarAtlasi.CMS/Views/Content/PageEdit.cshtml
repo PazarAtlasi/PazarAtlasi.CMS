@@ -194,11 +194,22 @@
     <script>
         // Set global page ID for section modal
         window.currentPageId = @Model.Id;
+        
+        // Set current layout ID if available
+        @if (Model.LayoutId.HasValue)
+        {
+            <text>window.pageLayoutId = @Model.LayoutId.Value;</text>
+        }
+        else
+        {
+            <text>window.pageLayoutId = null;</text>
+        }
 
         // Debug: Check if SwalHelper is available
         document.addEventListener('DOMContentLoaded', function() {
             console.log('SwalHelper available:', typeof window.SwalHelper !== 'undefined');
             console.log('Swal available:', typeof window.Swal !== 'undefined');
+            console.log('Current layout ID:', window.pageLayoutId);
             
             if (typeof window.SwalHelper === 'undefined') {
                 console.warn('SwalHelper is not available. Remove buttons will use fallback confirm()');

@@ -4602,5 +4602,57 @@ namespace PazarAtlasi.CMS.Controllers
 
             return layoutSectionsViewModel;
         }
+
+        /// <summary>
+        /// Update page layout assignment
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> UpdatePageLayout([FromBody] UpdatePageLayoutRequest request)
+        {
+            try
+            {
+                var page = await _pazarAtlasiDbContext.Pages
+                    .FirstOrDefaultAsync(p => p.Id == request.PageId);
+
+                if (page == null)
+                {
+                    return Json(new { success = false, message = "Page not found." });
+                }
+
+                // Validate layout exists if layoutId is provided
+                if (request.LayoutId.HasValue)
+                {
+                    var layoutExists = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
+                        .AnyAsync(l => l.Id == request.LayoutId.Value);
+
+                    if (!layoutExists)
+                    {
+                        return Json(new { success = false, message = "Layout not found." });
+                    }
+                }
+
+                // Update page layout
+                page.LayoutId = request.LayoutId;
+                page.UpdatedAt = DateTime.UtcNow;
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Page layout updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        #region Helper Classes
+
+        public class UpdatePageLayoutRequest
+        {
+            public int PageId { get; set; }
+            public int? LayoutId { get; set; }
+        }
+
+        #endregion
     }
 }

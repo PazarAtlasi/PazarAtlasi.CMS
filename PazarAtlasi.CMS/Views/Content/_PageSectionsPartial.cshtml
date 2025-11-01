@@ -52,7 +52,7 @@
                     {
                         @await Html.PartialAsync("_LayoutSectionCard", section)
                     }
-                    
+
                     <!-- Page Dynamic Content Placeholder -->
                     <div class="bg-yellow-100 border-2 border-dashed border-yellow-300 rounded-lg p-4">
                         <div class="flex items-center justify-between">
@@ -66,15 +66,35 @@
                                 <span id="pageSectionsToggleText">Show Page Sections</span>
                             </button>
                         </div>
-                        
+
                         <!-- Page Sections (Initially Hidden) -->
                         <div id="pageSectionsContainer" class="mt-4 space-y-3" style="display: none;">
                             @if (Model.Sections != null && Model.Sections.Any())
                             {
+                                <!-- Add Section Button at the top -->
+                                <div class="section-insertion-point">
+                                    <div class="flex items-center justify-center py-2">
+                                        <button type="button" class="group flex items-center space-x-2 px-3 py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 hover:text-yellow-800 rounded-lg border border-dashed border-yellow-300 hover:border-yellow-400 transition-all duration-200 text-sm" onclick="addNewSection()">
+                                            <i class="fas fa-plus text-xs group-hover:scale-110 transition-transform"></i>
+                                            <span class="font-medium">Add Section Here</span>
+                                        </button>
+                                    </div>
+                                </div>
+
                                 @for (int i = 0; i < Model.Sections.Count; i++)
                                 {
                                     var currentSection = Model.Sections[i];
                                     @await Html.PartialAsync("_PageSectionCard", currentSection)
+                                    
+                                    <!-- Add Section Button after each section -->
+                                    <div class="section-insertion-point">
+                                        <div class="flex items-center justify-center py-2">
+                                            <button type="button" class="group flex items-center space-x-2 px-3 py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-600 hover:text-yellow-700 rounded-lg border border-dashed border-yellow-300 hover:border-yellow-400 transition-all duration-200 text-sm" onclick="addNewSection()">
+                                                <i class="fas fa-plus text-xs group-hover:scale-110 transition-transform"></i>
+                                                <span class="font-medium">Add Section</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 }
                             }
                             else
@@ -156,6 +176,16 @@
         <div id="sectionsContainer" class="space-y-6">
             @if (Model.Sections != null && Model.Sections.Any())
             {
+                <!-- Add Section Button at the top -->
+                <div class="section-insertion-point">
+                    <div class="flex items-center justify-center py-4">
+                        <button type="button" class="group flex items-center space-x-2 px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 hover:text-green-800 rounded-lg border-2 border-dashed border-green-300 hover:border-green-400 transition-all duration-200" onclick="addNewSection()">
+                            <i class="fas fa-plus text-sm group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium">Add Section Here</span>
+                        </button>
+                    </div>
+                </div>
+
                 @for (int i = 0; i < Model.Sections.Count; i++)
                 {
                     var currentSection = Model.Sections[i];
@@ -166,7 +196,7 @@
                                 <div class="drag-handle cursor-move p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors">
                                     <i class="fas fa-grip-vertical"></i>
                                 </div>
-                                
+
                                 <!-- Section Icon & Info -->
                                 <div class="flex items-center space-x-3">
                                     <div>
@@ -198,17 +228,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Items Count Badge -->
                                 <div class="flex items-center space-x-2">
                                     <span class="inline-flex items-center px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-full font-medium">
                                         <i class="fas fa-cubes mr-2 text-xs"></i>
-                                        @(currentSection.SectionItems?.Count ?? 0) 
+                                        @(currentSection.SectionItems?.Count ?? 0)
                                         @(currentSection.SectionItems?.Count == 1 ? "item" : "items")
                                     </span>
                                 </div>
                             </div>
-                            
+
                             <!-- Action Buttons -->
                             <div class="flex items-center space-x-1">
                                 <button type="button" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" onclick="toggleSectionSettings(@currentSection.Id)" title="@Html.L("Section.Settings")">
@@ -232,7 +262,7 @@
                                 <i class="fas fa-cog text-blue-600 mr-2"></i>
                                 <h6 class="font-semibold text-slate-800">@Html.L("Section.Settings")</h6>
                             </div>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-2">
@@ -252,27 +282,27 @@
                                         }
                                     </select>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-2">
                                         <i class="fas fa-key mr-1 text-slate-500"></i> @Html.L("Section.Key")
                                     </label>
-                                    <input type="text" name="Sections[@i].Key" value="@currentSection.Key" 
+                                    <input type="text" name="Sections[@i].Key" value="@currentSection.Key"
                                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
                                            placeholder="e.g., hero, navbar, footer">
                                     <p class="text-xs text-slate-500 mt-1">Unique identifier for this section</p>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-2">
                                         <i class="fas fa-sort-numeric-up mr-1 text-slate-500"></i> @Html.L("Section.Order")
                                     </label>
-                                    <input type="number" name="Sections[@i].SortOrder" value="@currentSection.SortOrder" 
+                                    <input type="number" name="Sections[@i].SortOrder" value="@currentSection.SortOrder"
                                            class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                            min="0" max="999">
                                     <p class="text-xs text-slate-500 mt-1">Display order on page</p>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-2">
                                         <i class="fas fa-palette mr-1 text-slate-500"></i> Template
@@ -283,7 +313,7 @@
                                     </select>
                                     <p class="text-xs text-slate-500 mt-1">Templates available for this section type</p>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-2">
                                         <i class="fas fa-toggle-on mr-1 text-slate-500"></i> Status
@@ -302,7 +332,7 @@
                                         }
                                     </select>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-2">
                                         <i class="fas fa-info-circle mr-1 text-slate-500"></i> Quick Actions
@@ -317,7 +347,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Advanced Settings -->
                             <div class="mt-4 pt-4 border-t border-slate-200">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -325,19 +355,19 @@
                                         <label class="block text-sm font-medium text-slate-700 mb-2">
                                             <i class="fas fa-code mr-1 text-slate-500"></i> Attributes (JSON)
                                         </label>
-                                        <textarea name="Sections[@i].Attributes" rows="3" 
-                                                  class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
-                                                  placeholder='{"class": "custom-class", "id": "section-id"}'>@currentSection.Attributes</textarea>
+                                        <textarea name="Sections[@i].Attributes" rows="3"
+                                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                                          placeholder='{"class": "custom-class", "id": "section-id"}'>@currentSection.Attributes</textarea>
                                         <p class="text-xs text-slate-500 mt-1">Custom HTML attributes as JSON</p>
                                     </div>
-                                    
+
                                     <div>
                                         <label class="block text-sm font-medium text-slate-700 mb-2">
                                             <i class="fas fa-cogs mr-1 text-slate-500"></i> Configuration (JSON)
                                         </label>
-                                        <textarea name="Sections[@i].Configure" rows="3" 
-                                                  class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
-                                                  placeholder='{"theme": "dark", "animation": "fade"}'>@currentSection.Configure</textarea>
+                                        <textarea name="Sections[@i].Configure" rows="3"
+                                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                                          placeholder='{"theme": "dark", "animation": "fade"}'>@currentSection.Configure</textarea>
                                         <p class="text-xs text-slate-500 mt-1">Section-specific configuration</p>
                                     </div>
                                 </div>
@@ -439,6 +469,16 @@
                                     </button>
                                 </div>
                             }
+                        </div>
+                    </div>
+
+                    <!-- Add Section Button after each section -->
+                    <div class="section-insertion-point">
+                        <div class="flex items-center justify-center py-3">
+                            <button type="button" class="group flex items-center space-x-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-600 hover:text-green-700 rounded-lg border border-dashed border-green-300 hover:border-green-400 transition-all duration-200 text-sm" onclick="addNewSection()">
+                                <i class="fas fa-plus text-xs group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium">Add Section</span>
+                            </button>
                         </div>
                     </div>
                 }

@@ -908,3 +908,114 @@ Layout Schema Styles */
     transform: translateY(0);
   }
 }
+/* Se
+ction Insertion Points */
+.section-insertion-point {
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.section-insertion-point:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.section-insertion-point button {
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-insertion-point button:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.section-insertion-point button i {
+  transition: transform 0.2s ease;
+}
+
+.section-insertion-point button:hover i {
+  transform: scale(1.1);
+}
+
+/* Page Section Card Enhancements */
+.page-section-card {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.page-section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.page-section-card .drag-handle {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.page-section-card:hover .drag-handle {
+  opacity: 1;
+}
+
+/* Layout Section Card Styles */
+.layout-section-card {
+  transition: all 0.3s ease;
+}
+
+.layout-section-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Section Action Buttons */
+.section-action-btn {
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.section-action-btn:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .section-insertion-point button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .section-insertion-point button span {
+    display: none;
+  }
+  
+  .section-insertion-point button i {
+    margin: 0;
+  }
+}
+
+/* Animation for new sections */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-editor.new-section {
+  animation: slideInUp 0.5s ease-out;
+}
+
+/* Hover effects for section types */
+.section-type-indicator {
+  transition: all 0.2s ease;
+}
+
+.section-editor:hover .section-type-indicator {
+  transform: scale(1.05);
+}
