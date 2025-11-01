@@ -208,45 +208,7 @@ window.LayoutManager = {
         return "gray";
     }
   },
-
-  // Add section item
-  addSectionItem: function (sectionId) {
-    this.editSectionItems(sectionId);
-  },
-
-  // Edit section items
-  editSectionItems: function (sectionId) {
-    // This would open the section items editor
-    console.log("Edit section items:", sectionId);
-    // Implementation would depend on your section items editor
-  },
-
-  // Duplicate section
-  duplicateSection: function (sectionId) {
-    if (confirm("Are you sure you want to duplicate this section?")) {
-      console.log("Duplicate section:", sectionId);
-      this.showNotification(
-        "Duplicate functionality will be implemented.",
-        "info"
-      );
-    }
-  },
-
-  // Remove section
-  removeSection: function (sectionId) {
-    if (
-      confirm(
-        "Are you sure you want to remove this section from the layout?"
-      )
-    ) {
-      console.log("Remove section:", sectionId);
-      this.showNotification(
-        "Remove functionality will be implemented.",
-        "info"
-      );
-    }
-  },
-
+ 
   // Show notification
   showNotification: function (message, type = "info") {
     const notification = document.createElement("div");
@@ -315,22 +277,6 @@ function toggleSchemaView() {
 
 function updateSectionPosition(sectionId, newPosition) {
   LayoutManager.updateSectionPosition(sectionId, newPosition);
-}
-
-function addSectionItem(sectionId) {
-  LayoutManager.addSectionItem(sectionId);
-}
-
-function editSectionItems(sectionId) {
-  LayoutManager.editSectionItems(sectionId);
-}
-
-function duplicateSection(sectionId) {
-  LayoutManager.duplicateSection(sectionId);
-}
-
-function removeSection(sectionId) {
-  LayoutManager.removeSection(sectionId);
 }
 
 function showNotification(message, type) {

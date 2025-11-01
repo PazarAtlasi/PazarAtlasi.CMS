@@ -359,35 +359,10 @@ function toggleSectionSettings(sectionId) {
 }
 
 function addNewSection() {
-  const modal = document.getElementById("sectionSelectionModal");
-  if (modal) {
-    modal.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  }
-}
-
-function closeSectionSelectionModal() {
-  const modal = document.getElementById("sectionSelectionModal");
-  if (modal) {
-    modal.classList.add("hidden");
-    document.body.style.overflow = "";
-
-    // Reset reusable sections list
-    const reusableList = document.getElementById(
-      "reusableSectionsList"
-    );
-    if (reusableList) {
-      reusableList.classList.add("hidden");
-    }
-  }
-}
-
-async function createNewSection() {
-  closeSectionSelectionModal();
-
   // Get the page ID
   const pageId = document.querySelector('input[name="Id"]').value;
 
+  // Directly open SectionModal without selection modal
   if (typeof SectionModal !== "undefined" && SectionModal.show) {
     SectionModal.show(0, parseInt(pageId));
   } else {
@@ -395,105 +370,7 @@ async function createNewSection() {
   }
 }
 
-async function showReusableSections() {
-  const listDiv = document.getElementById("reusableSectionsList");
-  const container = document.getElementById(
-    "reusableSectionsContainer"
-  );
-
-  listDiv.classList.remove("hidden");
-
-  try {
-    const result = await ContentServices.getReusableSections();
-
-    if (
-      result.success &&
-      result.sections &&
-      result.sections.length > 0
-    ) {
-      container.innerHTML = "";
-
-      result.sections.forEach((section) => {
-        const sectionCard = document.createElement("div");
-        sectionCard.className =
-          "border border-slate-200 rounded-lg p-4 hover:border-purple-300 transition-colors cursor-pointer";
-        sectionCard.onclick = () => addReusableSection(section.Id);
-
-        sectionCard.innerHTML = `
-          <div class="flex items-center mb-3">
-            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-              <i class="fas fa-layer-group text-purple-600"></i>
-            </div>
-            <div class="flex-1">
-              <h5 class="font-medium text-slate-800">${
-                section.Name
-              }</h5>
-              <p class="text-xs text-slate-500">${section.Type} - ${
-          section.TemplateType
-        }</p>
-            </div>
-          </div>
-          ${
-            section.Description
-              ? `<p class="text-sm text-slate-600 mb-3">${section.Description}</p>`
-              : ""
-          }
-          <div class="flex items-center justify-between text-xs text-slate-500">
-            <span><i class="fas fa-recycle mr-1"></i> Reusable</span>
-            <button class="text-purple-600 hover:text-purple-800">
-              <i class="fas fa-plus mr-1"></i> Add
-            </button>
-          </div>
-        `;
-
-        container.appendChild(sectionCard);
-      });
-    } else {
-      container.innerHTML = `
-        <div class="col-span-full text-center py-8 text-slate-400">
-          <i class="fas fa-layer-group text-4xl mb-4"></i>
-          <p class="text-lg font-medium">No reusable sections found</p>
-          <p class="text-sm">Create some reusable sections first to use them here</p>
-          <a href="/Content/CreateSection" class="mt-4 inline-flex items-center py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors">
-            <i class="fas fa-plus mr-2"></i> Create Section
-          </a>
-        </div>
-      `;
-    }
-  } catch (error) {
-    console.error("Error loading reusable sections:", error);
-    container.innerHTML = `
-      <div class="col-span-full text-center py-8 text-red-400">
-        <i class="fas fa-exclamation-circle text-4xl mb-4"></i>
-        <p class="text-lg font-medium">Error loading sections</p>
-        <p class="text-sm">Please try again later</p>
-      </div>
-    `;
-  }
-}
-
-async function addReusableSection(sectionId) {
-  try {
-    const pageId = document.querySelector('input[name="Id"]').value;
-
-    const result = await ContentServices.addReusableSection({
-      pageId: pageId,
-      sectionId: sectionId,
-    });
-
-    if (result.success) {
-      closeSectionSelectionModal();
-
-      // Refresh the page to show the new section
-      location.reload();
-    } else {
-      alert("Error adding section: " + result.message);
-    }
-  } catch (error) {
-    console.error("Error adding reusable section:", error);
-    alert("An error occurred while adding the section.");
-  }
-}
+// Reusable sections functionality removed - using direct SectionModal.show() instead
 
 function closeSectionModal() {
   const modal = document.querySelector(".fixed.inset-0");
@@ -1078,7 +955,6 @@ window.handleLayoutChange = handleLayoutChange;
 window.updatePageLayout = updatePageLayout;
 window.clearPageLayout = clearPageLayout;
 window.addNewSection = addNewSection;
-window.closeSectionSelectionModal = closeSectionSelectionModal;
 window.toggleTranslationsPanel = toggleTranslationsPanel;
 window.switchTranslationTab = switchTranslationTab;
 window.saveTranslations = saveTranslations;

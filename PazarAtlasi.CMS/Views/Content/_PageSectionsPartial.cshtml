@@ -176,16 +176,6 @@
         <div id="sectionsContainer" class="space-y-6">
             @if (Model.Sections != null && Model.Sections.Any())
             {
-                <!-- Add Section Button at the top -->
-                <div class="section-insertion-point">
-                    <div class="flex items-center justify-center py-4">
-                        <button type="button" class="group flex items-center space-x-2 px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 hover:text-green-800 rounded-lg border-2 border-dashed border-green-300 hover:border-green-400 transition-all duration-200" onclick="addNewSection()">
-                            <i class="fas fa-plus text-sm group-hover:scale-110 transition-transform"></i>
-                            <span class="text-sm font-medium">Add Section Here</span>
-                        </button>
-                    </div>
-                </div>
-
                 @for (int i = 0; i < Model.Sections.Count; i++)
                 {
                     var currentSection = Model.Sections[i];
@@ -469,16 +459,6 @@
                                     </button>
                                 </div>
                             }
-                        </div>
-                    </div>
-
-                    <!-- Add Section Button after each section -->
-                    <div class="section-insertion-point">
-                        <div class="flex items-center justify-center py-3">
-                            <button type="button" class="group flex items-center space-x-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-600 hover:text-green-700 rounded-lg border border-dashed border-green-300 hover:border-green-400 transition-all duration-200 text-sm" onclick="addNewSection()">
-                                <i class="fas fa-plus text-xs group-hover:scale-110 transition-transform"></i>
-                                <span class="font-medium">Add Section</span>
-                            </button>
                         </div>
                     </div>
                 }
