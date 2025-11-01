@@ -4373,5 +4373,123 @@ namespace PazarAtlasi.CMS.Controllers
                 .ToList();
         }
 
+        /// <summary>
+        /// Update section position in layout
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> UpdateSectionPosition(int layoutId, int sectionId, string position)
+        {
+            try
+            {
+                var layoutSection = await _pazarAtlasiDbContext.LayoutSections
+                    .FirstOrDefaultAsync(ls => ls.LayoutId == layoutId && ls.SectionId == sectionId);
+
+                if (layoutSection == null)
+                {
+                    return Json(new { success = false, message = "Layout section not found." });
+                }
+
+                // Validate position
+                var validPositions = new[] { "header", "content", "sidebar", "footer" };
+                if (!validPositions.Contains(position.ToLower()))
+                {
+                    return Json(new { success = false, message = "Invalid position specified." });
+                }
+
+                layoutSection.Position = position.ToLower();
+                layoutSection.UpdatedAt = DateTime.UtcNow;
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    message = $"Section moved to {position} successfully.",
+                    newPosition = position.ToLower()
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while updating section position." });
+            }
+        }
+
+        /// <summary>
+        /// Get layout schema data for visualization
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetLayoutSchema(int layoutId)
+        {
+            try
+            {
+                var layoutSections = await _pazarAtlasiDbContext.LayoutSections
+                    .Include(ls => ls.Section)
+                        .ThenInclude(s => s.Translations)
+                    .Where(ls => ls.LayoutId == layoutId)
+                    .OrderBy(ls => ls.SortOrder)
+                    .ToListAsync();
+
+                var schema = new
+                {
+                    header = layoutSections
+                        .Where(ls => ls.Position == "header")
+                        .Select(ls => new
+                        {
+                            id = ls.SectionId,
+                            key = ls.Section.Key,
+                            type = ls.Section.Type.ToString(),
+                            name = ls.Section.Translations.FirstOrDefault()?.Name ?? ls.Section.Type.ToString(),
+                            sortOrder = ls.SortOrder
+                        })
+                        .OrderBy(s => s.sortOrder)
+                        .ToList(),
+
+                    content = layoutSections
+                        .Where(ls => ls.Position == "content")
+                        .Select(ls => new
+                        {
+                            id = ls.SectionId,
+                            key = ls.Section.Key,
+                            type = ls.Section.Type.ToString(),
+                            name = ls.Section.Translations.FirstOrDefault()?.Name ?? ls.Section.Type.ToString(),
+                            sortOrder = ls.SortOrder
+                        })
+                        .OrderBy(s => s.sortOrder)
+                        .ToList(),
+
+                    sidebar = layoutSections
+                        .Where(ls => ls.Position == "sidebar")
+                        .Select(ls => new
+                        {
+                            id = ls.SectionId,
+                            key = ls.Section.Key,
+                            type = ls.Section.Type.ToString(),
+                            name = ls.Section.Translations.FirstOrDefault()?.Name ?? ls.Section.Type.ToString(),
+                            sortOrder = ls.SortOrder
+                        })
+                        .OrderBy(s => s.sortOrder)
+                        .ToList(),
+
+                    footer = layoutSections
+                        .Where(ls => ls.Position == "footer")
+                        .Select(ls => new
+                        {
+                            id = ls.SectionId,
+                            key = ls.Section.Key,
+                            type = ls.Section.Type.ToString(),
+                            name = ls.Section.Translations.FirstOrDefault()?.Name ?? ls.Section.Type.ToString(),
+                            sortOrder = ls.SortOrder
+                        })
+                        .OrderBy(s => s.sortOrder)
+                        .ToList()
+                };
+
+                return Json(new { success = true, schema });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while loading layout schema." });
+            }
+        }
     }
 }

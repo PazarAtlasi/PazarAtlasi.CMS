@@ -180,64 +180,20 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="~/js/Content/Services/Content.Services.js"></script>
     <script src="~/js/Content/Content.Page.Section.Modal.js"></script>
     <script src="~/js/Content/Content.Layout.js"></script>
     <script>
-        // Set global layout ID for section modal
+        // Set global layout ID for section modal and schema updates
         window.currentLayoutId = @Model.Id;
         window.currentPageId = null; // No page ID for layout sections
+        
+        // Initialize Layout Manager
+        if (typeof LayoutManager !== 'undefined') {
+            LayoutManager.init(@Model.Id);
+        }
 
-        // ContentServices object for API calls
-        window.ContentServices = {
-            getSectionModal: async function(sectionId, pageId, layoutId) {
-                const params = new URLSearchParams();
-                params.append('id', sectionId);
-                if (pageId) params.append('pageId', pageId);
-                if (layoutId) params.append('layoutId', layoutId);
-                
-                const response = await fetch(`/Content/GetSectionModal?${params}`);
-                return await response.text();
-            },
-            
-            saveSection: async function(sectionData) {
-                const response = await fetch('/Content/SaveSectionAjax', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-                    },
-                    body: JSON.stringify(sectionData)
-                });
-                return await response.json();
-            },
-            
-            getReusableSections: async function() {
-                const response = await fetch('/Content/GetReusableSections');
-                return await response.json();
-            },
-            
-            addReusableSectionToLayout: async function(layoutId, sectionId) {
-                const response = await fetch('/Content/AddReusableSectionToLayout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-                    },
-                    body: JSON.stringify({ layoutId: layoutId, sectionId: sectionId })
-                });
-                return await response.json();
-            },
-            
-            getTemplatesBySectionType: async function(sectionType) {
-                const response = await fetch(`/Content/GetTemplatesBySectionType?sectionType=${sectionType}`);
-                return await response.json();
-            },
-            
-            getNewSectionItemCard: async function(templateId, sectionId, currentCount) {
-                const response = await fetch(`/Content/GetNewSectionItemCard?templateId=${templateId}&sectionId=${sectionId}&currentCount=${currentCount}`);
-                return await response.text();
-            }
-        };
+        // ContentServices is now loaded from Content.Services.js
 
         // Add new section function for layout
         function addNewSection() {

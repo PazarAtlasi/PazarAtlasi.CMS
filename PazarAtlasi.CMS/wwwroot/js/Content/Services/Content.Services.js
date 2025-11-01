@@ -346,6 +346,45 @@ const ContentServices = (function () {
     });
   }
 
+  /**
+   * Update section position in layout
+   */
+  function updateSectionPosition(layoutId, sectionId, position) {
+    return $.ajax({
+      url: `${config.baseUrl}/UpdateSectionPosition`,
+      type: "POST",
+      headers: buildHeaders(),
+      data: { layoutId, sectionId, position },
+      dataType: "json",
+    });
+  }
+
+  /**
+   * Get layout schema for visualization
+   */
+  function getLayoutSchema(layoutId) {
+    return $.ajax({
+      url: `${config.baseUrl}/GetLayoutSchema`,
+      type: "GET",
+      data: { layoutId },
+      headers: buildHeaders(),
+      dataType: "json",
+    });
+  }
+
+  /**
+   * Add reusable section to layout
+   */
+  function addReusableSectionToLayout(layoutId, sectionId) {
+    return $.ajax({
+      url: `${config.baseUrl}/AddReusableSectionToLayout`,
+      type: "POST",
+      headers: buildHeaders({ "Content-Type": "application/json" }),
+      data: JSON.stringify({ layoutId, sectionId }),
+      dataType: "json",
+    });
+  }
+
   // ==================== MEDIA UPLOAD SERVICES ====================
 
   /**
@@ -433,6 +472,9 @@ const ContentServices = (function () {
     getAvailableLayouts,
     getLayoutSections,
     deleteLayout,
+    updateSectionPosition,
+    getLayoutSchema,
+    addReusableSectionToLayout,
 
     // Media upload services
     uploadImage,

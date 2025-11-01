@@ -1,265 +1,344 @@
-// Layout Builder JavaScript
-let availableSections = [];
-let layoutSections = [];
+/**
+ * Layout Management JavaScript
+ * Handles layout editing, schema visualization, and section position management
+ */
 
-// Load available sections
-async function loadAvailableSections() {
-  try {
-    const result = await ContentServices.getReusableSections();
+// Layout Management Object
+window.LayoutManager = {
+  currentLayoutId: null,
 
-    if (result.success && result.sections) {
-      availableSections = result.sections;
-      renderAvailableSections();
+  // Initialize layout manager
+  init: function (layoutId) {
+    this.currentLayoutId = layoutId;
+    this.bindEvents();
+    this.initializeSchema();
+  },
+
+  // Bind event listeners
+  bindEvents: function () {
+    // Add hover effects to schema sections
+    const schemaItems = document.querySelectorAll(
+      ".schema-section-item"
+    );
+    schemaItems.forEach((item) => {
+      item.addEventListener("mouseenter", function () {
+        this.style.transform = "scale(1.05)";
+        this.style.transition = "transform 0.2s ease";
+      });
+
+      item.addEventListener("mouseleave", function () {
+        this.style.transform = "scale(1)";
+      });
+    });
+  },
+
+  // Initialize schema visualization
+  initializeSchema: function () {
+    console.log(
+      "Layout schema initialized for layout:",
+      this.currentLayoutId
+    );
+  },
+
+  // Toggle section settings
+  toggleSectionSettings: function (sectionId) {
+    const settings = document.getElementById(
+      `sectionSettings_${sectionId}`
+    );
+    if (settings) {
+      if (settings.style.display === "none") {
+        settings.style.display = "block";
+      } else {
+        settings.style.display = "none";
+      }
     }
-  } catch (error) {
-    console.error("Error loading sections:", error);
-    document.getElementById("availableSections").innerHTML = `
-            <div class="text-center py-4 text-red-400">
-                <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
-                <p class="text-sm">Error loading sections</p>
-            </div>
-        `;
-  }
-}
+  },
 
-// Render available sections
-function renderAvailableSections() {
-  const container = document.getElementById("availableSections");
+  // Toggle schema view
+  toggleSchemaView: function () {
+    const schema =
+      document.querySelector(".layout-schema").parentElement
+        .parentElement;
+    const toggleText = document.getElementById("schemaToggleText");
 
-  if (availableSections.length === 0) {
-    container.innerHTML = `
-            <div class="text-center py-4 text-slate-400">
-                <i class="fas fa-layer-group text-2xl mb-2"></i>
-                <p class="text-sm">No sections available</p>
-                <a href="/Content/CreateSection" class="text-purple-600 hover:text-purple-800 text-xs">Create sections first</a>
-            </div>
-        `;
-    return;
-  }
+    if (schema.style.display === "none") {
+      schema.style.display = "block";
+      toggleText.textContent = "Hide Schema";
+    } else {
+      schema.style.display = "none";
+      toggleText.textContent = "Show Schema";
+    }
+  },
 
-  container.innerHTML = availableSections
-    .map(
-      (section) => `
-         <div class="section-item bg-white border border-slate-200 rounded-lg p-3 cursor-move hover:border-purple-300 transition-colors"
-              draggable="true" 
-              ondragstart="dragStart(event)"
-              data-section-id="${section.Id}"
-              data-section-name="${section.Name}"
-              data-section-type="${section.Type}">
-             <div class="flex items-center">
-                 <div class="w-8 h-8 bg-purple-100 rounded flex items-center justify-center mr-3">
-                     <i class="fas fa-layer-group text-purple-600 text-sm"></i>
-                 </div>
-                 <div class="flex-1">
-                     <p class="text-sm font-medium text-slate-800">${section.Name}</p>
-                     <p class="text-xs text-slate-500">${section.Type}</p>
-                 </div>
-                 <i class="fas fa-grip-vertical text-slate-400"></i>
-             </div>
-         </div>
-    `
-    )
-    .join("");
-}
+  // Update section position and refresh schema
+  updateSectionPosition: async function (sectionId, newPosition) {
+    try {
+      // Show loading state
+      this.showNotification("Updating section position...", "info");
 
-// Drag and Drop Functions
-function dragStart(event) {
-  const sectionId =
-    event.target.closest(".section-item").dataset.sectionId;
-  const sectionName =
-    event.target.closest(".section-item").dataset.sectionName;
-  const sectionType =
-    event.target.closest(".section-item").dataset.sectionType;
+      // Update position on server
+      const result = await ContentServices.updateSectionPosition(
+        this.currentLayoutId,
+        sectionId,
+        newPosition
+      );
 
-  event.dataTransfer.setData(
-    "text/plain",
-    JSON.stringify({
-      Id: sectionId,
-      Name: sectionName,
-      Type: sectionType,
-    })
-  );
-}
+      if (result.success) {
+        // Update the schema view
+        await this.refreshLayoutSchema();
 
-function allowDrop(event) {
-  event.preventDefault();
-}
+        // Show success notification
+        this.showNotification(result.message, "success");
+      } else {
+        this.showNotification(
+          result.message || "Failed to update section position",
+          "error"
+        );
+      }
+    } catch (error) {
+      console.error("Error updating section position:", error);
+      this.showNotification(
+        "An error occurred while updating section position",
+        "error"
+      );
+    }
+  },
 
-function drop(event) {
-  event.preventDefault();
+  // Refresh layout schema
+  refreshLayoutSchema: async function () {
+    try {
+      const result = await ContentServices.getLayoutSchema(
+        this.currentLayoutId
+      );
 
-  const sectionData = JSON.parse(
-    event.dataTransfer.getData("text/plain")
-  );
-  const dropZone = event.target.closest(".drop-zone");
-  const position = dropZone.closest(".layout-position").dataset
-    .position;
-  const sectionsContainer = dropZone.querySelector(
-    ".sections-container"
-  );
+      if (result.success) {
+        this.updateSchemaVisualization(result.schema);
+      } else {
+        console.error("Failed to refresh schema:", result.message);
+      }
+    } catch (error) {
+      console.error("Error refreshing layout schema:", error);
+    }
+  },
 
-  // Remove empty state
-  const emptyState = sectionsContainer.querySelector(".empty-state");
-  if (emptyState) {
-    emptyState.remove();
-  }
+  // Update schema visualization
+  updateSchemaVisualization: function (schema) {
+    // Update header sections
+    this.updateSchemaSection("header", schema.header);
 
-  // Create section element
-  const sectionElement = createSectionElement(sectionData, position);
-  sectionsContainer.appendChild(sectionElement);
+    // Update content sections
+    this.updateSchemaSection("content", schema.content);
 
-  // Update layout data
-  updateLayoutData();
-  updateLayoutPreview();
-}
+    // Update sidebar sections
+    this.updateSchemaSection("sidebar", schema.sidebar);
 
-function createSectionElement(sectionData, position) {
-  const div = document.createElement("div");
-  div.className =
-    "layout-section bg-white border border-purple-200 rounded-lg p-3";
-  div.dataset.sectionId = sectionData.Id;
-  div.dataset.position = position;
+    // Update footer sections
+    this.updateSchemaSection("footer", schema.footer);
+  },
 
-  div.innerHTML = `
-         <div class="flex items-center justify-between">
-             <div class="flex items-center">
-                 <i class="fas fa-grip-vertical text-slate-400 mr-2 cursor-move"></i>
-                 <div>
-                     <p class="text-sm font-medium text-slate-800">${sectionData.Name}</p>
-                     <p class="text-xs text-slate-500">${sectionData.Type} - ${position}</p>
-                 </div>
-             </div>
-            <div class="flex items-center space-x-2">
-                <label class="flex items-center text-xs">
-                    <input type="checkbox" class="required-checkbox mr-1" onchange="updateLayoutData()">
-                    Required
-                </label>
-                <button type="button" onclick="removeSection(this)" class="text-red-600 hover:text-red-800">
+  // Update individual schema section
+  updateSchemaSection: function (position, sections) {
+    const container = document.querySelector(
+      `[data-position="${position}"]`
+    );
+    if (!container) return;
+
+    // Clear existing items (except placeholder and default content)
+    const existingItems = container.querySelectorAll(
+      ".schema-section-item"
+    );
+    existingItems.forEach((item) => item.remove());
+
+    // Add updated sections
+    sections.forEach((section) => {
+      const sectionElement = document.createElement("div");
+      sectionElement.className = `schema-section-item bg-${this.getPositionColor(
+        position
+      )}-100 border border-${this.getPositionColor(
+        position
+      )}-300 rounded px-3 py-1 text-xs font-medium text-${this.getPositionColor(
+        position
+      )}-800 flex items-center`;
+      sectionElement.innerHTML = `
+                <i class="fas fa-layer-group mr-1"></i>
+                ${section.key || section.type}
+            `;
+
+      // Insert before placeholder
+      const placeholder = container.querySelector(
+        ".schema-placeholder"
+      );
+      if (placeholder) {
+        container.insertBefore(sectionElement, placeholder);
+      } else {
+        container.appendChild(sectionElement);
+      }
+    });
+
+    // Update section count
+    const countElement = container.parentElement.querySelector(
+      ".text-xs.text-slate-500"
+    );
+    if (countElement) {
+      countElement.textContent = `${sections.length} sections`;
+    }
+
+    // Show/hide placeholder
+    const placeholder = container.querySelector(
+      ".schema-placeholder"
+    );
+    if (placeholder) {
+      placeholder.style.display =
+        sections.length > 0 ? "none" : "flex";
+    }
+  },
+
+  // Get position color
+  getPositionColor: function (position) {
+    switch (position) {
+      case "header":
+        return "blue";
+      case "content":
+        return "green";
+      case "sidebar":
+        return "purple";
+      case "footer":
+        return "orange";
+      default:
+        return "gray";
+    }
+  },
+
+  // Add section item
+  addSectionItem: function (sectionId) {
+    this.editSectionItems(sectionId);
+  },
+
+  // Edit section items
+  editSectionItems: function (sectionId) {
+    // This would open the section items editor
+    console.log("Edit section items:", sectionId);
+    // Implementation would depend on your section items editor
+  },
+
+  // Duplicate section
+  duplicateSection: function (sectionId) {
+    if (confirm("Are you sure you want to duplicate this section?")) {
+      console.log("Duplicate section:", sectionId);
+      this.showNotification(
+        "Duplicate functionality will be implemented.",
+        "info"
+      );
+    }
+  },
+
+  // Remove section
+  removeSection: function (sectionId) {
+    if (
+      confirm(
+        "Are you sure you want to remove this section from the layout?"
+      )
+    ) {
+      console.log("Remove section:", sectionId);
+      this.showNotification(
+        "Remove functionality will be implemented.",
+        "info"
+      );
+    }
+  },
+
+  // Show notification
+  showNotification: function (message, type = "info") {
+    const notification = document.createElement("div");
+    notification.className = `fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 ${this.getNotificationClass(
+      type
+    )}`;
+    notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas ${this.getNotificationIcon(
+                  type
+                )} mr-2"></i>
+                <span>${message}</span>
+                <button type="button" class="ml-3 text-white hover:text-gray-200" onclick="this.parentElement.parentElement.remove()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-        </div>
-    `;
-
-  return div;
-}
-
-function removeSection(button) {
-  const sectionElement = button.closest(".layout-section");
-  const container = sectionElement.parentElement;
-
-  sectionElement.remove();
-
-  // Add empty state if no sections left
-  if (container.children.length === 0) {
-    container.innerHTML =
-      '<div class="text-center text-slate-400 empty-state"><i class="fas fa-plus-circle text-2xl mb-2"></i><p class="text-sm">Drop sections here</p></div>';
-  }
-
-  updateLayoutData();
-  updateLayoutPreview();
-}
-
-function updateLayoutData() {
-  layoutSections = [];
-  let sortOrder = 1;
-
-  document.querySelectorAll(".layout-section").forEach((section) => {
-    const sectionId = section.dataset.sectionId;
-    const position = section.dataset.position;
-    const isRequired = section.querySelector(
-      ".required-checkbox"
-    ).checked;
-
-    layoutSections.push({
-      SectionId: parseInt(sectionId),
-      Position: position,
-      SortOrder: sortOrder++,
-      IsRequired: isRequired,
-    });
-  });
-}
-
-function updateLayoutSectionsData() {
-  updateLayoutData();
-  document.getElementById("layoutSectionsData").value =
-    JSON.stringify(layoutSections);
-}
-
-function updateLayoutPreview() {
-  const preview = document.getElementById("layoutPreview");
-
-  if (layoutSections.length === 0) {
-    preview.innerHTML = `
-            <div class="text-center text-slate-400 py-8">
-                <i class="fas fa-desktop text-4xl mb-2"></i>
-                <p class="text-sm">Layout preview will appear here as you add sections</p>
-            </div>
         `;
-    return;
-  }
 
-  // Group sections by position
-  const groupedSections = {};
-  document.querySelectorAll(".layout-section").forEach((section) => {
-    const position = section.dataset.position;
-    const name = section.querySelector(
-      ".text-sm.font-medium"
-    ).textContent;
-    const isRequired = section.querySelector(
-      ".required-checkbox"
-    ).checked;
+    document.body.appendChild(notification);
 
-    if (!groupedSections[position]) {
-      groupedSections[position] = [];
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.remove();
+      }
+    }, 3000);
+  },
+
+  // Get notification CSS class
+  getNotificationClass: function (type) {
+    switch (type) {
+      case "success":
+        return "bg-green-500 text-white";
+      case "error":
+        return "bg-red-500 text-white";
+      case "warning":
+        return "bg-yellow-500 text-white";
+      default:
+        return "bg-blue-500 text-white";
     }
-    groupedSections[position].push({ name, isRequired });
-  });
+  },
 
-  // Render preview
-  const positions = ["header", "content", "sidebar", "footer"];
-  preview.innerHTML = positions
-    .map((position) => {
-      if (!groupedSections[position]) return "";
+  // Get notification icon
+  getNotificationIcon: function (type) {
+    switch (type) {
+      case "success":
+        return "fa-check-circle";
+      case "error":
+        return "fa-exclamation-circle";
+      case "warning":
+        return "fa-exclamation-triangle";
+      default:
+        return "fa-info-circle";
+    }
+  },
+};
 
-      return `
-            <div class="mb-3">
-                <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-medium text-slate-600 uppercase">${position}</span>
-                        <span class="text-xs text-slate-500">${
-                          groupedSections[position].length
-                        } section(s)</span>
-                    </div>
-                    <div class="space-y-1">
-                        ${groupedSections[position]
-                          .map(
-                            (section) => `
-                            <div class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs flex items-center justify-between">
-                                <span>${section.name}</span>
-                                ${
-                                  section.isRequired
-                                    ? '<i class="fas fa-exclamation-circle text-red-600" title="Required"></i>'
-                                    : ""
-                                }
-                            </div>
-                        `
-                          )
-                          .join("")}
-                    </div>
-                </div>
-            </div>
-        `;
-    })
-    .join("");
+// Global functions for backward compatibility
+function toggleSectionSettings(sectionId) {
+  LayoutManager.toggleSectionSettings(sectionId);
 }
 
-// Make functions globally available
-window.loadAvailableSections = loadAvailableSections;
-window.dragStart = dragStart;
-window.allowDrop = allowDrop;
-window.drop = drop;
-window.removeSection = removeSection;
-window.updateLayoutData = updateLayoutData;
-window.updateLayoutSectionsData = updateLayoutSectionsData;
-window.updateLayoutPreview = updateLayoutPreview;
+function toggleSchemaView() {
+  LayoutManager.toggleSchemaView();
+}
+
+function updateSectionPosition(sectionId, newPosition) {
+  LayoutManager.updateSectionPosition(sectionId, newPosition);
+}
+
+function addSectionItem(sectionId) {
+  LayoutManager.addSectionItem(sectionId);
+}
+
+function editSectionItems(sectionId) {
+  LayoutManager.editSectionItems(sectionId);
+}
+
+function duplicateSection(sectionId) {
+  LayoutManager.duplicateSection(sectionId);
+}
+
+function removeSection(sectionId) {
+  LayoutManager.removeSection(sectionId);
+}
+
+function showNotification(message, type) {
+  LayoutManager.showNotification(message, type);
+}
+
+// Initialize when DOM is ready
+document.addEventListener("DOMContentLoaded", function () {
+  // Layout manager will be initialized from the layout edit page
+  console.log("Layout management scripts loaded");
+});
