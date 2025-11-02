@@ -94,7 +94,8 @@ namespace PazarAtlasi.CMS.Controllers
         public async Task<IActionResult> PageDetails(int id)
         {
             var page = await _pazarAtlasiDbContext.Pages
-                .Include(p => p.PageSEOParameter)
+                .Include(p => p.Content) // Content entity'sini include et (yeni SEO kaynağı)
+                    .ThenInclude(c => c.ContentSlugs) // ContentSlugs'ları da include et (canonical URL için)
                 .Include(p => p.PageSections.OrderBy(s => s.SortOrder))
                     .ThenInclude(ps => ps.Section)
                     .ThenInclude(s => s.SectionItemValues)
@@ -131,16 +132,17 @@ namespace PazarAtlasi.CMS.Controllers
                 Status = page.Status,
                 CreatedAt = page.CreatedAt,
                 UpdatedAt = page.UpdatedAt,
-                SEOParameter = page.PageSEOParameter != null ? new PageSEOParameterViewModel
+                // SEO parametrelerini artık Content entity'sinden alıyoruz (PageSEOParameter deprecated)
+                SEOParameter = page.Content != null ? new PageSEOParameterViewModel
                 {
-                    Id = page.PageSEOParameter.Id,
-                    MetaTitle = page.PageSEOParameter.MetaTitle,
-                    MetaDescription = page.PageSEOParameter.MetaDescription,
-                    MetaKeywords = page.PageSEOParameter.MetaKeywords,
-                    Title = page.PageSEOParameter.Title,
-                    CanonicalURL = page.PageSEOParameter.CanonicalURL,
-                    Author = page.PageSEOParameter.Author,
-                    Description = page.PageSEOParameter.Description
+                    Id = page.Content.Id, // Content ID'sini kullan
+                    MetaTitle = page.Content.MetaTitle,
+                    MetaDescription = page.Content.MetaDescription,
+                    MetaKeywords = page.Content.MetaKeywords,
+                    Title = page.Content.Title,
+                    CanonicalURL = page.Content.ContentSlugs?.FirstOrDefault(cs => cs.IsCanonical)?.Slug, // Canonical slug'ı ContentSlugs'dan al
+                    Author = page.Content.Author,
+                    Description = page.Content.Description
                 } : null,
                 Sections = page.PageSections.Select(ps => ps.Section).Select(s => new SectionViewModel
                 {

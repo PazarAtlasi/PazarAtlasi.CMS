@@ -35,8 +35,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 
         public virtual Content Content { get; set; }
 
-        public virtual PageSEOParameter PageSEOParameter { get; set; }
-
         public virtual Layout Layout { get; set; }
 
         /// <summary>

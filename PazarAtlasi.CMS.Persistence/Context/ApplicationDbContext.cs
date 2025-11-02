@@ -34,8 +34,6 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<PageSection> PageSections { get; set; }
 
-        public DbSet<PageSEOParameter> PageSEOParameters { get; set; }
-
         public DbSet<PageTranslation> PageTranslations { get; set; }
 
         public DbSet<Section> Sections { get; set; }
