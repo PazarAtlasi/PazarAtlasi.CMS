@@ -204,13 +204,14 @@ namespace PazarAtlasi.CMS.Controllers
                         Description = st.Description
                     }).ToList()
                 }).ToList(),
+                // PageTranslations sadece temel çeviri bilgileri için (SEO artık Content'den geliyor)
                 Translations = page.PageTranslations.Select(pt => new PageTranslationViewModel
                 {
                     Id = pt.Id,
                     LanguageId = pt.LanguageId,
                     LanguageName = pt.Language.Name,
                     LanguageCode = pt.Language.Code,
-                    Value = pt.Value
+                    Value = pt.Value // Sadece temel sayfa çevirisi (başlık, açıklama vb.)
                 }).ToList()
             };
 

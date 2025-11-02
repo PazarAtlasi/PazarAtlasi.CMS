@@ -1,0 +1,576 @@
+@model PazarAtlasi.CMS.Models.ViewModels.PageEditViewModel
+
+<!-- Slugs Panel (Hidden by default) -->
+<div id="slugsPanel" class="bg-white rounded-xl shadow-md hidden">
+    <div class="p-6 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+            <h5 class="text-lg font-semibold text-slate-800 flex items-center">
+                <i class="fas fa-link mr-2 text-purple-600"></i>
+                URL Slugs Management
+            </h5>
+            <button type="button" onclick="toggleSlugsPanel()" class="text-slate-400 hover:text-slate-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p class="text-sm text-slate-500 mt-1">Manage URL slugs for different languages with preview</p>
+    </div>
+    
+    <div class="p-6">
+        <!-- Tab Navigation -->
+        <div class="border-b border-slate-200 mb-6">
+            <nav class="-mb-px flex flex-wrap gap-2" id="slugTabs">
+                @if (Model.ContentSlugs != null && Model.ContentSlugs.Any())
+                {
+                    @for (int i = 0; i < Model.ContentSlugs.Count; i++)
+                    {
+                        <button type="button" onclick="switchSlugTab('@Model.ContentSlugs[i].LanguageCode')" 
+                                class="slug-tab @(i == 0 ? "active" : "") whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm rounded-t-lg transition-all"
+                                data-tab="@Model.ContentSlugs[i].LanguageCode">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-globe text-sm"></i>
+                                <span>@Model.ContentSlugs[i].LanguageName</span>
+                                <span class="text-xs text-slate-500">(@Model.ContentSlugs[i].LanguageCode)</span>
+                                @if (Model.ContentSlugs[i].IsCanonical)
+                                {
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-star text-xs"></i>
+                                    </span>
+                                }
+                            </div>
+                        </button>
+                    }
+                }
+                else
+                {
+                    <button type="button" onclick="switchSlugTab('tr')" 
+                            class="slug-tab active whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm rounded-t-lg transition-all"
+                            data-tab="tr">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-globe text-sm"></i>
+                            <span>Türkçe</span>
+                            <span class="text-xs text-slate-500">(TR)</span>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-star text-xs"></i>
+                            </span>
+                        </div>
+                    </button>
+                }
+            </nav>
+            
+            <!-- Add Language Section -->
+            <div class="mt-4 flex items-center justify-between">
+                <div class="text-sm text-slate-600">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Manage URL slugs for different languages
+                </div>
+                <div class="relative">
+                    <button type="button" onclick="toggleLanguageDropdown()" 
+                            class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Language
+                        <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    
+                    <div id="languageDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 z-20">
+                        <div class="py-2">
+                            <div class="px-4 py-2 text-xs font-medium text-slate-500 uppercase tracking-wide border-b border-slate-100">
+                                Available Languages
+                            </div>
+                            @if (Model.AvailableLanguages != null)
+                            {
+                                @foreach (var lang in Model.AvailableLanguages)
+                                {
+                                    <button type="button" onclick="addLanguageSlug('@lang.Code', '@lang.Name', @lang.Id)" 
+                                            class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-purple-50 flex items-center transition-colors">
+                                        <i class="fas fa-language mr-3 text-purple-500"></i>
+                                        <div>
+                                            <div class="font-medium">@lang.Name</div>
+                                            <div class="text-xs text-slate-500">@lang.Code</div>
+                                        </div>
+                                    </button>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <!-- Tab Content -->
+        <div id="slugTabsContent">
+            @if (Model.ContentSlugs != null && Model.ContentSlugs.Any())
+            {
+                @for (int i = 0; i < Model.ContentSlugs.Count; i++)
+                {
+                    <div class="slug-tab-content @(i == 0 ? "active" : "hidden")" data-content="@Model.ContentSlugs[i].LanguageCode">
+                        <input type="hidden" name="ContentSlugs[@i].Id" value="@Model.ContentSlugs[i].Id" />
+                        <input type="hidden" name="ContentSlugs[@i].ContentId" value="@Model.ContentSlugs[i].ContentId" />
+                        <input type="hidden" name="ContentSlugs[@i].LanguageId" value="@Model.ContentSlugs[i].LanguageId" />
+
+                        <div class="bg-gradient-to-br from-slate-50 to-purple-50 rounded-xl p-6 space-y-6">
+                            <!-- Language Header -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-language text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-slate-800">@Model.ContentSlugs[i].LanguageName</h3>
+                                        <p class="text-sm text-slate-500">Language Code: @Model.ContentSlugs[i].LanguageCode</p>
+                                    </div>
+                                </div>
+                                @if (Model.ContentSlugs.Count > 1)
+                                {
+                                    <button type="button" onclick="removeSlugTab('@Model.ContentSlugs[i].LanguageCode')" 
+                                            class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                }
+                            </div>
+
+                            <!-- Slug Input -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-link mr-1 text-slate-500"></i>
+                                        URL Slug
+                                    </label>
+                                    <input type="text" name="ContentSlugs[@i].Slug" value="@Model.ContentSlugs[i].Slug" required
+                                           class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 transition-colors"
+                                           placeholder="page-slug" 
+                                           oninput="updateSlugPreview(this, '@Model.ContentSlugs[i].LanguageCode')" />
+                                    <p class="text-xs text-slate-500 mt-1">Use lowercase letters, numbers, and hyphens only</p>
+                                </div>
+
+                                <!-- URL Preview -->
+                                <div class="bg-white border border-slate-200 rounded-lg p-4">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <i class="fas fa-eye text-slate-400"></i>
+                                        <span class="text-sm font-medium text-slate-600">Live Preview</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-external-link-alt text-green-500 text-xs"></i>
+                                        <code class="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded" id="preview_@Model.ContentSlugs[i].LanguageCode">
+                                            https://example.com/@Model.ContentSlugs[i].Slug
+                                        </code>
+                                    </div>
+                                </div>
+
+                                <!-- Settings Grid -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="flex items-center space-x-3 p-3 bg-white rounded-lg border border-slate-200 hover:border-purple-200 transition-colors cursor-pointer">
+                                                <input type="checkbox" name="ContentSlugs[@i].IsCanonical" value="true" @(Model.ContentSlugs[i].IsCanonical ? "checked" : "")
+                                                       class="text-purple-600 focus:ring-purple-200 rounded" />
+                                                <div class="flex-1">
+                                                    <div class="flex items-center space-x-2">
+                                                        <i class="fas fa-star text-yellow-500"></i>
+                                                        <span class="text-sm font-medium text-slate-700">Canonical URL</span>
+                                                    </div>
+                                                    <p class="text-xs text-slate-500 mt-1">Primary URL for this language</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                                <i class="fas fa-sort-numeric-up mr-1 text-slate-500"></i>
+                                                Priority Level
+                                            </label>
+                                            <select name="ContentSlugs[@i].Priority" 
+                                                    class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 transition-colors">
+                                                <!option value="1" @(Model.ContentSlugs[i].Priority == 1 ? "selected" : "")>1 - Canonical (Primary)</!option>
+                                                <!option value="2" @(Model.ContentSlugs[i].Priority == 2 ? "selected" : "")>2 - Alternative</!option>
+                                                <!option value="3" @(Model.ContentSlugs[i].Priority == 3 ? "selected" : "")>3 - Redirect</!option>
+                                            </select>
+                                            <p class="text-xs text-slate-500 mt-1">Lower numbers have higher priority</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- Default Turkish slug -->
+                <div class="slug-tab-content active" data-content="tr">
+                    <div class="bg-gradient-to-br from-slate-50 to-purple-50 rounded-xl p-6 space-y-6">
+                        <!-- Language Header -->
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-language text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-800">Türkçe</h3>
+                                <p class="text-sm text-slate-500">Language Code: TR (Default)</p>
+                            </div>
+                        </div>
+
+                        <!-- Slug Input -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    <i class="fas fa-link mr-1 text-slate-500"></i>
+                                    URL Slug
+                                </label>
+                                <input type="text" name="DefaultSlug" required
+                                       class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 transition-colors"
+                                       placeholder="page-slug" 
+                                       oninput="updateSlugPreview(this, 'tr')" />
+                                <p class="text-xs text-slate-500 mt-1">Use lowercase letters, numbers, and hyphens only</p>
+                            </div>
+
+                            <!-- URL Preview -->
+                            <div class="bg-white border border-slate-200 rounded-lg p-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-eye text-slate-400"></i>
+                                    <span class="text-sm font-medium text-slate-600">Live Preview</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-external-link-alt text-green-500 text-xs"></i>
+                                    <code class="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded" id="preview_tr">
+                                        https://example.com/[slug]
+                                    </code>
+                                </div>
+                            </div>
+
+                            <!-- Default Settings -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="flex items-center space-x-3 p-3 bg-white rounded-lg border border-slate-200 cursor-pointer">
+                                        <input type="checkbox" name="DefaultIsCanonical" value="true" checked
+                                               class="text-purple-600 focus:ring-purple-200 rounded" />
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                                <span class="text-sm font-medium text-slate-700">Canonical URL</span>
+                                            </div>
+                                            <p class="text-xs text-slate-500 mt-1">Primary URL for this language</p>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        <i class="fas fa-sort-numeric-up mr-1 text-slate-500"></i>
+                                        Priority Level
+                                    </label>
+                                    <select name="DefaultPriority" 
+                                            class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 transition-colors">
+                                        <option value="1" selected>1 - Canonical (Primary)</option>
+                                        <option value="2">2 - Alternative</option>
+                                        <option value="3">3 - Redirect</option>
+                                    </select>
+                                    <p class="text-xs text-slate-500 mt-1">Lower numbers have higher priority</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Help Section -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-lightbulb text-blue-500 mt-0.5"></i>
+                <div>
+                    <h4 class="text-sm font-medium text-blue-800 mb-1">Slug Management Tips</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• Use canonical URLs for primary language versions</li>
+                        <li>• Keep slugs short, descriptive, and SEO-friendly</li>
+                        <li>• Avoid special characters except hyphens</li>
+                        <li>• Lower priority numbers indicate higher importance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><script>
+
+    // Toggle slugs panel
+    function toggleSlugsPanel() {
+        const panel = document.getElementById('slugsPanel');
+        panel.classList.toggle('hidden');
+    }
+
+    // Tab Management Functions
+    function switchSlugTab(languageCode) {
+        // Hide all tab contents
+        document.querySelectorAll('.slug-tab-content').forEach(content => {
+            content.classList.add('hidden');
+            content.classList.remove('active');
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll('.slug-tab').forEach(tab => {
+            tab.classList.remove('active', 'border-purple-500', 'text-purple-600', 'bg-purple-50');
+            tab.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+        });
+
+        // Show selected tab content
+        const targetContent = document.querySelector(`[data-content="${languageCode}"]`);
+        if (targetContent) {
+            targetContent.classList.remove('hidden');
+            targetContent.classList.add('active');
+        }
+
+        // Activate selected tab
+        const targetTab = document.querySelector(`[data-tab="${languageCode}"]`);
+        if (targetTab) {
+            targetTab.classList.add('active', 'border-purple-500', 'text-purple-600', 'bg-purple-50');
+            targetTab.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+        }
+    }
+
+    // Toggle language dropdown
+    function toggleLanguageDropdown() {
+        const dropdown = document.getElementById('languageDropdown');
+        dropdown.classList.toggle('hidden');
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function closeDropdown(e) {
+            if (!e.target.closest('.relative')) {
+                dropdown.classList.add('hidden');
+                document.removeEventListener('click', closeDropdown);
+            }
+        });
+    }
+
+    // Add language slug from dropdown
+    function addLanguageSlug(languageCode, languageName, languageId) {
+        // Check if language already exists
+        const existingTab = document.querySelector(`[data-tab="${languageCode}"]`);
+        if (existingTab) {
+            alert(`${languageName} language already exists!`);
+            document.getElementById('languageDropdown').classList.add('hidden');
+            return;
+        }
+        
+        addSlugTab(languageCode, languageName, languageId);
+        document.getElementById('languageDropdown').classList.add('hidden');
+    }
+
+    // Add new slug tab
+    function addSlugTab(languageCode, languageName, languageId) {
+        const slugCount = document.querySelectorAll('.slug-tab-content').length;
+        
+        // Add tab navigation
+        const tabsNav = document.getElementById('slugTabs');
+        
+        const newTabButton = document.createElement('button');
+        newTabButton.type = 'button';
+        newTabButton.onclick = () => switchSlugTab(languageCode);
+        newTabButton.className = 'slug-tab whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm rounded-t-lg transition-all border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300';
+        newTabButton.setAttribute('data-tab', languageCode);
+        newTabButton.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-globe text-sm"></i>
+                <span>${languageName}</span>
+                <span class="text-xs text-slate-500">(${languageCode})</span>
+            </div>
+        `;
+        
+        tabsNav.appendChild(newTabButton);
+
+        // Add tab content
+        const tabsContent = document.getElementById('slugTabsContent');
+        const newTabContent = document.createElement('div');
+        newTabContent.className = 'slug-tab-content hidden';
+        newTabContent.setAttribute('data-content', languageCode);
+        newTabContent.innerHTML = `
+            <input type="hidden" name="ContentSlugs[${slugCount}].Id" value="0" />
+            <input type="hidden" name="ContentSlugs[${slugCount}].ContentId" value="@Model.ContentId" />
+            <input type="hidden" name="ContentSlugs[${slugCount}].LanguageId" value="${languageId}" />
+
+            <div class="bg-gradient-to-br from-slate-50 to-purple-50 rounded-xl p-6 space-y-6">
+                <!-- Language Header -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-language text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-800">${languageName}</h3>
+                            <p class="text-sm text-slate-500">Language Code: ${languageCode}</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeSlugTab('${languageCode}')" 
+                            class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+
+                <!-- Slug Input -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-link mr-1 text-slate-500"></i>
+                            URL Slug
+                        </label>
+                        <input type="text" name="ContentSlugs[${slugCount}].Slug" required
+                               class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 transition-colors"
+                               placeholder="page-slug" 
+                               oninput="updateSlugPreview(this, '${languageCode}')" />
+                        <p class="text-xs text-slate-500 mt-1">Use lowercase letters, numbers, and hyphens only</p>
+                    </div>
+
+                    <!-- URL Preview -->
+                    <div class="bg-white border border-slate-200 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i class="fas fa-eye text-slate-400"></i>
+                            <span class="text-sm font-medium text-slate-600">Live Preview</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-external-link-alt text-green-500 text-xs"></i>
+                            <code class="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded" id="preview_${languageCode}">
+                                https://example.com/[slug]
+                            </code>
+                        </div>
+                    </div>
+
+                    <!-- Settings Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="flex items-center space-x-3 p-3 bg-white rounded-lg border border-slate-200 hover:border-purple-200 transition-colors cursor-pointer">
+                                    <input type="checkbox" name="ContentSlugs[${slugCount}].IsCanonical" value="true"
+                                           class="text-purple-600 focus:ring-purple-200 rounded" />
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-star text-yellow-500"></i>
+                                            <span class="text-sm font-medium text-slate-700">Canonical URL</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-1">Primary URL for this language</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    <i class="fas fa-sort-numeric-up mr-1 text-slate-500"></i>
+                                    Priority Level
+                                </label>
+                                <select name="ContentSlugs[${slugCount}].Priority" 
+                                        class="w-full px-4 py-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 transition-colors">
+                                    <option value="1">1 - Canonical (Primary)</option>
+                                    <option value="2" selected>2 - Alternative</option>
+                                    <option value="3">3 - Redirect</option>
+                                </select>
+                                <p class="text-xs text-slate-500 mt-1">Lower numbers have higher priority</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        tabsContent.appendChild(newTabContent);
+        
+        // Switch to new tab
+        switchSlugTab(languageCode);
+    }
+
+    // Remove slug tab
+    function removeSlugTab(languageCode) {
+        if (confirm(`Remove ${languageCode} language slug?`)) {
+            // Remove tab
+            const tab = document.querySelector(`[data-tab="${languageCode}"]`);
+            if (tab) tab.remove();
+            
+            // Remove content
+            const content = document.querySelector(`[data-content="${languageCode}"]`);
+            if (content) content.remove();
+            
+            // Switch to first available tab
+            const firstTab = document.querySelector('.slug-tab[data-tab]');
+            if (firstTab) {
+                const firstTabCode = firstTab.getAttribute('data-tab');
+                switchSlugTab(firstTabCode);
+            }
+            
+            // Re-index remaining slugs
+            reindexSlugs();
+        }
+    }
+
+    // Update slug preview
+    function updateSlugPreview(input, languageCode) {
+        const preview = document.getElementById(`preview_${languageCode}`);
+        if (preview) {
+            const slug = input.value || '[slug]';
+            preview.textContent = `https://example.com/${slug}`;
+        }
+    }
+
+    // Re-index slugs after removal
+    function reindexSlugs() {
+        const slugContents = document.querySelectorAll('.slug-tab-content');
+        slugContents.forEach((content, index) => {
+            const inputs = content.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                const name = input.getAttribute('name');
+                if (name && name.includes('ContentSlugs[')) {
+                    const newName = name.replace(/ContentSlugs\[\d+\]/, `ContentSlugs[${index}]`);
+                    input.setAttribute('name', newName);
+                }
+            });
+        });
+    }
+
+    // Initialize tabs on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set initial tab styles
+        document.querySelectorAll('.slug-tab').forEach(tab => {
+            if (tab.classList.contains('active')) {
+                tab.classList.add('border-purple-500', 'text-purple-600', 'bg-purple-50');
+                tab.classList.remove('border-transparent', 'text-slate-500');
+            } else {
+                tab.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+                tab.classList.remove('border-purple-500', 'text-purple-600', 'bg-purple-50');
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Tab Styles */
+    .slug-tab {
+        transition: all 0.2s ease;
+    }
+    
+    .slug-tab.active {
+        border-bottom-color: #8b5cf6 !important;
+        color: #8b5cf6 !important;
+        background-color: #f3f4f6;
+    }
+    
+    .slug-tab:not(.active) {
+        border-bottom-color: transparent;
+        color: #64748b;
+    }
+    
+    .slug-tab:not(.active):hover {
+        color: #374151;
+        border-bottom-color: #d1d5db;
+    }
+    
+    .slug-tab-content {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Dropdown styles */
+    #languageDropdown {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+</style>
