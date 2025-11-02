@@ -1848,3 +1848,143 @@ Bu geliştirmeler ile PazarAtlasi CMS'in PageEdit sayfası modern, kullanıcı d
 5. **Auto-save Functionality**: Otomatik kaydetme sistemi
 
 Bu özellikler, kullanıcı geri bildirimlerine göre önceliklendirilecek ve gelecek sürümlerde eklenecektir.
+
+---
+
+## 🔧 Son Güncellemeler (Aralık 2024)
+
+### 🎯 SectionSelectionModal Kaldırılması
+
+**Sorun**: LayoutEdit ve PageEdit sayfalarında section ekleme işlemi iki adımlıydı:
+
+1. SectionSelectionModal açılıyor
+2. "Create New Section" seçeneği tıklanıyor
+3. SectionModal açılıyor
+
+**Çözüm**: SectionSelectionModal tamamen kaldırıldı, artık direkt SectionModal açılıyor.
+
+#### ✅ Yapılan Değişiklikler:
+
+**1. Modal Kaldırma**
+
+- LayoutEdit.cshtml, PageEdit.cshtml, LayoutDetails.cshtml dosyalarından SectionSelectionModal HTML'i kaldırıldı
+- İlgili JavaScript fonksiyonları temizlendi (`openSectionSelectionModal`, `closeSectionSelectionModal`, `showReusableSections`)
+
+**2. Direkt Section Modal Açma**
+
+```javascript
+// Eski sistem
+function addNewSection() {
+  openSectionSelectionModal(); // İki adımlı
+}
+
+// Yeni sistem
+function addNewSection() {
+  SectionModal.show(0, pageId); // Tek adım
+}
+```
+
+**3. ContentServices Çakışması Düzeltildi**
+
+- LayoutDetails.cshtml dosyasında duplicate ContentServices tanımlaması kaldırıldı
+- Content.Services.js dosyasına redeclaration koruması eklendi
+- Tüm dosyalarda tutarlı ContentServices kullanımı sağlandı
+
+### 🎨 Layout Hizalama Sorunu Düzeltildi
+
+**Sorun**: PageEdit sayfasında SEO ve Translation panelleri kapalıyken Section partial'ı sidebar ile hizalanmıyordu.
+
+**Çözüm**: CSS Grid ve Flexbox optimizasyonları yapıldı.
+
+#### ✅ Yapılan Değişiklikler:
+
+**1. Grid Layout İyileştirmesi**
+
+```html
+<!-- Eski -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+  <!-- Yeni -->
+  <div
+    class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start"
+  ></div>
+</div>
+```
+
+**2. Flexbox Yaklaşımı**
+
+```css
+/* Main content column'u flexbox yap */
+.page-edit .lg\:col-span-3 {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Gizli panellerin layout'u etkilememesi */
+.page-edit .hidden {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+```
+
+**3. Tailwind CSS Geçişi**
+
+```html
+<!-- Eski -->
+<div style="display: none;">
+  <!-- Yeni -->
+  <div class="hidden"></div>
+</div>
+```
+
+```javascript
+// JavaScript toggle fonksiyonları güncellendi
+function toggleSEOPanel() {
+  const panel = document.getElementById("seoPanel");
+  panel.classList.toggle("hidden");
+}
+```
+
+### 📊 Etki ve Faydalar
+
+#### ✅ Kullanıcı Deneyimi İyileştirmeleri:
+
+- **%50 daha hızlı section ekleme**: İki adım yerine tek adım
+- **Tutarlı layout**: Paneller açık/kapalı olmasına bakılmaksızın hizalı görünüm
+- **Daha temiz interface**: Gereksiz modal kaldırıldı
+
+#### ✅ Geliştirici Deneyimi İyileştirmeleri:
+
+- **Daha az kod**: SectionSelectionModal ve ilgili JavaScript kodları kaldırıldı
+- **Tutarlı API**: Tek ContentServices instance'ı
+- **Modern CSS**: Tailwind CSS class'ları ile daha maintainable kod
+
+#### ✅ Performans İyileştirmeleri:
+
+- **Daha az DOM manipulation**: Gereksiz modal işlemleri kaldırıldı
+- **CSS optimizasyonu**: Flexbox ile daha efficient layout
+- **JavaScript optimizasyonu**: Redeclaration hatalarının önlenmesi
+
+### 🔄 Etkilenen Dosyalar
+
+```
+PazarAtlasi.CMS/
+├── Views/Content/
+│   ├── LayoutEdit.cshtml           # SectionSelectionModal kaldırıldı
+│   ├── PageEdit.cshtml             # SectionSelectionModal kaldırıldı, grid iyileştirildi
+│   ├── LayoutDetails.cshtml        # ContentServices duplicate kaldırıldı
+│   ├── _SEOPanelPartial.cshtml     # Tailwind hidden class
+│   └── _TranslationsPanelPartial.cshtml # Tailwind hidden class
+├── wwwroot/
+│   ├── css/
+│   │   └── page-edit.css           # Flexbox layout iyileştirmeleri
+│   └── js/Content/
+│       ├── Content.Page.js         # Toggle fonksiyonları güncellendi
+│       └── Services/Content.Services.js # Redeclaration koruması
+```
+
+### 🎯 Sonuç
+
+Bu güncellemeler ile PazarAtlasi CMS daha kullanıcı dostu, performanslı ve maintainable hale geldi. Section ekleme işlemi basitleştirildi ve layout sorunları çözüldü.
