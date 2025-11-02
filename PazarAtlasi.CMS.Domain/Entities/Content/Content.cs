@@ -9,21 +9,26 @@ namespace PazarAtlasi.CMS.Domain.Entities.Content
 {
     public class Content : Entity<int>
     {
-        public Content(string description)
-        {
-            Description = description;
-        }
+        public EntityType RelatedDataEntityType { get; set; }
 
-        public Content()
-        {
-        }
+        public int RelatedDataEntityId { get; set; }
 
-        public EntityType RelatedEntityId { get; set; }
+        public string? Description { get; set; }
 
-        public int RelatedDataId { get; set; }
+        public string? MetaTitle { get; set; }
 
-        public string Description { get; set; }
+        public string? MetaDescription { get; set; }
 
-        public virtual ICollection<Page> Pages { get; set; }
+        public string? MetaKeywords { get; set; }
+
+        public string? SubDescription { get; set; }
+
+        public string? Title { get; set; }
+
+        public string? Author { get; set; }
+
+        public virtual ICollection<Page> Pages { get; set; } = new List<Page>();
+
+        public virtual ICollection<ContentSlugs> ContentSlugs { get; set; } = new List<ContentSlugs>();
     }
 }

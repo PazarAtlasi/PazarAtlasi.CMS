@@ -58,7 +58,8 @@ namespace PazarAtlasi.API.Controllers
                 // Get page by slug with all related data including layout
                 var page = await _pazarAtlasiDbContext.Pages
                     .Include(p => p.ParentPage)
-                    .Include(p => p.PageSEOParameter)
+                    .Include(p => p.Content)
+                        .ThenInclude(c => c.ContentSlugs.Where(cs => cs.LanguageId == language.Id))
                     .Include(p => p.Layout) // Include layout
                     .Include(p => p.PageSections.OrderBy(ps => ps.SortOrder))
                         .ThenInclude(ps => ps.Section)
@@ -81,7 +82,9 @@ namespace PazarAtlasi.API.Controllers
                             .ThenInclude(siv => siv.SectionItem)
                             .ThenInclude(si => si.SectionItemFieldValues)
                                 .ThenInclude(fv => fv.Translations.Where(fvt => fvt.LanguageId == language.Id))
-                    .FirstOrDefaultAsync(p => p.Slug.ToLower() == query.Slug.ToLower() && p.Status == Status.Active && !p.IsDeleted);
+                    .FirstOrDefaultAsync(p => p.Content != null && 
+                        p.Content.ContentSlugs.Any(cs => cs.Slug.ToLower() == query.Slug.ToLower() && cs.LanguageId == language.Id) && 
+                        p.Status == Status.Active && !p.IsDeleted);
 
                 if (page == null)
                 {
@@ -94,12 +97,15 @@ namespace PazarAtlasi.API.Controllers
                 // Build sections response with layout integration
                 var allSections = await BuildPageSectionsWithLayout(page, language.Id);
 
+                // Get current slug for this language
+                var currentSlug = page.Content?.ContentSlugs?.FirstOrDefault(cs => cs.LanguageId == language.Id)?.Slug ?? string.Empty;
+
                 // Build response
                 var response = new PageResponse
                 {
                     Id = page.Id,
                     Name = page.Name ?? string.Empty,
-                    Slug = page.Slug ?? string.Empty,
+                    Slug = currentSlug,
                     PageType = page.PageType,
                     Description = page.Description,
                     Status = page.Status,
@@ -107,16 +113,16 @@ namespace PazarAtlasi.API.Controllers
                     LayoutName = page.Layout?.Name,
                     Breadcrumbs = breadcrumbs,
                     Sections = allSections,
-                    SEO = page.PageSEOParameter != null ? new PageSEOResponse
+                    SEO = page.Content != null ? new PageSEOResponse
                     {
-                        Id = page.PageSEOParameter.Id,
-                        MetaTitle = page.PageSEOParameter.MetaTitle,
-                        MetaDescription = page.PageSEOParameter.MetaDescription,
-                        MetaKeywords = page.PageSEOParameter.MetaKeywords,
-                        Title = page.PageSEOParameter.Title,
-                        CanonicalURL = page.PageSEOParameter.CanonicalURL,
-                        Author = page.PageSEOParameter.Author,
-                        Description = page.PageSEOParameter.Description
+                        Id = page.Content.Id,
+                        MetaTitle = page.Content.MetaTitle,
+                        MetaDescription = page.Content.MetaDescription,
+                        MetaKeywords = page.Content.MetaKeywords,
+                        Title = page.Content.Title,
+                        CanonicalURL = null, // ContentSlugs'dan canonical URL oluşturulabilir
+                        Author = page.Content.Author,
+                        Description = page.Content.Description
                     } : null,
                     CreatedAt = page.CreatedAt,
                     UpdatedAt = page.UpdatedAt
@@ -156,6 +162,8 @@ namespace PazarAtlasi.API.Controllers
 
                 // Get page with sections and layout
                 var page = await _pazarAtlasiDbContext.Pages
+                    .Include(p => p.Content)
+                        .ThenInclude(c => c.ContentSlugs.Where(cs => cs.LanguageId == language.Id))
                     .Include(p => p.Layout) // Include layout
                     .Include(p => p.PageSections.OrderBy(ps => ps.SortOrder))
                         .ThenInclude(ps => ps.Section)
@@ -192,7 +200,6 @@ namespace PazarAtlasi.API.Controllers
                 {
                     PageId = page.Id,
                     PageName = page.Name ?? string.Empty,
-                    PageSlug = page.Slug ?? string.Empty,
                     LayoutId = page.LayoutId,
                     LayoutName = page.Layout?.Name,
                     Sections = allSections
@@ -530,6 +537,8 @@ namespace PazarAtlasi.API.Controllers
                 if (currentPage.ParentPageId.HasValue)
                 {
                     currentPage = await _pazarAtlasiDbContext.Pages
+                        .Include(p => p.Content)
+                            .ThenInclude(c => c.ContentSlugs.Where(cs => cs.LanguageId == languageId))
                         .FirstOrDefaultAsync(p => p.Id == currentPage.ParentPageId.Value && !p.IsDeleted);
                 }
                 else
@@ -543,11 +552,14 @@ namespace PazarAtlasi.API.Controllers
             {
                 var hierarchyPage = pageHierarchy[i];
                 var isLast = i == pageHierarchy.Count - 1;
+                
+                // Get slug for this page and language
+                var pageSlug = hierarchyPage.Content?.ContentSlugs?.FirstOrDefault(cs => cs.LanguageId == languageId)?.Slug ?? string.Empty;
 
                 breadcrumbs.Add(new BreadcrumbItem
                 {
                     Name = hierarchyPage.Name ?? string.Empty,
-                    Href = hierarchyPage.Slug ?? string.Empty,
+                    Href = pageSlug,
                     IsActive = isLast
                 });
             }

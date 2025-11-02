@@ -92,16 +92,14 @@ namespace PazarAtlasi.CMS.Domain.Common
     public enum EntityType
     {
         None,
-        Content,
         Page,
-        Article,
-        Product,
-        Catalog,
         Category,
+        Product,
         Brand,
         Tag,
         Blog,
         Document,
+        Article,
         User
     }
 

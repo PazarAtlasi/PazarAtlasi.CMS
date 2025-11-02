@@ -6,6 +6,16 @@ Bu proje Clean Architecture prensiplerine göre tasarlanmış modern bir CMS sis
 
 ### 🚀 Son Güncellemeler (Kasım 2024):
 
+#### 🆕 Content & Slug Yönetimi Sistemi (Yeni!)
+
+- **Content Entity**: Sayfa SEO parametrelerini merkezi yönetim
+- **ContentSlugs Entity**: Çoklu dil slug desteği ve canonical URL yönetimi
+- **PageSEOParameter Deprecation**: Artık Content entity'sinden SEO parametreleri alınıyor
+- **Multi-language Slugs**: Dil bazında slug yönetimi ve alternative URL'ler
+- **API Uyumluluğu**: Hem CMS hem API projelerinde yeni yapı desteği
+
+#### 🎨 UI/UX Geliştirmeleri
+
 - **Gelişmiş Layout Yönetimi**: SweetAlert2 entegrasyonu ile kullanıcı dostu layout seçimi
 - **Çoklu Section Ekleme**: Section'lar arası insertion point'ler ile kolay içerik ekleme
 - **Enhanced UI/UX**: Smooth animasyonlar, hover efektleri ve responsive tasarım
@@ -13,6 +23,8 @@ Bu proje Clean Architecture prensiplerine göre tasarlanmış modern bir CMS sis
 
 ### 🎯 Temel Özellikler:
 
+- **Content-Based SEO Management**: Merkezi SEO parametre yönetimi
+- **Multi-language Slug System**: Dil bazında URL yönetimi ve canonical yapısı
 - **Layout-Based Page Editing**: Esnek sayfa düzenleme sistemi
 - **Hierarchical Content Structure**: Section → SectionItem → Field hiyerarşisi
 - **Multi-language Support**: Gelişmiş çoklu dil desteği
@@ -221,6 +233,84 @@ public class SectionItemFieldValue : Entity<int>
 }
 ```
 
+## 🆕 Content & Slug Yönetimi Sistemi
+
+### 6. Content Entity
+
+Sayfa SEO parametrelerini ve içerik meta verilerini merkezi olarak yönetir.
+
+```csharp
+public class Content : Entity<int>
+{
+    public EntityType RelatedDataEntityType { get; set; }  // Page, Product, Blog vb.
+    public int RelatedDataEntityId { get; set; }           // İlgili entity'nin ID'si
+
+    // SEO ve İçerik Bilgileri
+    public string? Title { get; set; }                     // Ana başlık
+    public string? Description { get; set; }               // Ana açıklama
+    public string? SubDescription { get; set; }            // Alt açıklama
+    public string? MetaTitle { get; set; }                 // SEO başlığı
+    public string? MetaDescription { get; set; }           // SEO açıklaması
+    public string? MetaKeywords { get; set; }              // SEO anahtar kelimeleri
+    public string? Author { get; set; }                    // İçerik yazarı
+
+    // Navigation Properties
+    public virtual ICollection<Page> Pages { get; set; } = new List<Page>();
+    public virtual ICollection<ContentSlugs> ContentSlugs { get; set; } = new List<ContentSlugs>();
+}
+```
+
+### 7. ContentSlugs Entity
+
+Çoklu dil slug desteği ve canonical URL yönetimi sağlar.
+
+```csharp
+public class ContentSlugs : Entity<int>
+{
+    public int ContentId { get; set; }                     // Hangi content'e ait
+    public string Slug { get; set; }                       // URL slug'ı
+    public int LanguageId { get; set; }                    // Hangi dil
+    public int? Priority { get; set; }                     // Öncelik (1: Canonical, 2: Alternative)
+    public bool IsCanonical { get; set; }                  // Canonical URL mu?
+
+    // Navigation Properties
+    public virtual Content Content { get; set; } = null!;
+    public virtual Language Language { get; set; } = null!;
+}
+```
+
+### Content-Page İlişkisi
+
+```csharp
+public class Page : Entity<int>
+{
+    public int? ContentId { get; set; }                    // Content referansı (yeni)
+    public int? PageSEOParameterId { get; set; }           // Deprecated - artık kullanılmıyor
+
+    // Navigation Properties
+    public virtual Content Content { get; set; }           // Yeni SEO kaynağı
+    public virtual PageSEOParameter PageSEOParameter { get; set; } // Deprecated
+}
+```
+
+### Çoklu Dil Slug Yapısı
+
+```
+Content (Ana Sayfa)
+├── ContentSlug: "ana-sayfa" (TR, Canonical, Priority: 1)
+├── ContentSlug: "home" (EN, Canonical, Priority: 1)
+└── ContentSlug: "anasayfa" (TR, Alternative, Priority: 2)
+
+Content (Blog)
+├── ContentSlug: "blog" (TR, Canonical, Priority: 1)
+└── ContentSlug: "blog" (EN, Canonical, Priority: 1)
+
+Content (Ürünler)
+├── ContentSlug: "urunler" (TR, Canonical, Priority: 1)
+├── ContentSlug: "products" (EN, Canonical, Priority: 1)
+└── ContentSlug: "katalog" (TR, Alternative, Priority: 2)
+```
+
 ## 🔧 Geliştirme Kuralları
 
 ### Entity Kuralları
@@ -340,6 +430,164 @@ foreach (var fieldToRemove in fieldsToRemove)
 2. **Güvenli Silme**: Sadece kullanılmayan field'lar silinir
 3. **Backward Compatibility**: Eski field'lar deprecated olarak işaretlenir
 4. **Performance**: Gereksiz silme/ekleme işlemleri azalır
+
+## 🆕 Content & Slug Management Best Practices
+
+### Content Entity Yönetimi
+
+#### ✅ Doğru Kullanım
+
+```csharp
+// Content oluştururken
+var content = new Content
+{
+    RelatedDataEntityType = EntityType.Page,
+    RelatedDataEntityId = page.Id,
+    Title = model.ContentSEO?.Title ?? model.Name,
+    Description = model.ContentSEO?.Description ?? model.Description,
+    MetaTitle = model.ContentSEO?.MetaTitle,
+    MetaDescription = model.ContentSEO?.MetaDescription,
+    // ...
+};
+```
+
+#### ❌ Yanlış Kullanım
+
+```csharp
+// PageSEOParameter kullanmak (deprecated)
+page.PageSEOParameter = new PageSEOParameter { ... }; // Artık kullanılmıyor
+```
+
+### ContentSlugs Yönetimi
+
+#### ✅ Doğru Kullanım
+
+```csharp
+// Çoklu dil slug oluşturma
+var slugs = new List<ContentSlugs>
+{
+    new ContentSlugs
+    {
+        ContentId = content.Id,
+        Slug = "ana-sayfa",
+        LanguageId = 1, // Türkçe
+        Priority = 1,
+        IsCanonical = true
+    },
+    new ContentSlugs
+    {
+        ContentId = content.Id,
+        Slug = "home",
+        LanguageId = 2, // İngilizce
+        Priority = 1,
+        IsCanonical = true
+    }
+};
+```
+
+#### ❌ Yanlış Kullanım
+
+```csharp
+// Aynı dilde birden fazla canonical slug
+new ContentSlugs { Slug = "home", LanguageId = 1, IsCanonical = true },
+new ContentSlugs { Slug = "ana-sayfa", LanguageId = 1, IsCanonical = true } // Hata!
+```
+
+### Slug Sorgulama Best Practices
+
+#### API'da Slug ile Sayfa Bulma
+
+```csharp
+// ✅ Doğru - ContentSlugs üzerinden
+var page = await _dbContext.Pages
+    .Include(p => p.Content)
+        .ThenInclude(c => c.ContentSlugs.Where(cs => cs.LanguageId == language.Id))
+    .FirstOrDefaultAsync(p => p.Content != null &&
+        p.Content.ContentSlugs.Any(cs => cs.Slug.ToLower() == slug.ToLower() && cs.LanguageId == language.Id));
+
+// ❌ Yanlış - Page.Slug kullanmak (artık yok)
+var page = await _dbContext.Pages
+    .FirstOrDefaultAsync(p => p.Slug == slug); // Page.Slug property'si yok
+```
+
+#### CMS'de Slug Yönetimi
+
+```csharp
+// ✅ Doğru - Canonical slug kontrolü
+await EnsureCanonicalSlugs(contentId);
+
+// ✅ Doğru - Alternative slug ekleme
+var alternativeSlug = new ContentSlugs
+{
+    ContentId = content.Id,
+    Slug = "alternative-url",
+    LanguageId = languageId,
+    Priority = 2, // Alternative
+    IsCanonical = false
+};
+```
+
+### Migration ve Veri Geçişi
+
+#### Mevcut Verilerden Geçiş
+
+```csharp
+// PageSEOParameter → Content geçişi
+var existingPages = await _dbContext.Pages
+    .Include(p => p.PageSEOParameter)
+    .Where(p => p.PageSEOParameter != null)
+    .ToListAsync();
+
+foreach (var page in existingPages)
+{
+    var content = new Content
+    {
+        RelatedDataEntityType = EntityType.Page,
+        RelatedDataEntityId = page.Id,
+        Title = page.PageSEOParameter.Title,
+        MetaTitle = page.PageSEOParameter.MetaTitle,
+        // ... diğer alanlar
+    };
+
+    // ContentSlugs oluştur
+    var slug = new ContentSlugs
+    {
+        ContentId = content.Id,
+        Slug = page.Code ?? "page",
+        LanguageId = defaultLanguageId,
+        IsCanonical = true
+    };
+}
+```
+
+### Performance Optimizasyonları
+
+#### Include Stratejileri
+
+```csharp
+// ✅ Doğru - Gerekli include'ları tek sorguda
+var page = await _dbContext.Pages
+    .Include(p => p.Content)
+        .ThenInclude(c => c.ContentSlugs.Where(cs => cs.LanguageId == languageId))
+    .FirstOrDefaultAsync(p => p.Id == pageId);
+
+// ❌ Yanlış - N+1 problem
+foreach (var page in pages)
+{
+    var slugs = page.Content.ContentSlugs; // Her iterasyonda DB sorgusu
+}
+```
+
+#### Cache Stratejileri
+
+```csharp
+// Content ve slug'ları cache'le
+await _cacheService.SetWithGroupAsync($"Content.{contentId}", content, "Content", TimeSpan.FromHours(1));
+await _cacheService.SetWithGroupAsync($"ContentSlugs.{contentId}", slugs, "Content", TimeSpan.FromHours(1));
+
+// Grup cache temizleme
+await _cacheService.RemoveGroupAsync("Content"); // Tüm content cache'leri temizlenir
+```
 
 ## 🚀 Best Practices
 
@@ -539,11 +787,36 @@ public class ContentController : ControllerBase
 
 ### 🎯 Content API Endpoint'leri
 
-#### 1. **GET /api/content/page**
+#### 1. **GET /api/content/page** (🆕 Güncellendi)
 
 - **Request**: `PageQuery` (slug, culture)
 - **Response**: `PageResponse` (tam sayfa verisi + breadcrumbs)
-- **Özellik**: Slug üzerinden sayfayı bulur, parent page'lerden breadcrumb oluşturur
+- **Özellik**: ContentSlugs üzerinden slug ile sayfayı bulur, SEO parametrelerini Content entity'sinden alır
+
+**🔄 Yeni Slug Sorgulaması:**
+
+```csharp
+// Eski sistem
+.FirstOrDefaultAsync(p => p.Slug.ToLower() == query.Slug.ToLower() && ...)
+
+// Yeni sistem - ContentSlugs üzerinden
+.FirstOrDefaultAsync(p => p.Content != null &&
+    p.Content.ContentSlugs.Any(cs => cs.Slug.ToLower() == query.Slug.ToLower() && cs.LanguageId == language.Id) && ...)
+```
+
+**🔄 Yeni SEO Response:**
+
+```csharp
+// Eski sistem - PageSEOParameter'dan
+SEO = page.PageSEOParameter != null ? new PageSEOResponse { ... }
+
+// Yeni sistem - Content entity'sinden
+SEO = page.Content != null ? new PageSEOResponse {
+    MetaTitle = page.Content.MetaTitle,
+    MetaDescription = page.Content.MetaDescription,
+    // ...
+}
+```
 
 #### 2. **GET /api/content/page-sections**
 
@@ -597,7 +870,7 @@ Title = sectionTranslation?.Title,
 
 ### 🏗️ Hiyerarşik Yapı Yönetimi
 
-#### Breadcrumb Oluşturma
+#### Breadcrumb Oluşturma (🆕 Güncellendi)
 
 ```csharp
 private async Task<List<BreadcrumbItem>> BuildBreadcrumbs(Page page, int languageId)
@@ -605,9 +878,37 @@ private async Task<List<BreadcrumbItem>> BuildBreadcrumbs(Page page, int languag
     var breadcrumbs = new List<BreadcrumbItem>();
     var pageHierarchy = new List<Page>();
 
-    // Parent'lardan root'a kadar hiyerarşi oluştur
+    // Parent'lardan root'a kadar hiyerarşi oluştur (ContentSlugs ile)
     while (currentPage != null)
     {
+        pageHierarchy.Insert(0, currentPage);
+
+        if (currentPage.ParentPageId.HasValue)
+        {
+            currentPage = await _pazarAtlasiDbContext.Pages
+                .Include(p => p.Content)
+                    .ThenInclude(c => c.ContentSlugs.Where(cs => cs.LanguageId == languageId))
+                .FirstOrDefaultAsync(p => p.Id == currentPage.ParentPageId.Value && !p.IsDeleted);
+        }
+        else
+        {
+            currentPage = null;
+        }
+    }
+
+    // Breadcrumb item'larına çevir (slug'ı ContentSlugs'dan al)
+    for (int i = 0; i < pageHierarchy.Count; i++)
+    {
+        var hierarchyPage = pageHierarchy[i];
+        var pageSlug = hierarchyPage.Content?.ContentSlugs?.FirstOrDefault(cs => cs.LanguageId == languageId)?.Slug ?? string.Empty;
+
+        breadcrumbs.Add(new BreadcrumbItem
+        {
+            Name = hierarchyPage.Name ?? string.Empty,
+            Href = pageSlug, // ContentSlugs'dan alınan slug
+            IsActive = i == pageHierarchy.Count - 1
+        });
+    }
         pageHierarchy.Insert(0, currentPage);
         currentPage = await GetParentPage(currentPage.ParentPageId);
     }

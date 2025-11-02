@@ -16,42 +16,58 @@
     <div class="p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Title</label>
+                <input type="text" name="ContentSEO.Title" value="@Model.ContentSEO?.Title"
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                       placeholder="Content title" />
+                <p class="text-xs text-slate-500 mt-1">Main title for the content</p>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Author</label>
+                <input type="text" name="ContentSEO.Author" value="@Model.ContentSEO?.Author"
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                       placeholder="Content author" />
+            </div>
+            
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                <textarea name="ContentSEO.Description" rows="3"
+                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          placeholder="Main content description">@Model.ContentSEO?.Description</textarea>
+                <p class="text-xs text-slate-500 mt-1">Primary description of the content</p>
+            </div>
+            
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Sub Description</label>
+                <textarea name="ContentSEO.SubDescription" rows="2"
+                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          placeholder="Additional description or subtitle">@Model.ContentSEO?.SubDescription</textarea>
+                <p class="text-xs text-slate-500 mt-1">Secondary description or subtitle</p>
+            </div>
+            
+            <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Meta Title</label>
-                <input type="text" name="SEOParameter.MetaTitle" value="@Model.SEOParameter?.MetaTitle"
+                <input type="text" name="ContentSEO.MetaTitle" value="@Model.ContentSEO?.MetaTitle"
                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
                        placeholder="Page title for search engines" />
                 <p class="text-xs text-slate-500 mt-1">Recommended: 50-60 characters</p>
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Author</label>
-                <input type="text" name="SEOParameter.Author" value="@Model.SEOParameter?.Author"
-                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                       placeholder="Content author" />
-            </div>
-            
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-slate-700 mb-1">Meta Description</label>
-                <textarea name="SEOParameter.MetaDescription" rows="3"
-                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                          placeholder="Brief description for search engine results">@Model.SEOParameter?.MetaDescription</textarea>
-                <p class="text-xs text-slate-500 mt-1">Recommended: 150-160 characters</p>
-            </div>
-            
-            <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-slate-700 mb-1">Meta Keywords</label>
-                <input type="text" name="SEOParameter.MetaKeywords" value="@Model.SEOParameter?.MetaKeywords"
+                <input type="text" name="ContentSEO.MetaKeywords" value="@Model.ContentSEO?.MetaKeywords"
                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
                        placeholder="keyword1, keyword2, keyword3" />
                 <p class="text-xs text-slate-500 mt-1">Separate keywords with commas</p>
             </div>
             
             <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-slate-700 mb-1">Canonical URL</label>
-                <input type="url" name="SEOParameter.CanonicalURL" value="@Model.SEOParameter?.CanonicalURL"
-                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                       placeholder="https://example.com/page-url" />
-                <p class="text-xs text-slate-500 mt-1">Preferred URL for this page</p>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Meta Description</label>
+                <textarea name="ContentSEO.MetaDescription" rows="3"
+                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          placeholder="Brief description for search engine results">@Model.ContentSEO?.MetaDescription</textarea>
+                <p class="text-xs text-slate-500 mt-1">Recommended: 150-160 characters</p>
             </div>
         </div>
 
@@ -60,13 +76,13 @@
             <h6 class="text-sm font-medium text-slate-700 mb-3">Search Engine Preview</h6>
             <div class="seo-preview">
                 <div class="text-blue-600 text-lg hover:underline cursor-pointer" id="seo-title-preview">
-                    @(Model.SEOParameter?.MetaTitle ?? Model.Name ?? "Page Title")
+                    @(Model.ContentSEO?.MetaTitle ?? Model.ContentSEO?.Title ?? Model.Name ?? "Page Title")
                 </div>
                 <div class="text-green-600 text-sm" id="seo-url-preview">
-                    @(Model.SEOParameter?.CanonicalURL ?? $"https://example.com/{Model.Code}")
+                    @($"https://example.com/{Model.ContentSlugs?.FirstOrDefault(cs => cs.IsCanonical)?.Slug ?? Model.ContentSlugs?.FirstOrDefault()?.Slug ?? Model.Code}")
                 </div>
                 <div class="text-slate-600 text-sm mt-1" id="seo-description-preview">
-                    @(Model.SEOParameter?.MetaDescription ?? Model.Description ?? "Page description will appear here...")
+                    @(Model.ContentSEO?.MetaDescription ?? Model.ContentSEO?.Description ?? Model.Description ?? "Page description will appear here...")
                 </div>
             </div>
         </div>

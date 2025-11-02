@@ -225,7 +225,7 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 // Önce sadece temel page bilgilerini yükle
                 var page = await _pazarAtlasiDbContext.Pages
-                    .Include(p => p.PageSEOParameter)
+                    .Include(p => p.Content)
                     .Include(p => p.PageTranslations)
                         .ThenInclude(pt => pt.Language)
                     .FirstOrDefaultAsync(p => p.Id == id);
@@ -314,7 +314,7 @@ namespace PazarAtlasi.CMS.Controllers
             try
             {
                 var page = await _pazarAtlasiDbContext.Pages
-                    .Include(p => p.PageSEOParameter)
+                    .Include(p => p.Content)
                     .Include(p => p.PageSections)
                         .ThenInclude(ps => ps.Section)
                         .ThenInclude(s => s.SectionItemValues)
@@ -338,27 +338,11 @@ namespace PazarAtlasi.CMS.Controllers
                 page.ParentPageId = model.ParentPageId;
                 page.UpdatedAt = DateTime.UtcNow;
 
-                // Update SEO parameters
-                if (model.SEOParameter != null)
-                {
-                    if (page.PageSEOParameter == null)
-                    {
-                        page.PageSEOParameter = new PageSEOParameter
-                        {
-                            Id = 0,
-                            PageId = page.Id
-                        };
-                        _pazarAtlasiDbContext.PageSEOParameters.Add(page.PageSEOParameter);
-                    }
+                // Handle Content and ContentSlugs
+                await HandleContentAndSlugs(page, model);
 
-                    page.PageSEOParameter.MetaTitle = model.SEOParameter.MetaTitle;
-                    page.PageSEOParameter.MetaDescription = model.SEOParameter.MetaDescription;
-                    page.PageSEOParameter.MetaKeywords = model.SEOParameter.MetaKeywords;
-                    page.PageSEOParameter.Title = model.SEOParameter.Title;
-                    page.PageSEOParameter.CanonicalURL = model.SEOParameter.CanonicalURL;
-                    page.PageSEOParameter.Author = model.SEOParameter.Author;
-                    page.PageSEOParameter.Description = model.SEOParameter.Description;
-                }
+                // PageSEOParameter artık kullanılmıyor, Content entity'sinden alınacak
+                // Eski PageSEOParameter'ı kaldırabiliriz
 
                 await _pazarAtlasiDbContext.SaveChangesAsync();
 
@@ -906,11 +890,13 @@ namespace PazarAtlasi.CMS.Controllers
             {
                 var pages = await _pazarAtlasiDbContext.Pages
                     .Where(p => p.Status == Status.Active)
+                    .Include(t => t.Content)
+                    .ThenInclude(c => c.ContentSlugs)
                     .Select(p => new AvailablePageDto
                     {
                         Id = p.Id,
                         Name = p.Name,
-                        Slug = p.Slug
+                        Slug = p.Content != null ? p.Content.ContentSlugs.FirstOrDefault().Slug  : p.Code
                     })
                     .OrderBy(p => p.Name)
                     .ToListAsync();
@@ -3178,6 +3164,50 @@ namespace PazarAtlasi.CMS.Controllers
 
         private async Task<PageEditViewModel> MapToPageEditViewModel(Page page, List<LanguageViewModel> languages)
         {
+            // Get Content and ContentSlug information
+            Domain.Entities.Content.Content? content = null;
+            List<ContentSlugEditViewModel> contentSlugs = new();
+
+            if (page.ContentId.HasValue)
+            {
+                content = await _pazarAtlasiDbContext.Contents
+                    .Include(c => c.ContentSlugs)
+                        .ThenInclude(cs => cs.Language)
+                    .FirstOrDefaultAsync(c => c.Id == page.ContentId.Value);
+
+                // Get all content slugs
+                if (content?.ContentSlugs != null)
+                {
+                    contentSlugs = content.ContentSlugs.Select(cs => new ContentSlugEditViewModel
+                    {
+                        Id = cs.Id,
+                        ContentId = cs.ContentId,
+                        Slug = cs.Slug,
+                        LanguageId = cs.LanguageId,
+                        LanguageName = cs.Language?.Name,
+                        LanguageCode = cs.Language?.Code,
+                        Priority = cs.Priority,
+                        IsCanonical = cs.IsCanonical
+                    }).ToList();
+                }
+            }
+
+            // Get available parent pages
+            var availableParentPages = await GetAvailableParentPagesAsync(page.Id);
+
+            // Get available layouts
+            var availableLayouts = await GetAvailableLayoutsAsync();
+
+            // Get layout sections if layout is assigned
+            LayoutSectionsViewModel? layoutSections = null;
+            if (page.LayoutId.HasValue)
+            {
+                layoutSections = await GetLayoutSectionsForPageAsync(page.LayoutId.Value);
+            }
+
+            // Map sections
+            var sections = page.PageSections?.Select(ps => MapSectionToEditViewModel(ps.Section)).ToList() ?? new List<SectionEditViewModel>();
+
             var model = new PageEditViewModel
             {
                 Id = page.Id,
@@ -3186,65 +3216,37 @@ namespace PazarAtlasi.CMS.Controllers
                 PageType = page.PageType,
                 Description = page.Description,
                 Status = page.Status,
+                ContentId = page.ContentId,
+                ContentSlugs = contentSlugs,
                 ParentPageId = page.ParentPageId,
                 ParentPageName = page.ParentPage?.Name,
-                SEOParameter = page.PageSEOParameter != null ? new PageSEOParameterEditViewModel
+                LayoutId = page.LayoutId,
+                LayoutName = page.Layout?.Name,
+                AvailableParentPages = availableParentPages,
+                AvailableLayouts = availableLayouts,
+                LayoutSections = layoutSections,
+                ContentSEO = content != null ? new ContentSEOParameterEditViewModel
                 {
-                    Id = page.PageSEOParameter.Id,
-                    MetaTitle = page.PageSEOParameter.MetaTitle,
-                    MetaDescription = page.PageSEOParameter.MetaDescription,
-                    MetaKeywords = page.PageSEOParameter.MetaKeywords,
-                    Title = page.PageSEOParameter.Title,
-                    CanonicalURL = page.PageSEOParameter.CanonicalURL,
-                    Author = page.PageSEOParameter.Author,
-                    Description = page.PageSEOParameter.Description
-                } : new PageSEOParameterEditViewModel(),
-                Sections = page.PageSections.Select(ps => ps.Section).Select(s => new SectionEditViewModel
-                {
-                    Id = s.Id,
-                    Type = s.Type,
-                    Key = s.Key,
-                    Attributes = s.Attributes,
-                    SortOrder = s.SortOrder,
-                    Configure = s.Configure,
-                    Status = s.Status,
-                    SectionItems = MapSectionItemsToViewModel(s.SectionItemValues.Select(s => s.SectionItem).ToList(), s.Id),
-                    Translations = s.Translations.Select(st => new SectionTranslationEditViewModel
-                    {
-                        Id = st.Id,
-                        LanguageId = st.LanguageId,
-                        Name = st.Name,
-                        Title = st.Title,
-                        Description = st.Description
-                    }).ToList()
-                }).ToList(),
-                Translations = page.PageTranslations.Select(pt => new PageTranslationEditViewModel
+                    Id = content.Id,
+                    Title = content.Title,
+                    Description = content.Description,
+                    SubDescription = content.SubDescription,
+                    MetaTitle = content.MetaTitle,
+                    MetaDescription = content.MetaDescription,
+                    MetaKeywords = content.MetaKeywords,
+                    Author = content.Author
+                } : null,
+                Sections = sections,
+                AvailableLanguages = languages,
+                Translations = page.PageTranslations?.Select(pt => new PageTranslationEditViewModel
                 {
                     Id = pt.Id,
                     LanguageId = pt.LanguageId,
-                    LanguageName = pt.Language.Name,
-                    LanguageCode = pt.Language.Code,
+                    LanguageName = pt.Language?.Name,
+                    LanguageCode = pt.Language?.Code,
                     Value = pt.Value
-                }).ToList(),
-                AvailableLanguages = languages
+                }).ToList() ?? new List<PageTranslationEditViewModel>()
             };
-
-            // Load available parent pages
-            model.AvailableParentPages = await GetAvailableParentPagesAsync(page.Id);
-
-            // Load available layouts
-            model.AvailableLayouts = await GetAvailableLayoutsAsync();
-
-            // Load layout information if page has a layout
-            if (page.LayoutId.HasValue)
-            {
-                model.LayoutId = page.LayoutId;
-                model.LayoutSections = await GetLayoutSectionsForPageAsync(page.LayoutId.Value);
-
-                var layout = await _pazarAtlasiDbContext.Set<Domain.Entities.Content.Layout>()
-                    .FirstOrDefaultAsync(l => l.Id == page.LayoutId.Value);
-                model.LayoutName = layout?.Name;
-            }
 
             return model;
         }
@@ -4651,6 +4653,277 @@ namespace PazarAtlasi.CMS.Controllers
         {
             public int PageId { get; set; }
             public int? LayoutId { get; set; }
+        }
+
+        #endregion
+
+        #region Page Mapping Helper Methods
+
+        /// <summary>
+        /// Map Section entity to SectionEditViewModel
+        /// </summary>
+        private SectionEditViewModel MapSectionToEditViewModel(Section section)
+        {
+            return new SectionEditViewModel
+            {
+                Id = section.Id,
+                Type = section.Type,
+                Key = section.Key ?? "",
+                Attributes = section.Attributes,
+                SortOrder = section.SortOrder,
+                Configure = section.Configure,
+                Status = section.Status,
+                SectionItems = section.SectionItemValues?.Select(siv => MapSectionItemToEditViewModel(siv.SectionItem)).ToList() ?? new List<SectionItemEditViewModel>(),
+                Translations = section.Translations?.Select(st => new SectionTranslationEditViewModel
+                {
+                    Id = st.Id,
+                    LanguageId = st.LanguageId,
+                    Name = st.Name,
+                    Title = st.Title,
+                    Description = st.Description
+                }).ToList() ?? new List<SectionTranslationEditViewModel>()
+            };
+        }
+
+        /// <summary>
+        /// Map SectionItem entity to SectionItemEditViewModel
+        /// </summary>
+        private SectionItemEditViewModel MapSectionItemToEditViewModel(SectionItem sectionItem)
+        {
+            return new SectionItemEditViewModel
+            {
+                Id = sectionItem.Id,
+                ParentSectionItemId = sectionItem.ParentSectionItemId,
+                Type = sectionItem.Type,
+                MediaType = sectionItem.MediaType,
+                SortOrder = sectionItem.SortOrder,
+                Status = sectionItem.Status,
+                Title = sectionItem.Title,
+                Description = sectionItem.Description,
+                IconClass = sectionItem.IconClass,
+                Fields = sectionItem.SectionItemFieldValues?.Select(fv => new SectionItemFieldViewModel
+                {
+                    Id = fv.Id,
+                    SectionItemId = fv.SectionItemId,
+                    FieldType = fv.SectionItemField?.Type ?? SectionItemFieldType.Text,
+                    FieldKey = fv.SectionItemField?.FieldKey ?? "",
+                    FieldValue = fv.Value,
+                    IsTranslatable = fv.SectionItemField?.IsTranslatable ?? false,
+                    ShowInUI = fv.SectionItemField?.ShowInUI ?? true
+                }).ToList() ?? new List<SectionItemFieldViewModel>(),
+                Translations = sectionItem.Translations?.Select(sit => new SectionItemTranslationEditViewModel
+                {
+                    Id = sit.Id,
+                    LanguageId = sit.LanguageId,
+                    Title = sit.Title,
+                    Description = sit.Description
+                }).ToList() ?? new List<SectionItemTranslationEditViewModel>()
+            };
+        }
+
+        #endregion
+
+        #region Content and Slugs Management
+
+        /// <summary>
+        /// Handle Content and ContentSlugs for a page
+        /// </summary>
+        private async Task HandleContentAndSlugs(Page page, PageEditViewModel model)
+        {
+            // Create or update Content entity
+            Domain.Entities.Content.Content content;
+            
+            if (page.ContentId.HasValue)
+            {
+                // Update existing content
+                content = await _pazarAtlasiDbContext.Contents
+                    .Include(c => c.ContentSlugs)
+                    .FirstOrDefaultAsync(c => c.Id == page.ContentId.Value);
+                
+                if (content == null)
+                {
+                    // Content not found, create new one
+                    content = CreateNewContent(page, model);
+                    _pazarAtlasiDbContext.Contents.Add(content);
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                    page.ContentId = content.Id;
+                }
+                else
+                {
+                    // Update existing content
+                    UpdateContentFromModel(content, page, model);
+                }
+            }
+            else
+            {
+                // Create new content
+                content = CreateNewContent(page, model);
+                _pazarAtlasiDbContext.Contents.Add(content);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+                page.ContentId = content.Id;
+            }
+
+            // Handle ContentSlugs
+            await HandleContentSlugs(content, model);
+        }
+
+        /// <summary>
+        /// Create new Content entity
+        /// </summary>
+        private Domain.Entities.Content.Content CreateNewContent(Page page, PageEditViewModel model)
+        {
+            return new Domain.Entities.Content.Content
+            {
+                RelatedDataEntityType = EntityType.Page,
+                RelatedDataEntityId = page.Id,
+                Title = model.ContentSEO?.Title ?? model.Name,
+                Description = model.ContentSEO?.Description ?? model.Description,
+                SubDescription = model.ContentSEO?.SubDescription,
+                MetaTitle = model.ContentSEO?.MetaTitle,
+                MetaDescription = model.ContentSEO?.MetaDescription,
+                MetaKeywords = model.ContentSEO?.MetaKeywords,
+                Author = model.ContentSEO?.Author,
+                CreatedAt = DateTime.UtcNow,
+                IsDeleted = false
+            };
+        }
+
+        /// <summary>
+        /// Update existing Content entity from model
+        /// </summary>
+        private void UpdateContentFromModel(Domain.Entities.Content.Content content, Page page, PageEditViewModel model)
+        {
+            content.Title = model.ContentSEO?.Title ?? model.Name;
+            content.Description = model.ContentSEO?.Description ?? model.Description;
+            content.SubDescription = model.ContentSEO?.SubDescription;
+            content.MetaTitle = model.ContentSEO?.MetaTitle;
+            content.MetaDescription = model.ContentSEO?.MetaDescription;
+            content.MetaKeywords = model.ContentSEO?.MetaKeywords;
+            content.Author = model.ContentSEO?.Author;
+            content.UpdatedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Handle ContentSlugs for a content
+        /// </summary>
+        private async Task HandleContentSlugs(Domain.Entities.Content.Content content, PageEditViewModel model)
+        {
+            // Get existing slugs
+            var existingSlugs = await _pazarAtlasiDbContext.ContentSlugs
+                .Where(cs => cs.ContentId == content.Id)
+                .ToListAsync();
+
+            // Handle model slugs
+            if (model.ContentSlugs != null && model.ContentSlugs.Any())
+            {
+                foreach (var slugModel in model.ContentSlugs)
+                {
+                    if (slugModel.Id > 0)
+                    {
+                        // Update existing slug
+                        var existingSlug = existingSlugs.FirstOrDefault(es => es.Id == slugModel.Id);
+                        if (existingSlug != null)
+                        {
+                            existingSlug.Slug = slugModel.Slug;
+                            existingSlug.Priority = slugModel.Priority;
+                            existingSlug.IsCanonical = slugModel.IsCanonical;
+                            existingSlug.UpdatedAt = DateTime.UtcNow;
+                        }
+                    }
+                    else
+                    {
+                        // Create new slug
+                        var newSlug = new ContentSlugs
+                        {
+                            ContentId = content.Id,
+                            Slug = slugModel.Slug,
+                            LanguageId = slugModel.LanguageId,
+                            Priority = slugModel.Priority,
+                            IsCanonical = slugModel.IsCanonical,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        };
+                        _pazarAtlasiDbContext.ContentSlugs.Add(newSlug);
+                    }
+                }
+            }
+            else
+            {
+                // Handle default slug if no slugs provided
+                await HandleDefaultSlug(content, model);
+            }
+
+            // Ensure only one canonical slug per language
+            await EnsureCanonicalSlugs(content.Id);
+        }
+
+        /// <summary>
+        /// Handle default slug creation when no slugs are provided
+        /// </summary>
+        private async Task HandleDefaultSlug(Domain.Entities.Content.Content content, PageEditViewModel model)
+        {
+            // Get default language
+            var defaultLanguage = await _pazarAtlasiDbContext.Languages
+                .FirstOrDefaultAsync(l => l.IsDefault && !l.IsDeleted);
+
+            if (defaultLanguage != null)
+            {
+                // Check if default slug already exists
+                var existingDefaultSlug = await _pazarAtlasiDbContext.ContentSlugs
+                    .FirstOrDefaultAsync(cs => cs.ContentId == content.Id && cs.LanguageId == defaultLanguage.Id);
+
+                if (existingDefaultSlug == null)
+                {
+                    // Create default slug from page code or name
+                    var defaultSlugValue = !string.IsNullOrEmpty(model.Code) 
+                        ? model.Code.ToLowerInvariant() 
+                        : model.Name?.ToLowerInvariant().Replace(" ", "-") ?? "page";
+
+                    var defaultSlug = new ContentSlugs
+                    {
+                        ContentId = content.Id,
+                        Slug = defaultSlugValue,
+                        LanguageId = defaultLanguage.Id,
+                        Priority = 1,
+                        IsCanonical = true,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    _pazarAtlasiDbContext.ContentSlugs.Add(defaultSlug);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ensure only one canonical slug per language
+        /// </summary>
+        private async Task EnsureCanonicalSlugs(int contentId)
+        {
+            var slugsByLanguage = await _pazarAtlasiDbContext.ContentSlugs
+                .Where(cs => cs.ContentId == contentId && !cs.IsDeleted)
+                .GroupBy(cs => cs.LanguageId)
+                .ToListAsync();
+
+            foreach (var languageGroup in slugsByLanguage)
+            {
+                var canonicalSlugs = languageGroup.Where(cs => cs.IsCanonical).ToList();
+                
+                if (canonicalSlugs.Count > 1)
+                {
+                    // Keep only the first canonical, make others non-canonical
+                    var firstCanonical = canonicalSlugs.OrderBy(cs => cs.Priority ?? int.MaxValue).First();
+                    foreach (var slug in canonicalSlugs.Where(cs => cs.Id != firstCanonical.Id))
+                    {
+                        slug.IsCanonical = false;
+                    }
+                }
+                else if (canonicalSlugs.Count == 0 && languageGroup.Any())
+                {
+                    // No canonical slug, make the first one canonical
+                    var firstSlug = languageGroup.OrderBy(cs => cs.Priority ?? int.MaxValue).First();
+                    firstSlug.IsCanonical = true;
+                }
+            }
         }
 
         #endregion

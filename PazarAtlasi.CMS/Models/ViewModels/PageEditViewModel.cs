@@ -12,6 +12,10 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? Description { get; set; }
         public Status Status { get; set; }
 
+        // Content properties
+        public int? ContentId { get; set; }
+        public List<ContentSlugEditViewModel> ContentSlugs { get; set; } = new();
+
         // Hierarchical properties
         public int? ParentPageId { get; set; }
         public string? ParentPageName { get; set; }
@@ -23,8 +27,8 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public List<AvailableLayoutViewModel> AvailableLayouts { get; set; } = new();
         public LayoutSectionsViewModel? LayoutSections { get; set; }
 
-        // SEO Parameters
-        public PageSEOParameterEditViewModel? SEOParameter { get; set; }
+        // Content SEO Parameters (from Content entity)
+        public ContentSEOParameterEditViewModel? ContentSEO { get; set; }
 
         // Sections grouped by template type
         public List<SectionEditViewModel> Sections { get; set; } = new();
@@ -46,17 +50,31 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string DisplayName => $"{new string('-', Level * 2)} {Name}";
     }
 
-    public class PageSEOParameterEditViewModel
+    public class ContentSEOParameterEditViewModel
     {
         public int Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? SubDescription { get; set; }
         public string? MetaTitle { get; set; }
         public string? MetaDescription { get; set; }
         public string? MetaKeywords { get; set; }
-        public string? Title { get; set; }
-        public string? CanonicalURL { get; set; }
         public string? Author { get; set; }
-        public string? Description { get; set; }
     }
+
+    public class ContentSlugEditViewModel
+    {
+        public int Id { get; set; }
+        public int ContentId { get; set; }
+        public string Slug { get; set; } = string.Empty;
+        public int LanguageId { get; set; }
+        public string? LanguageName { get; set; }
+        public string? LanguageCode { get; set; }
+        public int? Priority { get; set; }
+        public bool IsCanonical { get; set; }
+    }
+
+
 
     public class SectionEditViewModel
     {

@@ -18,6 +18,8 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         public DbSet<Content> Contents { get; set; }
 
+        public DbSet<ContentSlugs> ContentSlugs { get; set; }
+
         public DbSet<Language> Languages { get; set; }
 
         public DbSet<Country> Countries { get; set; }

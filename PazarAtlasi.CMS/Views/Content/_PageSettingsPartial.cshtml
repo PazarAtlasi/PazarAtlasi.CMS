@@ -12,24 +12,96 @@
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Page Name *</label>
             <input type="text" name="Name" value="@Model.Name" required
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                placeholder="Enter page name" />
+                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                   placeholder="Enter page name" />
             <span asp-validation-for="Name" class="text-red-500 text-xs"></span>
         </div>
 
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Page Code *</label>
             <input type="text" name="Code" value="@Model.Code" required
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                placeholder="page-code" />
+                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                   placeholder="page-code" />
             <span asp-validation-for="Code" class="text-red-500 text-xs"></span>
             <p class="text-xs text-slate-500 mt-1">Used in URL. Use lowercase letters, numbers, and hyphens only.</p>
+        </div>
+
+        <!-- Page Slugs (Multi-language) -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Page Slugs (Multi-language)</label>
+            <div id="slugsContainer" class="space-y-3">
+                @if (Model.ContentSlugs != null && Model.ContentSlugs.Any())
+                {
+                    @for (int i = 0; i < Model.ContentSlugs.Count; i++)
+                    {
+                        <div class="flex items-center space-x-2 p-3 bg-slate-50 rounded-lg">
+                            <input type="hidden" name="ContentSlugs[@i].Id" value="@Model.ContentSlugs[i].Id" />
+                            <input type="hidden" name="ContentSlugs[@i].ContentId" value="@Model.ContentSlugs[i].ContentId" />
+                            <input type="hidden" name="ContentSlugs[@i].LanguageId" value="@Model.ContentSlugs[i].LanguageId" />
+
+                            <div class="flex-shrink-0 w-16">
+                                <span class="text-xs font-medium text-slate-600">@Model.ContentSlugs[i].LanguageCode</span>
+                            </div>
+
+                            <div class="flex-1">
+                                <input type="text" name="ContentSlugs[@i].Slug" value="@Model.ContentSlugs[i].Slug" required
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                       placeholder="page-slug" />
+                            </div>
+
+                            <div class="flex-shrink-0">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="ContentSlugs[@i].IsCanonical" value="true" @(Model.ContentSlugs[i].IsCanonical ? "checked" : "")
+                                           class="mr-1 text-purple-600 focus:ring-purple-200" />
+                                    <span class="text-xs text-slate-600">Canonical</span>
+                                </label>
+                            </div>
+
+                            <div class="flex-shrink-0 w-16">
+                                <input type="number" name="ContentSlugs[@i].Priority" value="@Model.ContentSlugs[i].Priority" min="0" max="100"
+                                       class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-purple-200"
+                                       placeholder="Priority" />
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <!-- Default slug for default language -->
+                    <div class="flex items-center space-x-2 p-3 bg-slate-50 rounded-lg">
+                        <div class="flex-shrink-0 w-16">
+                            <span class="text-xs font-medium text-slate-600">TR</span>
+                        </div>
+                        <div class="flex-1">
+                            <input type="text" name="DefaultSlug" required
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                                   placeholder="page-slug" />
+                        </div>
+                        <div class="flex-shrink-0">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="DefaultIsCanonical" value="true" checked
+                                       class="mr-1 text-purple-600 focus:ring-purple-200" />
+                                <span class="text-xs text-slate-600">Canonical</span>
+                            </label>
+                        </div>
+                        <div class="flex-shrink-0 w-16">
+                            <input type="number" name="DefaultPriority" value="1" min="0" max="100"
+                                   class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-purple-200"
+                                   placeholder="Priority" />
+                        </div>
+                    </div>
+                }
+            </div>
+            <p class="text-xs text-slate-500 mt-1">URL slugs for this page in different languages. Use lowercase letters, numbers, and hyphens only.</p>
+            <button type="button" onclick="addNewSlug()" class="mt-2 text-xs text-purple-600 hover:text-purple-800">
+                <i class="fas fa-plus mr-1"></i>Add New Language Slug
+            </button>
         </div>
 
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Page Type</label>
             <select name="PageType" id="pageTypeSelect" onchange="handlePageTypeChange(this.value)"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                 @foreach (var pageType in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.PageType>())
                 {
                     @if (Model.PageType == pageType)
@@ -47,7 +119,7 @@
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Parent Page</label>
             <select name="ParentPageId" id="parentPageSelect"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                 <option value="">No Parent (Root Page)</option>
                 @if (Model.AvailableParentPages != null)
                 {
@@ -78,7 +150,7 @@
         <div id="dynamicContentSelection" class="hidden">
             <label class="block text-sm font-medium text-slate-700 mb-1">Select Content</label>
             <select name="LinkedContentId" id="linkedContentSelect"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                 <option value="">Select content...</option>
             </select>
             <p class="text-xs text-slate-500 mt-1">Choose existing content of the selected type.</p>
@@ -88,7 +160,7 @@
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Page Layout</label>
             <select name="LayoutId" id="layoutSelect" onchange="handleLayoutChange(this.value)"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                 <option value="">No Layout (Custom)</option>
                 @if (Model.AvailableLayouts != null)
                 {
@@ -105,8 +177,10 @@
                     }
                 }
             </select>
-            <p class="text-xs text-slate-500 mt-1">Choose a layout template with pre-defined sections like navbar and
-                footer.</p>
+            <p class="text-xs text-slate-500 mt-1">
+                Choose a layout template with pre-defined sections like navbar and
+                footer.
+            </p>
             @if (!string.IsNullOrEmpty(Model.LayoutName))
             {
                 <p class="text-xs text-blue-600 mt-1">
@@ -119,7 +193,7 @@
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
             <select name="Status"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
                 @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
                 {
                     @if (Model.Status == status)
@@ -137,16 +211,236 @@
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
             <textarea name="Description" rows="3"
-                class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                placeholder="Brief description of the page">@Model.Description</textarea>
+                      class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                      placeholder="Brief description of the page">@Model.Description</textarea>
         </div>
 
         <!-- Save Button for Mobile -->
         <div class="lg:hidden pt-4 border-t border-slate-200">
             <button type="submit"
-                class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
+                    class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center justify-center">
                 <i class="fas fa-save mr-2"></i> Save Changes
             </button>
         </div>
     </div>
 </div>
+<script>
+    // Add new slug for different language
+    function addNewSlug() {
+        const container = document.getElementById('slugsContainer');
+        const slugCount = container.children.length;
+
+        // Get available languages (this should be populated from server)
+        const availableLanguages = @Html.Raw(Json.Serialize(Model.AvailableLanguages.Select(l => new { l.Id, l.Code, l.Name })));
+
+        // Create language selection dropdown
+        let languageOptions = '';
+        availableLanguages.forEach(lang => {
+            languageOptions += `<option value="${lang.id}" data-code="${lang.code}">${lang.name} (${lang.code})</option>`;
+        });
+
+        const newSlugHtml = `
+            <div class="flex items-center space-x-2 p-3 bg-slate-50 rounded-lg">
+                <input type="hidden" name="ContentSlugs[${slugCount}].Id" value="0" />
+                <input type="hidden" name="ContentSlugs[${slugCount}].ContentId" value="@Model.ContentId" />
+
+                <div class="flex-shrink-0 w-20">
+                    <select name="ContentSlugs[${slugCount}].LanguageId" onchange="updateLanguageCode(this, ${slugCount})" required
+                        class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-purple-200">
+                        <option value="">Select</option>
+                        ${languageOptions}
+                    </select>
+                </div>
+
+                <div class="flex-1">
+                    <input type="text" name="ContentSlugs[${slugCount}].Slug" required
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                        placeholder="page-slug" />
+                </div>
+
+                <div class="flex-shrink-0">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="ContentSlugs[${slugCount}].IsCanonical" value="true"
+                            class="mr-1 text-purple-600 focus:ring-purple-200" />
+                        <span class="text-xs text-slate-600">Canonical</span>
+                    </label>
+                </div>
+
+                <div class="flex-shrink-0 w-16">
+                    <input type="number" name="ContentSlugs[${slugCount}].Priority" value="1" min="0" max="100"
+                        class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-purple-200"
+                        placeholder="Priority" />
+                </div>
+
+                <div class="flex-shrink-0">
+                    <button type="button" onclick="removeSlug(this)" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', newSlugHtml);
+    }
+
+    // Update language code display when language is selected
+    function updateLanguageCode(selectElement, index) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const languageCode = selectedOption.getAttribute('data-code');
+
+        // Update hidden input for language code (if needed for display)
+        const hiddenInput = document.querySelector(`input[name="ContentSlugs[${index}].LanguageCode"]`);
+        if (hiddenInput) {
+            hiddenInput.value = languageCode;
+        }
+    }
+
+    // Remove slug
+    function removeSlug(button) {
+        const slugDiv = button.closest('.flex.items-center.space-x-2');
+        if (slugDiv) {
+            slugDiv.remove();
+            // Re-index remaining slugs
+            reindexSlugs();
+        }
+    }
+
+    // Re-index slugs after removal
+    function reindexSlugs() {
+        const container = document.getElementById('slugsContainer');
+        const slugDivs = container.children;
+
+        for (let i = 0; i < slugDivs.length; i++) {
+            const inputs = slugDivs[i].querySelectorAll('input, select');
+            inputs.forEach(input => {
+                const name = input.getAttribute('name');
+                if (name && name.includes('ContentSlugs[')) {
+                    const newName = name.replace(/ContentSlugs\[\d+\]/, `ContentSlugs[${i}]`);
+                    input.setAttribute('name', newName);
+                }
+            });
+        }
+    }
+
+    // Handle page type change
+    function handlePageTypeChange(pageType) {
+        const dynamicContentDiv = document.getElementById('dynamicContentSelection');
+        const linkedContentSelect = document.getElementById('linkedContentSelect');
+
+        // Show/hide dynamic content selection based on page type
+        if (pageType && pageType !== 'None' && pageType !== 'Home') {
+            dynamicContentDiv.classList.remove('hidden');
+            loadContentByType(pageType);
+        } else {
+            dynamicContentDiv.classList.add('hidden');
+            linkedContentSelect.innerHTML = '<option value="">Select content...</option>';
+        }
+    }
+
+    // Load content by type
+    async function loadContentByType(pageType) {
+        const linkedContentSelect = document.getElementById('linkedContentSelect');
+
+        try {
+            const response = await fetch(`/Content/GetContentByType?pageType=${pageType}`);
+            const data = await response.json();
+
+            if (data.success) {
+                linkedContentSelect.innerHTML = '<option value="">Select content...</option>';
+                data.content.forEach(item => {
+                    linkedContentSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+                });
+            }
+        } catch (error) {
+            console.error('Error loading content:', error);
+        }
+    }
+
+    // Handle layout change
+    async function handleLayoutChange(layoutId) {
+        if (!layoutId) {
+            // Clear layout - show confirmation
+            if (typeof SwalHelper !== 'undefined') {
+                const result = await SwalHelper.confirm(
+                    'Layout Kaldırma',
+                    'Bu sayfadan layout\'u kaldırmak istiyor musunuz? Sayfa custom layout kullanacak.'
+                );
+
+                if (result.isConfirmed) {
+                    await updatePageLayout(@Model.Id, null);
+                    location.reload();
+                } else {
+                    // Reset dropdown to current value
+                    document.getElementById('layoutSelect').value = '@Model.LayoutId';
+                }
+            } else {
+                if (confirm('Bu sayfadan layout\'u kaldırmak istiyor musunuz?')) {
+                    await updatePageLayout(@Model.Id, null);
+                    location.reload();
+                } else {
+                    document.getElementById('layoutSelect').value = '@Model.LayoutId';
+                }
+            }
+        } else {
+            // Apply layout - show confirmation
+            if (typeof SwalHelper !== 'undefined') {
+                const result = await SwalHelper.confirm(
+                    'Layout Seçimi',
+                    'Bu layout\'u sayfaya uygulamak istiyor musunuz?'
+                );
+
+                if (result.isConfirmed) {
+                    await updatePageLayout(@Model.Id, layoutId);
+                    location.reload();
+                } else {
+                    // Reset dropdown to current value
+                    document.getElementById('layoutSelect').value = '@Model.LayoutId';
+                }
+            } else {
+                if (confirm('Bu layout\'u sayfaya uygulamak istiyor musunuz?')) {
+                    await updatePageLayout(@Model.Id, layoutId);
+                    location.reload();
+                } else {
+                    document.getElementById('layoutSelect').value = '@Model.LayoutId';
+                }
+            }
+        }
+    }
+
+    // Update page layout
+    async function updatePageLayout(pageId, layoutId) {
+        try {
+            const response = await fetch('/Content/UpdatePageLayout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    pageId: pageId,
+                    layoutId: layoutId
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                if (typeof SwalHelper !== 'undefined') {
+                    SwalHelper.success('Başarılı!', 'Layout güncellendi.');
+                }
+            } else {
+                if (typeof SwalHelper !== 'undefined') {
+                    SwalHelper.error('Hata', result.message || 'Layout güncellenirken hata oluştu.');
+                } else {
+                    alert(result.message || 'Layout güncellenirken hata oluştu.');
+                }
+            }
+        } catch (error) {
+            console.error('Error updating layout:', error);
+            if (typeof SwalHelper !== 'undefined') {
+                SwalHelper.error('Hata', 'Layout güncellenirken hata oluştu.');
+            } else {
+                alert('Layout güncellenirken hata oluştu.');
+            }
+        }
+    }
+</script>
