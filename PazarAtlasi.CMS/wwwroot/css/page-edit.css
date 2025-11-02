@@ -3,6 +3,16 @@
   min-height: 100vh;
 }
 
+/* Grid Layout Fix - Align items to start */
+.page-edit .grid {
+  align-items: start;
+}
+
+/* Main content column alignment */
+.page-edit .lg\:col-span-3 {
+  align-self: start;
+}
+
 /* Section Editor Styles */
 .section-editor {
   transition: all 0.3s ease;
