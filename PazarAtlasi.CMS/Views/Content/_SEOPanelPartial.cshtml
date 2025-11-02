@@ -88,3 +88,96 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // SEO Preview anlık güncelleme fonksiyonları
+    function updateSEOPreview() {
+        const titleInput = document.querySelector('input[name="ContentSEO.Title"]');
+        const metaTitleInput = document.querySelector('input[name="ContentSEO.MetaTitle"]');
+        const descriptionTextarea = document.querySelector('textarea[name="ContentSEO.Description"]');
+        const metaDescriptionTextarea = document.querySelector('textarea[name="ContentSEO.MetaDescription"]');
+        const nameInput = document.querySelector('input[name="Name"]'); // Ana sayfa adı
+        
+        const titlePreview = document.getElementById('seo-title-preview');
+        const descriptionPreview = document.getElementById('seo-description-preview');
+        
+        if (titlePreview) {
+            // Öncelik sırası: MetaTitle > Title > Name > Varsayılan
+            const titleValue = (metaTitleInput?.value?.trim()) || 
+                              (titleInput?.value?.trim()) || 
+                              (nameInput?.value?.trim()) || 
+                              'Page Title';
+            titlePreview.textContent = titleValue;
+        }
+        
+        if (descriptionPreview) {
+            // Öncelik sırası: MetaDescription > Description > Varsayılan
+            const descriptionValue = (metaDescriptionTextarea?.value?.trim()) || 
+                                    (descriptionTextarea?.value?.trim()) || 
+                                    'Page description will appear here...';
+            descriptionPreview.textContent = descriptionValue;
+        }
+    }
+    
+    // URL preview güncelleme fonksiyonu
+    function updateURLPreview() {
+        const canonicalSlugInput = document.querySelector('input[name*="Slug"][data-canonical="true"]');
+        const firstSlugInput = document.querySelector('input[name*="Slug"]');
+        const codeInput = document.querySelector('input[name="Code"]');
+        
+        const urlPreview = document.getElementById('seo-url-preview');
+        
+        if (urlPreview) {
+            const slugValue = (canonicalSlugInput?.value?.trim()) || 
+                             (firstSlugInput?.value?.trim()) || 
+                             (codeInput?.value?.trim()) || 
+                             'page-url';
+            urlPreview.textContent = `https://example.com/${slugValue}`;
+        }
+    }
+    
+    // Event listener'ları ekle
+    const seoInputs = [
+        'input[name="ContentSEO.Title"]',
+        'input[name="ContentSEO.MetaTitle"]',
+        'textarea[name="ContentSEO.Description"]',
+        'textarea[name="ContentSEO.MetaDescription"]',
+        'input[name="Name"]'
+    ];
+    
+    seoInputs.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.addEventListener('input', updateSEOPreview);
+            element.addEventListener('keyup', updateSEOPreview);
+            element.addEventListener('paste', function() {
+                setTimeout(updateSEOPreview, 10); // Paste işlemi tamamlandıktan sonra güncelle
+            });
+        }
+    });
+    
+    // Slug inputları için URL preview güncellemesi
+    const slugInputs = document.querySelectorAll('input[name*="Slug"]');
+    const codeInput = document.querySelector('input[name="Code"]');
+    
+    slugInputs.forEach(input => {
+        input.addEventListener('input', updateURLPreview);
+        input.addEventListener('keyup', updateURLPreview);
+        input.addEventListener('paste', function() {
+            setTimeout(updateURLPreview, 10);
+        });
+    });
+    
+    if (codeInput) {
+        codeInput.addEventListener('input', updateURLPreview);
+        codeInput.addEventListener('keyup', updateURLPreview);
+        codeInput.addEventListener('paste', function() {
+            setTimeout(updateURLPreview, 10);
+        });
+    }
+    
+    // Sayfa yüklendiğinde ilk güncellemeyi yap
+    updateSEOPreview();
+    updateURLPreview();
+});
+</script>
