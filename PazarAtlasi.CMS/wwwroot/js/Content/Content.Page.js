@@ -237,23 +237,17 @@ class PageEditor {
 function toggleSEOPanel() {
   const panel = document.getElementById("seoPanel");
   if (panel) {
-    panel.style.display =
-      panel.style.display === "none" ? "block" : "none";
+    panel.classList.toggle("hidden");
   }
 }
 
 function toggleTranslationsPanel() {
   const panel = document.getElementById("translationsPanel");
   if (panel) {
-    if (
-      panel.style.display === "none" ||
-      panel.style.display === ""
-    ) {
-      panel.style.display = "block";
-      // Scroll to panel
+    panel.classList.toggle("hidden");
+    if (!panel.classList.contains("hidden")) {
+      // Scroll to panel when showing
       panel.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      panel.style.display = "none";
     }
   }
 }

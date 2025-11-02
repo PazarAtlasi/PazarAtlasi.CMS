@@ -13,6 +13,34 @@
   align-self: start;
 }
 
+/* Fix for hidden panels affecting layout */
+.page-edit .lg\:col-span-3 > div[style*="display: none"] {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure sections panel starts at top when other panels are hidden */
+.page-edit .lg\:col-span-3 {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Remove space-y-6 effect and use flex gap instead */
+.page-edit .lg\:col-span-3.space-y-6 > * + * {
+  margin-top: 0 !important;
+}
+
+/* Ensure hidden panels don't affect layout */
+.page-edit .hidden {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 /* Section Editor Styles */
 .section-editor {
   transition: all 0.3s ease;
