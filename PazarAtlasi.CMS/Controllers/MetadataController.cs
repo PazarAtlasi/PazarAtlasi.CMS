@@ -4,6 +4,8 @@ using PazarAtlasi.CMS.Persistence.Context;
 using PazarAtlasi.CMS.Domain.Entities.Metadata;
 using PazarAtlasi.CMS.Models.ViewModels;
 using PazarAtlasi.CMS.Domain.Common;
+using PazarAtlasi.CMS.Domain.Enums;
+using System.Text.Json;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -854,6 +856,710 @@ namespace PazarAtlasi.CMS.Controllers
 
         #endregion
 
+        #region DataSchemas
+
+        /// <summary>
+        /// DataSchemas list page
+        /// </summary>
+        public async Task<IActionResult> DataSchemas(int page = 1, int pageSize = 20)
+        {
+            var query = _context.DataSchemas
+                .Include(ds => ds.Fields)
+                .Include(ds => ds.ProductDataSchemas)
+                .AsQueryable();
+
+            var totalCount = await query.CountAsync();
+            
+            var dataSchemas = await query
+                .OrderBy(ds => ds.Category)
+                .ThenBy(ds => ds.SortOrder)
+                .ThenBy(ds => ds.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var dataSchemaViewModels = dataSchemas.Select(ds => new DataSchemaListViewModel
+            {
+                Id = ds.Id,
+                Name = ds.Name,
+                Key = ds.Key,
+                Description = ds.Description,
+                Category = ds.Category,
+                FieldsCount = ds.Fields.Count,
+                ProductsCount = ds.ProductDataSchemas.Count,
+                IsActive = ds.IsActive,
+                Status = ds.Status,
+                CreatedAt = ds.CreatedAt,
+                UpdatedAt = ds.UpdatedAt
+            }).ToList();
+
+            var model = new DataSchemaListResponse
+            {
+                DataSchemas = dataSchemaViewModels,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// DataSchema create page - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> CreateDataSchema()
+        {
+            // Get available languages
+            var languages = await _context.Languages
+                .Where(l => !l.IsDeleted && l.IsActive)
+                .OrderByDescending(l => l.IsDefault)
+                .ThenBy(l => l.SortOrder)
+                .ThenBy(l => l.Name)
+                .ToListAsync();
+
+            var model = new DataSchemaCreateViewModel
+            {
+                IsActive = true,
+                Status = Status.Active,
+                AvailableLanguages = languages.Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault,
+                    IsActive = l.IsActive
+                }).ToList(),
+                Translations = languages.Select(l => new DataSchemaTranslationCreateViewModel
+                {
+                    LanguageId = l.Id,
+                    LanguageName = l.Name,
+                    LanguageCode = l.Code,
+                    IsDefault = l.IsDefault
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// DataSchema create - POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateDataSchema(DataSchemaCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Check if key already exists
+                var existingSchema = await _context.DataSchemas
+                    .FirstOrDefaultAsync(ds => ds.Key == model.Key && !ds.IsDeleted);
+
+                if (existingSchema != null)
+                {
+                    ModelState.AddModelError("Key", "A schema with this key already exists.");
+                    await ReloadDataSchemaCreateModel(model);
+                    return View(model);
+                }
+
+                var dataSchema = new DataSchema
+                {
+                    Name = model.Name,
+                    Key = model.Key,
+                    Description = model.Description,
+                    Category = model.Category,
+                    Configuration = model.Configuration ?? "{}",
+                    SortOrder = model.SortOrder,
+                    IsActive = model.IsActive,
+                    Status = model.Status,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.DataSchemas.Add(dataSchema);
+                await _context.SaveChangesAsync();
+
+                // Add translations
+                if (model.Translations != null && model.Translations.Any())
+                {
+                    var translations = model.Translations
+                        .Where(t => !string.IsNullOrWhiteSpace(t.Name))
+                        .Select(t => new DataSchemaTranslation
+                        {
+                            DataSchemaId = dataSchema.Id,
+                            LanguageId = t.LanguageId,
+                            Name = t.Name,
+                            Description = t.Description,
+                            Category = t.Category,
+                            CreatedAt = DateTime.UtcNow
+                        }).ToList();
+
+                    if (translations.Any())
+                    {
+                        _context.DataSchemaTranslations.AddRange(translations);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                // Add fields
+                if (model.Fields != null && model.Fields.Any())
+                {
+                    var fields = model.Fields.Select((field, index) => new DataSchemaField
+                    {
+                        DataSchemaId = dataSchema.Id,
+                        FieldKey = field.FieldKey,
+                        FieldName = field.FieldName,
+                        Description = field.Description,
+                        Type = field.Type,
+                        IsRequired = field.IsRequired,
+                        IsTranslatable = field.IsTranslatable,
+                        ShowInListing = field.ShowInListing,
+                        ShowInDetails = field.ShowInDetails,
+                        IsFilterable = field.IsFilterable,
+                        IsSortable = field.IsSortable,
+                        DefaultValue = field.DefaultValue,
+                        Placeholder = field.Placeholder,
+                        OptionsJson = field.OptionsJson,
+                        ValidationRules = field.ValidationRules,
+                        Unit = field.Unit,
+                        SortOrder = field.SortOrder > 0 ? field.SortOrder : index + 1,
+                        IsActive = field.IsActive,
+                        Status = Status.Active,
+                        CreatedAt = DateTime.UtcNow
+                    }).ToList();
+
+                    _context.DataSchemaFields.AddRange(fields);
+                    await _context.SaveChangesAsync();
+
+                    // Add field translations
+                    foreach (var field in model.Fields.Where(f => f.Translations != null && f.Translations.Any()))
+                    {
+                        var fieldEntity = fields.FirstOrDefault(f => f.FieldKey == field.FieldKey);
+                        if (fieldEntity != null)
+                        {
+                            var fieldTranslations = field.Translations
+                                .Where(t => !string.IsNullOrWhiteSpace(t.FieldName))
+                                .Select(t => new DataSchemaFieldTranslation
+                                {
+                                    DataSchemaFieldId = fieldEntity.Id,
+                                    LanguageId = t.LanguageId,
+                                    FieldName = t.FieldName,
+                                    Description = t.Description,
+                                    Placeholder = t.Placeholder,
+                                    Unit = t.Unit,
+                                    OptionsJson = t.OptionsJson,
+                                    CreatedAt = DateTime.UtcNow
+                                }).ToList();
+
+                            if (fieldTranslations.Any())
+                            {
+                                _context.DataSchemaFieldTranslations.AddRange(fieldTranslations);
+                            }
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["SuccessMessage"] = "Data schema created successfully.";
+                return RedirectToAction(nameof(DataSchemas));
+            }
+
+            await ReloadDataSchemaCreateModel(model);
+            return View(model);
+        }
+
+        /// <summary>
+        /// DataSchema edit page - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> EditDataSchema(int id)
+        {
+            var dataSchema = await _context.DataSchemas
+                .Include(ds => ds.Fields.OrderBy(f => f.SortOrder))
+                    .ThenInclude(f => f.Translations)
+                        .ThenInclude(t => t.Language)
+                .Include(ds => ds.Translations)
+                    .ThenInclude(t => t.Language)
+                .FirstOrDefaultAsync(ds => ds.Id == id);
+
+            if (dataSchema == null)
+            {
+                return NotFound();
+            }
+
+            // Get available languages
+            var languages = await _context.Languages
+                .Where(l => !l.IsDeleted && l.IsActive)
+                .OrderByDescending(l => l.IsDefault)
+                .ThenBy(l => l.SortOrder)
+                .ThenBy(l => l.Name)
+                .ToListAsync();
+
+            var model = new DataSchemaEditViewModel
+            {
+                Id = dataSchema.Id,
+                Name = dataSchema.Name,
+                Key = dataSchema.Key,
+                Description = dataSchema.Description,
+                Category = dataSchema.Category,
+                Configuration = dataSchema.Configuration,
+                SortOrder = dataSchema.SortOrder,
+                IsActive = dataSchema.IsActive,
+                Status = dataSchema.Status,
+                CreatedAt = dataSchema.CreatedAt,
+                UpdatedAt = dataSchema.UpdatedAt,
+                AvailableLanguages = languages.Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code,
+                    IsDefault = l.IsDefault,
+                    IsActive = l.IsActive
+                }).ToList(),
+                Translations = dataSchema.Translations.Select(t => new DataSchemaTranslationCreateViewModel
+                {
+                    LanguageId = t.LanguageId,
+                    LanguageName = t.Language?.Name ?? "",
+                    LanguageCode = t.Language?.Code ?? "",
+                    IsDefault = t.Language?.IsDefault ?? false,
+                    Name = t.Name,
+                    Description = t.Description,
+                    Category = t.Category
+                }).ToList(),
+                Fields = dataSchema.Fields.Select(f => new DataSchemaFieldCreateViewModel
+                {
+                    DataSchemaId = f.DataSchemaId,
+                    FieldKey = f.FieldKey,
+                    FieldName = f.FieldName,
+                    Description = f.Description,
+                    Type = f.Type,
+                    IsRequired = f.IsRequired,
+                    IsTranslatable = f.IsTranslatable,
+                    ShowInListing = f.ShowInListing,
+                    ShowInDetails = f.ShowInDetails,
+                    IsFilterable = f.IsFilterable,
+                    IsSortable = f.IsSortable,
+                    DefaultValue = f.DefaultValue,
+                    Placeholder = f.Placeholder,
+                    OptionsJson = f.OptionsJson,
+                    ValidationRules = f.ValidationRules,
+                    Unit = f.Unit,
+                    SortOrder = f.SortOrder,
+                    IsActive = f.IsActive,
+                    Translations = f.Translations.Select(ft => new DataSchemaFieldTranslationCreateViewModel
+                    {
+                        LanguageId = ft.LanguageId,
+                        LanguageName = ft.Language?.Name ?? "",
+                        LanguageCode = ft.Language?.Code ?? "",
+                        IsDefault = ft.Language?.IsDefault ?? false,
+                        FieldName = ft.FieldName,
+                        Description = ft.Description,
+                        Placeholder = ft.Placeholder,
+                        Unit = ft.Unit,
+                        OptionsJson = ft.OptionsJson
+                    }).ToList()
+                }).ToList()
+            };
+
+            // Ensure all languages have translations (fill missing ones)
+            foreach (var language in languages)
+            {
+                if (!model.Translations.Any(t => t.LanguageId == language.Id))
+                {
+                    model.Translations.Add(new DataSchemaTranslationCreateViewModel
+                    {
+                        LanguageId = language.Id,
+                        LanguageName = language.Name,
+                        LanguageCode = language.Code,
+                        IsDefault = language.IsDefault
+                    });
+                }
+
+                foreach (var field in model.Fields)
+                {
+                    if (!field.Translations.Any(t => t.LanguageId == language.Id))
+                    {
+                        field.Translations.Add(new DataSchemaFieldTranslationCreateViewModel
+                        {
+                            LanguageId = language.Id,
+                            LanguageName = language.Name,
+                            LanguageCode = language.Code,
+                            IsDefault = language.IsDefault
+                        });
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// DataSchema details page
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> DataSchemaDetails(int id)
+        {
+            var dataSchema = await _context.DataSchemas
+                .Include(ds => ds.Fields.OrderBy(f => f.SortOrder))
+                    .ThenInclude(f => f.Translations)
+                        .ThenInclude(t => t.Language)
+                .Include(ds => ds.Translations)
+                    .ThenInclude(t => t.Language)
+                .Include(ds => ds.ProductDataSchemas)
+                    .ThenInclude(pds => pds.Product)
+                .FirstOrDefaultAsync(ds => ds.Id == id);
+
+            if (dataSchema == null)
+            {
+                return NotFound();
+            }
+
+            var model = new DataSchemaDetailsViewModel
+            {
+                Id = dataSchema.Id,
+                Name = dataSchema.Name,
+                Key = dataSchema.Key,
+                Description = dataSchema.Description,
+                Category = dataSchema.Category,
+                Configuration = dataSchema.Configuration,
+                SortOrder = dataSchema.SortOrder,
+                IsActive = dataSchema.IsActive,
+                Status = dataSchema.Status,
+                CreatedAt = dataSchema.CreatedAt,
+                UpdatedAt = dataSchema.UpdatedAt,
+                Fields = dataSchema.Fields.Select(f => new DataSchemaFieldDetailsViewModel
+                {
+                    Id = f.Id,
+                    DataSchemaId = f.DataSchemaId,
+                    FieldKey = f.FieldKey,
+                    FieldName = f.FieldName,
+                    Description = f.Description,
+                    Type = f.Type,
+                    IsRequired = f.IsRequired,
+                    IsTranslatable = f.IsTranslatable,
+                    ShowInListing = f.ShowInListing,
+                    ShowInDetails = f.ShowInDetails,
+                    IsFilterable = f.IsFilterable,
+                    IsSortable = f.IsSortable,
+                    DefaultValue = f.DefaultValue,
+                    Placeholder = f.Placeholder,
+                    OptionsJson = f.OptionsJson,
+                    ValidationRules = f.ValidationRules,
+                    Unit = f.Unit,
+                    SortOrder = f.SortOrder,
+                    IsActive = f.IsActive,
+                    Status = f.Status,
+                    CreatedAt = f.CreatedAt,
+                    UpdatedAt = f.UpdatedAt,
+                    Translations = f.Translations.Select(ft => new DataSchemaFieldTranslationViewModel
+                    {
+                        Id = ft.Id,
+                        DataSchemaFieldId = ft.DataSchemaFieldId,
+                        LanguageId = ft.LanguageId,
+                        LanguageName = ft.Language?.Name ?? "",
+                        LanguageCode = ft.Language?.Code ?? "",
+                        IsDefault = ft.Language?.IsDefault ?? false,
+                        FieldName = ft.FieldName,
+                        Description = ft.Description,
+                        Placeholder = ft.Placeholder,
+                        Unit = ft.Unit,
+                        OptionsJson = ft.OptionsJson
+                    }).ToList()
+                }).ToList(),
+                Translations = dataSchema.Translations.Select(t => new DataSchemaTranslationViewModel
+                {
+                    Id = t.Id,
+                    DataSchemaId = t.DataSchemaId,
+                    LanguageId = t.LanguageId,
+                    LanguageName = t.Language?.Name ?? "",
+                    LanguageCode = t.Language?.Code ?? "",
+                    IsDefault = t.Language?.IsDefault ?? false,
+                    Name = t.Name,
+                    Description = t.Description,
+                    Category = t.Category
+                }).ToList(),
+                Products = dataSchema.ProductDataSchemas.Select(pds => new ProductDataSchemaViewModel
+                {
+                    Id = pds.Id,
+                    ProductId = pds.ProductId,
+                    ProductName = pds.Product.Name,
+                    SchemaId = pds.SchemaId,
+                    SchemaName = dataSchema.Name,
+                    SchemaKey = dataSchema.Key,
+                    IsPrimary = pds.IsPrimary,
+                    SortOrder = pds.SortOrder,
+                    Configuration = pds.Configuration,
+                    IsActive = pds.IsActive,
+                    Status = pds.Status,
+                    CreatedAt = pds.CreatedAt,
+                    UpdatedAt = pds.UpdatedAt
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Delete DataSchema
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> DeleteDataSchema(int id)
+        {
+            var dataSchema = await _context.DataSchemas
+                .Include(ds => ds.ProductDataSchemas)
+                .FirstOrDefaultAsync(ds => ds.Id == id);
+
+            if (dataSchema == null)
+            {
+                return Json(new { success = false, message = "Schema not found." });
+            }
+
+            // Check if schema is being used by products
+            if (dataSchema.ProductDataSchemas.Any())
+            {
+                return Json(new { success = false, message = $"Cannot delete schema. It is being used by {dataSchema.ProductDataSchemas.Count} product(s)." });
+            }
+
+            dataSchema.IsDeleted = true;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Data schema deleted successfully.";
+            return Json(new { success = true, message = "Schema deleted successfully." });
+        }
+
+        /// <summary>
+        /// Get field types for dropdown
+        /// </summary>
+        [HttpGet]
+        public IActionResult GetFieldTypes()
+        {
+            var fieldTypes = Enum.GetValues<DataSchemaFieldType>()
+                .Where(ft => ft != DataSchemaFieldType.None)
+                .Select(ft => new DataSchemaFieldTypeViewModel
+                {
+                    Value = ft,
+                    Name = GetFieldTypeDisplayName(ft),
+                    Description = GetFieldTypeDescription(ft)
+                })
+                .OrderBy(ft => ft.Name)
+                .ToList();
+
+            return Json(new { success = true, fieldTypes });
+        }
+
+        /// <summary>
+        /// Get available schemas for product creation
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableSchemas()
+        {
+            try
+            {
+                var schemas = await _context.DataSchemas
+                    .Include(ds => ds.Fields)
+                    .Where(ds => ds.IsActive && !ds.IsDeleted)
+                    .OrderBy(ds => ds.Category)
+                    .ThenBy(ds => ds.SortOrder)
+                    .ThenBy(ds => ds.Name)
+                    .Select(ds => new
+                    {
+                        id = ds.Id,
+                        name = ds.Name,
+                        key = ds.Key,
+                        description = ds.Description,
+                        category = ds.Category,
+                        fieldsCount = ds.Fields.Count(f => f.IsActive)
+                    })
+                    .ToListAsync();
+
+                return Json(new { success = true, schemas });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get schema fields for product form
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetSchemaFields(int schemaId)
+        {
+            try
+            {
+                var fields = await _context.DataSchemaFields
+                    .Include(f => f.Translations)
+                        .ThenInclude(t => t.Language)
+                    .Where(f => f.DataSchemaId == schemaId && f.IsActive && !f.IsDeleted)
+                    .OrderBy(f => f.SortOrder)
+                    .ThenBy(f => f.FieldName)
+                    .Select(f => new
+                    {
+                        id = f.Id,
+                        fieldKey = f.FieldKey,
+                        fieldName = f.FieldName,
+                        description = f.Description,
+                        type = f.Type.ToString(),
+                        isRequired = f.IsRequired,
+                        isTranslatable = f.IsTranslatable,
+                        showInListing = f.ShowInListing,
+                        showInDetails = f.ShowInDetails,
+                        isFilterable = f.IsFilterable,
+                        isSortable = f.IsSortable,
+                        defaultValue = f.DefaultValue,
+                        placeholder = f.Placeholder,
+                        optionsJson = f.OptionsJson,
+                        validationRules = f.ValidationRules,
+                        unit = f.Unit,
+                        sortOrder = f.SortOrder,
+                        translations = f.Translations.Select(t => new
+                        {
+                            languageId = t.LanguageId,
+                            languageName = t.Language.Name,
+                            languageCode = t.Language.Code,
+                            fieldName = t.FieldName,
+                            description = t.Description,
+                            placeholder = t.Placeholder,
+                            unit = t.Unit
+                        }).ToList()
+                    })
+                    .ToListAsync();
+
+                return Json(new { success = true, fields });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Create product with schema data
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateProductWithSchema(ProductCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await ReloadProductCreateModel(model);
+                return View(model);
+            }
+
+            try
+            {
+                // Create product
+                var product = new Product
+                {
+                    Name = model.Name,
+                    Code = model.Code,
+                    IntegrationCode = model.IntegrationCode,
+                    ShortDescription = model.ShortDescription,
+                    LongDescription = model.LongDescription,
+                    Unit = model.Unit,
+                    Type = model.Type,
+                    TaxRate = model.TaxRate,
+                    ParentId = model.ParentId,
+                    Status = Status.Active,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+
+                // Add product-schema relationships
+                if (model.SelectedDataSchemaIds != null && model.SelectedDataSchemaIds.Any())
+                {
+                    var productDataSchemas = model.SelectedDataSchemaIds.Select((schemaId, index) => new ProductDataSchema
+                    {
+                        ProductId = product.Id,
+                        SchemaId = schemaId,
+                        IsPrimary = index == 0, // First schema is primary
+                        SortOrder = index + 1,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow
+                    }).ToList();
+
+                    _context.ProductDataSchemas.AddRange(productDataSchemas);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Add field values
+                if (model.FieldValues != null && model.FieldValues.Any())
+                {
+                    var fieldValues = model.FieldValues.Select(fv => new DataSchemaFieldValue
+                    {
+                        ProductId = product.Id,
+                        SchemaId = fv.SchemaId,
+                        FieldId = fv.FieldId,
+                        Value = fv.Value ?? string.Empty,
+                        JsonValue = fv.JsonValue,
+                        NumericValue = fv.NumericValue,
+                        BooleanValue = fv.BooleanValue,
+                        DateValue = fv.DateValue,
+                        SortOrder = fv.SortOrder,
+                        CreatedAt = DateTime.UtcNow
+                    }).ToList();
+
+                    _context.DataSchemaFieldValues.AddRange(fieldValues);
+
+                    // Add field value translations
+                    foreach (var fieldValue in model.FieldValues.Where(fv => fv.Translations != null && fv.Translations.Any()))
+                    {
+                        var fieldValueEntity = fieldValues.FirstOrDefault(fv => fv.FieldId == fieldValue.FieldId && fv.SchemaId == fieldValue.SchemaId);
+                        if (fieldValueEntity != null)
+                        {
+                            var translations = fieldValue.Translations
+                                .Where(t => !string.IsNullOrWhiteSpace(t.Value))
+                                .Select(t => new DataSchemaFieldValueTranslation
+                                {
+                                    DataSchemaFieldValueId = fieldValueEntity.Id,
+                                    LanguageId = t.LanguageId,
+                                    Value = t.Value,
+                                    JsonValue = t.JsonValue,
+                                    CreatedAt = DateTime.UtcNow
+                                }).ToList();
+
+                            if (translations.Any())
+                            {
+                                _context.DataSchemaFieldValueTranslations.AddRange(translations);
+                            }
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["SuccessMessage"] = "Product created successfully with schema data.";
+                return RedirectToAction(nameof(Products));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while creating the product: " + ex.Message);
+                await ReloadProductCreateModel(model);
+                return View(model);
+            }
+        }
+
+        /// <summary>
+        /// Product create with schema page - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> CreateProductWithSchema()
+        {
+            var model = new ProductCreateViewModel
+            {
+                Type = ProductType.Simple,
+                TaxRate = 18 // Default tax rate
+            };
+
+            await ReloadProductCreateModel(model);
+            return View(model);
+        }
+
+        #endregion
+
         #region Helper Methods
 
         private List<ProductListViewModel> BuildProductHierarchy(List<ProductListViewModel> products)
@@ -966,6 +1672,155 @@ namespace PazarAtlasi.CMS.Controllers
                     FlattenTrademarkHierarchy(trademark.ChildTrademarks, flattened, level + 1);
                 }
             }
+        }
+
+        private async Task ReloadDataSchemaCreateModel(DataSchemaCreateViewModel model)
+        {
+            var languages = await _context.Languages
+                .Where(l => !l.IsDeleted && l.IsActive)
+                .OrderByDescending(l => l.IsDefault)
+                .ThenBy(l => l.SortOrder)
+                .ThenBy(l => l.Name)
+                .ToListAsync();
+
+            model.AvailableLanguages = languages.Select(l => new LanguageViewModel
+            {
+                Id = l.Id,
+                Name = l.Name,
+                Code = l.Code,
+                IsDefault = l.IsDefault,
+                IsActive = l.IsActive
+            }).ToList();
+
+            if (!model.Translations.Any())
+            {
+                model.Translations = languages.Select(l => new DataSchemaTranslationCreateViewModel
+                {
+                    LanguageId = l.Id,
+                    LanguageName = l.Name,
+                    LanguageCode = l.Code,
+                    IsDefault = l.IsDefault
+                }).ToList();
+            }
+        }
+
+        private async Task<List<CategoryListViewModel>> GetAvailableParentCategories()
+        {
+            return await _context.Set<Category>()
+                .Where(c => !c.IsDeleted)
+                .OrderBy(c => c.Name)
+                .Select(c => new CategoryListViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Code = c.Code
+                })
+                .ToListAsync();
+        }
+
+        private async Task ReloadProductCreateModel(ProductCreateViewModel model)
+        {
+            // Load available parent products
+            model.AvailableParentProducts = await _context.Products
+                .Where(p => !p.IsDeleted)
+                .OrderBy(p => p.Name)
+                .Select(p => new ProductListViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Code = p.Code
+                })
+                .ToListAsync();
+
+            // Load available data schemas
+            model.AvailableDataSchemas = await _context.DataSchemas
+                .Where(ds => ds.IsActive && !ds.IsDeleted)
+                .OrderBy(ds => ds.Category)
+                .ThenBy(ds => ds.SortOrder)
+                .ThenBy(ds => ds.Name)
+                .Select(ds => new DataSchemaListViewModel
+                {
+                    Id = ds.Id,
+                    Name = ds.Name,
+                    Key = ds.Key,
+                    Description = ds.Description,
+                    Category = ds.Category,
+                    FieldsCount = ds.Fields.Count(f => f.IsActive),
+                    IsActive = ds.IsActive
+                })
+                .ToListAsync();
+        }
+
+        private static string GetFieldTypeDisplayName(DataSchemaFieldType type)
+        {
+            return type switch
+            {
+                DataSchemaFieldType.Text => "Text",
+                DataSchemaFieldType.TextArea => "Text Area",
+                DataSchemaFieldType.Number => "Number",
+                DataSchemaFieldType.Boolean => "Boolean",
+                DataSchemaFieldType.Date => "Date",
+                DataSchemaFieldType.DateTime => "Date Time",
+                DataSchemaFieldType.Email => "Email",
+                DataSchemaFieldType.Url => "URL",
+                DataSchemaFieldType.Phone => "Phone",
+                DataSchemaFieldType.Color => "Color",
+                DataSchemaFieldType.File => "File",
+                DataSchemaFieldType.Image => "Image",
+                DataSchemaFieldType.Video => "Video",
+                DataSchemaFieldType.Select => "Select",
+                DataSchemaFieldType.MultiSelect => "Multi Select",
+                DataSchemaFieldType.Radio => "Radio",
+                DataSchemaFieldType.Checkbox => "Checkbox",
+                DataSchemaFieldType.Range => "Range",
+                DataSchemaFieldType.RichText => "Rich Text",
+                DataSchemaFieldType.Json => "JSON",
+                DataSchemaFieldType.Tags => "Tags",
+                DataSchemaFieldType.Rating => "Rating",
+                DataSchemaFieldType.Currency => "Currency",
+                DataSchemaFieldType.Percentage => "Percentage",
+                DataSchemaFieldType.Dimensions => "Dimensions",
+                DataSchemaFieldType.Weight => "Weight",
+                DataSchemaFieldType.Temperature => "Temperature",
+                DataSchemaFieldType.Custom => "Custom",
+                _ => "Unknown"
+            };
+        }
+
+        private static string GetFieldTypeDescription(DataSchemaFieldType type)
+        {
+            return type switch
+            {
+                DataSchemaFieldType.Text => "Single line text input",
+                DataSchemaFieldType.TextArea => "Multi-line text area",
+                DataSchemaFieldType.Number => "Numeric input (integer or decimal)",
+                DataSchemaFieldType.Boolean => "Boolean checkbox (true/false)",
+                DataSchemaFieldType.Date => "Date picker",
+                DataSchemaFieldType.DateTime => "Date and time picker",
+                DataSchemaFieldType.Email => "Email input with validation",
+                DataSchemaFieldType.Url => "URL input with validation",
+                DataSchemaFieldType.Phone => "Phone number input",
+                DataSchemaFieldType.Color => "Color picker",
+                DataSchemaFieldType.File => "Single file upload",
+                DataSchemaFieldType.Image => "Image upload with preview",
+                DataSchemaFieldType.Video => "Video upload",
+                DataSchemaFieldType.Select => "Dropdown select (single selection)",
+                DataSchemaFieldType.MultiSelect => "Multi-select dropdown",
+                DataSchemaFieldType.Radio => "Radio buttons (single selection)",
+                DataSchemaFieldType.Checkbox => "Checkboxes (multiple selections)",
+                DataSchemaFieldType.Range => "Range slider for numeric values",
+                DataSchemaFieldType.RichText => "Rich text editor (HTML)",
+                DataSchemaFieldType.Json => "JSON data input",
+                DataSchemaFieldType.Tags => "Tags input (comma-separated values)",
+                DataSchemaFieldType.Rating => "Rating input (stars, numbers)",
+                DataSchemaFieldType.Currency => "Currency input with symbol",
+                DataSchemaFieldType.Percentage => "Percentage input",
+                DataSchemaFieldType.Dimensions => "Dimensions input (width x height x depth)",
+                DataSchemaFieldType.Weight => "Weight input with unit",
+                DataSchemaFieldType.Temperature => "Temperature input with unit",
+                DataSchemaFieldType.Custom => "Custom field type (requires special handling)",
+                _ => "Unknown field type"
+            };
         }
 
         #endregion

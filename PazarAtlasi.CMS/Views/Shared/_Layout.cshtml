@@ -215,6 +215,9 @@
                         <li><a href="@Url.Action("Trademarks", "Metadata")"
                                 class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
                                     class="fas fa-trademark w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Trademarks")</a></li>
+                        <li><a href="@Url.Action("DataSchemas", "Metadata")"
+                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
+                                    class="fas fa-database w-[18px] mr-2.5 text-center text-sm"></i> Şema Yönetimi</a></li>
                     </ul>
                 </li>
                 <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
@@ -425,9 +428,13 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Sortable.js for drag & drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <!-- Content Services - AJAX Request Handler -->
     <script src="~/js/Content/Services/Content.Services.js" asp-append-version="true"></script>
+    <!-- MetaData Services - AJAX Request Handler -->
+    <script src="~/js/metadata/MetaData.Services.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

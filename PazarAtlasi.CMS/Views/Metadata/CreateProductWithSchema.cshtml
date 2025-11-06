@@ -1,0 +1,245 @@
+@model ProductCreateViewModel
+@{
+    ViewData["Title"] = "Yeni Ürün Oluştur";
+}
+
+<div class="bg-white rounded-xl shadow-md">
+    <!-- Header -->
+    <div class="p-6 border-b border-slate-200">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 mb-2">
+                    <i class="fas fa-plus text-blue-600 mr-3"></i>
+                    Yeni Ürün Oluştur
+                </h1>
+                <p class="text-slate-600">Şema desteği ile detaylı ürün bilgileri ekleyin</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a href="@Url.Action("Products")" 
+                   class="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="CreateProductWithSchema" method="post" id="createProductForm">
+        <div class="p-6">
+            <!-- Basic Product Information -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                    Temel Ürün Bilgileri
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-2">Ürün Adı *</label>
+                        <input asp-for="Name" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Örn: iPhone 15 Pro" required>
+                        <span asp-validation-for="Name" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Code" class="block text-sm font-medium text-slate-700 mb-2">Ürün Kodu *</label>
+                        <input asp-for="Code" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Örn: IPH15PRO" required>
+                        <span asp-validation-for="Code" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div>
+                        <label asp-for="IntegrationCode" class="block text-sm font-medium text-slate-700 mb-2">Entegrasyon Kodu</label>
+                        <input asp-for="IntegrationCode" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Harici sistem kodu">
+                        <span asp-validation-for="IntegrationCode" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Unit" class="block text-sm font-medium text-slate-700 mb-2">Birim</label>
+                        <input asp-for="Unit" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Örn: Adet, Kg, Litre">
+                        <span asp-validation-for="Unit" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Type" class="block text-sm font-medium text-slate-700 mb-2">Ürün Tipi</label>
+                        <select asp-for="Type" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="Simple">Basit Ürün</option>
+                            <option value="Variable">Varyantlı Ürün</option>
+                            <option value="Grouped">Gruplu Ürün</option>
+                            <option value="External">Harici Ürün</option>
+                            <option value="Digital">Dijital Ürün</option>
+                            <option value="Service">Hizmet</option>
+                            <option value="Bundle">Paket Ürün</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div>
+                        <label asp-for="TaxRate" class="block text-sm font-medium text-slate-700 mb-2">Vergi Oranı (%)</label>
+                        <input asp-for="TaxRate" type="number" step="0.01" min="0" max="100" 
+                               class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="18">
+                        <span asp-validation-for="TaxRate" class="text-red-500 text-sm"></span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label asp-for="ShortDescription" class="block text-sm font-medium text-slate-700 mb-2">Kısa Açıklama</label>
+                    <textarea asp-for="ShortDescription" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                              placeholder="Ürün hakkında kısa açıklama..."></textarea>
+                    <span asp-validation-for="ShortDescription" class="text-red-500 text-sm"></span>
+                </div>
+                <div class="mt-4">
+                    <label asp-for="LongDescription" class="block text-sm font-medium text-slate-700 mb-2">Detaylı Açıklama</label>
+                    <textarea asp-for="LongDescription" rows="4" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                              placeholder="Ürün hakkında detaylı açıklama..."></textarea>
+                    <span asp-validation-for="LongDescription" class="text-red-500 text-sm"></span>
+                </div>
+            </div>
+
+            <!-- Schema Selection -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-database text-purple-600 mr-2"></i>
+                    Ürün Özellikleri Şeması
+                </h3>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-info-circle text-purple-600 mt-0.5"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-sm font-medium text-purple-800">Şema Seçimi</h4>
+                            <p class="text-sm text-purple-700 mt-1">
+                                Ürününüz için uygun özellik şemasını seçin. Şema seçtikten sonra o şemaya ait alanları doldurabileceksiniz.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Ana Şema Seçin</label>
+                        <select id="primarySchemaSelect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <option value="">Şema seçin...</option>
+                        </select>
+                        <p class="text-xs text-slate-500 mt-1">Bu ürün için ana özellik şeması</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Ek Şemalar</label>
+                        <select id="additionalSchemasSelect" multiple class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" size="4">
+                            <!-- Options will be loaded dynamically -->
+                        </select>
+                        <p class="text-xs text-slate-500 mt-1">İsteğe bağlı ek özellik şemaları</p>
+                    </div>
+                </div>
+
+                <!-- Selected Schemas Display -->
+                <div id="selectedSchemasContainer" class="mt-6 hidden">
+                    <h4 class="text-md font-semibold text-slate-800 mb-3">Seçilen Şemalar</h4>
+                    <div id="selectedSchemasList" class="space-y-3">
+                        <!-- Selected schemas will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schema Fields -->
+            <div id="schemaFieldsContainer" class="mb-8 hidden">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-list text-green-600 mr-2"></i>
+                    Ürün Özellikleri
+                </h3>
+                
+                <!-- Schema fields will be loaded here dynamically -->
+                <div id="schemaFieldsContent">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-between pt-6 border-t border-slate-200">
+                <a href="@Url.Action("Products")" class="text-slate-600 hover:text-slate-800 transition-colors">
+                    <i class="fas fa-times mr-2"></i>
+                    İptal
+                </a>
+                <div class="flex items-center space-x-3">
+                    <button type="button" onclick="saveDraft()" class="bg-slate-500 hover:bg-slate-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>
+                        Taslak Kaydet
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-check mr-2"></i>
+                        Ürün Oluştur
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/metadata/MetaData.Services.js" asp-append-version="true"></script>
+    <script src="~/js/metadata/PazarAtlasi.MetaData.Product.js" asp-append-version="true"></script>
+    <script>
+        // Initialize the form
+        $(document).ready(function() {
+            ProductManager.init();
+            
+            // Auto-generate code from name
+            $('input[name="Name"]').on('input', function() {
+                const name = $(this).val();
+                const code = name.toUpperCase()
+                    .replace(/[^A-Z0-9\s]/g, '')
+                    .replace(/\s+/g, '')
+                    .substring(0, 20);
+                $('input[name="Code"]').val(code);
+            });
+        });
+
+        // Save as draft
+        function saveDraft() {
+            // Set status to draft and submit
+            const form = document.getElementById('createProductForm');
+            const statusInput = document.createElement('input');
+            statusInput.type = 'hidden';
+            statusInput.name = 'Status';
+            statusInput.value = '@((int)Status.Draft)';
+            form.appendChild(statusInput);
+            form.submit();
+        }
+
+        // Form validation
+        document.getElementById('createProductForm').addEventListener('submit', function(e) {
+            const primarySchema = document.getElementById('primarySchemaSelect').value;
+            if (!primarySchema) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Uyarı!',
+                    text: 'Lütfen en az bir ana şema seçin.',
+                    icon: 'warning',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            // Validate required schema fields
+            const requiredFields = document.querySelectorAll('.schema-field[data-required="true"] input, .schema-field[data-required="true"] select, .schema-field[data-required="true"] textarea');
+            let hasEmptyRequired = false;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    hasEmptyRequired = true;
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+
+            if (hasEmptyRequired) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Uyarı!',
+                    text: 'Lütfen tüm zorunlu alanları doldurun.',
+                    icon: 'warning',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+        });
+    </script>
+}

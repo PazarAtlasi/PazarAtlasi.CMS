@@ -1,0 +1,450 @@
+@model DataSchemaDetailsViewModel
+@{
+    ViewData["Title"] = $"Şema Detayları - {Model.Name}";
+}
+
+<div class="bg-white rounded-xl shadow-md">
+    <!-- Header -->
+    <div class="p-6 border-b border-slate-200">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 mb-2">
+                    <i class="fas fa-database text-blue-600 mr-3"></i>
+                    @Model.Name
+                </h1>
+                <div class="flex items-center space-x-4 text-sm text-slate-600">
+                    <span><i class="fas fa-key mr-1"></i>@Model.Key</span>
+                    @if (!string.IsNullOrEmpty(Model.Category))
+                    {
+                        <span><i class="fas fa-tag mr-1"></i>@Model.Category</span>
+                    }
+                    <span><i class="fas fa-calendar mr-1"></i>@Model.CreatedAt.ToString("dd.MM.yyyy")</span>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <p class="text-slate-600 mt-2">@Model.Description</p>
+                }
+            </div>
+            <div class="flex items-center space-x-3">
+                <a href="@Url.Action("EditDataSchema", new { id = Model.Id })" 
+                   class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+                    <i class="fas fa-edit mr-2"></i>
+                    Düzenle
+                </a>
+                <a href="@Url.Action("DataSchemas")" 
+                   class="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="p-6 border-b border-slate-200">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-list text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-purple-100 text-sm font-medium">Toplam Alan</p>
+                        <p class="text-2xl font-bold">@Model.Fields.Count</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-green-100 text-sm font-medium">Aktif Alan</p>
+                        <p class="text-2xl font-bold">@Model.Fields.Count(f => f.IsActive)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-filter text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-blue-100 text-sm font-medium">Filtrelenebilir</p>
+                        <p class="text-2xl font-bold">@Model.Fields.Count(f => f.IsFilterable)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-box text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-orange-100 text-sm font-medium">Kullanılan Ürün</p>
+                        <p class="text-2xl font-bold">@Model.Products.Count</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schema Information -->
+    <div class="p-6 border-b border-slate-200">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+            <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+            Şema Bilgileri
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-slate-50 rounded-lg p-4">
+                <div class="text-sm font-medium text-slate-700 mb-1">Şema Adı</div>
+                <div class="text-slate-900">@Model.Name</div>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-4">
+                <div class="text-sm font-medium text-slate-700 mb-1">Şema Anahtarı</div>
+                <div class="text-slate-900 font-mono">@Model.Key</div>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Category))
+            {
+                <div class="bg-slate-50 rounded-lg p-4">
+                    <div class="text-sm font-medium text-slate-700 mb-1">Kategori</div>
+                    <div class="text-slate-900">@Model.Category</div>
+                </div>
+            }
+            <div class="bg-slate-50 rounded-lg p-4">
+                <div class="text-sm font-medium text-slate-700 mb-1">Durum</div>
+                <div>
+                    @if (Model.IsActive)
+                    {
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            Aktif
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <i class="fas fa-times-circle mr-1"></i>
+                            Pasif
+                        </span>
+                    }
+                </div>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-4">
+                <div class="text-sm font-medium text-slate-700 mb-1">Oluşturulma</div>
+                <div class="text-slate-900">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+            </div>
+            @if (Model.UpdatedAt.HasValue)
+            {
+                <div class="bg-slate-50 rounded-lg p-4">
+                    <div class="text-sm font-medium text-slate-700 mb-1">Son Güncelleme</div>
+                    <div class="text-slate-900">@Model.UpdatedAt.Value.ToString("dd.MM.yyyy HH:mm")</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Fields -->
+    <div class="p-6 border-b border-slate-200">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+            <i class="fas fa-list text-purple-600 mr-2"></i>
+            Şema Alanları (@Model.Fields.Count)
+        </h3>
+        
+        @if (Model.Fields.Any())
+        {
+            <div class="space-y-4">
+                @foreach (var field in Model.Fields.OrderBy(f => f.SortOrder))
+                {
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <div class="flex items-center mb-2">
+                                    <h4 class="text-lg font-semibold text-slate-800 mr-3">@field.FieldName</h4>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        @field.TypeDisplayName
+                                    </span>
+                                    @if (!string.IsNullOrEmpty(field.Unit))
+                                    {
+                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                            @field.Unit
+                                        </span>
+                                    }
+                                </div>
+                                <div class="text-sm text-slate-600 mb-2">
+                                    <span class="font-mono bg-slate-200 px-2 py-1 rounded">@field.FieldKey</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(field.Description))
+                                {
+                                    <p class="text-sm text-slate-600 mb-3">@field.Description</p>
+                                }
+                            </div>
+                            <div class="flex items-center space-x-2 ml-4">
+                                @if (field.IsRequired)
+                                {
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800" title="Zorunlu">
+                                        <i class="fas fa-asterisk"></i>
+                                    </span>
+                                }
+                                @if (field.IsTranslatable)
+                                {
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800" title="Çevrilebilir">
+                                        <i class="fas fa-language"></i>
+                                    </span>
+                                }
+                                @if (field.IsFilterable)
+                                {
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800" title="Filtrelenebilir">
+                                        <i class="fas fa-filter"></i>
+                                    </span>
+                                }
+                                @if (field.IsSortable)
+                                {
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800" title="Sıralanabilir">
+                                        <i class="fas fa-sort"></i>
+                                    </span>
+                                }
+                                @if (!field.IsActive)
+                                {
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800" title="Pasif">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Field Properties -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                            <div class="text-sm">
+                                <span class="font-medium text-slate-700">Listede Göster:</span>
+                                <span class="ml-1 @(field.ShowInListing ? "text-green-600" : "text-red-600")">
+                                    @(field.ShowInListing ? "Evet" : "Hayır")
+                                </span>
+                            </div>
+                            <div class="text-sm">
+                                <span class="font-medium text-slate-700">Detayda Göster:</span>
+                                <span class="ml-1 @(field.ShowInDetails ? "text-green-600" : "text-red-600")">
+                                    @(field.ShowInDetails ? "Evet" : "Hayır")
+                                </span>
+                            </div>
+                            <div class="text-sm">
+                                <span class="font-medium text-slate-700">Sıralama:</span>
+                                <span class="ml-1 text-slate-900">@field.SortOrder</span>
+                            </div>
+                            <div class="text-sm">
+                                <span class="font-medium text-slate-700">Durum:</span>
+                                <span class="ml-1 @(field.IsActive ? "text-green-600" : "text-red-600")">
+                                    @(field.IsActive ? "Aktif" : "Pasif")
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Default Value and Placeholder -->
+                        @if (!string.IsNullOrEmpty(field.DefaultValue) || !string.IsNullOrEmpty(field.Placeholder))
+                        {
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                @if (!string.IsNullOrEmpty(field.DefaultValue))
+                                {
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Varsayılan Değer:</span>
+                                        <span class="ml-1 text-slate-900 font-mono bg-slate-200 px-2 py-1 rounded">@field.DefaultValue</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(field.Placeholder))
+                                {
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Placeholder:</span>
+                                        <span class="ml-1 text-slate-900">@field.Placeholder</span>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- Options (for select fields) -->
+                        @if (!string.IsNullOrEmpty(field.OptionsJson))
+                        {
+                            <div class="mb-4">
+                                <span class="font-medium text-slate-700 text-sm">Seçenekler:</span>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    @try
+                                    {
+                                        var options = System.Text.Json.JsonSerializer.Deserialize<List<dynamic>>(field.OptionsJson);
+                                        @foreach (var option in options)
+                                        {
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                @option.GetProperty("label").GetString()
+                                            </span>
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        <span class="text-red-600 text-sm">Seçenekler yüklenemedi</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Validation Rules -->
+                        @if (!string.IsNullOrEmpty(field.ValidationRules))
+                        {
+                            <div class="mb-4">
+                                <span class="font-medium text-slate-700 text-sm">Validasyon Kuralları:</span>
+                                <pre class="mt-2 text-xs bg-slate-200 p-3 rounded-lg overflow-x-auto"><code>@field.ValidationRules</code></pre>
+                            </div>
+                        }
+
+                        <!-- Field Translations -->
+                        @if (field.Translations.Any())
+                        {
+                            <div>
+                                <span class="font-medium text-slate-700 text-sm mb-2 block">Çeviriler:</span>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    @foreach (var translation in field.Translations)
+                                    {
+                                        <div class="bg-white border border-slate-200 rounded-lg p-3">
+                                            <div class="flex items-center mb-2">
+                                                <span class="font-medium text-slate-800">@translation.LanguageName</span>
+                                                @if (translation.IsDefault)
+                                                {
+                                                    <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                                        Varsayılan
+                                                    </span>
+                                                }
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(translation.FieldName))
+                                            {
+                                                <div class="text-sm mb-1">
+                                                    <span class="font-medium text-slate-600">Alan Adı:</span>
+                                                    <span class="ml-1 text-slate-900">@translation.FieldName</span>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(translation.Description))
+                                            {
+                                                <div class="text-sm mb-1">
+                                                    <span class="font-medium text-slate-600">Açıklama:</span>
+                                                    <span class="ml-1 text-slate-900">@translation.Description</span>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(translation.Unit))
+                                            {
+                                                <div class="text-sm">
+                                                    <span class="font-medium text-slate-600">Birim:</span>
+                                                    <span class="ml-1 text-slate-900">@translation.Unit</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-8">
+                <div class="mx-auto h-12 w-12 text-slate-400 mb-4">
+                    <i class="fas fa-list text-3xl"></i>
+                </div>
+                <h3 class="text-sm font-medium text-slate-900 mb-2">Henüz alan yok</h3>
+                <p class="text-sm text-slate-500">Bu şemada henüz alan tanımlanmamış</p>
+            </div>
+        }
+    </div>
+
+    <!-- Used in Products -->
+    @if (Model.Products.Any())
+    {
+        <div class="p-6 border-b border-slate-200">
+            <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                <i class="fas fa-box text-orange-600 mr-2"></i>
+                Kullanılan Ürünler (@Model.Products.Count)
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach (var product in Model.Products.Take(6))
+                {
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold text-slate-800">@product.ProductName</h4>
+                            @if (product.IsPrimary)
+                            {
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Ana Şema
+                                </span>
+                            }
+                        </div>
+                        <div class="text-sm text-slate-600">
+                            <div>Oluşturulma: @product.CreatedAt.ToString("dd.MM.yyyy")</div>
+                            @if (product.UpdatedAt.HasValue)
+                            {
+                                <div>Güncelleme: @product.UpdatedAt.Value.ToString("dd.MM.yyyy")</div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            
+            @if (Model.Products.Count > 6)
+            {
+                <div class="mt-4 text-center">
+                    <span class="text-sm text-slate-600">ve @(Model.Products.Count - 6) ürün daha...</span>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Schema Translations -->
+    @if (Model.Translations.Any())
+    {
+        <div class="p-6">
+            <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                <i class="fas fa-language text-green-600 mr-2"></i>
+                Şema Çevirileri
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @foreach (var translation in Model.Translations)
+                {
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                        <div class="flex items-center mb-3">
+                            <h4 class="font-semibold text-slate-800">@translation.LanguageName</h4>
+                            @if (translation.IsDefault)
+                            {
+                                <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Varsayılan
+                                </span>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(translation.Name))
+                        {
+                            <div class="mb-2">
+                                <span class="font-medium text-slate-700 text-sm">Şema Adı:</span>
+                                <div class="text-slate-900">@translation.Name</div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(translation.Category))
+                        {
+                            <div class="mb-2">
+                                <span class="font-medium text-slate-700 text-sm">Kategori:</span>
+                                <div class="text-slate-900">@translation.Category</div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(translation.Description))
+                        {
+                            <div>
+                                <span class="font-medium text-slate-700 text-sm">Açıklama:</span>
+                                <div class="text-slate-900">@translation.Description</div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,258 @@
+@model DataSchemaCreateViewModel
+@{
+    ViewData["Title"] = "Yeni Şema Oluştur";
+}
+
+<div class="bg-white rounded-xl shadow-md">
+    <!-- Header -->
+    <div class="p-6 border-b border-slate-200">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 mb-2">
+                    <i class="fas fa-plus text-blue-600 mr-3"></i>
+                    Yeni Şema Oluştur
+                </h1>
+                <p class="text-slate-600">Ürün özellikleri için yeni bir şema tanımlayın</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a href="@Url.Action("DataSchemas")" 
+                   class="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="CreateDataSchema" method="post" id="createSchemaForm">
+        <div class="p-6">
+            <!-- Basic Information -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                    Temel Bilgiler
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-2">Şema Adı *</label>
+                        <input asp-for="Name" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Örn: Smartphone Özellikleri" required>
+                        <span asp-validation-for="Name" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Key" class="block text-sm font-medium text-slate-700 mb-2">Şema Anahtarı *</label>
+                        <input asp-for="Key" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Örn: smartphone-specs" required pattern="^[a-z0-9-_]+$">
+                        <span asp-validation-for="Key" class="text-red-500 text-sm"></span>
+                        <p class="text-xs text-slate-500 mt-1">Sadece küçük harf, rakam, tire ve alt çizgi kullanın</p>
+                    </div>
+                    <div>
+                        <label asp-for="Category" class="block text-sm font-medium text-slate-700 mb-2">Kategori</label>
+                        <input asp-for="Category" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Örn: Electronics">
+                        <span asp-validation-for="Category" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div>
+                        <label asp-for="SortOrder" class="block text-sm font-medium text-slate-700 mb-2">Sıralama</label>
+                        <input asp-for="SortOrder" type="number" min="0" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <span asp-validation-for="SortOrder" class="text-red-500 text-sm"></span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label asp-for="Description" class="block text-sm font-medium text-slate-700 mb-2">Açıklama</label>
+                    <textarea asp-for="Description" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                              placeholder="Şema hakkında açıklama yazın..."></textarea>
+                    <span asp-validation-for="Description" class="text-red-500 text-sm"></span>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <input asp-for="IsActive" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
+                    <label asp-for="IsActive" class="ml-2 block text-sm text-slate-700">Aktif</label>
+                </div>
+            </div>
+
+            <!-- Translations -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <i class="fas fa-language text-green-600 mr-2"></i>
+                    Çoklu Dil Desteği
+                </h3>
+                
+                <!-- Language Tabs -->
+                <div class="border-b border-slate-200 mb-4">
+                    <nav class="-mb-px flex space-x-8" id="languageTabs">
+                        @for (int i = 0; i < Model.AvailableLanguages.Count; i++)
+                        {
+                            var language = Model.AvailableLanguages[i];
+                            <button type="button" 
+                                    class="language-tab py-2 px-1 border-b-2 font-medium text-sm transition-colors @(language.IsDefault ? "border-blue-500 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
+                                    data-language-id="@language.Id"
+                                    onclick="switchLanguageTab(@language.Id)">
+                                @language.Name
+                                @if (language.IsDefault)
+                                {
+                                    <span class="ml-1 text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded">Varsayılan</span>
+                                }
+                            </button>
+                        }
+                    </nav>
+                </div>
+
+                <!-- Translation Content -->
+                @for (int i = 0; i < Model.Translations.Count; i++)
+                {
+                    var translation = Model.Translations[i];
+                    <div class="translation-content @(translation.IsDefault ? "" : "hidden")" data-language-id="@translation.LanguageId">
+                        <input type="hidden" asp-for="Translations[i].LanguageId" value="@translation.LanguageId" />
+                        <input type="hidden" asp-for="Translations[i].LanguageName" value="@translation.LanguageName" />
+                        <input type="hidden" asp-for="Translations[i].LanguageCode" value="@translation.LanguageCode" />
+                        <input type="hidden" asp-for="Translations[i].IsDefault" value="@translation.IsDefault" />
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Şema Adı (@translation.LanguageName)</label>
+                                <input asp-for="Translations[i].Name" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                       placeholder="@translation.LanguageName dilinde şema adı">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Kategori (@translation.LanguageName)</label>
+                                <input asp-for="Translations[i].Category" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                       placeholder="@translation.LanguageName dilinde kategori">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Açıklama (@translation.LanguageName)</label>
+                            <textarea asp-for="Translations[i].Description" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                      placeholder="@translation.LanguageName dilinde açıklama"></textarea>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Fields -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-list text-purple-600 mr-2"></i>
+                        Şema Alanları
+                    </h3>
+                    <button type="button" onclick="addField()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Alan Ekle
+                    </button>
+                </div>
+
+                <div id="fieldsContainer">
+                    <!-- Fields will be added here dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="fieldsEmptyState" class="text-center py-8 border-2 border-dashed border-slate-300 rounded-lg">
+                    <div class="mx-auto h-12 w-12 text-slate-400 mb-4">
+                        <i class="fas fa-list text-3xl"></i>
+                    </div>
+                    <h3 class="text-sm font-medium text-slate-900 mb-2">Henüz alan eklenmedi</h3>
+                    <p class="text-sm text-slate-500 mb-4">Şemanız için alanlar ekleyin</p>
+                    <button type="button" onclick="addField()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        İlk Alanı Ekle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-between pt-6 border-t border-slate-200">
+                <a href="@Url.Action("DataSchemas")" class="text-slate-600 hover:text-slate-800 transition-colors">
+                    <i class="fas fa-times mr-2"></i>
+                    İptal
+                </a>
+                <div class="flex items-center space-x-3">
+                    <button type="button" onclick="saveDraft()" class="bg-slate-500 hover:bg-slate-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>
+                        Taslak Kaydet
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-check mr-2"></i>
+                        Şema Oluştur
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/metadata/PazarAtlasi.MetaData.DataSchema.js" asp-append-version="true"></script>
+    <script>
+        // Initialize the form
+        $(document).ready(function() {
+            DataSchemaManager.init();
+            
+            // Auto-generate key from name
+            $('input[name="Name"]').on('input', function() {
+                const name = $(this).val();
+                const key = name.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim('-');
+                $('input[name="Key"]').val(key);
+            });
+        });
+
+        // Language tab switching
+        function switchLanguageTab(languageId) {
+            // Hide all translation contents
+            document.querySelectorAll('.translation-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Show selected translation content
+            const selectedContent = document.querySelector(`.translation-content[data-language-id="${languageId}"]`);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+
+            // Update tab styles
+            document.querySelectorAll('.language-tab').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            const selectedTab = document.querySelector(`.language-tab[data-language-id="${languageId}"]`);
+            if (selectedTab) {
+                selectedTab.classList.remove('border-transparent', 'text-slate-500');
+                selectedTab.classList.add('border-blue-500', 'text-blue-600');
+            }
+        }
+
+        // Add field functionality
+        function addField() {
+            DataSchemaManager.addField();
+        }
+
+        // Save as draft
+        function saveDraft() {
+            const form = document.getElementById('createSchemaForm');
+            const statusInput = document.createElement('input');
+            statusInput.type = 'hidden';
+            statusInput.name = 'Status';
+            statusInput.value = '@((int)Status.Draft)';
+            form.appendChild(statusInput);
+            form.submit();
+        }
+
+        // Form validation
+        document.getElementById('createSchemaForm').addEventListener('submit', function(e) {
+            const fields = document.querySelectorAll('.field-item');
+            if (fields.length === 0) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Uyarı!',
+                    text: 'En az bir alan eklemelisiniz.',
+                    icon: 'warning',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+        });
+    </script>
+}

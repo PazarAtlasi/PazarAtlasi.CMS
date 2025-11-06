@@ -1,0 +1,400 @@
+@model DataSchemaListResponse
+@{
+    ViewData["Title"] = "Şema Yönetimi";
+}
+
+<div class="bg-white rounded-xl shadow-md">
+    <!-- Header -->
+    <div class="p-6 border-b border-slate-200">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 mb-2">
+                    <i class="fas fa-database text-blue-600 mr-3"></i>
+                    Şema Yönetimi
+                </h1>
+                <p class="text-slate-600">Ürün özellik şemalarını yönetin ve düzenleyin</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a href="@Url.Action("CreateDataSchema")" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+                    <i class="fas fa-plus mr-2"></i>
+                    Yeni Şema
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="p-6 border-b border-slate-200">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-database text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-blue-100 text-sm font-medium">Toplam Şema</p>
+                        <p class="text-2xl font-bold">@Model.TotalCount</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-green-100 text-sm font-medium">Aktif Şema</p>
+                        <p class="text-2xl font-bold">@Model.DataSchemas.Count(ds => ds.IsActive)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-list text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-purple-100 text-sm font-medium">Toplam Alan</p>
+                        <p class="text-2xl font-bold">@Model.DataSchemas.Sum(ds => ds.FieldsCount)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white/20 rounded-full">
+                        <i class="fas fa-box text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-orange-100 text-sm font-medium">Kullanılan Ürün</p>
+                        <p class="text-2xl font-bold">@Model.DataSchemas.Sum(ds => ds.ProductsCount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="p-6 border-b border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="Şema ara..." 
+                           class="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
+                </div>
+                <select id="categoryFilter" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Tüm Kategoriler</option>
+                    @foreach (var category in Model.DataSchemas.Where(ds => !string.IsNullOrEmpty(ds.Category)).Select(ds => ds.Category).Distinct().OrderBy(c => c))
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </select>
+                <select id="statusFilter" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Tüm Durumlar</option>
+                    <option value="true">Aktif</option>
+                    <option value="false">Pasif</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="clearFilters()" class="text-slate-600 hover:text-slate-800 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors">
+                    <i class="fas fa-times mr-1"></i>
+                    Temizle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Şema</th>
+                    <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Kategori</th>
+                    <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Alanlar</th>
+                    <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ürünler</th>
+                    <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Durum</th>
+                    <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tarih</th>
+                    <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-slate-200" id="dataSchemaTableBody">
+                @foreach (var schema in Model.DataSchemas)
+                {
+                    <tr class="hover:bg-slate-50 transition-colors schema-row" 
+                        data-name="@schema.Name.ToLower()" 
+                        data-category="@(schema.Category?.ToLower() ?? "")" 
+                        data-active="@schema.IsActive.ToString().ToLower()">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-database text-blue-600"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-slate-900">@schema.Name</div>
+                                    <div class="text-sm text-slate-500">@schema.Key</div>
+                                    @if (!string.IsNullOrEmpty(schema.Description))
+                                    {
+                                        <div class="text-xs text-slate-400 mt-1">@schema.Description</div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if (!string.IsNullOrEmpty(schema.Category))
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    <i class="fas fa-tag mr-1"></i>
+                                    @schema.Category
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-slate-400 text-sm">-</span>
+                            }
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-list mr-1"></i>
+                                    @schema.FieldsCount alan
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if (schema.ProductsCount > 0)
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <i class="fas fa-box mr-1"></i>
+                                    @schema.ProductsCount ürün
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-slate-400 text-sm">Kullanılmıyor</span>
+                            }
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if (schema.IsActive)
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Aktif
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Pasif
+                                </span>
+                            }
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                            <div>@schema.CreatedAt.ToString("dd.MM.yyyy")</div>
+                            @if (schema.UpdatedAt.HasValue)
+                            {
+                                <div class="text-xs text-slate-400">Güncellendi: @schema.UpdatedAt.Value.ToString("dd.MM.yyyy")</div>
+                            }
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-2">
+                                <a href="@Url.Action("DataSchemaDetails", new { id = schema.Id })" 
+                                   class="text-blue-600 hover:text-blue-900 transition-colors" title="Detaylar">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="@Url.Action("EditDataSchema", new { id = schema.Id })" 
+                                   class="text-green-600 hover:text-green-900 transition-colors" title="Düzenle">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                @if (schema.ProductsCount == 0)
+                                {
+                                    <button onclick="confirmDelete(@schema.Id, '@schema.Name')" 
+                                            class="text-red-600 hover:text-red-900 transition-colors" title="Sil">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="text-slate-400" title="Bu şema ürünler tarafından kullanıldığı için silinemez">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Empty State -->
+    @if (!Model.DataSchemas.Any())
+    {
+        <div class="text-center py-12">
+            <div class="mx-auto h-24 w-24 text-slate-400 mb-4">
+                <i class="fas fa-database text-6xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-slate-900 mb-2">Henüz şema yok</h3>
+            <p class="text-slate-500 mb-6">İlk ürün özellik şemanızı oluşturun</p>
+            <a href="@Url.Action("CreateDataSchema")" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors inline-flex items-center">
+                <i class="fas fa-plus mr-2"></i>
+                Yeni Şema Oluştur
+            </a>
+        </div>
+    }
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="px-6 py-4 border-t border-slate-200">
+            <div class="flex items-center justify-between">
+                <div class="text-sm text-slate-700">
+                    <span>Toplam <span class="font-medium">@Model.TotalCount</span> şemadan</span>
+                    <span class="font-medium">@((Model.PageNumber - 1) * Model.PageSize + 1)</span>
+                    -
+                    <span class="font-medium">@Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)</span>
+                    arası gösteriliyor
+                </div>
+                <div class="flex items-center space-x-2">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a href="@Url.Action("DataSchemas", new { page = Model.PageNumber - 1 })" 
+                           class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                            Önceki
+                        </a>
+                    }
+                    
+                    @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                    {
+                        if (i == Model.PageNumber)
+                        {
+                            <span class="px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md">@i</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("DataSchemas", new { page = i })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">@i</a>
+                        }
+                    }
+                    
+                    @if (Model.HasNextPage)
+                    {
+                        <a href="@Url.Action("DataSchemas", new { page = Model.PageNumber + 1 })" 
+                           class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                            Sonraki
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Search and filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const tableBody = document.getElementById('dataSchemaTableBody');
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedCategory = categoryFilter.value.toLowerCase();
+            const selectedStatus = statusFilter.value;
+            const rows = tableBody.querySelectorAll('.schema-row');
+
+            rows.forEach(row => {
+                const name = row.dataset.name;
+                const category = row.dataset.category;
+                const isActive = row.dataset.active;
+
+                const matchesSearch = name.includes(searchTerm);
+                const matchesCategory = !selectedCategory || category === selectedCategory;
+                const matchesStatus = !selectedStatus || isActive === selectedStatus;
+
+                row.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
+            });
+        }
+
+        function clearFilters() {
+            searchInput.value = '';
+            categoryFilter.value = '';
+            statusFilter.value = '';
+            filterTable();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterTable);
+        categoryFilter.addEventListener('change', filterTable);
+        statusFilter.addEventListener('change', filterTable);
+
+        // Delete confirmation
+        function confirmDelete(id, name) {
+            Swal.fire({
+                title: 'Şemayı Sil',
+                text: `"${name}" şemasını silmek istediğinizden emin misiniz?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Evet, Sil',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create form and submit
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '@Url.Action("DeleteDataSchema")';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'id';
+                    input.value = id;
+                    
+                    const token = document.createElement('input');
+                    token.type = 'hidden';
+                    token.name = '__RequestVerificationToken';
+                    token.value = $('input[name="__RequestVerificationToken"]').val();
+                    
+                    form.appendChild(input);
+                    form.appendChild(token);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+
+        // Show success/error messages
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            Swal.fire({
+                title: 'Başarılı!',
+                text: '@TempData["SuccessMessage"]',
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false
+            });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            Swal.fire({
+                title: 'Hata!',
+                text: '@TempData["ErrorMessage"]',
+                icon: 'error',
+                confirmButtonText: 'Tamam'
+            });
+            </text>
+        }
+    </script>
+}
