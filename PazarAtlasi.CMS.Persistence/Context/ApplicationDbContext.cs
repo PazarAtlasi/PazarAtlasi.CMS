@@ -6,6 +6,7 @@ using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Domain.Entities.Announcement;
 using PazarAtlasi.CMS.Domain.Entities.Content;
 using PazarAtlasi.CMS.Domain.Entities.Localization;
+using PazarAtlasi.CMS.Domain.Entities.Metadata;
 
 namespace PazarAtlasi.CMS.Persistence.Context
 {
@@ -66,6 +67,16 @@ namespace PazarAtlasi.CMS.Persistence.Context
 
         // Localization
         public DbSet<LocalizationValue> LocalizationValues { get; set; }
+
+        // Metadata - Product Management
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductTranslation> ProductTranslations { get; set; }
+        public DbSet<Variant> Variants { get; set; }
+        public DbSet<VariantTranslation> VariantTranslations { get; set; }
+        public DbSet<Trademark> Trademarks { get; set; }
+        public DbSet<TrademarkTranslation> TrademarkTranslations { get; set; }
+        public DbSet<CategoryProduct> CategoryProducts { get; set; }
+        public DbSet<TrademarkProduct> TrademarkProducts { get; set; }
 
 
 

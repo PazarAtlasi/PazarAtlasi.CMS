@@ -1,0 +1,333 @@
+@model PazarAtlasi.CMS.Models.ViewModels.ProductListResponse
+
+@{
+    ViewData["Title"] = Html.L("Navigation.Products");
+}
+
+<div class="products-management">
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <h4 class="text-2xl font-bold text-slate-800 inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    @Html.L("Navigation.Products")
+                </h4>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    @Html.L("Product.ProductDetails")
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <a href="@Url.Action("CreateProduct")" class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center shadow-sm">
+                    <i class="fas fa-plus mr-2"></i> @Html.L("Product.CreateNew")
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <i class="fas fa-box text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">@Html.L("Navigation.Products")</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.TotalCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-full">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">@Html.L("Common.Active")</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.Products.Count(p => p.Status == PazarAtlasi.CMS.Domain.Common.Status.Active)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-yellow-100 rounded-full">
+                    <i class="fas fa-layer-group text-yellow-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">@Html.L("Product.Variants")</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.Products.Sum(p => p.VariantsCount)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-slate-600">Current Page</p>
+                    <p class="text-2xl font-bold text-slate-800">@Model.PageNumber/@Model.TotalPages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="bg-white rounded-xl shadow-md">
+        <div class="p-6 border-b border-slate-100">
+            <div class="flex flex-wrap items-center justify-between">
+                <h5 class="text-lg font-semibold text-slate-800 m-0">@Html.L("Navigation.Products")</h5>
+                <div class="flex items-center space-x-2 mt-4 md:mt-0">
+                    <div class="relative">
+                        <input type="text" placeholder="@Html.L("Common.Search")..." 
+                               class="pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    </div>
+                    <select class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <option value="">@Html.L("Common.All") @Html.L("Common.Status")</option>
+                        <option value="Active">@Html.L("Common.Active")</option>
+                        <option value="Draft">@Html.L("Common.Draft")</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Archived">Archived</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">@Html.L("Product.Name")</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">@Html.L("Product.Type")</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">@Html.L("Common.Status")</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">@Html.L("Page.CreatedAt")</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">@Html.L("Page.UpdatedAt")</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">@Html.L("Common.Actions")</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-200">
+                    @if (Model.Products.Any())
+                    {
+                        @foreach (var product in Model.Products)
+                        {
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center @product.IndentClass">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                                <i class="@product.HierarchyIcon text-purple-600"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="flex items-center">
+                                                @if (product.Level > 0)
+                                                {
+                                                    <span class="text-slate-400 mr-2">
+                                                        @for (int i = 0; i < product.Level; i++)
+                                                        {
+                                                            <span>└─</span>
+                                                        }
+                                                    </span>
+                                                }
+                                                <div class="text-sm font-medium text-slate-900">@product.Name</div>
+                                                @if (product.HasChildren)
+                                                {
+                                                    <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
+                                                        <i class="fas fa-sitemap mr-1"></i> @product.ChildProducts.Count
+                                                    </span>
+                                                }
+                                            </div>
+                                            <div class="text-sm text-slate-500">@product.Code</div>
+                                            @if (!string.IsNullOrEmpty(product.ParentProductName))
+                                            {
+                                                <div class="text-xs text-slate-400 mt-1">
+                                                    Parent: @product.ParentProductName
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(product.ShortDescription))
+                                            {
+                                                <div class="text-xs text-slate-400 mt-1 max-w-xs truncate">@product.ShortDescription</div>
+                                            }
+                                            @if (product.VariantsCount > 0 || product.CategoriesCount > 0 || product.TrademarksCount > 0)
+                                            {
+                                                <div class="flex items-center space-x-2 mt-1">
+                                                    @if (product.VariantsCount > 0)
+                                                    {
+                                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-600">
+                                                            <i class="fas fa-layer-group mr-1"></i> @product.VariantsCount
+                                                        </span>
+                                                    }
+                                                    @if (product.CategoriesCount > 0)
+                                                    {
+                                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-600">
+                                                            <i class="fas fa-tags mr-1"></i> @product.CategoriesCount
+                                                        </span>
+                                                    }
+                                                    @if (product.TrademarksCount > 0)
+                                                    {
+                                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-600">
+                                                            <i class="fas fa-trademark mr-1"></i> @product.TrademarksCount
+                                                        </span>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        @product.TypeName
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @product.StatusBadgeClass">
+                                        @product.StatusName
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <div>@product.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                    <div class="text-xs">@product.CreatedAt.ToString("HH:mm")</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    @if (product.UpdatedAt.HasValue)
+                                    {
+                                        <div>@product.UpdatedAt.Value.ToString("dd/MM/yyyy")</div>
+                                        <div class="text-xs">@product.UpdatedAt.Value.ToString("HH:mm")</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-slate-400">Never</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex items-center space-x-2">
+                                        <a href="#" 
+                                           class="text-purple-600 hover:text-purple-900 transition-colors" 
+                                           title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("EditProduct", new { id = product.Id })" 
+                                           class="text-blue-600 hover:text-blue-900 transition-colors" 
+                                           title="@Html.L("Common.Edit")">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="text-red-600 hover:text-red-900 transition-colors" 
+                                                title="@Html.L("Common.Delete")"
+                                                onclick="confirmDelete(@product.Id, '@product.Name')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center">
+                                <div class="text-slate-400">
+                                    <i class="fas fa-box text-4xl mb-4"></i>
+                                    <p class="text-lg font-medium">@Html.L("Navigation.Products")</p>
+                                    <p class="text-sm">Henüz hiç ürün eklenmemiş.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="px-6 py-4 border-t border-slate-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-slate-700">
+                        Showing <span class="font-medium">@((Model.PageNumber - 1) * Model.PageSize + 1)</span> to 
+                        <span class="font-medium">@Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount)</span> of 
+                        <span class="font-medium">@Model.TotalCount</span> results
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <a href="@Url.Action("Products", "Metadata", new { page = Model.PageNumber - 1, pageSize = Model.PageSize })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                Previous
+                            </a>
+                        }
+
+                        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                        {
+                            @if (i == Model.PageNumber)
+                            {
+                                <span class="px-3 py-2 text-sm font-medium text-white bg-purple-600 border border-purple-600 rounded-md">
+                                    @i
+                                </span>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Products", "Metadata", new { page = i, pageSize = Model.PageSize })" 
+                                   class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                    @i
+                                </a>
+                            }
+                        }
+
+                        @if (Model.HasNextPage)
+                        {
+                            <a href="@Url.Action("Products", "Metadata", new { page = Model.PageNumber + 1, pageSize = Model.PageSize })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                Next
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function confirmDelete(productId, productName) {
+        if (confirm(`@Html.L("Common.AreYouSure") "${productName}"?`)) {
+            // AJAX call to delete
+            fetch(`@Url.Action("DeleteProduct", "Metadata")`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ id: productId })
+            }).then(() => {
+                location.reload();
+            });
+        }
+    }
+
+    // Search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[placeholder*="@Html.L("Common.Search")"]');
+        const statusFilter = document.querySelector('select');
+        
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusFilter = document.querySelector('select').value;
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const productInfo = row.querySelector('td:first-child').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(3) span').textContent;
+                
+                const matchesSearch = productInfo.includes(searchTerm);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
+        }
+        
+        if (searchInput) searchInput.addEventListener('input', filterTable);
+        if (statusFilter) statusFilter.addEventListener('change', filterTable);
+    });
+</script>

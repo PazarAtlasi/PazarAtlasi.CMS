@@ -1,0 +1,116 @@
+@model PazarAtlasi.CMS.Models.ViewModels.CategoryViewModel
+
+@{
+    ViewData["Title"] = Html.L("Navigation.Categories");
+}
+
+<div class="bg-white rounded-xl shadow-md">
+    <div class="p-6 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <i class="fas fa-tags mr-3 text-purple-600"></i>
+                    @Html.L("Navigation.Categories")
+                </h1>
+                <p class="text-slate-500 mt-1">Ürün kategorilerini yönetin</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Yeni Kategori
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6">
+        @if (Model.Categories.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-200">
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">Kategori Adı</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">Kod</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">Üst Kategori</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Common.Status")</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Common.Actions")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <div>
+                                        <div class="font-medium text-slate-800">@category.Name</div>
+                                        @if (!string.IsNullOrEmpty(category.Description))
+                                        {
+                                            <div class="text-sm text-slate-500">@category.Description</div>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="font-mono text-sm bg-slate-100 px-2 py-1 rounded">@category.Code</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    @if (category.ParentCategoryName != null)
+                                    {
+                                        <span class="text-blue-600">@category.ParentCategoryName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-slate-400">Ana Kategori</span>
+                                    }
+                                </td>
+                                <td class="py-3 px-4">
+                                    @if (category.Status == PazarAtlasi.CMS.Domain.Common.Status.Active)
+                                    {
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                            <i class="fas fa-check-circle mr-1"></i>@Html.L("Common.Active")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                                            <i class="fas fa-clock mr-1"></i>@category.Status
+                                        </span>
+                                    }
+                                </td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center space-x-2">
+                                        <a href="#" 
+                                           class="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-50" 
+                                           title="@Html.L("Common.Edit")">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50" 
+                                                title="@Html.L("Common.Delete")"
+                                                onclick="return confirm('@Html.L("Common.AreYouSure")')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-tags text-2xl text-slate-400"></i>
+                </div>
+                <h3 class="text-lg font-medium text-slate-800 mb-2">@Html.L("Navigation.Categories")</h3>
+                <p class="text-slate-500 mb-4">Henüz hiç kategori eklenmemiş.</p>
+                <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Yeni Kategori
+                </a>
+            </div>
+        }
+    </div>
+</div>

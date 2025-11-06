@@ -156,4 +156,16 @@ namespace PazarAtlasi.CMS.Domain.Common
         Audio,
         Document
     }
+
+    public enum ProductType
+    {
+        None,
+        Simple,
+        Variable,
+        Grouped,
+        External,
+        Digital,
+        Service,
+        Bundle
+    }
 }

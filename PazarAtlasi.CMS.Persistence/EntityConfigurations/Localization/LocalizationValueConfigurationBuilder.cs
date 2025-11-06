@@ -753,6 +753,118 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 });
             }
 
+            // Product Management keys - Turkish
+            var productKeysTr = new Dictionary<string, string>
+            {
+                { "Navigation.ProductManagement", "Ürün Yönetimi" },
+                { "Navigation.Variants", "Varyantlar" },
+                { "Navigation.Trademarks", "Markalar" },
+                { "Navigation.Cart", "Sepet" },
+                { "Navigation.Payments", "Ödemeler" },
+                { "Product.Name", "Ürün Adı" },
+                { "Product.Code", "Ürün Kodu" },
+                { "Product.IntegrationCode", "Entegrasyon Kodu" },
+                { "Product.ShortDescription", "Kısa Açıklama" },
+                { "Product.LongDescription", "Uzun Açıklama" },
+                { "Product.Unit", "Birim" },
+                { "Product.Type", "Ürün Tipi" },
+                { "Product.TaxRate", "Vergi Oranı" },
+                { "Product.Parent", "Üst Ürün" },
+                { "Product.Variants", "Varyantlar" },
+                { "Product.Categories", "Kategoriler" },
+                { "Product.Trademarks", "Markalar" },
+                { "Product.CreateNew", "Yeni Ürün Oluştur" },
+                { "Product.EditProduct", "Ürün Düzenle" },
+                { "Product.DeleteProduct", "Ürün Sil" },
+                { "Product.ProductDetails", "Ürün Detayları" },
+                { "Variant.Name", "Varyant Adı" },
+                { "Variant.Code", "Varyant Kodu" },
+                { "Variant.Product", "Ürün" },
+                { "Variant.CreateNew", "Yeni Varyant Oluştur" },
+                { "Variant.EditVariant", "Varyant Düzenle" },
+                { "Variant.DeleteVariant", "Varyant Sil" },
+                { "Trademark.Name", "Marka Adı" },
+                { "Trademark.Code", "Marka Kodu" },
+                { "Trademark.SortOrder", "Sıralama" },
+                { "Trademark.Parent", "Üst Marka" },
+                { "Trademark.CreateNew", "Yeni Marka Oluştur" },
+                { "Trademark.EditTrademark", "Marka Düzenle" },
+                { "Trademark.DeleteTrademark", "Marka Sil" }
+            };
+
+            // Product Management keys - English
+            var productKeysEn = new Dictionary<string, string>
+            {
+                { "Navigation.ProductManagement", "Product Management" },
+                { "Navigation.Variants", "Variants" },
+                { "Navigation.Trademarks", "Trademarks" },
+                { "Navigation.Cart", "Cart" },
+                { "Navigation.Payments", "Payments" },
+                { "Product.Name", "Product Name" },
+                { "Product.Code", "Product Code" },
+                { "Product.IntegrationCode", "Integration Code" },
+                { "Product.ShortDescription", "Short Description" },
+                { "Product.LongDescription", "Long Description" },
+                { "Product.Unit", "Unit" },
+                { "Product.Type", "Product Type" },
+                { "Product.TaxRate", "Tax Rate" },
+                { "Product.Parent", "Parent Product" },
+                { "Product.Variants", "Variants" },
+                { "Product.Categories", "Categories" },
+                { "Product.Trademarks", "Trademarks" },
+                { "Product.CreateNew", "Create New Product" },
+                { "Product.EditProduct", "Edit Product" },
+                { "Product.DeleteProduct", "Delete Product" },
+                { "Product.ProductDetails", "Product Details" },
+                { "Variant.Name", "Variant Name" },
+                { "Variant.Code", "Variant Code" },
+                { "Variant.Product", "Product" },
+                { "Variant.CreateNew", "Create New Variant" },
+                { "Variant.EditVariant", "Edit Variant" },
+                { "Variant.DeleteVariant", "Delete Variant" },
+                { "Trademark.Name", "Trademark Name" },
+                { "Trademark.Code", "Trademark Code" },
+                { "Trademark.SortOrder", "Sort Order" },
+                { "Trademark.Parent", "Parent Trademark" },
+                { "Trademark.CreateNew", "Create New Trademark" },
+                { "Trademark.EditTrademark", "Edit Trademark" },
+                { "Trademark.DeleteTrademark", "Delete Trademark" }
+            };
+
+            // Add Product Management Turkish keys
+            foreach (var kvp in productKeysTr)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 1, // Turkish
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"Turkish translation for {kvp.Key}",
+                    Category = "Product",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            // Add Product Management English keys
+            foreach (var kvp in productKeysEn)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 2, // English
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"English translation for {kvp.Key}",
+                    Category = "Product",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
             builder.HasData(seedData);
             // Seed data will be added via data seeder service instead of migration
             // This prevents conflicts with existing data

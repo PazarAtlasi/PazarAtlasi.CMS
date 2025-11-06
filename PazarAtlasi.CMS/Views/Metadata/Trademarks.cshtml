@@ -1,0 +1,123 @@
+@model PazarAtlasi.CMS.Models.ViewModels.TrademarkListResponse
+
+@{
+    ViewData["Title"] = Html.L("Navigation.Trademarks");
+}
+
+<div class="bg-white rounded-xl shadow-md">
+    <div class="p-6 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <i class="fas fa-trademark mr-3 text-purple-600"></i>
+                    @Html.L("Navigation.Trademarks")
+                </h1>
+                <p class="text-slate-500 mt-1">Marka bilgilerini yönetin</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a href="@Url.Action("CreateTrademark")" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    @Html.L("Trademark.CreateNew")
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6">
+        @if (Model.Trademarks.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-200">
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Trademark.Name")</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Trademark.Code")</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Trademark.SortOrder")</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Trademark.Parent")</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Common.Status")</th>
+                            <th class="text-left py-3 px-4 font-semibold text-slate-700">@Html.L("Common.Actions")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var trademark in Model.Trademarks)
+                        {
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <div>
+                                        <div class="font-medium text-slate-800">@trademark.Name</div>
+                                        @if (!string.IsNullOrEmpty(trademark.ShortDescription))
+                                        {
+                                            <div class="text-sm text-slate-500">@trademark.ShortDescription</div>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="font-mono text-sm bg-slate-100 px-2 py-1 rounded">@trademark.Code</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">@trademark.SortOrder</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    @if (trademark.ParentTrademarkName != null)
+                                    {
+                                        <span class="text-blue-600">@trademark.ParentTrademarkName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-slate-400">Ana Marka</span>
+                                    }
+                                </td>
+                                <td class="py-3 px-4">
+                                    @if (trademark.Status == PazarAtlasi.CMS.Domain.Common.Status.Active)
+                                    {
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                            <i class="fas fa-check-circle mr-1"></i>@Html.L("Common.Active")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                                            <i class="fas fa-clock mr-1"></i>@trademark.Status
+                                        </span>
+                                    }
+                                </td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center space-x-2">
+                                        <a href="@Url.Action("EditTrademark", new { id = trademark.Id })" 
+                                           class="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-50" 
+                                           title="@Html.L("Common.Edit")">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="post" action="@Url.Action("DeleteTrademark", new { id = trademark.Id })" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" 
+                                                    class="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50" 
+                                                    title="@Html.L("Common.Delete")"
+                                                    onclick="return confirm('@Html.L("Common.AreYouSure")')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-trademark text-2xl text-slate-400"></i>
+                </div>
+                <h3 class="text-lg font-medium text-slate-800 mb-2">@Html.L("Navigation.Trademarks")</h3>
+                <p class="text-slate-500 mb-4">Henüz hiç marka eklenmemiş.</p>
+                <a href="@Url.Action("CreateTrademark")" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    @Html.L("Trademark.CreateNew")
+                </a>
+            </div>
+        }
+    </div>
+</div>
