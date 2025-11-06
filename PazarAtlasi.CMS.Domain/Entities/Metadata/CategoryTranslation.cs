@@ -11,11 +11,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.Metadata
     {
         public int CategoryId { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public string ShortDescription { get; set; }
+        public string? ShortDescription { get; set; }
 
-        public string LongDescription { get; set; }
+        public string? LongDescription { get; set; }
 
         public int LanguageId { get; set; }
 

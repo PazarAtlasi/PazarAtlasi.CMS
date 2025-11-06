@@ -11,9 +11,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Metadata
     {
         public int? ParentId { get; set; }
 
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
-        public string IntegrationCode { get; set; }
+        public string? IntegrationCode { get; set; }
 
         public int SortOrder { get; set; } = 0;
     }
