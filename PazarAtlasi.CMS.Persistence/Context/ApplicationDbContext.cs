@@ -81,6 +81,15 @@ namespace PazarAtlasi.CMS.Persistence.Context
         public DbSet<OptionTranslation> OptionTranslations { get; set; }
         public DbSet<ProductOption> ProductOptions { get; set; }
 
+        // Data Schema System
+        public DbSet<DataSchema> DataSchemas { get; set; }
+        public DbSet<DataSchemaField> DataSchemaFields { get; set; }
+        public DbSet<DataSchemaFieldValue> DataSchemaFieldValues { get; set; }
+        public DbSet<ProductDataSchema> ProductDataSchemas { get; set; }
+        public DbSet<DataSchemaTranslation> DataSchemaTranslations { get; set; }
+        public DbSet<DataSchemaFieldTranslation> DataSchemaFieldTranslations { get; set; }
+        public DbSet<DataSchemaFieldValueTranslation> DataSchemaFieldValueTranslations { get; set; }
+
 
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

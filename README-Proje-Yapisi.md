@@ -2952,3 +2952,445 @@ PazarAtlasi.CMS/
 ### 🎯 Sonuç
 
 Bu güncellemeler ile PazarAtlasi CMS daha kullanıcı dostu, performanslı ve maintainable hale geldi. Section ekleme işlemi basitleştirildi ve layout sorunları çözüldü.
+
+---
+
+## 🗂️ DataSchema Sistemi - Dinamik Ürün Özellikleri (Aralık 2024)
+
+### 📋 Genel Bakış
+
+PazarAtlasi CMS'e Section yapısına benzer şekilde, ürünler için dinamik özellik yönetimi sistemi eklendi. Bu sistem, her ürünün özelliklerinin ürün bazında değişebileceği durumlar için esnek bir çözüm sunar.
+
+### 🎯 Sistem Mantığı
+
+DataSchema sistemi, Section-SectionItem-SectionItemField mantığına benzer şekilde çalışır:
+
+```
+DataSchema (iPhone 15 Özellikleri)
+├── DataSchemaField (Storage - Alan Tanımı)
+├── DataSchemaField (Screen Size - Alan Tanımı)
+├── DataSchemaField (Screen Type - Alan Tanımı)
+└── ProductDataSchema (Product-Schema Bağlantısı)
+    └── DataSchemaFieldValue (Gerçek Değerler)
+        ├── ProductId: 1, SchemaId: 1, FieldId: 1, Value: "128GB"
+        ├── ProductId: 1, SchemaId: 1, FieldId: 2, Value: "6.1 inches"
+        └── ProductId: 1, SchemaId: 1, FieldId: 3, Value: "OLED"
+```
+
+### 🗂️ Entity Yapısı
+
+#### 1. DataSchema Entity (Ana Şema)
+
+```csharp
+public class DataSchema : Entity<int>
+{
+    public string Name { get; set; } = string.Empty;           // "iPhone 15 Specifications"
+    public string Key { get; set; } = string.Empty;            // "iphone-15-specs"
+    public string? Description { get; set; }                   // Şema açıklaması
+    public string? Category { get; set; }                      // "Electronics", "Clothing"
+    public string? Configuration { get; set; }                 // JSON konfigürasyon
+    public int SortOrder { get; set; } = 0;                   // Sıralama
+    public bool IsActive { get; set; } = true;                // Aktif mi?
+
+    // Navigation Properties
+    public virtual ICollection<DataSchemaField> Fields { get; set; }
+    public virtual ICollection<ProductDataSchema> ProductDataSchemas { get; set; }
+    public virtual ICollection<DataSchemaFieldValue> FieldValues { get; set; }
+    public virtual ICollection<DataSchemaTranslation> Translations { get; set; }
+}
+```
+
+#### 2. DataSchemaField Entity (Alan Tanımları)
+
+```csharp
+public class DataSchemaField : Entity<int>
+{
+    public int DataSchemaId { get; set; }                      // Hangi şemaya ait
+    public string FieldKey { get; set; } = string.Empty;       // "storage_gb", "screen_size"
+    public string FieldName { get; set; } = string.Empty;      // "Storage", "Screen Size"
+    public string? Description { get; set; }                   // Alan açıklaması
+    public DataSchemaFieldType Type { get; set; }              // Text, Number, Select vb.
+    public bool IsRequired { get; set; } = false;              // Zorunlu mu?
+    public bool IsTranslatable { get; set; } = false;          // Çevrilebilir mi?
+    public bool ShowInListing { get; set; } = true;            // Listede gösterilsin mi?
+    public bool ShowInDetails { get; set; } = true;            // Detayda gösterilsin mi?
+    public bool IsFilterable { get; set; } = false;            // Filtrelemede kullanılabilir mi?
+    public bool IsSortable { get; set; } = false;              // Sıralamada kullanılabilir mi?
+    public string? DefaultValue { get; set; }                  // Varsayılan değer
+    public string? Placeholder { get; set; }                   // Placeholder metni
+    public string? OptionsJson { get; set; }                   // Select seçenekleri (JSON)
+    public string? ValidationRules { get; set; }               // Validasyon kuralları (JSON)
+    public string? Unit { get; set; }                          // Birim ("GB", "inches", "nits")
+    public int SortOrder { get; set; } = 0;                   // Sıralama
+    public bool IsActive { get; set; } = true;                // Aktif mi?
+
+    // Navigation Properties
+    public virtual DataSchema DataSchema { get; set; } = null!;
+    public virtual ICollection<DataSchemaFieldValue> FieldValues { get; set; }
+    public virtual ICollection<DataSchemaFieldTranslation> Translations { get; set; }
+}
+```
+
+#### 3. DataSchemaFieldValue Entity (Gerçek Değerler)
+
+```csharp
+public class DataSchemaFieldValue : Entity<int>
+{
+    public int ProductId { get; set; }                         // Hangi ürün
+    public int SchemaId { get; set; }                          // Hangi şema
+    public int FieldId { get; set; }                           // Hangi alan
+    public string Value { get; set; } = string.Empty;          // Metin değer
+    public string? JsonValue { get; set; }                     // Kompleks değerler (JSON)
+    public decimal? NumericValue { get; set; }                 // Sayısal değer
+    public bool? BooleanValue { get; set; }                    // Boolean değer
+    public DateTime? DateValue { get; set; }                   // Tarih değeri
+    public int SortOrder { get; set; } = 0;                   // Sıralama
+
+    // Navigation Properties
+    public virtual Product Product { get; set; } = null!;
+    public virtual DataSchema DataSchema { get; set; } = null!;
+    public virtual DataSchemaField DataSchemaField { get; set; } = null!;
+    public virtual ICollection<DataSchemaFieldValueTranslation> Translations { get; set; }
+}
+```
+
+#### 4. ProductDataSchema Entity (Bağlantı Tablosu)
+
+```csharp
+public class ProductDataSchema : Entity<int>
+{
+    public int ProductId { get; set; }                         // Hangi ürün
+    public int SchemaId { get; set; }                          // Hangi şema
+    public bool IsPrimary { get; set; } = false;               // Ana şema mı?
+    public int SortOrder { get; set; } = 0;                   // Sıralama
+    public string? Configuration { get; set; }                 // Özel konfigürasyon
+    public bool IsActive { get; set; } = true;                // Aktif mi?
+
+    // Navigation Properties
+    public virtual Product Product { get; set; } = null!;
+    public virtual DataSchema DataSchema { get; set; } = null!;
+}
+```
+
+### 🎨 Alan Tipleri (DataSchemaFieldType)
+
+Sistem 27 farklı alan tipini destekler:
+
+#### Temel Tipler
+
+- **Text**: Tek satır metin
+- **TextArea**: Çok satır metin
+- **Number**: Sayısal değer
+- **Boolean**: Evet/Hayır
+- **Date**: Tarih
+- **DateTime**: Tarih ve saat
+
+#### Seçim Tipleri
+
+- **Select**: Açılır liste (tek seçim)
+- **MultiSelect**: Çoklu seçim
+- **Radio**: Radio butonlar
+- **Checkbox**: Çoklu seçim kutuları
+
+#### Medya Tipleri
+
+- **Image**: Resim yükleme
+- **Video**: Video yükleme
+- **File**: Dosya yükleme
+- **Color**: Renk seçici
+
+#### Özel Tipler
+
+- **Currency**: Para birimi
+- **Percentage**: Yüzde
+- **Rating**: Yıldız/puan
+- **Tags**: Etiket girişi
+- **Range**: Aralık seçici
+- **Dimensions**: Boyut (genişlik x yükseklik x derinlik)
+- **Weight**: Ağırlık
+- **Temperature**: Sıcaklık
+
+#### Gelişmiş Tipler
+
+- **Email**: E-posta adresi
+- **Url**: Web adresi
+- **Phone**: Telefon numarası
+- **RichText**: Zengin metin editörü
+- **Json**: JSON veri girişi
+- **Custom**: Özel alan tipi
+
+### 🌐 Çoklu Dil Desteği
+
+Sistem tam çoklu dil desteği sunar:
+
+#### Translation Entity'leri
+
+- **DataSchemaTranslation**: Şema çevirileri
+- **DataSchemaFieldTranslation**: Alan çevirileri
+- **DataSchemaFieldValueTranslation**: Değer çevirileri
+
+#### Çeviri Özellikleri
+
+- Şema adı ve açıklaması çevrilebilir
+- Alan adları ve açıklamaları çevrilebilir
+- Select seçenekleri dil bazında farklı olabilir
+- Ürün özellik değerleri çevrilebilir
+
+### 📊 Örnek Kullanım Senaryoları
+
+#### 1. Smartphone Özellikleri
+
+```json
+{
+  "schema": {
+    "name": "Smartphone Specifications",
+    "key": "smartphone-specs",
+    "category": "Electronics"
+  },
+  "fields": [
+    {
+      "key": "storage_gb",
+      "name": "Storage",
+      "type": "Select",
+      "unit": "GB",
+      "options": ["64", "128", "256", "512", "1024"],
+      "isRequired": true,
+      "isFilterable": true,
+      "isSortable": true
+    },
+    {
+      "key": "screen_size",
+      "name": "Screen Size",
+      "type": "Number",
+      "unit": "inches",
+      "validation": { "min": 3.0, "max": 10.0, "step": 0.1 },
+      "isRequired": true,
+      "isFilterable": true
+    },
+    {
+      "key": "screen_type",
+      "name": "Screen Type",
+      "type": "Select",
+      "options": ["LCD", "OLED", "AMOLED", "Super AMOLED"],
+      "isFilterable": true
+    },
+    {
+      "key": "brightness",
+      "name": "Brightness",
+      "type": "Number",
+      "unit": "nits",
+      "validation": { "min": 100, "max": 3000 },
+      "showInListing": false,
+      "showInDetails": true
+    }
+  ]
+}
+```
+
+#### 2. iPhone 15 Ürün Değerleri
+
+```json
+{
+  "product": "iPhone 15",
+  "schema": "smartphone-specs",
+  "values": [
+    {
+      "fieldKey": "storage_gb",
+      "value": "128",
+      "numericValue": 128,
+      "displayValue": "128 GB"
+    },
+    {
+      "fieldKey": "screen_size",
+      "value": "6.1",
+      "numericValue": 6.1,
+      "displayValue": "6.1 inches"
+    },
+    {
+      "fieldKey": "screen_type",
+      "value": "OLED",
+      "displayValue": "OLED"
+    },
+    {
+      "fieldKey": "brightness",
+      "value": "1000",
+      "numericValue": 1000,
+      "displayValue": "1000 nits"
+    }
+  ]
+}
+```
+
+#### 3. Laptop Özellikleri
+
+```json
+{
+  "schema": {
+    "name": "Laptop Specifications",
+    "key": "laptop-specs",
+    "category": "Electronics"
+  },
+  "fields": [
+    {
+      "key": "processor",
+      "name": "Processor",
+      "type": "Text",
+      "isRequired": true,
+      "showInListing": true
+    },
+    {
+      "key": "ram_gb",
+      "name": "RAM",
+      "type": "Select",
+      "unit": "GB",
+      "options": ["4", "8", "16", "32", "64"],
+      "isRequired": true,
+      "isFilterable": true
+    },
+    {
+      "key": "storage_type",
+      "name": "Storage Type",
+      "type": "Select",
+      "options": ["HDD", "SSD", "NVMe SSD"],
+      "isFilterable": true
+    },
+    {
+      "key": "weight",
+      "name": "Weight",
+      "type": "Weight",
+      "unit": "kg",
+      "validation": { "min": 0.5, "max": 5.0 },
+      "isSortable": true
+    }
+  ]
+}
+```
+
+### 🔧 Veritabanı Yapısı
+
+#### Tablolar ve İlişkiler
+
+```sql
+-- Ana şema tablosu
+DataSchemas (Id, Name, Key, Description, Category, Configuration, SortOrder, IsActive, ...)
+
+-- Alan tanımları tablosu
+DataSchemaFields (Id, DataSchemaId, FieldKey, FieldName, Type, IsRequired, IsTranslatable,
+                  ShowInListing, ShowInDetails, IsFilterable, IsSortable, DefaultValue,
+                  Placeholder, OptionsJson, ValidationRules, Unit, SortOrder, IsActive, ...)
+
+-- Ürün-şema bağlantı tablosu
+ProductDataSchemas (Id, ProductId, SchemaId, IsPrimary, SortOrder, Configuration, IsActive, ...)
+
+-- Alan değerleri tablosu
+DataSchemaFieldValues (Id, ProductId, SchemaId, FieldId, Value, JsonValue, NumericValue,
+                       BooleanValue, DateValue, SortOrder, ...)
+
+-- Çeviri tabloları
+DataSchemaTranslations (Id, DataSchemaId, LanguageId, Name, Description, Category, ...)
+DataSchemaFieldTranslations (Id, DataSchemaFieldId, LanguageId, FieldName, Description,
+                              Placeholder, Unit, OptionsJson, ...)
+DataSchemaFieldValueTranslations (Id, DataSchemaFieldValueId, LanguageId, Value, JsonValue, ...)
+```
+
+#### İndeksler ve Performans
+
+```sql
+-- Benzersizlik indeksleri
+IX_DataSchemas_Key (Key) UNIQUE
+IX_DataSchemaFields_SchemaId_FieldKey (DataSchemaId, FieldKey) UNIQUE
+IX_DataSchemaFieldValues_Product_Schema_Field (ProductId, SchemaId, FieldId) UNIQUE
+
+-- Performans indeksleri
+IX_DataSchemaFields_Type (Type)
+IX_DataSchemaFields_IsFilterable (IsFilterable)
+IX_DataSchemaFields_IsSortable (IsSortable)
+IX_DataSchemaFieldValues_NumericValue (NumericValue)
+IX_DataSchemaFieldValues_BooleanValue (BooleanValue)
+IX_DataSchemaFieldValues_DateValue (DateValue)
+```
+
+### 🎯 Avantajlar ve Özellikler
+
+#### ✅ Esneklik
+
+- Her ürün farklı özelliklere sahip olabilir
+- Yeni alan tipleri kolayca eklenebilir
+- Şemalar kategori bazında organize edilebilir
+- Bir ürün birden fazla şemaya sahip olabilir
+
+#### ✅ Performans
+
+- Sayısal değerler ayrı sütunda tutulur (hızlı sıralama/filtreleme)
+- Boolean ve tarih değerleri optimize edilmiş
+- İndeksler ile hızlı sorgulama
+- Lazy loading desteği
+
+#### ✅ Çoklu Dil
+
+- Şema, alan ve değer seviyesinde çeviri
+- Dil bazında farklı seçenekler
+- Fallback mekanizması
+
+#### ✅ Validasyon
+
+- JSON tabanlı validasyon kuralları
+- Alan tipi bazında otomatik validasyon
+- Required field kontrolü
+- Min/Max değer kontrolü
+
+#### ✅ UI/UX
+
+- Alan tipine göre otomatik form kontrolü
+- Filtreleme ve sıralama desteği
+- Görünürlük kontrolü (listing/details)
+- Responsive tasarım
+
+### 🚀 Gelecek Geliştirmeler
+
+#### Planlanan Özellikler
+
+1. **Conditional Fields**: Bir alanın değerine göre diğer alanları göster/gizle
+2. **Field Dependencies**: Alanlar arası bağımlılık yönetimi
+3. **Bulk Import/Export**: Toplu veri aktarımı
+4. **Schema Versioning**: Şema versiyonlama sistemi
+5. **Advanced Validation**: Regex, custom validation fonksiyonları
+6. **Field Groups**: Alanları gruplama ve sekmelere ayırma
+7. **Dynamic Pricing**: Alan değerlerine göre dinamik fiyatlandırma
+8. **Search Integration**: Elasticsearch entegrasyonu
+9. **API Endpoints**: RESTful API desteği
+10. **Mobile App Support**: Mobil uygulama desteği
+
+### 📋 Migration ve Kurulum
+
+#### Migration Oluşturma
+
+```bash
+# DataSchema sistemi için migration oluştur
+dotnet ef migrations add AddDataSchemaSystem -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+
+# Database'i güncelle
+dotnet ef database update -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+```
+
+#### Seed Data
+
+Sistem otomatik olarak örnek şemalar ve alanlar oluşturur:
+
+- **Electronics Specifications**: Genel elektronik ürün özellikleri
+- **Smartphone Specifications**: Akıllı telefon özellikleri (Storage, Screen Size, RAM vb.)
+- **Laptop Specifications**: Dizüstü bilgisayar özellikleri
+
+### 🎯 Sonuç
+
+DataSchema sistemi, PazarAtlasi CMS'e güçlü ve esnek bir ürün özellik yönetimi kabiliyeti kazandırır. Section yapısından ilham alınan bu sistem, e-ticaret sitelerinin karmaşık ürün kataloglarını kolayca yönetmesini sağlar.
+
+Bu sistem sayesinde:
+
+- Farklı kategorilerdeki ürünler için özel özellik şemaları oluşturulabilir
+- Ürün özellikleri dinamik olarak yönetilebilir
+- Çoklu dil desteği ile global pazarlara hitap edilebilir
+- Gelişmiş filtreleme ve arama özellikleri sunulabilir
+- Performanslı ve ölçeklenebilir bir yapı elde edilir
+
+---

@@ -70,6 +70,11 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
         public List<TrademarkViewModel> Trademarks { get; set; } = new List<TrademarkViewModel>();
         public List<ProductTranslationViewModel> Translations { get; set; } = new List<ProductTranslationViewModel>();
+        
+        // Data Schema Properties
+        public List<ProductDataSchemaViewModel> DataSchemas { get; set; } = new List<ProductDataSchemaViewModel>();
+        public List<DataSchemaFieldValueEditViewModel> FieldValues { get; set; } = new List<DataSchemaFieldValueEditViewModel>();
+        public List<DataSchemaListViewModel> AvailableDataSchemas { get; set; } = new List<DataSchemaListViewModel>();
     }
 
     public class ProductCreateViewModel
@@ -84,6 +89,11 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public decimal TaxRate { get; set; } = 0;
         public int? ParentId { get; set; }
         public List<ProductListViewModel> AvailableParentProducts { get; set; } = new List<ProductListViewModel>();
+        
+        // Data Schema Properties
+        public List<DataSchemaListViewModel> AvailableDataSchemas { get; set; } = new List<DataSchemaListViewModel>();
+        public List<int> SelectedDataSchemaIds { get; set; } = new List<int>();
+        public List<DataSchemaFieldValueCreateViewModel> FieldValues { get; set; } = new List<DataSchemaFieldValueCreateViewModel>();
     }
 
     public class ProductEditViewModel : ProductCreateViewModel
@@ -93,6 +103,10 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<ProductTranslationViewModel> Translations { get; set; } = new List<ProductTranslationViewModel>();
+        
+        // Data Schema Properties
+        public List<ProductDataSchemaViewModel> DataSchemas { get; set; } = new List<ProductDataSchemaViewModel>();
+        public List<DataSchemaFieldValueViewModel> FieldValues { get; set; } = new List<DataSchemaFieldValueViewModel>();
     }
 
     public class ProductTranslationViewModel

@@ -25,5 +25,9 @@ namespace PazarAtlasi.CMS.Domain.Entities.Metadata
         public virtual ICollection<CategoryProduct> CategoryProducts { get; set; } = new List<CategoryProduct>();
         public virtual ICollection<TrademarkProduct> TrademarkProducts { get; set; } = new List<TrademarkProduct>();
         public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
+        
+        // Data Schema Navigation Properties
+        public virtual ICollection<ProductDataSchema> ProductDataSchemas { get; set; } = new List<ProductDataSchema>();
+        public virtual ICollection<DataSchemaFieldValue> DataSchemaFieldValues { get; set; } = new List<DataSchemaFieldValue>();
     }
 }

@@ -58,6 +58,17 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                    .HasForeignKey(po => po.ProductId)
                    .OnDelete(DeleteBehavior.Cascade);
 
+            // Data Schema relationships
+            builder.HasMany(p => p.ProductDataSchemas)
+                   .WithOne(pds => pds.Product)
+                   .HasForeignKey(pds => pds.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(p => p.DataSchemaFieldValues)
+                   .WithOne(fv => fv.Product)
+                   .HasForeignKey(fv => fv.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
             // Indexes
             builder.HasIndex(p => p.Code).HasDatabaseName("IX_Products_Code").IsUnique();
             builder.HasIndex(p => p.IntegrationCode).HasDatabaseName("IX_Products_IntegrationCode");
