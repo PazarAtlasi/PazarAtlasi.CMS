@@ -77,6 +77,9 @@ namespace PazarAtlasi.CMS.Persistence.Context
         public DbSet<TrademarkTranslation> TrademarkTranslations { get; set; }
         public DbSet<CategoryProduct> CategoryProducts { get; set; }
         public DbSet<TrademarkProduct> TrademarkProducts { get; set; }
+        public DbSet<Option> Options { get; set; }
+        public DbSet<OptionTranslation> OptionTranslations { get; set; }
+        public DbSet<ProductOption> ProductOptions { get; set; }
 
 
 

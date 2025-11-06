@@ -6,7 +6,21 @@ Bu proje Clean Architecture prensiplerine göre tasarlanmış modern bir CMS sis
 
 ### 🚀 Son Güncellemeler (Kasım 2024):
 
-#### 🆕 Content & Slug Yönetimi Sistemi (Yeni!)
+#### 🆕 Metadata Yönetimi Sistemi (Yeni!)
+
+- **Product Option System**: Esnek ürün özellik yönetimi (Color, Size, Material, Warranty vb.)
+- **Option Entity**: Hiyerarşik option yapısı ve çoklu dil desteği
+- **ProductOption Junction**: Product-Option ilişkisi, fiyat değişikliği ve stok yönetimi
+- **Comprehensive Seed Data**: Products, Trademarks, Variants, Options için hazır test verileri
+
+#### 🌐 Category Translation Sistemi (Yeni!)
+
+- **Tab-Based Interface**: Section modal'ındaki gibi dil tabları
+- **Multi-language Support**: Name, ShortDescription, LongDescription için çoklu dil
+- **Smooth Transitions**: JavaScript ile tab geçişleri ve görsel feedback
+- **Description Field Removed**: Artık translation'lar üzerinden yönetiliyor
+
+#### 🆕 Content & Slug Yönetimi Sistemi
 
 - **Content Entity**: Sayfa SEO parametrelerini merkezi yönetim
 - **ContentSlugs Entity**: Çoklu dil slug desteği ve canonical URL yönetimi
@@ -23,6 +37,9 @@ Bu proje Clean Architecture prensiplerine göre tasarlanmış modern bir CMS sis
 
 ### 🎯 Temel Özellikler:
 
+- **Metadata Management**: Product, Category, Trademark, Variant, Option yönetimi
+- **Product Option System**: Esnek ürün özellik sistemi (Color, Size, Material vb.)
+- **Tab-Based Translations**: Çoklu dil desteği ile kullanıcı dostu interface
 - **Content-Based SEO Management**: Merkezi SEO parametre yönetimi
 - **Multi-language Slug System**: Dil bazında URL yönetimi ve canonical yapısı
 - **Layout-Based Page Editing**: Esnek sayfa düzenleme sistemi
@@ -1366,8 +1383,11 @@ dotnet build PazarAtlasi.CMS
 ### Migration İşlemleri
 
 ```bash
-# Yeni migration oluştur
-dotnet ef migrations add AddLocalizationEntities -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+# Yeni migration oluştur (Option ve ProductOption için)
+dotnet ef migrations add AddOptionAndProductOptionEntities -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+
+# Category Description alanını kaldırmak için
+dotnet ef migrations add RemoveCategoryDescriptionField -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
 
 # Database güncelle
 dotnet ef database update -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
@@ -1436,7 +1456,7 @@ Bu rehber, projenin tutarlı ve sürdürülebilir şekilde geliştirilmesi için
 
 ### 📋 Genel Bakış
 
-PazarAtlasi CMS'e kapsamlı bir metadata yönetimi sistemi eklendi. Bu sistem ürün, kategori, marka ve varyant yönetimini hiyerarşik yapıda destekler.
+PazarAtlasi CMS'e kapsamlı bir metadata yönetimi sistemi eklendi. Bu sistem ürün, kategori, marka, varyant ve option yönetimini hiyerarşik yapıda destekler.
 
 ### 🗂️ Metadata Entity Yapısı
 
@@ -1462,6 +1482,7 @@ public class Product : Entity<int>
     public virtual ICollection<Variant> Variants { get; set; }
     public virtual ICollection<CategoryProduct> CategoryProducts { get; set; }
     public virtual ICollection<TrademarkProduct> TrademarkProducts { get; set; }
+    public virtual ICollection<ProductOption> ProductOptions { get; set; }
 }
 ```
 
@@ -1474,7 +1495,6 @@ public class Category : Entity<int>
     public string Name { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
     public string? IntegrationCode { get; set; }
-    public string? Description { get; set; }
     public int SortOrder { get; set; } = 0;
 
     // Navigation Properties
@@ -1485,7 +1505,53 @@ public class Category : Entity<int>
 }
 ```
 
-#### 3. ProductType Enum
+#### 3. Option Entity (Yeni! 🆕)
+
+```csharp
+public class Option : Entity<int>
+{
+    public int? ParentId { get; set; }                   // Hiyerarşik yapı
+    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string IntegrationCode { get; set; } = string.Empty;
+    public string ShortDescription { get; set; } = string.Empty;
+    public string LongDescription { get; set; } = string.Empty;
+    public OptionType Type { get; set; } = OptionType.Text;
+    public string? DefaultValue { get; set; }
+    public bool IsRequired { get; set; } = false;
+    public bool AllowMultipleSelection { get; set; } = false;
+    public int SortOrder { get; set; } = 0;
+
+    // Navigation Properties
+    public virtual Option? ParentOption { get; set; }
+    public virtual ICollection<Option> ChildOptions { get; set; }
+    public virtual ICollection<OptionTranslation> Translations { get; set; }
+    public virtual ICollection<ProductOption> ProductOptions { get; set; }
+}
+```
+
+#### 4. ProductOption Entity (Junction Table 🆕)
+
+```csharp
+public class ProductOption : Entity<int>
+{
+    public int ProductId { get; set; }
+    public int OptionId { get; set; }
+    public string? Value { get; set; }
+    public string? JsonValue { get; set; }               // Kompleks değerler için JSON
+    public decimal? PriceModifier { get; set; } = 0;     // Fiyat değişikliği
+    public int? StockQuantity { get; set; }              // Stok miktarı
+    public bool IsRequired { get; set; } = false;
+    public bool IsDefault { get; set; } = false;
+    public int SortOrder { get; set; } = 0;
+
+    // Navigation Properties
+    public virtual Product Product { get; set; } = null!;
+    public virtual Option Option { get; set; } = null!;
+}
+```
+
+#### 5. Enum Tanımları
 
 ```csharp
 public enum ProductType
@@ -1498,6 +1564,79 @@ public enum ProductType
     Digital,     // Dijital ürün
     Service,     // Hizmet
     Bundle       // Paket ürün
+}
+
+public enum OptionType
+{
+    None,
+    Text,        // Metin
+    Number,      // Sayı
+    Color,       // Renk
+    Size,        // Beden
+    Material,    // Malzeme
+    Dropdown,    // Açılır liste
+    Checkbox,    // Çoklu seçim
+    Radio,       // Tek seçim
+    Date,        // Tarih
+    Boolean,     // Evet/Hayır
+    Image,       // Resim
+    File         // Dosya
+}
+```
+
+## 🌐 Category Translation Sistemi (Yeni! 🆕)
+
+### Tab-Based Translation Interface
+
+Category ekleme ve düzenleme sayfalarında artık Section modal'ındaki gibi tab-based translation sistemi kullanılıyor:
+
+#### Özellikler:
+
+- **Multi-language Support**: Her dil için ayrı tab
+- **Default Language**: Varsayılan dil vurgulanıyor
+- **Translation Fields**: Name, ShortDescription, LongDescription
+- **Smooth Transitions**: JavaScript ile tab geçişleri
+- **Validation**: Boş translation'lar kaydedilmiyor
+
+#### JavaScript Tab Switching:
+
+```javascript
+function switchLanguageTab(languageId) {
+  // Hide all translation contents
+  document
+    .querySelectorAll(".translation-content")
+    .forEach((content) => {
+      content.classList.add("hidden");
+    });
+
+  // Show selected translation content
+  const selectedContent = document.querySelector(
+    `.translation-content[data-language-id="${languageId}"]`
+  );
+  if (selectedContent) {
+    selectedContent.classList.remove("hidden");
+  }
+}
+```
+
+#### Controller Updates:
+
+```csharp
+// Create Category - Translation handling
+if (model.Translations != null && model.Translations.Any())
+{
+    var translations = model.Translations
+        .Where(t => !string.IsNullOrWhiteSpace(t.Name) || !string.IsNullOrWhiteSpace(t.ShortDescription))
+        .Select(t => new CategoryTranslation
+        {
+            CategoryId = category.Id,
+            LanguageId = t.LanguageId,
+            Name = t.Name ?? string.Empty,
+            ShortDescription = t.ShortDescription,
+            LongDescription = t.LongDescription
+        }).ToList();
+
+    _context.Set<CategoryTranslation>().AddRange(translations);
 }
 ```
 
@@ -1883,14 +2022,78 @@ public async Task<IActionResult> DeleteCategory(int id)
 </li>
 ```
 
+## 🔧 Product Option Sistemi (Yeni! 🆕)
+
+### Option Yönetimi
+
+Product Option sistemi, ürünlere esnek özellikler eklemeyi sağlar:
+
+#### Option Türleri:
+
+- **Color**: Renk seçenekleri (Red, Blue, Green)
+- **Size**: Beden seçenekleri (S, M, L, XL)
+- **Material**: Malzeme seçenekleri (Cotton, Polyester, Leather)
+- **Weight**: Ağırlık bilgisi (1.2 kg, 500g)
+- **Warranty**: Garanti seçenekleri (1 Year, 2 Years)
+
+#### ProductOption İlişkisi:
+
+```csharp
+// iPhone 15 Pro için renk seçenekleri
+new ProductOption { ProductId = 1, OptionId = 1, Value = "Natural Titanium", PriceModifier = 0, IsDefault = true }
+new ProductOption { ProductId = 1, OptionId = 1, Value = "Blue Titanium", PriceModifier = 0, IsDefault = false }
+new ProductOption { ProductId = 1, OptionId = 1, Value = "White Titanium", PriceModifier = 0, IsDefault = false }
+
+// Garanti seçeneği (ek ücretli)
+new ProductOption { ProductId = 1, OptionId = 5, Value = "2 Years", PriceModifier = 200, IsDefault = false }
+```
+
+#### Seed Data Örnekleri:
+
+**Options:**
+
+- Color (Renk/Color)
+- Size (Beden/Size)
+- Material (Malzeme/Material)
+- Weight (Ağırlık/Weight)
+- Warranty (Garanti/Warranty)
+
+**Products:**
+
+- iPhone 15 Pro (Variable)
+- Samsung Galaxy S24 (Variable)
+- MacBook Pro 14" (Variable)
+- Dell XPS 13 (Variable)
+- AirPods Pro (Simple)
+
+**Trademarks:**
+
+- Apple, Samsung, Dell, Microsoft, Sony
+
+**Variants:**
+
+- iPhone 15 Pro: 128GB Natural, 256GB Blue, 512GB White
+- Galaxy S24: 128GB Black, 256GB Violet
+- MacBook Pro: M3 512GB, M3 1TB
+- Dell XPS: i5 256GB, i7 512GB
+
 ### 🎉 Sonuç
 
 Bu metadata yönetimi sistemi ile:
 
-✅ **Hiyerarşik Kategori Yönetimi**: Content/Pages sayfasındaki gibi nested yapı ✅ **Visual Hierarchy**: Level-based indentation ve renk kodlaması  
-✅ **Interactive Features**: Toggle, search, filter özellikleri ✅ **Safe Operations**: Child kontrolü ile güvenli silme ✅ **Quick Actions**: Parent-child ilişki yönetimi ✅ **Responsive Design**: Mobil uyumlu interface ✅ **Performance**: Optimize edilmiş database sorguları ✅ **User Experience**: Sezgisel ve kullanıcı dostu arayüz
+✅ **Hiyerarşik Kategori Yönetimi**: Content/Pages sayfasındaki gibi nested yapı  
+✅ **Tab-Based Translation**: Section modal'ındaki gibi çoklu dil desteği  
+✅ **Product Option System**: Esnek ürün özellik yönetimi  
+✅ **Visual Hierarchy**: Level-based indentation ve renk kodlaması  
+✅ **Interactive Features**: Toggle, search, filter özellikleri  
+✅ **Safe Operations**: Child kontrolü ile güvenli silme  
+✅ **Quick Actions**: Parent-child ilişki yönetimi  
+✅ **Responsive Design**: Mobil uyumlu interface  
+✅ **Performance**: Optimize edilmiş database sorguları  
+✅ **User Experience**: Sezgisel ve kullanıcı dostu arayüz  
+✅ **Seed Data**: Hazır test verileri ile hızlı başlangıç
 
-Kategoriler artık tam hiyerarşik yapıda yönetilebiliyor ve görüntülenebiliyor! 🏷️
+Kategoriler artık tam hiyerarşik yapıda yönetilebiliyor, çoklu dil desteği var ve ürünler için esnek option sistemi mevcut! 🏷️
 
 ## 🏗️ Layout-Based Page Editing Sistemi
 

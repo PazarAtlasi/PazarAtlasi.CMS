@@ -24,5 +24,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Metadata
         public virtual ICollection<Variant> Variants { get; set; } = new List<Variant>();
         public virtual ICollection<CategoryProduct> CategoryProducts { get; set; } = new List<CategoryProduct>();
         public virtual ICollection<TrademarkProduct> TrademarkProducts { get; set; } = new List<TrademarkProduct>();
+        public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
     }
 }

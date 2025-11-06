@@ -53,6 +53,11 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                    .HasForeignKey(tp => tp.ProductId)
                    .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(p => p.ProductOptions)
+                   .WithOne(po => po.Product)
+                   .HasForeignKey(po => po.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
             // Indexes
             builder.HasIndex(p => p.Code).HasDatabaseName("IX_Products_Code").IsUnique();
             builder.HasIndex(p => p.IntegrationCode).HasDatabaseName("IX_Products_IntegrationCode");
@@ -62,6 +67,15 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
 
             // Query Filter (Soft Delete)
             builder.HasQueryFilter(p => !p.IsDeleted);
+
+            // Seed Data
+            builder.HasData(
+                new Product { Id = 1, Name = "iPhone 15 Pro", Code = "iphone-15-pro", IntegrationCode = "APPLE-IP15P", ShortDescription = "Latest iPhone with Pro features", LongDescription = "The iPhone 15 Pro features a titanium design, A17 Pro chip, and advanced camera system.", Unit = "pcs", Type = Domain.Common.ProductType.Variable, TaxRate = 18, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Product { Id = 2, Name = "Samsung Galaxy S24", Code = "galaxy-s24", IntegrationCode = "SAMSUNG-GS24", ShortDescription = "Premium Android smartphone", LongDescription = "Samsung Galaxy S24 with AI-powered features and exceptional camera quality.", Unit = "pcs", Type = Domain.Common.ProductType.Variable, TaxRate = 18, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Product { Id = 3, Name = "MacBook Pro 14\"", Code = "macbook-pro-14", IntegrationCode = "APPLE-MBP14", ShortDescription = "Professional laptop for creators", LongDescription = "MacBook Pro 14-inch with M3 chip, perfect for professional workflows.", Unit = "pcs", Type = Domain.Common.ProductType.Variable, TaxRate = 18, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Product { Id = 4, Name = "Dell XPS 13", Code = "dell-xps-13", IntegrationCode = "DELL-XPS13", ShortDescription = "Ultra-portable Windows laptop", LongDescription = "Dell XPS 13 with Intel Core processors and premium build quality.", Unit = "pcs", Type = Domain.Common.ProductType.Variable, TaxRate = 18, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Product { Id = 5, Name = "AirPods Pro", Code = "airpods-pro", IntegrationCode = "APPLE-APP", ShortDescription = "Wireless earbuds with ANC", LongDescription = "AirPods Pro with active noise cancellation and spatial audio.", Unit = "pcs", Type = Domain.Common.ProductType.Simple, TaxRate = 18, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false }
+            );
         }
     }
 }

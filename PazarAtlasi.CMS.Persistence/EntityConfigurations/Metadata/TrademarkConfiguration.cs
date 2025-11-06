@@ -50,6 +50,15 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
 
             // Query Filter (Soft Delete)
             builder.HasQueryFilter(t => !t.IsDeleted);
+
+            // Seed Data
+            builder.HasData(
+                new Trademark { Id = 1, Name = "Apple", Code = "apple", IntegrationCode = "APPLE", ShortDescription = "Technology company", LongDescription = "Apple Inc. is an American multinational technology company.", SortOrder = 1, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Trademark { Id = 2, Name = "Samsung", Code = "samsung", IntegrationCode = "SAMSUNG", ShortDescription = "Electronics manufacturer", LongDescription = "Samsung Electronics is a South Korean multinational electronics corporation.", SortOrder = 2, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Trademark { Id = 3, Name = "Dell", Code = "dell", IntegrationCode = "DELL", ShortDescription = "Computer technology company", LongDescription = "Dell Technologies is an American multinational computer technology company.", SortOrder = 3, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Trademark { Id = 4, Name = "Microsoft", Code = "microsoft", IntegrationCode = "MICROSOFT", ShortDescription = "Software corporation", LongDescription = "Microsoft Corporation is an American multinational technology corporation.", SortOrder = 4, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false },
+                new Trademark { Id = 5, Name = "Sony", Code = "sony", IntegrationCode = "SONY", ShortDescription = "Entertainment and technology", LongDescription = "Sony Corporation is a Japanese multinational conglomerate corporation.", SortOrder = 5, Status = Domain.Common.Status.Active, CreatedAt = DateTime.UtcNow, IsDeleted = false }
+            );
         }
     }
 }

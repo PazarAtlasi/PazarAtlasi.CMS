@@ -168,4 +168,21 @@ namespace PazarAtlasi.CMS.Domain.Common
         Service,
         Bundle
     }
+
+    public enum OptionType
+    {
+        None,
+        Text,
+        Number,
+        Color,
+        Size,
+        Material,
+        Dropdown,
+        Checkbox,
+        Radio,
+        Date,
+        Boolean,
+        Image,
+        File
+    }
 }

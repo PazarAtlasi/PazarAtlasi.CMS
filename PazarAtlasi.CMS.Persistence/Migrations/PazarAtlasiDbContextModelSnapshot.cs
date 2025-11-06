@@ -1655,7 +1655,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 1,
                             Code = "tr-TR",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(439),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8129),
                             Flag = "🇹🇷",
                             IsActive = true,
                             IsDefault = true,
@@ -1669,7 +1669,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 2,
                             Code = "en-US",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(443),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8135),
                             Flag = "🇺🇸",
                             IsActive = true,
                             IsDefault = false,
@@ -1683,7 +1683,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 3,
                             Code = "de-DE",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(446),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8138),
                             Flag = "🇩🇪",
                             IsActive = true,
                             IsDefault = false,
@@ -1697,7 +1697,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 4,
                             Code = "fr-FR",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(448),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8140),
                             Flag = "🇫🇷",
                             IsActive = true,
                             IsDefault = false,
@@ -1711,7 +1711,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 5,
                             Code = "es-ES",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(450),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8142),
                             Flag = "🇪🇸",
                             IsActive = true,
                             IsDefault = false,
@@ -10668,7 +10668,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 1,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6723),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6585),
                             Description = "Turkish translation for Common.Save",
                             IsActive = true,
                             IsDeleted = false,
@@ -10681,7 +10681,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 2,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6727),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6592),
                             Description = "Turkish translation for Common.Cancel",
                             IsActive = true,
                             IsDeleted = false,
@@ -10694,7 +10694,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 3,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6729),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6593),
                             Description = "Turkish translation for Common.Delete",
                             IsActive = true,
                             IsDeleted = false,
@@ -10707,7 +10707,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 4,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6730),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6643),
                             Description = "Turkish translation for Common.Edit",
                             IsActive = true,
                             IsDeleted = false,
@@ -10720,7 +10720,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 5,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6731),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6645),
                             Description = "Turkish translation for Common.Add",
                             IsActive = true,
                             IsDeleted = false,
@@ -10733,7 +10733,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 6,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6733),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6649),
                             Description = "Turkish translation for Common.Update",
                             IsActive = true,
                             IsDeleted = false,
@@ -10746,7 +10746,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 7,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6734),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6650),
                             Description = "Turkish translation for Common.Create",
                             IsActive = true,
                             IsDeleted = false,
@@ -10759,7 +10759,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 8,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6735),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6651),
                             Description = "Turkish translation for Common.Remove",
                             IsActive = true,
                             IsDeleted = false,
@@ -10772,7 +10772,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 9,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6736),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6652),
                             Description = "Turkish translation for Common.Search",
                             IsActive = true,
                             IsDeleted = false,
@@ -10785,7 +10785,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 10,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6738),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6653),
                             Description = "Turkish translation for Common.Filter",
                             IsActive = true,
                             IsDeleted = false,
@@ -10798,7 +10798,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 11,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6739),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6655),
                             Description = "Turkish translation for Common.Export",
                             IsActive = true,
                             IsDeleted = false,
@@ -10811,7 +10811,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 12,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6740),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6656),
                             Description = "Turkish translation for Common.Import",
                             IsActive = true,
                             IsDeleted = false,
@@ -10824,7 +10824,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 13,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6741),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6656),
                             Description = "Turkish translation for Common.Upload",
                             IsActive = true,
                             IsDeleted = false,
@@ -10837,7 +10837,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 14,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6742),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6657),
                             Description = "Turkish translation for Common.Download",
                             IsActive = true,
                             IsDeleted = false,
@@ -10850,7 +10850,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 15,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6743),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6658),
                             Description = "Turkish translation for Common.Preview",
                             IsActive = true,
                             IsDeleted = false,
@@ -10863,7 +10863,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 16,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6744),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6659),
                             Description = "Turkish translation for Common.Publish",
                             IsActive = true,
                             IsDeleted = false,
@@ -10876,7 +10876,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 17,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6745),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6660),
                             Description = "Turkish translation for Common.Draft",
                             IsActive = true,
                             IsDeleted = false,
@@ -10889,7 +10889,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 18,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6746),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6661),
                             Description = "Turkish translation for Common.Active",
                             IsActive = true,
                             IsDeleted = false,
@@ -10902,7 +10902,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 19,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6747),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6662),
                             Description = "Turkish translation for Common.Inactive",
                             IsActive = true,
                             IsDeleted = false,
@@ -10915,7 +10915,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 20,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6748),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6663),
                             Description = "Turkish translation for Common.Yes",
                             IsActive = true,
                             IsDeleted = false,
@@ -10928,7 +10928,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 21,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6749),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6671),
                             Description = "Turkish translation for Common.No",
                             IsActive = true,
                             IsDeleted = false,
@@ -10941,7 +10941,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 22,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6779),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6672),
                             Description = "Turkish translation for Common.OK",
                             IsActive = true,
                             IsDeleted = false,
@@ -10954,7 +10954,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 23,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6780),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6673),
                             Description = "Turkish translation for Common.Close",
                             IsActive = true,
                             IsDeleted = false,
@@ -10967,7 +10967,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 24,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6781),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6674),
                             Description = "Turkish translation for Common.Back",
                             IsActive = true,
                             IsDeleted = false,
@@ -10980,7 +10980,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 25,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6782),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6674),
                             Description = "Turkish translation for Common.Next",
                             IsActive = true,
                             IsDeleted = false,
@@ -10993,7 +10993,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 26,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6783),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6676),
                             Description = "Turkish translation for Common.Previous",
                             IsActive = true,
                             IsDeleted = false,
@@ -11006,7 +11006,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 27,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6784),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6677),
                             Description = "Turkish translation for Common.Loading",
                             IsActive = true,
                             IsDeleted = false,
@@ -11019,7 +11019,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 28,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6785),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6677),
                             Description = "Turkish translation for Common.Success",
                             IsActive = true,
                             IsDeleted = false,
@@ -11032,7 +11032,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 29,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6786),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6678),
                             Description = "Turkish translation for Common.Error",
                             IsActive = true,
                             IsDeleted = false,
@@ -11045,7 +11045,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 30,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6787),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6689),
                             Description = "Turkish translation for Common.Warning",
                             IsActive = true,
                             IsDeleted = false,
@@ -11058,7 +11058,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 31,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6788),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6690),
                             Description = "Turkish translation for Common.Info",
                             IsActive = true,
                             IsDeleted = false,
@@ -11071,7 +11071,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 32,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6789),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6691),
                             Description = "Turkish translation for Common.Refresh",
                             IsActive = true,
                             IsDeleted = false,
@@ -11084,7 +11084,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 33,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6790),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6692),
                             Description = "Turkish translation for Common.Settings",
                             IsActive = true,
                             IsDeleted = false,
@@ -11097,7 +11097,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 34,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6792),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6694),
                             Description = "Turkish translation for Common.ViewAll",
                             IsActive = true,
                             IsDeleted = false,
@@ -11110,7 +11110,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 35,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6793),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6694),
                             Description = "Turkish translation for Common.All",
                             IsActive = true,
                             IsDeleted = false,
@@ -11123,7 +11123,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 36,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6794),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6695),
                             Description = "Turkish translation for Common.Actions",
                             IsActive = true,
                             IsDeleted = false,
@@ -11136,7 +11136,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 37,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6795),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6718),
                             Description = "Turkish translation for Common.AreYouSure",
                             IsActive = true,
                             IsDeleted = false,
@@ -11149,7 +11149,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 38,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6796),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6719),
                             Description = "Turkish translation for Common.UnexpectedError",
                             IsActive = true,
                             IsDeleted = false,
@@ -11162,7 +11162,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 39,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6799),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6722),
                             Description = "Turkish translation for Page.Title",
                             IsActive = true,
                             IsDeleted = false,
@@ -11175,7 +11175,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 40,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6801),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6724),
                             Description = "Turkish translation for Page.Content",
                             IsActive = true,
                             IsDeleted = false,
@@ -11188,7 +11188,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 41,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6802),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6725),
                             Description = "Turkish translation for Page.Description",
                             IsActive = true,
                             IsDeleted = false,
@@ -11201,7 +11201,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 42,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6803),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6726),
                             Description = "Turkish translation for Page.Keywords",
                             IsActive = true,
                             IsDeleted = false,
@@ -11214,7 +11214,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 43,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6804),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6727),
                             Description = "Turkish translation for Page.Author",
                             IsActive = true,
                             IsDeleted = false,
@@ -11227,7 +11227,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 44,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6805),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6728),
                             Description = "Turkish translation for Page.CreatedAt",
                             IsActive = true,
                             IsDeleted = false,
@@ -11240,7 +11240,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 45,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6806),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6729),
                             Description = "Turkish translation for Page.UpdatedAt",
                             IsActive = true,
                             IsDeleted = false,
@@ -11253,7 +11253,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 46,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6807),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6730),
                             Description = "Turkish translation for Page.Status",
                             IsActive = true,
                             IsDeleted = false,
@@ -11266,7 +11266,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 47,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6808),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6731),
                             Description = "Turkish translation for Page.Type",
                             IsActive = true,
                             IsDeleted = false,
@@ -11279,7 +11279,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 48,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6809),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6731),
                             Description = "Turkish translation for Page.Layout",
                             IsActive = true,
                             IsDeleted = false,
@@ -11292,7 +11292,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 49,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6810),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6732),
                             Description = "Turkish translation for Page.Template",
                             IsActive = true,
                             IsDeleted = false,
@@ -11305,7 +11305,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 50,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6811),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6733),
                             Description = "Turkish translation for Page.SEO",
                             IsActive = true,
                             IsDeleted = false,
@@ -11318,7 +11318,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 51,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6812),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6734),
                             Description = "Turkish translation for Page.Sections",
                             IsActive = true,
                             IsDeleted = false,
@@ -11331,7 +11331,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 52,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6813),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6735),
                             Description = "Turkish translation for Page.Items",
                             IsActive = true,
                             IsDeleted = false,
@@ -11344,7 +11344,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 53,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6813),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6736),
                             Description = "Turkish translation for Page.Fields",
                             IsActive = true,
                             IsDeleted = false,
@@ -11357,7 +11357,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 54,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6816),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6738),
                             Description = "Turkish translation for Section.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -11370,7 +11370,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 55,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6817),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6739),
                             Description = "Turkish translation for Section.Type",
                             IsActive = true,
                             IsDeleted = false,
@@ -11383,7 +11383,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 56,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6818),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6740),
                             Description = "Turkish translation for Section.Key",
                             IsActive = true,
                             IsDeleted = false,
@@ -11396,7 +11396,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 57,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6843),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6741),
                             Description = "Turkish translation for Section.Order",
                             IsActive = true,
                             IsDeleted = false,
@@ -11409,7 +11409,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 58,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6844),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6742),
                             Description = "Turkish translation for Section.Settings",
                             IsActive = true,
                             IsDeleted = false,
@@ -11422,7 +11422,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 59,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6845),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6743),
                             Description = "Turkish translation for Section.Items",
                             IsActive = true,
                             IsDeleted = false,
@@ -11435,7 +11435,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 60,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6846),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6744),
                             Description = "Turkish translation for Section.AddItem",
                             IsActive = true,
                             IsDeleted = false,
@@ -11448,7 +11448,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 61,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6847),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6745),
                             Description = "Turkish translation for Section.EditItems",
                             IsActive = true,
                             IsDeleted = false,
@@ -11461,7 +11461,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 62,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6848),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6746),
                             Description = "Turkish translation for Section.Duplicate",
                             IsActive = true,
                             IsDeleted = false,
@@ -11474,7 +11474,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 63,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6849),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6746),
                             Description = "Turkish translation for Section.Remove",
                             IsActive = true,
                             IsDeleted = false,
@@ -11487,7 +11487,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 64,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6850),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6747),
                             Description = "Turkish translation for Section.Hero",
                             IsActive = true,
                             IsDeleted = false,
@@ -11500,7 +11500,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 65,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6852),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6748),
                             Description = "Turkish translation for Section.Navbar",
                             IsActive = true,
                             IsDeleted = false,
@@ -11513,7 +11513,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 66,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6854),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6750),
                             Description = "Turkish translation for Section.Footer",
                             IsActive = true,
                             IsDeleted = false,
@@ -11526,7 +11526,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 67,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6855),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6751),
                             Description = "Turkish translation for Section.Content",
                             IsActive = true,
                             IsDeleted = false,
@@ -11539,7 +11539,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 68,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6856),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6752),
                             Description = "Turkish translation for Section.Gallery",
                             IsActive = true,
                             IsDeleted = false,
@@ -11552,7 +11552,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 69,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6857),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6813),
                             Description = "Turkish translation for Section.Contact",
                             IsActive = true,
                             IsDeleted = false,
@@ -11565,7 +11565,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 70,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6859),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6817),
                             Description = "Turkish translation for Validation.Required",
                             IsActive = true,
                             IsDeleted = false,
@@ -11578,7 +11578,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 71,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6861),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6818),
                             Description = "Turkish translation for Validation.Email",
                             IsActive = true,
                             IsDeleted = false,
@@ -11591,7 +11591,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 72,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6862),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6819),
                             Description = "Turkish translation for Validation.MinLength",
                             IsActive = true,
                             IsDeleted = false,
@@ -11604,7 +11604,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 73,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6863),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6820),
                             Description = "Turkish translation for Validation.MaxLength",
                             IsActive = true,
                             IsDeleted = false,
@@ -11617,7 +11617,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 74,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6864),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6821),
                             Description = "Turkish translation for Validation.Range",
                             IsActive = true,
                             IsDeleted = false,
@@ -11630,7 +11630,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 75,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6865),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6822),
                             Description = "Turkish translation for Validation.Numeric",
                             IsActive = true,
                             IsDeleted = false,
@@ -11643,7 +11643,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 76,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6866),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6823),
                             Description = "Turkish translation for Validation.Date",
                             IsActive = true,
                             IsDeleted = false,
@@ -11656,7 +11656,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 77,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6867),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6824),
                             Description = "Turkish translation for Validation.Url",
                             IsActive = true,
                             IsDeleted = false,
@@ -11669,7 +11669,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 78,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6868),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6824),
                             Description = "Turkish translation for Validation.Phone",
                             IsActive = true,
                             IsDeleted = false,
@@ -11682,7 +11682,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 79,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6870),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6825),
                             Description = "Turkish translation for Validation.Password",
                             IsActive = true,
                             IsDeleted = false,
@@ -11695,7 +11695,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 80,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6873),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6828),
                             Description = "Turkish translation for Navigation.Dashboard",
                             IsActive = true,
                             IsDeleted = false,
@@ -11708,7 +11708,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 81,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6874),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6829),
                             Description = "Turkish translation for Navigation.Announcements",
                             IsActive = true,
                             IsDeleted = false,
@@ -11721,7 +11721,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 82,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6875),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6830),
                             Description = "Turkish translation for Navigation.Campaigns",
                             IsActive = true,
                             IsDeleted = false,
@@ -11734,7 +11734,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 83,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6876),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6831),
                             Description = "Turkish translation for Navigation.Content",
                             IsActive = true,
                             IsDeleted = false,
@@ -11747,7 +11747,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 84,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6877),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6831),
                             Description = "Turkish translation for Navigation.Pages",
                             IsActive = true,
                             IsDeleted = false,
@@ -11760,7 +11760,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 85,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6878),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6832),
                             Description = "Turkish translation for Navigation.Sections",
                             IsActive = true,
                             IsDeleted = false,
@@ -11773,7 +11773,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 86,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6879),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6833),
                             Description = "Turkish translation for Navigation.Layouts",
                             IsActive = true,
                             IsDeleted = false,
@@ -11786,7 +11786,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 87,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6880),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6834),
                             Description = "Turkish translation for Navigation.WebUrlManagement",
                             IsActive = true,
                             IsDeleted = false,
@@ -11799,7 +11799,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 88,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6881),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6835),
                             Description = "Turkish translation for Navigation.News",
                             IsActive = true,
                             IsDeleted = false,
@@ -11812,7 +11812,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 89,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6905),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6836),
                             Description = "Turkish translation for Navigation.Blog",
                             IsActive = true,
                             IsDeleted = false,
@@ -11825,7 +11825,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 90,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6906),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6837),
                             Description = "Turkish translation for Navigation.Templates",
                             IsActive = true,
                             IsDeleted = false,
@@ -11838,7 +11838,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 91,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6907),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6838),
                             Description = "Turkish translation for Navigation.SectionItems",
                             IsActive = true,
                             IsDeleted = false,
@@ -11851,7 +11851,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 92,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6908),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6839),
                             Description = "Turkish translation for Navigation.ECommerce",
                             IsActive = true,
                             IsDeleted = false,
@@ -11864,7 +11864,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 93,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6909),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6840),
                             Description = "Turkish translation for Navigation.Products",
                             IsActive = true,
                             IsDeleted = false,
@@ -11877,7 +11877,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 94,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6910),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6841),
                             Description = "Turkish translation for Navigation.Categories",
                             IsActive = true,
                             IsDeleted = false,
@@ -11890,7 +11890,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 95,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6911),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6842),
                             Description = "Turkish translation for Navigation.Orders",
                             IsActive = true,
                             IsDeleted = false,
@@ -11903,7 +11903,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 96,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6912),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6843),
                             Description = "Turkish translation for Navigation.Users",
                             IsActive = true,
                             IsDeleted = false,
@@ -11916,7 +11916,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 97,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6913),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6844),
                             Description = "Turkish translation for Navigation.ManageUsers",
                             IsActive = true,
                             IsDeleted = false,
@@ -11929,7 +11929,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 98,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6914),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6845),
                             Description = "Turkish translation for Navigation.ManageRoles",
                             IsActive = true,
                             IsDeleted = false,
@@ -11942,7 +11942,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 99,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6915),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6845),
                             Description = "Turkish translation for Navigation.ManagePermissions",
                             IsActive = true,
                             IsDeleted = false,
@@ -11955,7 +11955,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 100,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6916),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6846),
                             Description = "Turkish translation for Navigation.Analytics",
                             IsActive = true,
                             IsDeleted = false,
@@ -11968,7 +11968,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 101,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6917),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6847),
                             Description = "Turkish translation for Navigation.Settings",
                             IsActive = true,
                             IsDeleted = false,
@@ -11981,7 +11981,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 102,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6918),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6848),
                             Description = "Turkish translation for Navigation.GeneralSettings",
                             IsActive = true,
                             IsDeleted = false,
@@ -11994,7 +11994,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 103,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6919),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6849),
                             Description = "Turkish translation for Navigation.Countries",
                             IsActive = true,
                             IsDeleted = false,
@@ -12007,7 +12007,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 104,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6920),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6850),
                             Description = "Turkish translation for Navigation.Languages",
                             IsActive = true,
                             IsDeleted = false,
@@ -12020,7 +12020,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 105,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6921),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6891),
                             Description = "Turkish translation for Navigation.Localization",
                             IsActive = true,
                             IsDeleted = false,
@@ -12033,7 +12033,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 106,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6922),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6892),
                             Description = "Turkish translation for Navigation.Profile",
                             IsActive = true,
                             IsDeleted = false,
@@ -12046,7 +12046,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 107,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6923),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6893),
                             Description = "Turkish translation for Navigation.Help",
                             IsActive = true,
                             IsDeleted = false,
@@ -12059,7 +12059,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 108,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6924),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6894),
                             Description = "Turkish translation for Navigation.Logout",
                             IsActive = true,
                             IsDeleted = false,
@@ -12072,7 +12072,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 109,
                             Category = "Language",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6927),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6896),
                             Description = "Turkish translation for Language.English",
                             IsActive = true,
                             IsDeleted = false,
@@ -12085,7 +12085,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 110,
                             Category = "Language",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6928),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6898),
                             Description = "Turkish translation for Language.Turkish",
                             IsActive = true,
                             IsDeleted = false,
@@ -12098,7 +12098,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 111,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6931),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6900),
                             Description = "Turkish translation for Dashboard.Title",
                             IsActive = true,
                             IsDeleted = false,
@@ -12111,7 +12111,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 112,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6933),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6902),
                             Description = "Turkish translation for Dashboard.WelcomeMessage",
                             IsActive = true,
                             IsDeleted = false,
@@ -12124,7 +12124,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 113,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6933),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6903),
                             Description = "Turkish translation for Dashboard.Last7Days",
                             IsActive = true,
                             IsDeleted = false,
@@ -12137,7 +12137,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 114,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6935),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6904),
                             Description = "Turkish translation for Dashboard.Last30Days",
                             IsActive = true,
                             IsDeleted = false,
@@ -12150,7 +12150,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 115,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6935),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6904),
                             Description = "Turkish translation for Dashboard.Last90Days",
                             IsActive = true,
                             IsDeleted = false,
@@ -12163,7 +12163,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 116,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6936),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6905),
                             Description = "Turkish translation for Dashboard.TotalUsers",
                             IsActive = true,
                             IsDeleted = false,
@@ -12176,7 +12176,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 117,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6937),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6906),
                             Description = "Turkish translation for Dashboard.TotalRevenue",
                             IsActive = true,
                             IsDeleted = false,
@@ -12189,7 +12189,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 118,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6938),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6907),
                             Description = "Turkish translation for Dashboard.Products",
                             IsActive = true,
                             IsDeleted = false,
@@ -12202,7 +12202,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 119,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6939),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6908),
                             Description = "Turkish translation for Dashboard.SupportTickets",
                             IsActive = true,
                             IsDeleted = false,
@@ -12215,7 +12215,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 120,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6940),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6909),
                             Description = "Turkish translation for Dashboard.FromLastMonth",
                             IsActive = true,
                             IsDeleted = false,
@@ -12228,7 +12228,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 121,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6941),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6910),
                             Description = "Turkish translation for Dashboard.SalesOverview",
                             IsActive = true,
                             IsDeleted = false,
@@ -12241,7 +12241,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 122,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6942),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6910),
                             Description = "Turkish translation for Dashboard.Monthly",
                             IsActive = true,
                             IsDeleted = false,
@@ -12254,7 +12254,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 123,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6943),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6911),
                             Description = "Turkish translation for Dashboard.ChartVisualization",
                             IsActive = true,
                             IsDeleted = false,
@@ -12267,7 +12267,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 124,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6970),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6912),
                             Description = "Turkish translation for Dashboard.ThisYear",
                             IsActive = true,
                             IsDeleted = false,
@@ -12280,7 +12280,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 125,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6971),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6913),
                             Description = "Turkish translation for Dashboard.LastYear",
                             IsActive = true,
                             IsDeleted = false,
@@ -12293,7 +12293,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 126,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6972),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6914),
                             Description = "Turkish translation for Dashboard.RecentActivities",
                             IsActive = true,
                             IsDeleted = false,
@@ -12306,7 +12306,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 127,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6973),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6915),
                             Description = "Turkish translation for Dashboard.TopProducts",
                             IsActive = true,
                             IsDeleted = false,
@@ -12319,7 +12319,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 128,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6974),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6916),
                             Description = "Turkish translation for Dashboard.Product",
                             IsActive = true,
                             IsDeleted = false,
@@ -12332,7 +12332,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 129,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6975),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6917),
                             Description = "Turkish translation for Dashboard.Category",
                             IsActive = true,
                             IsDeleted = false,
@@ -12345,7 +12345,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 130,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6978),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6919),
                             Description = "Turkish translation for Dashboard.Sales",
                             IsActive = true,
                             IsDeleted = false,
@@ -12358,7 +12358,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 131,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6979),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6951),
                             Description = "Turkish translation for Dashboard.Status",
                             IsActive = true,
                             IsDeleted = false,
@@ -12371,7 +12371,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 132,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6980),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6952),
                             Description = "Turkish translation for Dashboard.LatestOrders",
                             IsActive = true,
                             IsDeleted = false,
@@ -12384,7 +12384,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 133,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6981),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6954),
                             Description = "Turkish translation for Dashboard.Today",
                             IsActive = true,
                             IsDeleted = false,
@@ -12397,7 +12397,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 134,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6982),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6954),
                             Description = "Turkish translation for Dashboard.Yesterday",
                             IsActive = true,
                             IsDeleted = false,
@@ -12410,7 +12410,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 135,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6983),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6955),
                             Description = "Turkish translation for Dashboard.OrderId",
                             IsActive = true,
                             IsDeleted = false,
@@ -12423,7 +12423,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 136,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6984),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6956),
                             Description = "Turkish translation for Dashboard.Customer",
                             IsActive = true,
                             IsDeleted = false,
@@ -12436,7 +12436,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 137,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6985),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6957),
                             Description = "Turkish translation for Dashboard.Date",
                             IsActive = true,
                             IsDeleted = false,
@@ -12449,7 +12449,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 138,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6986),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6958),
                             Description = "Turkish translation for Dashboard.Amount",
                             IsActive = true,
                             IsDeleted = false,
@@ -12462,7 +12462,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 139,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6989),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6961),
                             Description = "Turkish translation for Localization.SystemDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -12475,7 +12475,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 140,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6990),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6962),
                             Description = "Turkish translation for Localization.Keys",
                             IsActive = true,
                             IsDeleted = false,
@@ -12488,7 +12488,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 141,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6991),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6963),
                             Description = "Turkish translation for Localization.Key",
                             IsActive = true,
                             IsDeleted = false,
@@ -12501,7 +12501,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 142,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6992),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6964),
                             Description = "Turkish translation for Localization.AddKey",
                             IsActive = true,
                             IsDeleted = false,
@@ -12514,7 +12514,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 143,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6993),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6965),
                             Description = "Turkish translation for Localization.EditKey",
                             IsActive = true,
                             IsDeleted = false,
@@ -12527,7 +12527,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 144,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6994),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6966),
                             Description = "Turkish translation for Localization.KeyDetails",
                             IsActive = true,
                             IsDeleted = false,
@@ -12540,7 +12540,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 145,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6995),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6967),
                             Description = "Turkish translation for Localization.AddKeyDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -12553,7 +12553,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 146,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6996),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6968),
                             Description = "Turkish translation for Localization.EditKeyDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -12566,7 +12566,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 147,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6997),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6969),
                             Description = "Turkish translation for Localization.KeyPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -12579,7 +12579,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 148,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6998),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6970),
                             Description = "Turkish translation for Localization.KeyHint",
                             IsActive = true,
                             IsDeleted = false,
@@ -12592,7 +12592,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 149,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(6999),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6970),
                             Description = "Turkish translation for Localization.KeyReadonly",
                             IsActive = true,
                             IsDeleted = false,
@@ -12605,7 +12605,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 150,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7022),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6971),
                             Description = "Turkish translation for Localization.Description",
                             IsActive = true,
                             IsDeleted = false,
@@ -12618,7 +12618,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 151,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7023),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6972),
                             Description = "Turkish translation for Localization.DescriptionPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -12631,7 +12631,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 152,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7024),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6973),
                             Description = "Turkish translation for Localization.SelectCategory",
                             IsActive = true,
                             IsDeleted = false,
@@ -12644,7 +12644,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 153,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7025),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6974),
                             Description = "Turkish translation for Localization.Translations",
                             IsActive = true,
                             IsDeleted = false,
@@ -12657,7 +12657,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 154,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7026),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6975),
                             Description = "Turkish translation for Localization.TranslationPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -12670,7 +12670,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 155,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7027),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6976),
                             Description = "Turkish translation for Localization.Translated",
                             IsActive = true,
                             IsDeleted = false,
@@ -12683,7 +12683,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 156,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7028),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6977),
                             Description = "Turkish translation for Localization.NotTranslated",
                             IsActive = true,
                             IsDeleted = false,
@@ -12696,7 +12696,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 157,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7029),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6978),
                             Description = "Turkish translation for Localization.LastUpdated",
                             IsActive = true,
                             IsDeleted = false,
@@ -12709,7 +12709,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 158,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7030),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6978),
                             Description = "Turkish translation for Localization.SearchPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -12722,7 +12722,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 159,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7030),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6979),
                             Description = "Turkish translation for Localization.ShowingResults",
                             IsActive = true,
                             IsDeleted = false,
@@ -12735,7 +12735,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 160,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7031),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6980),
                             Description = "Turkish translation for Localization.NoKeys",
                             IsActive = true,
                             IsDeleted = false,
@@ -12748,7 +12748,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 161,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7032),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6981),
                             Description = "Turkish translation for Localization.NoKeysDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -12761,7 +12761,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 162,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7033),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6982),
                             Description = "Turkish translation for Localization.AddFirstKey",
                             IsActive = true,
                             IsDeleted = false,
@@ -12774,7 +12774,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 163,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7034),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6983),
                             Description = "Turkish translation for Localization.DeleteConfirmation",
                             IsActive = true,
                             IsDeleted = false,
@@ -12787,7 +12787,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 164,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7041),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7063),
                             Description = "English translation for Common.Save",
                             IsActive = true,
                             IsDeleted = false,
@@ -12800,7 +12800,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 165,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7042),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7066),
                             Description = "English translation for Common.Cancel",
                             IsActive = true,
                             IsDeleted = false,
@@ -12813,7 +12813,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 166,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7043),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7067),
                             Description = "English translation for Common.Delete",
                             IsActive = true,
                             IsDeleted = false,
@@ -12826,7 +12826,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 167,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7044),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7068),
                             Description = "English translation for Common.Edit",
                             IsActive = true,
                             IsDeleted = false,
@@ -12839,7 +12839,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 168,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7045),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7068),
                             Description = "English translation for Common.Add",
                             IsActive = true,
                             IsDeleted = false,
@@ -12852,7 +12852,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 169,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7046),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7070),
                             Description = "English translation for Common.Update",
                             IsActive = true,
                             IsDeleted = false,
@@ -12865,7 +12865,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 170,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7047),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7070),
                             Description = "English translation for Common.Create",
                             IsActive = true,
                             IsDeleted = false,
@@ -12878,7 +12878,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 171,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7048),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7071),
                             Description = "English translation for Common.Remove",
                             IsActive = true,
                             IsDeleted = false,
@@ -12891,7 +12891,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 172,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7049),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7072),
                             Description = "English translation for Common.Search",
                             IsActive = true,
                             IsDeleted = false,
@@ -12904,7 +12904,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 173,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7049),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7073),
                             Description = "English translation for Common.Filter",
                             IsActive = true,
                             IsDeleted = false,
@@ -12917,7 +12917,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 174,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7050),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7073),
                             Description = "English translation for Common.Export",
                             IsActive = true,
                             IsDeleted = false,
@@ -12930,7 +12930,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 175,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7052),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7074),
                             Description = "English translation for Common.Import",
                             IsActive = true,
                             IsDeleted = false,
@@ -12943,7 +12943,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 176,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7053),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7075),
                             Description = "English translation for Common.Upload",
                             IsActive = true,
                             IsDeleted = false,
@@ -12956,7 +12956,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 177,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7053),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7076),
                             Description = "English translation for Common.Download",
                             IsActive = true,
                             IsDeleted = false,
@@ -12969,7 +12969,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 178,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7054),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7077),
                             Description = "English translation for Common.Preview",
                             IsActive = true,
                             IsDeleted = false,
@@ -12982,7 +12982,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 179,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7055),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7078),
                             Description = "English translation for Common.Publish",
                             IsActive = true,
                             IsDeleted = false,
@@ -12995,7 +12995,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 180,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7056),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7079),
                             Description = "English translation for Common.Draft",
                             IsActive = true,
                             IsDeleted = false,
@@ -13008,7 +13008,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 181,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7057),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7079),
                             Description = "English translation for Common.Active",
                             IsActive = true,
                             IsDeleted = false,
@@ -13021,7 +13021,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 182,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7058),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7080),
                             Description = "English translation for Common.Inactive",
                             IsActive = true,
                             IsDeleted = false,
@@ -13034,7 +13034,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 183,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7059),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7081),
                             Description = "English translation for Common.Yes",
                             IsActive = true,
                             IsDeleted = false,
@@ -13047,7 +13047,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 184,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7060),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7082),
                             Description = "English translation for Common.No",
                             IsActive = true,
                             IsDeleted = false,
@@ -13060,7 +13060,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 185,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7060),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7083),
                             Description = "English translation for Common.OK",
                             IsActive = true,
                             IsDeleted = false,
@@ -13073,7 +13073,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 186,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7082),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7084),
                             Description = "English translation for Common.Close",
                             IsActive = true,
                             IsDeleted = false,
@@ -13086,7 +13086,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 187,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7083),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7085),
                             Description = "English translation for Common.Back",
                             IsActive = true,
                             IsDeleted = false,
@@ -13099,7 +13099,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 188,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7084),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7086),
                             Description = "English translation for Common.Next",
                             IsActive = true,
                             IsDeleted = false,
@@ -13112,7 +13112,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 189,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7085),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7086),
                             Description = "English translation for Common.Previous",
                             IsActive = true,
                             IsDeleted = false,
@@ -13125,7 +13125,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 190,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7086),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7087),
                             Description = "English translation for Common.Loading",
                             IsActive = true,
                             IsDeleted = false,
@@ -13138,7 +13138,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 191,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7087),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7088),
                             Description = "English translation for Common.Success",
                             IsActive = true,
                             IsDeleted = false,
@@ -13151,7 +13151,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 192,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7088),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7089),
                             Description = "English translation for Common.Error",
                             IsActive = true,
                             IsDeleted = false,
@@ -13164,7 +13164,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 193,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7088),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7090),
                             Description = "English translation for Common.Warning",
                             IsActive = true,
                             IsDeleted = false,
@@ -13177,7 +13177,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 194,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7089),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7090),
                             Description = "English translation for Common.Info",
                             IsActive = true,
                             IsDeleted = false,
@@ -13190,7 +13190,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 195,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7090),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7091),
                             Description = "English translation for Common.Refresh",
                             IsActive = true,
                             IsDeleted = false,
@@ -13203,7 +13203,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 196,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7091),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7092),
                             Description = "English translation for Common.Settings",
                             IsActive = true,
                             IsDeleted = false,
@@ -13216,7 +13216,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 197,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7092),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7093),
                             Description = "English translation for Common.ViewAll",
                             IsActive = true,
                             IsDeleted = false,
@@ -13229,7 +13229,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 198,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7093),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7093),
                             Description = "English translation for Common.All",
                             IsActive = true,
                             IsDeleted = false,
@@ -13242,7 +13242,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 199,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7094),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7095),
                             Description = "English translation for Common.Actions",
                             IsActive = true,
                             IsDeleted = false,
@@ -13255,7 +13255,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 200,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7095),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7095),
                             Description = "English translation for Common.AreYouSure",
                             IsActive = true,
                             IsDeleted = false,
@@ -13268,7 +13268,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 201,
                             Category = "Common",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7096),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7096),
                             Description = "English translation for Common.UnexpectedError",
                             IsActive = true,
                             IsDeleted = false,
@@ -13281,7 +13281,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 202,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7099),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7185),
                             Description = "English translation for Page.Title",
                             IsActive = true,
                             IsDeleted = false,
@@ -13294,7 +13294,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 203,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7100),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7187),
                             Description = "English translation for Page.Content",
                             IsActive = true,
                             IsDeleted = false,
@@ -13307,7 +13307,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 204,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7101),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7188),
                             Description = "English translation for Page.Description",
                             IsActive = true,
                             IsDeleted = false,
@@ -13320,7 +13320,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 205,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7102),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7189),
                             Description = "English translation for Page.Keywords",
                             IsActive = true,
                             IsDeleted = false,
@@ -13333,7 +13333,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 206,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7103),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7190),
                             Description = "English translation for Page.Author",
                             IsActive = true,
                             IsDeleted = false,
@@ -13346,7 +13346,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 207,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7104),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7191),
                             Description = "English translation for Page.CreatedAt",
                             IsActive = true,
                             IsDeleted = false,
@@ -13359,7 +13359,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 208,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7105),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7192),
                             Description = "English translation for Page.UpdatedAt",
                             IsActive = true,
                             IsDeleted = false,
@@ -13372,7 +13372,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 209,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7106),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7192),
                             Description = "English translation for Page.Status",
                             IsActive = true,
                             IsDeleted = false,
@@ -13385,7 +13385,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 210,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7107),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7193),
                             Description = "English translation for Page.Type",
                             IsActive = true,
                             IsDeleted = false,
@@ -13398,7 +13398,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 211,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7108),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7194),
                             Description = "English translation for Page.Layout",
                             IsActive = true,
                             IsDeleted = false,
@@ -13411,7 +13411,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 212,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7109),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7195),
                             Description = "English translation for Page.Template",
                             IsActive = true,
                             IsDeleted = false,
@@ -13424,7 +13424,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 213,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7110),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7196),
                             Description = "English translation for Page.SEO",
                             IsActive = true,
                             IsDeleted = false,
@@ -13437,7 +13437,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 214,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7111),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7196),
                             Description = "English translation for Page.Sections",
                             IsActive = true,
                             IsDeleted = false,
@@ -13450,7 +13450,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 215,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7112),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7197),
                             Description = "English translation for Page.Items",
                             IsActive = true,
                             IsDeleted = false,
@@ -13463,7 +13463,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 216,
                             Category = "Page",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7113),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7198),
                             Description = "English translation for Page.Fields",
                             IsActive = true,
                             IsDeleted = false,
@@ -13476,7 +13476,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 217,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7115),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7201),
                             Description = "English translation for Section.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -13489,7 +13489,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 218,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7117),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7202),
                             Description = "English translation for Section.Type",
                             IsActive = true,
                             IsDeleted = false,
@@ -13502,7 +13502,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 219,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7118),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7203),
                             Description = "English translation for Section.Key",
                             IsActive = true,
                             IsDeleted = false,
@@ -13515,7 +13515,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 220,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7119),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7204),
                             Description = "English translation for Section.Order",
                             IsActive = true,
                             IsDeleted = false,
@@ -13528,7 +13528,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 221,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7120),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7204),
                             Description = "English translation for Section.Settings",
                             IsActive = true,
                             IsDeleted = false,
@@ -13541,7 +13541,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 222,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7121),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7205),
                             Description = "English translation for Section.Items",
                             IsActive = true,
                             IsDeleted = false,
@@ -13554,7 +13554,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 223,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7136),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7206),
                             Description = "English translation for Section.AddItem",
                             IsActive = true,
                             IsDeleted = false,
@@ -13567,7 +13567,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 224,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7138),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7207),
                             Description = "English translation for Section.EditItems",
                             IsActive = true,
                             IsDeleted = false,
@@ -13580,7 +13580,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 225,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7139),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7208),
                             Description = "English translation for Section.Duplicate",
                             IsActive = true,
                             IsDeleted = false,
@@ -13593,7 +13593,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 226,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7140),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7209),
                             Description = "English translation for Section.Remove",
                             IsActive = true,
                             IsDeleted = false,
@@ -13606,7 +13606,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 227,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7141),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7209),
                             Description = "English translation for Section.Hero",
                             IsActive = true,
                             IsDeleted = false,
@@ -13619,7 +13619,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 228,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7142),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7210),
                             Description = "English translation for Section.Navbar",
                             IsActive = true,
                             IsDeleted = false,
@@ -13632,7 +13632,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 229,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7143),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7211),
                             Description = "English translation for Section.Footer",
                             IsActive = true,
                             IsDeleted = false,
@@ -13645,7 +13645,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 230,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7144),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7212),
                             Description = "English translation for Section.Content",
                             IsActive = true,
                             IsDeleted = false,
@@ -13658,7 +13658,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 231,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7145),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7213),
                             Description = "English translation for Section.Gallery",
                             IsActive = true,
                             IsDeleted = false,
@@ -13671,7 +13671,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 232,
                             Category = "Section",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7146),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7214),
                             Description = "English translation for Section.Contact",
                             IsActive = true,
                             IsDeleted = false,
@@ -13684,7 +13684,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 233,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7149),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7216),
                             Description = "English translation for Validation.Required",
                             IsActive = true,
                             IsDeleted = false,
@@ -13697,7 +13697,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 234,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7150),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7217),
                             Description = "English translation for Validation.Email",
                             IsActive = true,
                             IsDeleted = false,
@@ -13710,7 +13710,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 235,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7151),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7218),
                             Description = "English translation for Validation.MinLength",
                             IsActive = true,
                             IsDeleted = false,
@@ -13723,7 +13723,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 236,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7152),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7219),
                             Description = "English translation for Validation.MaxLength",
                             IsActive = true,
                             IsDeleted = false,
@@ -13736,7 +13736,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 237,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7153),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7220),
                             Description = "English translation for Validation.Range",
                             IsActive = true,
                             IsDeleted = false,
@@ -13749,7 +13749,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 238,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7154),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7221),
                             Description = "English translation for Validation.Numeric",
                             IsActive = true,
                             IsDeleted = false,
@@ -13762,7 +13762,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 239,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7155),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7281),
                             Description = "English translation for Validation.Date",
                             IsActive = true,
                             IsDeleted = false,
@@ -13775,7 +13775,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 240,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7156),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7282),
                             Description = "English translation for Validation.Url",
                             IsActive = true,
                             IsDeleted = false,
@@ -13788,7 +13788,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 241,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7157),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7282),
                             Description = "English translation for Validation.Phone",
                             IsActive = true,
                             IsDeleted = false,
@@ -13801,7 +13801,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 242,
                             Category = "Validation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7158),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7283),
                             Description = "English translation for Validation.Password",
                             IsActive = true,
                             IsDeleted = false,
@@ -13814,7 +13814,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 243,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7161),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7286),
                             Description = "English translation for Navigation.Dashboard",
                             IsActive = true,
                             IsDeleted = false,
@@ -13827,7 +13827,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 244,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7162),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7287),
                             Description = "English translation for Navigation.Announcements",
                             IsActive = true,
                             IsDeleted = false,
@@ -13840,7 +13840,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 245,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7163),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7289),
                             Description = "English translation for Navigation.Campaigns",
                             IsActive = true,
                             IsDeleted = false,
@@ -13853,7 +13853,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 246,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7164),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7289),
                             Description = "English translation for Navigation.Content",
                             IsActive = true,
                             IsDeleted = false,
@@ -13866,7 +13866,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 247,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7165),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7290),
                             Description = "English translation for Navigation.Pages",
                             IsActive = true,
                             IsDeleted = false,
@@ -13879,7 +13879,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 248,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7166),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7291),
                             Description = "English translation for Navigation.Sections",
                             IsActive = true,
                             IsDeleted = false,
@@ -13892,7 +13892,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 249,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7167),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7292),
                             Description = "English translation for Navigation.Layouts",
                             IsActive = true,
                             IsDeleted = false,
@@ -13905,7 +13905,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 250,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7169),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7293),
                             Description = "English translation for Navigation.WebUrlManagement",
                             IsActive = true,
                             IsDeleted = false,
@@ -13918,7 +13918,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 251,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7169),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7294),
                             Description = "English translation for Navigation.News",
                             IsActive = true,
                             IsDeleted = false,
@@ -13931,7 +13931,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 252,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7170),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7295),
                             Description = "English translation for Navigation.Blog",
                             IsActive = true,
                             IsDeleted = false,
@@ -13944,7 +13944,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 253,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7171),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7296),
                             Description = "English translation for Navigation.Templates",
                             IsActive = true,
                             IsDeleted = false,
@@ -13957,7 +13957,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 254,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7173),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7297),
                             Description = "English translation for Navigation.SectionItems",
                             IsActive = true,
                             IsDeleted = false,
@@ -13970,7 +13970,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 255,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7173),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7297),
                             Description = "English translation for Navigation.ECommerce",
                             IsActive = true,
                             IsDeleted = false,
@@ -13983,7 +13983,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 256,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7175),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7298),
                             Description = "English translation for Navigation.Products",
                             IsActive = true,
                             IsDeleted = false,
@@ -13996,7 +13996,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 257,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7175),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7299),
                             Description = "English translation for Navigation.Categories",
                             IsActive = true,
                             IsDeleted = false,
@@ -14009,7 +14009,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 258,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7209),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7356),
                             Description = "English translation for Navigation.Orders",
                             IsActive = true,
                             IsDeleted = false,
@@ -14022,7 +14022,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 259,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7210),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7358),
                             Description = "English translation for Navigation.Users",
                             IsActive = true,
                             IsDeleted = false,
@@ -14035,7 +14035,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 260,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7211),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7358),
                             Description = "English translation for Navigation.ManageUsers",
                             IsActive = true,
                             IsDeleted = false,
@@ -14048,7 +14048,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 261,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7212),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7359),
                             Description = "English translation for Navigation.ManageRoles",
                             IsActive = true,
                             IsDeleted = false,
@@ -14061,7 +14061,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 262,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7213),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7360),
                             Description = "English translation for Navigation.ManagePermissions",
                             IsActive = true,
                             IsDeleted = false,
@@ -14074,7 +14074,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 263,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7214),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7361),
                             Description = "English translation for Navigation.Analytics",
                             IsActive = true,
                             IsDeleted = false,
@@ -14087,7 +14087,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 264,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7214),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7362),
                             Description = "English translation for Navigation.Settings",
                             IsActive = true,
                             IsDeleted = false,
@@ -14100,7 +14100,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 265,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7215),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7363),
                             Description = "English translation for Navigation.GeneralSettings",
                             IsActive = true,
                             IsDeleted = false,
@@ -14113,7 +14113,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 266,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7216),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7364),
                             Description = "English translation for Navigation.Countries",
                             IsActive = true,
                             IsDeleted = false,
@@ -14126,7 +14126,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 267,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7217),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7364),
                             Description = "English translation for Navigation.Languages",
                             IsActive = true,
                             IsDeleted = false,
@@ -14139,7 +14139,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 268,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7218),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7365),
                             Description = "English translation for Navigation.Localization",
                             IsActive = true,
                             IsDeleted = false,
@@ -14152,7 +14152,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 269,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7219),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7366),
                             Description = "English translation for Navigation.Profile",
                             IsActive = true,
                             IsDeleted = false,
@@ -14165,7 +14165,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 270,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7220),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7367),
                             Description = "English translation for Navigation.Help",
                             IsActive = true,
                             IsDeleted = false,
@@ -14178,7 +14178,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 271,
                             Category = "Navigation",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7221),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7368),
                             Description = "English translation for Navigation.Logout",
                             IsActive = true,
                             IsDeleted = false,
@@ -14191,7 +14191,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 272,
                             Category = "Language",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7224),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7370),
                             Description = "English translation for Language.English",
                             IsActive = true,
                             IsDeleted = false,
@@ -14204,7 +14204,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 273,
                             Category = "Language",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7226),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7371),
                             Description = "English translation for Language.Turkish",
                             IsActive = true,
                             IsDeleted = false,
@@ -14217,7 +14217,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 274,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7228),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7374),
                             Description = "English translation for Dashboard.Title",
                             IsActive = true,
                             IsDeleted = false,
@@ -14230,7 +14230,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 275,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7258),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7375),
                             Description = "English translation for Dashboard.WelcomeMessage",
                             IsActive = true,
                             IsDeleted = false,
@@ -14243,7 +14243,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 276,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7259),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7376),
                             Description = "English translation for Dashboard.Last7Days",
                             IsActive = true,
                             IsDeleted = false,
@@ -14256,7 +14256,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 277,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7261),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7377),
                             Description = "English translation for Dashboard.Last30Days",
                             IsActive = true,
                             IsDeleted = false,
@@ -14269,7 +14269,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 278,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7262),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7378),
                             Description = "English translation for Dashboard.Last90Days",
                             IsActive = true,
                             IsDeleted = false,
@@ -14282,7 +14282,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 279,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7263),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7379),
                             Description = "English translation for Dashboard.TotalUsers",
                             IsActive = true,
                             IsDeleted = false,
@@ -14295,7 +14295,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 280,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7264),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7380),
                             Description = "English translation for Dashboard.TotalRevenue",
                             IsActive = true,
                             IsDeleted = false,
@@ -14308,7 +14308,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 281,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7264),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7381),
                             Description = "English translation for Dashboard.Products",
                             IsActive = true,
                             IsDeleted = false,
@@ -14321,7 +14321,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 282,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7265),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7382),
                             Description = "English translation for Dashboard.SupportTickets",
                             IsActive = true,
                             IsDeleted = false,
@@ -14334,7 +14334,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 283,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7266),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7382),
                             Description = "English translation for Dashboard.FromLastMonth",
                             IsActive = true,
                             IsDeleted = false,
@@ -14347,7 +14347,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 284,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7267),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7383),
                             Description = "English translation for Dashboard.SalesOverview",
                             IsActive = true,
                             IsDeleted = false,
@@ -14360,7 +14360,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 285,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7268),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7384),
                             Description = "English translation for Dashboard.Monthly",
                             IsActive = true,
                             IsDeleted = false,
@@ -14373,7 +14373,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 286,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7269),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7385),
                             Description = "English translation for Dashboard.ChartVisualization",
                             IsActive = true,
                             IsDeleted = false,
@@ -14386,7 +14386,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 287,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7270),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7386),
                             Description = "English translation for Dashboard.ThisYear",
                             IsActive = true,
                             IsDeleted = false,
@@ -14399,7 +14399,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 288,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7271),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7386),
                             Description = "English translation for Dashboard.LastYear",
                             IsActive = true,
                             IsDeleted = false,
@@ -14412,7 +14412,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 289,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7272),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7387),
                             Description = "English translation for Dashboard.RecentActivities",
                             IsActive = true,
                             IsDeleted = false,
@@ -14425,7 +14425,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 290,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7273),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7388),
                             Description = "English translation for Dashboard.TopProducts",
                             IsActive = true,
                             IsDeleted = false,
@@ -14438,7 +14438,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 291,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7274),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7409),
                             Description = "English translation for Dashboard.Product",
                             IsActive = true,
                             IsDeleted = false,
@@ -14451,7 +14451,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 292,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7275),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7410),
                             Description = "English translation for Dashboard.Category",
                             IsActive = true,
                             IsDeleted = false,
@@ -14464,7 +14464,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 293,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7276),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7411),
                             Description = "English translation for Dashboard.Sales",
                             IsActive = true,
                             IsDeleted = false,
@@ -14477,7 +14477,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 294,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7277),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7411),
                             Description = "English translation for Dashboard.Status",
                             IsActive = true,
                             IsDeleted = false,
@@ -14490,7 +14490,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 295,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7278),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7412),
                             Description = "English translation for Dashboard.LatestOrders",
                             IsActive = true,
                             IsDeleted = false,
@@ -14503,7 +14503,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 296,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7279),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7413),
                             Description = "English translation for Dashboard.Today",
                             IsActive = true,
                             IsDeleted = false,
@@ -14516,7 +14516,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 297,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7280),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7414),
                             Description = "English translation for Dashboard.Yesterday",
                             IsActive = true,
                             IsDeleted = false,
@@ -14529,7 +14529,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 298,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7280),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7415),
                             Description = "English translation for Dashboard.OrderId",
                             IsActive = true,
                             IsDeleted = false,
@@ -14542,7 +14542,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 299,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7281),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7416),
                             Description = "English translation for Dashboard.Customer",
                             IsActive = true,
                             IsDeleted = false,
@@ -14555,7 +14555,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 300,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7282),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7416),
                             Description = "English translation for Dashboard.Date",
                             IsActive = true,
                             IsDeleted = false,
@@ -14568,7 +14568,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 301,
                             Category = "Dashboard",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7283),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7417),
                             Description = "English translation for Dashboard.Amount",
                             IsActive = true,
                             IsDeleted = false,
@@ -14581,7 +14581,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 302,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7286),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7420),
                             Description = "English translation for Localization.SystemDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -14594,7 +14594,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 303,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7288),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7421),
                             Description = "English translation for Localization.Keys",
                             IsActive = true,
                             IsDeleted = false,
@@ -14607,7 +14607,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 304,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7289),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7422),
                             Description = "English translation for Localization.Key",
                             IsActive = true,
                             IsDeleted = false,
@@ -14620,7 +14620,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 305,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7290),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7423),
                             Description = "English translation for Localization.AddKey",
                             IsActive = true,
                             IsDeleted = false,
@@ -14633,7 +14633,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 306,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7290),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7424),
                             Description = "English translation for Localization.EditKey",
                             IsActive = true,
                             IsDeleted = false,
@@ -14646,7 +14646,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 307,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7291),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7425),
                             Description = "English translation for Localization.KeyDetails",
                             IsActive = true,
                             IsDeleted = false,
@@ -14659,7 +14659,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 308,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7292),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7426),
                             Description = "English translation for Localization.AddKeyDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -14672,7 +14672,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 309,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7293),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7426),
                             Description = "English translation for Localization.EditKeyDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -14685,7 +14685,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 310,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7315),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7427),
                             Description = "English translation for Localization.KeyPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -14698,7 +14698,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 311,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7316),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7428),
                             Description = "English translation for Localization.KeyHint",
                             IsActive = true,
                             IsDeleted = false,
@@ -14711,7 +14711,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 312,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7317),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7429),
                             Description = "English translation for Localization.KeyReadonly",
                             IsActive = true,
                             IsDeleted = false,
@@ -14724,7 +14724,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 313,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7318),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7430),
                             Description = "English translation for Localization.Description",
                             IsActive = true,
                             IsDeleted = false,
@@ -14737,7 +14737,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 314,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7319),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7431),
                             Description = "English translation for Localization.DescriptionPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -14750,7 +14750,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 315,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7320),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7431),
                             Description = "English translation for Localization.SelectCategory",
                             IsActive = true,
                             IsDeleted = false,
@@ -14763,7 +14763,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 316,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7321),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7432),
                             Description = "English translation for Localization.Translations",
                             IsActive = true,
                             IsDeleted = false,
@@ -14776,7 +14776,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 317,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7322),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7433),
                             Description = "English translation for Localization.TranslationPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -14789,7 +14789,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 318,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7323),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7434),
                             Description = "English translation for Localization.Translated",
                             IsActive = true,
                             IsDeleted = false,
@@ -14802,7 +14802,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 319,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7324),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7435),
                             Description = "English translation for Localization.NotTranslated",
                             IsActive = true,
                             IsDeleted = false,
@@ -14815,7 +14815,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 320,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7325),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7436),
                             Description = "English translation for Localization.LastUpdated",
                             IsActive = true,
                             IsDeleted = false,
@@ -14828,7 +14828,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 321,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7326),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7436),
                             Description = "English translation for Localization.SearchPlaceholder",
                             IsActive = true,
                             IsDeleted = false,
@@ -14841,7 +14841,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 322,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7327),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7437),
                             Description = "English translation for Localization.ShowingResults",
                             IsActive = true,
                             IsDeleted = false,
@@ -14854,7 +14854,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 323,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7327),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7438),
                             Description = "English translation for Localization.NoKeys",
                             IsActive = true,
                             IsDeleted = false,
@@ -14867,7 +14867,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 324,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7329),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7439),
                             Description = "English translation for Localization.NoKeysDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -14880,7 +14880,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 325,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7330),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7440),
                             Description = "English translation for Localization.AddFirstKey",
                             IsActive = true,
                             IsDeleted = false,
@@ -14893,7 +14893,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 326,
                             Category = "Localization",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7331),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7462),
                             Description = "English translation for Localization.DeleteConfirmation",
                             IsActive = true,
                             IsDeleted = false,
@@ -14906,7 +14906,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 327,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7386),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7495),
                             Description = "Turkish translation for Navigation.ProductManagement",
                             IsActive = true,
                             IsDeleted = false,
@@ -14919,7 +14919,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 328,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7388),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7497),
                             Description = "Turkish translation for Navigation.Variants",
                             IsActive = true,
                             IsDeleted = false,
@@ -14932,7 +14932,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 329,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7389),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7497),
                             Description = "Turkish translation for Navigation.Trademarks",
                             IsActive = true,
                             IsDeleted = false,
@@ -14945,7 +14945,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 330,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7390),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7498),
                             Description = "Turkish translation for Navigation.Cart",
                             IsActive = true,
                             IsDeleted = false,
@@ -14958,7 +14958,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 331,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7392),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7499),
                             Description = "Turkish translation for Navigation.Payments",
                             IsActive = true,
                             IsDeleted = false,
@@ -14971,7 +14971,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 332,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7393),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7500),
                             Description = "Turkish translation for Product.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -14984,7 +14984,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 333,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7394),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7501),
                             Description = "Turkish translation for Product.Code",
                             IsActive = true,
                             IsDeleted = false,
@@ -14997,7 +14997,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 334,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7394),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7502),
                             Description = "Turkish translation for Product.IntegrationCode",
                             IsActive = true,
                             IsDeleted = false,
@@ -15010,7 +15010,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 335,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7395),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7503),
                             Description = "Turkish translation for Product.ShortDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -15023,7 +15023,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 336,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7396),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7503),
                             Description = "Turkish translation for Product.LongDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -15036,7 +15036,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 337,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7397),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7504),
                             Description = "Turkish translation for Product.Unit",
                             IsActive = true,
                             IsDeleted = false,
@@ -15049,7 +15049,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 338,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7398),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7505),
                             Description = "Turkish translation for Product.Type",
                             IsActive = true,
                             IsDeleted = false,
@@ -15062,7 +15062,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 339,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7399),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7506),
                             Description = "Turkish translation for Product.TaxRate",
                             IsActive = true,
                             IsDeleted = false,
@@ -15075,7 +15075,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 340,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7400),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7507),
                             Description = "Turkish translation for Product.Parent",
                             IsActive = true,
                             IsDeleted = false,
@@ -15088,7 +15088,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 341,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7401),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7508),
                             Description = "Turkish translation for Product.Variants",
                             IsActive = true,
                             IsDeleted = false,
@@ -15101,7 +15101,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 342,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7403),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7509),
                             Description = "Turkish translation for Product.Categories",
                             IsActive = true,
                             IsDeleted = false,
@@ -15114,7 +15114,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 343,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7403),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7532),
                             Description = "Turkish translation for Product.Trademarks",
                             IsActive = true,
                             IsDeleted = false,
@@ -15127,7 +15127,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 344,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7404),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7533),
                             Description = "Turkish translation for Product.CreateNew",
                             IsActive = true,
                             IsDeleted = false,
@@ -15140,7 +15140,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 345,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7406),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7533),
                             Description = "Turkish translation for Product.EditProduct",
                             IsActive = true,
                             IsDeleted = false,
@@ -15153,7 +15153,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 346,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7407),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7534),
                             Description = "Turkish translation for Product.DeleteProduct",
                             IsActive = true,
                             IsDeleted = false,
@@ -15166,7 +15166,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 347,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7407),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7535),
                             Description = "Turkish translation for Product.ProductDetails",
                             IsActive = true,
                             IsDeleted = false,
@@ -15179,7 +15179,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 348,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7408),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7536),
                             Description = "Turkish translation for Variant.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -15192,7 +15192,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 349,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7409),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7537),
                             Description = "Turkish translation for Variant.Code",
                             IsActive = true,
                             IsDeleted = false,
@@ -15205,7 +15205,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 350,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7410),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7537),
                             Description = "Turkish translation for Variant.Product",
                             IsActive = true,
                             IsDeleted = false,
@@ -15218,7 +15218,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 351,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7411),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7538),
                             Description = "Turkish translation for Variant.CreateNew",
                             IsActive = true,
                             IsDeleted = false,
@@ -15231,7 +15231,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 352,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7412),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7539),
                             Description = "Turkish translation for Variant.EditVariant",
                             IsActive = true,
                             IsDeleted = false,
@@ -15244,7 +15244,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 353,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7413),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7540),
                             Description = "Turkish translation for Variant.DeleteVariant",
                             IsActive = true,
                             IsDeleted = false,
@@ -15257,7 +15257,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 354,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7414),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7541),
                             Description = "Turkish translation for Trademark.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -15270,7 +15270,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 355,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7415),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7542),
                             Description = "Turkish translation for Trademark.Code",
                             IsActive = true,
                             IsDeleted = false,
@@ -15283,7 +15283,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 356,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7415),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7542),
                             Description = "Turkish translation for Trademark.SortOrder",
                             IsActive = true,
                             IsDeleted = false,
@@ -15296,7 +15296,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 357,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7416),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7543),
                             Description = "Turkish translation for Trademark.Parent",
                             IsActive = true,
                             IsDeleted = false,
@@ -15309,7 +15309,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 358,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7417),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7544),
                             Description = "Turkish translation for Trademark.CreateNew",
                             IsActive = true,
                             IsDeleted = false,
@@ -15322,7 +15322,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 359,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7418),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7545),
                             Description = "Turkish translation for Trademark.EditTrademark",
                             IsActive = true,
                             IsDeleted = false,
@@ -15335,7 +15335,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 360,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7419),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7546),
                             Description = "Turkish translation for Trademark.DeleteTrademark",
                             IsActive = true,
                             IsDeleted = false,
@@ -15348,7 +15348,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 361,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7422),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7549),
                             Description = "English translation for Navigation.ProductManagement",
                             IsActive = true,
                             IsDeleted = false,
@@ -15361,7 +15361,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 362,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7424),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7550),
                             Description = "English translation for Navigation.Variants",
                             IsActive = true,
                             IsDeleted = false,
@@ -15374,7 +15374,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 363,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7446),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7551),
                             Description = "English translation for Navigation.Trademarks",
                             IsActive = true,
                             IsDeleted = false,
@@ -15387,7 +15387,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 364,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7447),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7551),
                             Description = "English translation for Navigation.Cart",
                             IsActive = true,
                             IsDeleted = false,
@@ -15400,7 +15400,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 365,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7448),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7552),
                             Description = "English translation for Navigation.Payments",
                             IsActive = true,
                             IsDeleted = false,
@@ -15413,7 +15413,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 366,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7449),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7553),
                             Description = "English translation for Product.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -15426,7 +15426,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 367,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7450),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7554),
                             Description = "English translation for Product.Code",
                             IsActive = true,
                             IsDeleted = false,
@@ -15439,7 +15439,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 368,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7451),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7555),
                             Description = "English translation for Product.IntegrationCode",
                             IsActive = true,
                             IsDeleted = false,
@@ -15452,7 +15452,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 369,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7452),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7556),
                             Description = "English translation for Product.ShortDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -15465,7 +15465,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 370,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7453),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7556),
                             Description = "English translation for Product.LongDescription",
                             IsActive = true,
                             IsDeleted = false,
@@ -15478,7 +15478,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 371,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7454),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7557),
                             Description = "English translation for Product.Unit",
                             IsActive = true,
                             IsDeleted = false,
@@ -15491,7 +15491,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 372,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7455),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7558),
                             Description = "English translation for Product.Type",
                             IsActive = true,
                             IsDeleted = false,
@@ -15504,7 +15504,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 373,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7456),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7559),
                             Description = "English translation for Product.TaxRate",
                             IsActive = true,
                             IsDeleted = false,
@@ -15517,7 +15517,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 374,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7457),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7560),
                             Description = "English translation for Product.Parent",
                             IsActive = true,
                             IsDeleted = false,
@@ -15530,7 +15530,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 375,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7458),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7561),
                             Description = "English translation for Product.Variants",
                             IsActive = true,
                             IsDeleted = false,
@@ -15543,7 +15543,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 376,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7459),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7561),
                             Description = "English translation for Product.Categories",
                             IsActive = true,
                             IsDeleted = false,
@@ -15556,7 +15556,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 377,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7460),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7562),
                             Description = "English translation for Product.Trademarks",
                             IsActive = true,
                             IsDeleted = false,
@@ -15569,7 +15569,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 378,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7460),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7563),
                             Description = "English translation for Product.CreateNew",
                             IsActive = true,
                             IsDeleted = false,
@@ -15582,7 +15582,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 379,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7461),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7577),
                             Description = "English translation for Product.EditProduct",
                             IsActive = true,
                             IsDeleted = false,
@@ -15595,7 +15595,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 380,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7462),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7578),
                             Description = "English translation for Product.DeleteProduct",
                             IsActive = true,
                             IsDeleted = false,
@@ -15608,7 +15608,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 381,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7464),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7579),
                             Description = "English translation for Product.ProductDetails",
                             IsActive = true,
                             IsDeleted = false,
@@ -15621,7 +15621,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 382,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7464),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7579),
                             Description = "English translation for Variant.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -15634,7 +15634,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 383,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7465),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7580),
                             Description = "English translation for Variant.Code",
                             IsActive = true,
                             IsDeleted = false,
@@ -15647,7 +15647,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 384,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7466),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7581),
                             Description = "English translation for Variant.Product",
                             IsActive = true,
                             IsDeleted = false,
@@ -15660,7 +15660,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 385,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7467),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7582),
                             Description = "English translation for Variant.CreateNew",
                             IsActive = true,
                             IsDeleted = false,
@@ -15673,7 +15673,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 386,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7468),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7583),
                             Description = "English translation for Variant.EditVariant",
                             IsActive = true,
                             IsDeleted = false,
@@ -15686,7 +15686,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 387,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7469),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7584),
                             Description = "English translation for Variant.DeleteVariant",
                             IsActive = true,
                             IsDeleted = false,
@@ -15699,7 +15699,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 388,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7470),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7585),
                             Description = "English translation for Trademark.Name",
                             IsActive = true,
                             IsDeleted = false,
@@ -15712,7 +15712,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 389,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7471),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7585),
                             Description = "English translation for Trademark.Code",
                             IsActive = true,
                             IsDeleted = false,
@@ -15725,7 +15725,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 390,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7472),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7586),
                             Description = "English translation for Trademark.SortOrder",
                             IsActive = true,
                             IsDeleted = false,
@@ -15738,7 +15738,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 391,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7473),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7587),
                             Description = "English translation for Trademark.Parent",
                             IsActive = true,
                             IsDeleted = false,
@@ -15751,7 +15751,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 392,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7474),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7588),
                             Description = "English translation for Trademark.CreateNew",
                             IsActive = true,
                             IsDeleted = false,
@@ -15764,7 +15764,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 393,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7474),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7589),
                             Description = "English translation for Trademark.EditTrademark",
                             IsActive = true,
                             IsDeleted = false,
@@ -15777,7 +15777,7 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         {
                             Id = 394,
                             Category = "Product",
-                            CreatedAt = new DateTime(2025, 11, 6, 20, 33, 18, 286, DateTimeKind.Utc).AddTicks(7475),
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7589),
                             Description = "English translation for Trademark.DeleteTrademark",
                             IsActive = true,
                             IsDeleted = false,
@@ -15810,11 +15810,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int")
                         .HasColumnName("CreatedBy");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("Description");
 
                     b.Property<string>("IntegrationCode")
                         .HasMaxLength(100)
@@ -15886,7 +15881,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Id = 1,
                             Code = "elektronik",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Elektronik ürünler kategorisi",
                             IntegrationCode = "ELEC",
                             IsDeleted = false,
                             Name = "Elektronik",
@@ -15898,7 +15892,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Id = 2,
                             Code = "giyim",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Giyim ve aksesuar kategorisi",
                             IntegrationCode = "CLTH",
                             IsDeleted = false,
                             Name = "Giyim",
@@ -15910,7 +15903,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Id = 3,
                             Code = "ev-yasam",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Ev ve yaşam ürünleri kategorisi",
                             IntegrationCode = "HOME",
                             IsDeleted = false,
                             Name = "Ev & Yaşam",
@@ -15922,7 +15914,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Id = 4,
                             Code = "bilgisayar",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Bilgisayar ve aksesuarları",
                             IntegrationCode = "COMP",
                             IsDeleted = false,
                             Name = "Bilgisayar",
@@ -15935,7 +15926,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Id = 5,
                             Code = "telefon",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Cep telefonu ve aksesuarları",
                             IntegrationCode = "PHONE",
                             IsDeleted = false,
                             Name = "Telefon",
@@ -15948,7 +15938,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Id = 6,
                             Code = "erkek-giyim",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Erkek giyim ürünleri",
                             IntegrationCode = "MENS",
                             IsDeleted = false,
                             Name = "Erkek Giyim",
@@ -15961,7 +15950,6 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                             Id = 7,
                             Code = "kadin-giyim",
                             CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Kadın giyim ürünleri",
                             IntegrationCode = "WMNS",
                             IsDeleted = false,
                             Name = "Kadın Giyim",
@@ -16225,6 +16213,396 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.Option", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowMultipleSelection")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("AllowMultipleSelection");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Code");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DefaultValue")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("DefaultValue");
+
+                    b.Property<string>("IntegrationCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("IntegrationCode");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<bool>("IsRequired")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsRequired");
+
+                    b.Property<string>("LongDescription")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("LongDescription");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Name");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int")
+                        .HasColumnName("ParentId");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("ShortDescription");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("SortOrder");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Status");
+
+                    b.Property<int>("Type")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Type");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Options_Code");
+
+                    b.HasIndex("IntegrationCode")
+                        .HasDatabaseName("IX_Options_IntegrationCode");
+
+                    b.HasIndex("ParentId")
+                        .HasDatabaseName("IX_Options_ParentId");
+
+                    b.HasIndex("SortOrder")
+                        .HasDatabaseName("IX_Options_SortOrder");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("IX_Options_Status");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("IX_Options_Type");
+
+                    b.ToTable("Options", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AllowMultipleSelection = false,
+                            Code = "color",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7418),
+                            IntegrationCode = "",
+                            IsDeleted = false,
+                            IsRequired = false,
+                            LongDescription = "",
+                            Name = "Color",
+                            ShortDescription = "",
+                            SortOrder = 1,
+                            Status = 1,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AllowMultipleSelection = false,
+                            Code = "size",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7422),
+                            IntegrationCode = "",
+                            IsDeleted = false,
+                            IsRequired = false,
+                            LongDescription = "",
+                            Name = "Size",
+                            ShortDescription = "",
+                            SortOrder = 2,
+                            Status = 1,
+                            Type = 4
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AllowMultipleSelection = false,
+                            Code = "material",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7425),
+                            IntegrationCode = "",
+                            IsDeleted = false,
+                            IsRequired = false,
+                            LongDescription = "",
+                            Name = "Material",
+                            ShortDescription = "",
+                            SortOrder = 3,
+                            Status = 1,
+                            Type = 5
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AllowMultipleSelection = false,
+                            Code = "weight",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7427),
+                            IntegrationCode = "",
+                            IsDeleted = false,
+                            IsRequired = false,
+                            LongDescription = "",
+                            Name = "Weight",
+                            ShortDescription = "",
+                            SortOrder = 4,
+                            Status = 1,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AllowMultipleSelection = false,
+                            Code = "warranty",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7428),
+                            IntegrationCode = "",
+                            IsDeleted = false,
+                            IsRequired = false,
+                            LongDescription = "",
+                            Name = "Warranty",
+                            ShortDescription = "",
+                            SortOrder = 5,
+                            Status = 1,
+                            Type = 6
+                        });
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.OptionTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int")
+                        .HasColumnName("LanguageId");
+
+                    b.Property<string>("LongDescription")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("LongDescription");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Name");
+
+                    b.Property<int>("OptionId")
+                        .HasColumnType("int")
+                        .HasColumnName("OptionId");
+
+                    b.Property<string>("ShortDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("ShortDescription");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId")
+                        .HasDatabaseName("IX_OptionTranslations_LanguageId");
+
+                    b.HasIndex("OptionId")
+                        .HasDatabaseName("IX_OptionTranslations_OptionId");
+
+                    b.HasIndex("OptionId", "LanguageId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_OptionTranslations_OptionId_LanguageId");
+
+                    b.ToTable("OptionTranslations", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5079),
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            Name = "Renk",
+                            OptionId = 1,
+                            ShortDescription = "Ürün rengi",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5083),
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            Name = "Color",
+                            OptionId = 1,
+                            ShortDescription = "Product color",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5085),
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            Name = "Beden",
+                            OptionId = 2,
+                            ShortDescription = "Ürün bedeni",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5086),
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            Name = "Size",
+                            OptionId = 2,
+                            ShortDescription = "Product size",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5088),
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            Name = "Malzeme",
+                            OptionId = 3,
+                            ShortDescription = "Ürün malzemesi",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5089),
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            Name = "Material",
+                            OptionId = 3,
+                            ShortDescription = "Product material",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5090),
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            Name = "Ağırlık",
+                            OptionId = 4,
+                            ShortDescription = "Ürün ağırlığı",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5091),
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            Name = "Weight",
+                            OptionId = 4,
+                            ShortDescription = "Product weight",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5093),
+                            IsDeleted = false,
+                            LanguageId = 1,
+                            Name = "Garanti",
+                            OptionId = 5,
+                            ShortDescription = "Ürün garanti süresi",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5094),
+                            IsDeleted = false,
+                            LanguageId = 2,
+                            Name = "Warranty",
+                            OptionId = 5,
+                            ShortDescription = "Product warranty period",
+                            Status = 1
+                        });
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -16331,6 +16709,392 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDatabaseName("IX_Products_Type");
 
                     b.ToTable("Products", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "iphone-15-pro",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9397),
+                            IntegrationCode = "APPLE-IP15P",
+                            IsDeleted = false,
+                            LongDescription = "The iPhone 15 Pro features a titanium design, A17 Pro chip, and advanced camera system.",
+                            Name = "iPhone 15 Pro",
+                            ShortDescription = "Latest iPhone with Pro features",
+                            Status = 1,
+                            TaxRate = 18m,
+                            Type = 2,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "galaxy-s24",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9402),
+                            IntegrationCode = "SAMSUNG-GS24",
+                            IsDeleted = false,
+                            LongDescription = "Samsung Galaxy S24 with AI-powered features and exceptional camera quality.",
+                            Name = "Samsung Galaxy S24",
+                            ShortDescription = "Premium Android smartphone",
+                            Status = 1,
+                            TaxRate = 18m,
+                            Type = 2,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "macbook-pro-14",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9405),
+                            IntegrationCode = "APPLE-MBP14",
+                            IsDeleted = false,
+                            LongDescription = "MacBook Pro 14-inch with M3 chip, perfect for professional workflows.",
+                            Name = "MacBook Pro 14\"",
+                            ShortDescription = "Professional laptop for creators",
+                            Status = 1,
+                            TaxRate = 18m,
+                            Type = 2,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "dell-xps-13",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9407),
+                            IntegrationCode = "DELL-XPS13",
+                            IsDeleted = false,
+                            LongDescription = "Dell XPS 13 with Intel Core processors and premium build quality.",
+                            Name = "Dell XPS 13",
+                            ShortDescription = "Ultra-portable Windows laptop",
+                            Status = 1,
+                            TaxRate = 18m,
+                            Type = 2,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "airpods-pro",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9410),
+                            IntegrationCode = "APPLE-APP",
+                            IsDeleted = false,
+                            LongDescription = "AirPods Pro with active noise cancellation and spatial audio.",
+                            Name = "AirPods Pro",
+                            ShortDescription = "Wireless earbuds with ANC",
+                            Status = 1,
+                            TaxRate = 18m,
+                            Type = 1,
+                            Unit = "pcs"
+                        });
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.ProductOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDefault");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<bool>("IsRequired")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsRequired");
+
+                    b.Property<string>("JsonValue")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("JsonValue");
+
+                    b.Property<int>("OptionId")
+                        .HasColumnType("int")
+                        .HasColumnName("OptionId");
+
+                    b.Property<decimal?>("PriceModifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(10,2)")
+                        .HasDefaultValue(0m)
+                        .HasColumnName("PriceModifier");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("ProductId");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("SortOrder");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Status");
+
+                    b.Property<int?>("StockQuantity")
+                        .HasColumnType("int")
+                        .HasColumnName("StockQuantity");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OptionId")
+                        .HasDatabaseName("IX_ProductOptions_OptionId");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("IX_ProductOptions_ProductId");
+
+                    b.HasIndex("SortOrder")
+                        .HasDatabaseName("IX_ProductOptions_SortOrder");
+
+                    b.HasIndex("ProductId", "OptionId")
+                        .HasDatabaseName("IX_ProductOptions_ProductId_OptionId");
+
+                    b.ToTable("ProductOptions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7606),
+                            IsDefault = true,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 1,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "Natural Titanium"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7609),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 1,
+                            SortOrder = 2,
+                            Status = 1,
+                            Value = "Blue Titanium"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7611),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 1,
+                            SortOrder = 3,
+                            Status = 1,
+                            Value = "White Titanium"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7615),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 5,
+                            PriceModifier = 200m,
+                            ProductId = 1,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "2 Years"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7617),
+                            IsDefault = true,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 2,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "Onyx Black"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7619),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 2,
+                            SortOrder = 2,
+                            Status = 1,
+                            Value = "Cobalt Violet"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7621),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 5,
+                            PriceModifier = 100m,
+                            ProductId = 2,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "1 Year"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7623),
+                            IsDefault = true,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 3,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "Space Gray"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7625),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 3,
+                            SortOrder = 2,
+                            Status = 1,
+                            Value = "Silver"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7626),
+                            IsDefault = true,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 4,
+                            PriceModifier = 0m,
+                            ProductId = 3,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "1.55 kg"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7628),
+                            IsDefault = true,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 4,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "Platinum Silver"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7630),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 50m,
+                            ProductId = 4,
+                            SortOrder = 2,
+                            Status = 1,
+                            Value = "Graphite"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7631),
+                            IsDefault = true,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 4,
+                            PriceModifier = 0m,
+                            ProductId = 4,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "1.23 kg"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7633),
+                            IsDefault = true,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 1,
+                            PriceModifier = 0m,
+                            ProductId = 5,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "White"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7640),
+                            IsDefault = false,
+                            IsDeleted = false,
+                            IsRequired = false,
+                            OptionId = 5,
+                            PriceModifier = 50m,
+                            ProductId = 5,
+                            SortOrder = 1,
+                            Status = 1,
+                            Value = "1 Year"
+                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.ProductTranslation", b =>
@@ -16499,6 +17263,73 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDatabaseName("IX_Trademarks_Status");
 
                     b.ToTable("Trademarks", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "apple",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5167),
+                            IntegrationCode = "APPLE",
+                            IsDeleted = false,
+                            LongDescription = "Apple Inc. is an American multinational technology company.",
+                            Name = "Apple",
+                            ShortDescription = "Technology company",
+                            SortOrder = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "samsung",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5171),
+                            IntegrationCode = "SAMSUNG",
+                            IsDeleted = false,
+                            LongDescription = "Samsung Electronics is a South Korean multinational electronics corporation.",
+                            Name = "Samsung",
+                            ShortDescription = "Electronics manufacturer",
+                            SortOrder = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "dell",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5173),
+                            IntegrationCode = "DELL",
+                            IsDeleted = false,
+                            LongDescription = "Dell Technologies is an American multinational computer technology company.",
+                            Name = "Dell",
+                            ShortDescription = "Computer technology company",
+                            SortOrder = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "microsoft",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5176),
+                            IntegrationCode = "MICROSOFT",
+                            IsDeleted = false,
+                            LongDescription = "Microsoft Corporation is an American multinational technology corporation.",
+                            Name = "Microsoft",
+                            ShortDescription = "Software corporation",
+                            SortOrder = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "sony",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5178),
+                            IntegrationCode = "SONY",
+                            IsDeleted = false,
+                            LongDescription = "Sony Corporation is a Japanese multinational conglomerate corporation.",
+                            Name = "Sony",
+                            ShortDescription = "Entertainment and technology",
+                            SortOrder = 5,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.TrademarkProduct", b =>
@@ -16712,6 +17543,125 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .HasDatabaseName("IX_Variants_Status");
 
                     b.ToTable("Variants", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "iphone-15-pro-128gb-natural",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7153),
+                            IntegrationCode = "APPLE-IP15P-128-NAT",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "iPhone 15 Pro 128GB Natural Titanium",
+                            ProductId = 1,
+                            ShortDescription = "128GB Natural Titanium",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "iphone-15-pro-256gb-blue",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7156),
+                            IntegrationCode = "APPLE-IP15P-256-BLUE",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "iPhone 15 Pro 256GB Blue Titanium",
+                            ProductId = 1,
+                            ShortDescription = "256GB Blue Titanium",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "iphone-15-pro-512gb-white",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7159),
+                            IntegrationCode = "APPLE-IP15P-512-WHITE",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "iPhone 15 Pro 512GB White Titanium",
+                            ProductId = 1,
+                            ShortDescription = "512GB White Titanium",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "galaxy-s24-128gb-black",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7160),
+                            IntegrationCode = "SAMSUNG-GS24-128-BLACK",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "Galaxy S24 128GB Onyx Black",
+                            ProductId = 2,
+                            ShortDescription = "128GB Onyx Black",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "galaxy-s24-256gb-violet",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7162),
+                            IntegrationCode = "SAMSUNG-GS24-256-VIOLET",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "Galaxy S24 256GB Cobalt Violet",
+                            ProductId = 2,
+                            ShortDescription = "256GB Cobalt Violet",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Code = "macbook-pro-14-m3-512gb",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7164),
+                            IntegrationCode = "APPLE-MBP14-M3-512",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "MacBook Pro 14\" M3 512GB",
+                            ProductId = 3,
+                            ShortDescription = "M3 chip, 512GB SSD",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Code = "macbook-pro-14-m3-1tb",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7166),
+                            IntegrationCode = "APPLE-MBP14-M3-1TB",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "MacBook Pro 14\" M3 1TB",
+                            ProductId = 3,
+                            ShortDescription = "M3 chip, 1TB SSD",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Code = "dell-xps-13-i5-256gb",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7168),
+                            IntegrationCode = "DELL-XPS13-I5-256",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "Dell XPS 13 Intel i5 256GB",
+                            ProductId = 4,
+                            ShortDescription = "Intel i5, 256GB SSD",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Code = "dell-xps-13-i7-512gb",
+                            CreatedAt = new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7169),
+                            IntegrationCode = "DELL-XPS13-I7-512",
+                            IsDeleted = false,
+                            LongDescription = "",
+                            Name = "Dell XPS 13 Intel i7 512GB",
+                            ProductId = 4,
+                            ShortDescription = "Intel i7, 512GB SSD",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.VariantTranslation", b =>
@@ -17155,6 +18105,35 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("Language");
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.Option", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Metadata.Option", "ParentOption")
+                        .WithMany("ChildOptions")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentOption");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.OptionTranslation", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Common.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Metadata.Option", "Option")
+                        .WithMany("Translations")
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+
+                    b.Navigation("Option");
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.Product", b =>
                 {
                     b.HasOne("PazarAtlasi.CMS.Domain.Entities.Metadata.Product", "ParentProduct")
@@ -17163,6 +18142,25 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentProduct");
+                });
+
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.ProductOption", b =>
+                {
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Metadata.Option", "Option")
+                        .WithMany("ProductOptions")
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PazarAtlasi.CMS.Domain.Entities.Metadata.Product", "Product")
+                        .WithMany("ProductOptions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Option");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.ProductTranslation", b =>
@@ -17352,11 +18350,22 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                     b.Navigation("Translations");
                 });
 
+            modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.Option", b =>
+                {
+                    b.Navigation("ChildOptions");
+
+                    b.Navigation("ProductOptions");
+
+                    b.Navigation("Translations");
+                });
+
             modelBuilder.Entity("PazarAtlasi.CMS.Domain.Entities.Metadata.Product", b =>
                 {
                     b.Navigation("CategoryProducts");
 
                     b.Navigation("ChildProducts");
+
+                    b.Navigation("ProductOptions");
 
                     b.Navigation("TrademarkProducts");
 
