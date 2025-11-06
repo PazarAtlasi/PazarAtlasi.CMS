@@ -71,30 +71,10 @@
                         <div id="pageSectionsContainer" class="mt-4 space-y-3" style="display: none;">
                             @if (Model.Sections != null && Model.Sections.Any())
                             {
-                                <!-- Add Section Button at the top -->
-                                <div class="section-insertion-point">
-                                    <div class="flex items-center justify-center py-2">
-                                        <button type="button" class="group flex items-center space-x-2 px-3 py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 hover:text-yellow-800 rounded-lg border border-dashed border-yellow-300 hover:border-yellow-400 transition-all duration-200 text-sm" onclick="addNewSection()">
-                                            <i class="fas fa-plus text-xs group-hover:scale-110 transition-transform"></i>
-                                            <span class="font-medium">Add Section Here</span>
-                                        </button>
-                                    </div>
-                                </div>
-
                                 @for (int i = 0; i < Model.Sections.Count; i++)
                                 {
                                     var currentSection = Model.Sections[i];
                                     @await Html.PartialAsync("_PageSectionCard", currentSection)
-                                    
-                                    <!-- Add Section Button after each section -->
-                                    <div class="section-insertion-point">
-                                        <div class="flex items-center justify-center py-2">
-                                            <button type="button" class="group flex items-center space-x-2 px-3 py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-600 hover:text-yellow-700 rounded-lg border border-dashed border-yellow-300 hover:border-yellow-400 transition-all duration-200 text-sm" onclick="addNewSection()">
-                                                <i class="fas fa-plus text-xs group-hover:scale-110 transition-transform"></i>
-                                                <span class="font-medium">Add Section</span>
-                                            </button>
-                                        </div>
-                                    </div>
                                 }
                             }
                             else

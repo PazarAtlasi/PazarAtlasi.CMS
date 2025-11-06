@@ -1,8 +1,8 @@
 @model PazarAtlasi.CMS.Models.ViewModels.SectionItemViewModel
 @{
     var availableLanguages = ViewBag.AvailableLanguages as List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel> ?? new List<PazarAtlasi.CMS.Models.ViewModels.LanguageViewModel>();
-    var title = Model.Description ?? Model.Translations.FirstOrDefault(t => t.LanguageId == 1).Title;
-    var description = Model.Description ?? Model.Translations.FirstOrDefault(t => t.LanguageId == 1).Description;
+    var title = Model.Description ?? Model.Translations.FirstOrDefault(t => t.LanguageId == 1)?.Title;
+    var description = Model.Description ?? Model.Translations.FirstOrDefault(t => t.LanguageId == 1)?.Description;
 }
 
 <div class="section-item-card border-2 border-slate-300 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
