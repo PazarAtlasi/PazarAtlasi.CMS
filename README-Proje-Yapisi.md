@@ -1432,6 +1432,466 @@ POST /Localization/RefreshCache
 
 Bu rehber, projenin tutarlı ve sürdürülebilir şekilde geliştirilmesi için temel kuralları içermektedir.
 
+## 🏷️ Metadata Yönetimi Sistemi (Kasım 2024)
+
+### 📋 Genel Bakış
+
+PazarAtlasi CMS'e kapsamlı bir metadata yönetimi sistemi eklendi. Bu sistem ürün, kategori, marka ve varyant yönetimini hiyerarşik yapıda destekler.
+
+### 🗂️ Metadata Entity Yapısı
+
+#### 1. Product Entity
+
+```csharp
+public class Product : Entity<int>
+{
+    public int? ParentId { get; set; }                    // Hiyerarşik yapı
+    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string IntegrationCode { get; set; } = string.Empty;
+    public string ShortDescription { get; set; } = string.Empty;
+    public string LongDescription { get; set; } = string.Empty;
+    public string Unit { get; set; } = string.Empty;
+    public ProductType Type { get; set; } = ProductType.Simple;
+    public decimal TaxRate { get; set; } = 0;
+
+    // Navigation Properties
+    public virtual Product? ParentProduct { get; set; }
+    public virtual ICollection<Product> ChildProducts { get; set; }
+    public virtual ICollection<ProductTranslation> Translations { get; set; }
+    public virtual ICollection<Variant> Variants { get; set; }
+    public virtual ICollection<CategoryProduct> CategoryProducts { get; set; }
+    public virtual ICollection<TrademarkProduct> TrademarkProducts { get; set; }
+}
+```
+
+#### 2. Category Entity (Hiyerarşik Yapı)
+
+```csharp
+public class Category : Entity<int>
+{
+    public int? ParentCategoryId { get; set; }           // Parent kategori
+    public string Name { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+    public string? IntegrationCode { get; set; }
+    public string? Description { get; set; }
+    public int SortOrder { get; set; } = 0;
+
+    // Navigation Properties
+    public virtual Category? ParentCategory { get; set; }
+    public virtual ICollection<Category> ChildCategories { get; set; }
+    public virtual ICollection<CategoryTranslation> Translations { get; set; }
+    public virtual ICollection<CategoryProduct> CategoryProducts { get; set; }
+}
+```
+
+#### 3. ProductType Enum
+
+```csharp
+public enum ProductType
+{
+    None,
+    Simple,      // Basit ürün
+    Variable,    // Varyantlı ürün
+    Grouped,     // Gruplu ürün
+    External,    // Harici ürün
+    Digital,     // Dijital ürün
+    Service,     // Hizmet
+    Bundle       // Paket ürün
+}
+```
+
+### 🎯 Hiyerarşik Kategori Yönetimi
+
+#### Kategori Hiyerarşisi Örneği
+
+```
+Elektronik (Root)
+├── Bilgisayar (Level 1)
+│   ├── Masaüstü Bilgisayar (Level 2)
+│   │   ├── Gaming PC (Level 3)
+│   │   └── Ofis PC (Level 3)
+│   └── Dizüstü Bilgisayar (Level 2)
+│       ├── Gaming Laptop (Level 3)
+│       └── Ultrabook (Level 3)
+└── Telefon (Level 1)
+    ├── Akıllı Telefon (Level 2)
+    └── Cep Telefonu (Level 2)
+```
+
+#### Hiyerarşik Görüntüleme Özellikleri
+
+**1. Visual Hierarchy**
+
+- Level-based indentation: `pl-{Level * 4}`
+- Hierarchy indicators: `└─` sembolleri
+- Icon differentiation: Folder (parent) / Tag (leaf)
+- Color coding: Seviye bazında background renkleri
+
+**2. Interactive Features**
+
+- Toggle hierarchy view: Hiyerarşiyi göster/gizle
+- Expand/collapse: Büyük hiyerarşiler için
+- Quick actions: Child kategori ekleme, düzenleme
+- Search & filter: Tüm seviyelerde arama
+
+### 🛠️ MetadataController Geliştirmeleri
+
+#### Hiyerarşik Listeleme
+
+```csharp
+public async Task<IActionResult> Categories(int page = 1, int pageSize = 50)
+{
+    // Tüm kategorileri hiyerarşi için yükle
+    var allCategories = await _context.Set<Category>()
+        .Include(c => c.ParentCategory)
+        .Include(c => c.CategoryProducts)
+        .Include(c => c.Translations.Where(t => t.LanguageId == 1))
+        .OrderBy(c => c.ParentCategoryId ?? 0)
+        .ThenBy(c => c.SortOrder)
+        .ThenBy(c => c.Name)
+        .ToListAsync();
+
+    // Hiyerarşik yapı oluştur
+    var hierarchicalCategories = BuildCategoryHierarchy(categoryViewModels);
+
+    // Görüntüleme için düzleştir
+    var flattenedCategories = new List<CategoryListViewModel>();
+    FlattenCategoryHierarchy(hierarchicalCategories, flattenedCategories, 0);
+
+    return View(model);
+}
+```
+
+#### Helper Metodlar
+
+```csharp
+private List<CategoryListViewModel> BuildCategoryHierarchy(List<CategoryListViewModel> categories)
+{
+    var rootCategories = categories.Where(c => c.ParentCategoryId == null).ToList();
+
+    foreach (var category in rootCategories)
+    {
+        category.ChildCategories = GetChildCategories(categories, category.Id);
+    }
+
+    return rootCategories;
+}
+
+private void FlattenCategoryHierarchy(List<CategoryListViewModel> categories,
+    List<CategoryListViewModel> flattened, int level)
+{
+    foreach (var category in categories)
+    {
+        category.Level = level;
+        flattened.Add(category);
+
+        if (category.ChildCategories.Any())
+        {
+            FlattenCategoryHierarchy(category.ChildCategories, flattened, level + 1);
+        }
+    }
+}
+```
+
+### 🎨 Categories View Özellikleri
+
+#### 1. Hiyerarşik Tablo Görünümü
+
+```html
+<tr class="category-row" data-level="@category.Level">
+  <td class="px-6 py-4 whitespace-nowrap">
+    <div class="flex items-center @category.IndentClass">
+      <!-- Hierarchy Icon -->
+      <div
+        class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center"
+      >
+        <i class="@category.HierarchyIcon text-green-600"></i>
+      </div>
+
+      <div class="ml-4">
+        <div class="flex items-center">
+          <!-- Hierarchy Indicators -->
+          @if (category.Level > 0) {
+          <span class="text-slate-400 mr-2 hierarchy-indicator">
+            @for (int i = 0; i < category.Level; i++) {
+            <span>└─</span>
+            }
+          </span>
+          }
+
+          <div class="text-sm font-medium text-slate-900">
+            @category.Name
+          </div>
+
+          <!-- Child Count Badge -->
+          @if (category.HasChildren) {
+          <span
+            class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600"
+          >
+            <i class="fas fa-sitemap mr-1"></i>
+            @category.ChildCategories.Count
+          </span>
+          }
+        </div>
+      </div>
+    </div>
+  </td>
+</tr>
+```
+
+#### 2. JavaScript Özellikleri
+
+```javascript
+// Hiyerarşi toggle
+function toggleHierarchy() {
+  hierarchyVisible = !hierarchyVisible;
+  const rows = document.querySelectorAll(".category-row");
+
+  rows.forEach((row) => {
+    const level = parseInt(row.dataset.level);
+    if (level > 0) {
+      row.style.display = hierarchyVisible ? "" : "none";
+    }
+  });
+}
+
+// Search functionality
+function filterTable() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const statusFilter = document.querySelector("select").value;
+  const rows = document.querySelectorAll(".category-row");
+
+  rows.forEach((row) => {
+    const categoryInfo = row
+      .querySelector("td:first-child")
+      .textContent.toLowerCase();
+    const status = row.querySelector(
+      "td:nth-child(3) span"
+    ).textContent;
+
+    const matchesSearch = categoryInfo.includes(searchTerm);
+    const matchesStatus = !statusFilter || status === statusFilter;
+
+    row.style.display = matchesSearch && matchesStatus ? "" : "none";
+  });
+}
+```
+
+#### 3. CSS Styling
+
+```css
+.category-row[data-level="1"] {
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+.category-row[data-level="2"] {
+  background-color: rgba(241, 245, 249, 0.5);
+}
+
+.category-row[data-level="3"] {
+  background-color: rgba(226, 232, 240, 0.5);
+}
+
+.hierarchy-indicator {
+  font-family: monospace;
+  color: #94a3b8;
+}
+```
+
+### 📊 Statistics ve Dashboard
+
+#### Category Statistics Cards
+
+```html
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <div class="flex items-center">
+      <div class="p-3 bg-green-100 rounded-full">
+        <i class="fas fa-tags text-green-600 text-xl"></i>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-slate-600">
+          Total Categories
+        </p>
+        <p class="text-2xl font-bold text-slate-800">
+          @Model.TotalCount
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <div class="flex items-center">
+      <div class="p-3 bg-orange-100 rounded-full">
+        <i class="fas fa-sitemap text-orange-600 text-xl"></i>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-slate-600">
+          Root Categories
+        </p>
+        <p class="text-2xl font-bold text-slate-800">
+          @Model.Categories.Count(c => c.ParentCategoryId == null)
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### 🔧 CRUD İşlemleri
+
+#### 1. Create Category
+
+```csharp
+[HttpPost]
+public async Task<IActionResult> CreateCategory(CategoryCreateViewModel model)
+{
+    var category = new Category
+    {
+        Name = model.Name,
+        Code = model.Code,
+        IntegrationCode = model.IntegrationCode,
+        Description = model.Description,
+        SortOrder = model.SortOrder,
+        ParentCategoryId = model.ParentCategoryId,
+        Status = Status.Active,
+        CreatedAt = DateTime.UtcNow
+    };
+
+    _context.Set<Category>().Add(category);
+    await _context.SaveChangesAsync();
+
+    return RedirectToAction(nameof(Categories));
+}
+```
+
+#### 2. Safe Delete
+
+```csharp
+[HttpPost]
+public async Task<IActionResult> DeleteCategory(int id)
+{
+    var category = await _context.Set<Category>()
+        .Include(c => c.ChildCategories)
+        .Include(c => c.CategoryProducts)
+        .FirstOrDefaultAsync(c => c.Id == id);
+
+    // Child kontrolü
+    if (category.ChildCategories.Any())
+    {
+        TempData["ErrorMessage"] = "Cannot delete category with child categories.";
+        return RedirectToAction(nameof(Categories));
+    }
+
+    // Ürün kontrolü
+    if (category.CategoryProducts.Any())
+    {
+        TempData["ErrorMessage"] = "Cannot delete category with associated products.";
+        return RedirectToAction(nameof(Categories));
+    }
+
+    category.IsDeleted = true;
+    await _context.SaveChangesAsync();
+
+    return RedirectToAction(nameof(Categories));
+}
+```
+
+### 🎯 Quick Actions
+
+#### Parent-Child İlişki Yönetimi
+
+```html
+<div class="flex items-center space-x-2">
+    <!-- View Details -->
+    <a href="#" class="text-purple-600 hover:text-purple-900" title="View Details">
+        <i class="fas fa-eye"></i>
+    </a>
+
+    <!-- Edit Category -->
+    <a href="@Url.Action("EditCategory", new { id = category.Id })"
+       class="text-blue-600 hover:text-blue-900" title="Edit">
+        <i class="fas fa-edit"></i>
+    </a>
+
+    <!-- Add Sibling (aynı seviyede) -->
+    @if (category.Level > 0)
+    {
+        <a href="@Url.Action("CreateCategory", new { parentId = category.ParentCategoryId })"
+           class="text-green-600 hover:text-green-900" title="Add Sibling Category">
+            <i class="fas fa-plus"></i>
+        </a>
+    }
+
+    <!-- Add Child (alt seviye) -->
+    <a href="@Url.Action("CreateCategory", new { parentId = category.Id })"
+       class="text-orange-600 hover:text-orange-900" title="Add Child Category">
+        <i class="fas fa-plus-circle"></i>
+    </a>
+
+    <!-- Delete -->
+    <button onclick="confirmDelete(@category.Id, '@category.Name')"
+            class="text-red-600 hover:text-red-900" title="Delete">
+        <i class="fas fa-trash"></i>
+    </button>
+</div>
+```
+
+### 📱 Responsive Design
+
+#### Mobile Optimizations
+
+```css
+@media (max-width: 768px) {
+  .hierarchy-indicator {
+    display: none; /* Mobilde hierarchy göstergelerini gizle */
+  }
+
+  .category-row .action-buttons {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .statistics-cards {
+    grid-template-columns: 1fr 1fr; /* 2 sütun */
+  }
+}
+```
+
+### 🔄 Navigation Integration
+
+#### Sidebar Menu
+
+```html
+<li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
+    <a href="#" class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
+        <i class="fas fa-box w-5 mr-3 text-center text-lg"></i>
+        <span class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">Product Management</span>
+        <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
+    </a>
+    <ul class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
+        <li><a href="@Url.Action("Products", "Metadata")" class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm">
+            <i class="fas fa-box w-[18px] mr-2.5 text-center text-sm"></i> Products</a></li>
+        <li><a href="@Url.Action("Categories", "Metadata")" class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm">
+            <i class="fas fa-tags w-[18px] mr-2.5 text-center text-sm"></i> Categories</a></li>
+        <li><a href="@Url.Action("Variants", "Metadata")" class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm">
+            <i class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> Variants</a></li>
+        <li><a href="@Url.Action("Trademarks", "Metadata")" class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm">
+            <i class="fas fa-trademark w-[18px] mr-2.5 text-center text-sm"></i> Trademarks</a></li>
+    </ul>
+</li>
+```
+
+### 🎉 Sonuç
+
+Bu metadata yönetimi sistemi ile:
+
+✅ **Hiyerarşik Kategori Yönetimi**: Content/Pages sayfasındaki gibi nested yapı ✅ **Visual Hierarchy**: Level-based indentation ve renk kodlaması  
+✅ **Interactive Features**: Toggle, search, filter özellikleri ✅ **Safe Operations**: Child kontrolü ile güvenli silme ✅ **Quick Actions**: Parent-child ilişki yönetimi ✅ **Responsive Design**: Mobil uyumlu interface ✅ **Performance**: Optimize edilmiş database sorguları ✅ **User Experience**: Sezgisel ve kullanıcı dostu arayüz
+
+Kategoriler artık tam hiyerarşik yapıda yönetilebiliyor ve görüntülenebiliyor! 🏷️
+
 ## 🏗️ Layout-Based Page Editing Sistemi
 
 ### Genel Bakış

@@ -9,7 +9,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Metadata
         public string Name { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
         public string? IntegrationCode { get; set; }
-        public string? Description { get; set; }
         public int SortOrder { get; set; } = 0;
 
         // Navigation Properties

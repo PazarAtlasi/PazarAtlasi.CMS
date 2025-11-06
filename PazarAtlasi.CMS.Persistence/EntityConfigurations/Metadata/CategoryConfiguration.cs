@@ -18,7 +18,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
             builder.Property(c => c.Name).HasColumnName("Name").IsRequired().HasMaxLength(255);
             builder.Property(c => c.Code).HasColumnName("Code").IsRequired().HasMaxLength(100);
             builder.Property(c => c.IntegrationCode).HasColumnName("IntegrationCode").HasMaxLength(100);
-            builder.Property(c => c.Description).HasColumnName("Description").HasMaxLength(1000);
             builder.Property(c => c.SortOrder).HasColumnName("SortOrder").HasDefaultValue(0);
             builder.Property(c => c.Status).HasColumnName("Status").HasDefaultValue(Status.Active);
             builder.Property(c => c.CreatedAt).HasColumnName("CreatedAt").IsRequired();
@@ -66,7 +65,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                     Name = "Elektronik",
                     Code = "elektronik",
                     IntegrationCode = "ELEC",
-                    Description = "Elektronik ürünler kategorisi",
                     SortOrder = 1,
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -79,7 +77,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                     Name = "Giyim",
                     Code = "giyim",
                     IntegrationCode = "CLTH",
-                    Description = "Giyim ve aksesuar kategorisi",
                     SortOrder = 2,
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -92,7 +89,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                     Name = "Ev & Yaşam",
                     Code = "ev-yasam",
                     IntegrationCode = "HOME",
-                    Description = "Ev ve yaşam ürünleri kategorisi",
                     SortOrder = 3,
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -106,7 +102,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                     Name = "Bilgisayar",
                     Code = "bilgisayar",
                     IntegrationCode = "COMP",
-                    Description = "Bilgisayar ve aksesuarları",
                     SortOrder = 1,
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -119,7 +114,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                     Name = "Telefon",
                     Code = "telefon",
                     IntegrationCode = "PHONE",
-                    Description = "Cep telefonu ve aksesuarları",
                     SortOrder = 2,
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -133,7 +127,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                     Name = "Erkek Giyim",
                     Code = "erkek-giyim",
                     IntegrationCode = "MENS",
-                    Description = "Erkek giyim ürünleri",
                     SortOrder = 1,
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),
@@ -146,7 +139,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
                     Name = "Kadın Giyim",
                     Code = "kadin-giyim",
                     IntegrationCode = "WMNS",
-                    Description = "Kadın giyim ürünleri",
                     SortOrder = 2,
                     Status = Status.Active,
                     CreatedAt = new DateTime(2024, 1, 1, 10, 0, 0),

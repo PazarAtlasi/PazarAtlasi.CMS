@@ -300,6 +300,52 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string HierarchyIcon => HasChildren ? "fas fa-folder" : "fas fa-tag";
     }
 
+    public class CategoryCreateViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public string? IntegrationCode { get; set; }
+        public int SortOrder { get; set; } = 0;
+        public int? ParentCategoryId { get; set; }
+        public string? ParentCategoryName { get; set; }
+        public List<CategoryListViewModel> AvailableParentCategories { get; set; } = new List<CategoryListViewModel>();
+        public List<LanguageViewModel> AvailableLanguages { get; set; } = new List<LanguageViewModel>();
+        public List<CategoryTranslationCreateViewModel> Translations { get; set; } = new List<CategoryTranslationCreateViewModel>();
+    }
+
+    public class CategoryEditViewModel : CategoryCreateViewModel
+    {
+        public int Id { get; set; }
+        public Status Status { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public List<CategoryTranslationViewModel> Translations { get; set; } = new List<CategoryTranslationViewModel>();
+    }
+
+    public class CategoryTranslationViewModel
+    {
+        public int Id { get; set; }
+        public int CategoryId { get; set; }
+        public int LanguageId { get; set; }
+        public string LanguageName { get; set; } = string.Empty;
+        public string LanguageCode { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string? ShortDescription { get; set; }
+        public string? LongDescription { get; set; }
+        public bool IsDefault { get; set; }
+    }
+
+    public class CategoryTranslationCreateViewModel
+    {
+        public int LanguageId { get; set; }
+        public string LanguageName { get; set; } = string.Empty;
+        public string LanguageCode { get; set; } = string.Empty;
+        public bool IsDefault { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? ShortDescription { get; set; }
+        public string? LongDescription { get; set; }
+    }
+
     #endregion
 
     #region Shared ViewModels
