@@ -117,6 +117,30 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataSchemas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Configuration = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSchemas", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Languages",
                 columns: table => new
                 {
@@ -337,6 +361,48 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataSchemaFields",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataSchemaId = table.Column<int>(type: "int", nullable: false),
+                    FieldKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FieldName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    IsRequired = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsTranslatable = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    ShowInListing = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    ShowInDetails = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsFilterable = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsSortable = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DefaultValue = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Placeholder = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    OptionsJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ValidationRules = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSchemaFields", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFields_DataSchemas_DataSchemaId",
+                        column: x => x.DataSchemaId,
+                        principalTable: "DataSchemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AnnouncementTranslations",
                 columns: table => new
                 {
@@ -435,6 +501,40 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ContentSlugs_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DataSchemaTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataSchemaId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSchemaTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaTranslations_DataSchemas_DataSchemaId",
+                        column: x => x.DataSchemaId,
+                        principalTable: "DataSchemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaTranslations_Languages_LanguageId",
                         column: x => x.LanguageId,
                         principalTable: "Languages",
                         principalColumn: "Id",
@@ -576,6 +676,42 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CategoryProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductDataSchemas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SchemaId = table.Column<int>(type: "int", nullable: false),
+                    IsPrimary = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    Configuration = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductDataSchemas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductDataSchemas_DataSchemas_SchemaId",
+                        column: x => x.SchemaId,
+                        principalTable: "DataSchemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductDataSchemas_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -931,6 +1067,88 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataSchemaFieldTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataSchemaFieldId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    FieldName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Placeholder = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    OptionsJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSchemaFieldTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFieldTranslations_DataSchemaFields_DataSchemaFieldId",
+                        column: x => x.DataSchemaFieldId,
+                        principalTable: "DataSchemaFields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFieldTranslations_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DataSchemaFieldValues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SchemaId = table.Column<int>(type: "int", nullable: false),
+                    FieldId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    JsonValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NumericValue = table.Column<decimal>(type: "decimal(18,4)", nullable: true),
+                    BooleanValue = table.Column<bool>(type: "bit", nullable: true),
+                    DateValue = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SortOrder = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSchemaFieldValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFieldValues_DataSchemaFields_FieldId",
+                        column: x => x.FieldId,
+                        principalTable: "DataSchemaFields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFieldValues_DataSchemas_SchemaId",
+                        column: x => x.SchemaId,
+                        principalTable: "DataSchemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFieldValues_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PageSections",
                 columns: table => new
                 {
@@ -1136,6 +1354,40 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataSchemaFieldValueTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataSchemaFieldValueId = table.Column<int>(type: "int", nullable: false),
+                    LanguageId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    JsonValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSchemaFieldValueTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFieldValueTranslations_DataSchemaFieldValues_DataSchemaFieldValueId",
+                        column: x => x.DataSchemaFieldValueId,
+                        principalTable: "DataSchemaFieldValues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DataSchemaFieldValueTranslations_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SectionItemFieldTranslations",
                 columns: table => new
                 {
@@ -1286,19 +1538,29 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "DataSchemas",
+                columns: new[] { "Id", "Configuration", "CreatedAt", "CreatedBy", "Description", "IsActive", "Key", "Name", "SortOrder", "Status", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, "{}", new DateTime(2025, 11, 7, 16, 2, 17, 725, DateTimeKind.Utc).AddTicks(7236), null, "General specifications for electronic products", true, "electronics-specs", "Electronics Specifications", 1, 1, null, null },
+                    { 2, "{}", new DateTime(2025, 11, 7, 16, 2, 17, 725, DateTimeKind.Utc).AddTicks(7240), null, "Detailed specifications for smartphones", true, "smartphone-specs", "Smartphone Specifications", 2, 1, null, null },
+                    { 3, "{}", new DateTime(2025, 11, 7, 16, 2, 17, 725, DateTimeKind.Utc).AddTicks(7243), null, "Detailed specifications for laptops", true, "laptop-specs", "Laptop Specifications", 3, 1, null, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Languages",
                 columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "Flag", "IsActive", "IsDefault", "Name", "NativeName", "SortOrder", "Status", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 1, "tr-TR", new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8129), null, "🇹🇷", true, true, "Türkçe", "Türkçe", 1, 0, null, null });
+                values: new object[] { 1, "tr-TR", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(1558), null, "🇹🇷", true, true, "Türkçe", "Türkçe", 1, 0, null, null });
 
             migrationBuilder.InsertData(
                 table: "Languages",
                 columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "Flag", "IsActive", "Name", "NativeName", "SortOrder", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 2, "en-US", new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8135), null, "🇺🇸", true, "English", "English", 2, 0, null, null },
-                    { 3, "de-DE", new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8138), null, "🇩🇪", true, "Deutsch", "Deutsch", 3, 0, null, null },
-                    { 4, "fr-FR", new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8140), null, "🇫🇷", true, "Français", "Français", 4, 0, null, null },
-                    { 5, "es-ES", new DateTime(2025, 11, 6, 21, 56, 18, 428, DateTimeKind.Utc).AddTicks(8142), null, "🇪🇸", true, "Español", "Español", 5, 0, null, null }
+                    { 2, "en-US", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(1563), null, "🇺🇸", true, "English", "English", 2, 0, null, null },
+                    { 3, "de-DE", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(1565), null, "🇩🇪", true, "Deutsch", "Deutsch", 3, 0, null, null },
+                    { 4, "fr-FR", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(1567), null, "🇫🇷", true, "Français", "Français", 4, 0, null, null },
+                    { 5, "es-ES", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(1569), null, "🇪🇸", true, "Español", "Español", 5, 0, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1321,11 +1583,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "DefaultValue", "IntegrationCode", "LongDescription", "Name", "ParentId", "ShortDescription", "SortOrder", "Status", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "color", new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7418), null, null, "", "", "Color", null, "", 1, 1, 3, null, null },
-                    { 2, "size", new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7422), null, null, "", "", "Size", null, "", 2, 1, 4, null, null },
-                    { 3, "material", new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7425), null, null, "", "", "Material", null, "", 3, 1, 5, null, null },
-                    { 4, "weight", new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7427), null, null, "", "", "Weight", null, "", 4, 1, 2, null, null },
-                    { 5, "warranty", new DateTime(2025, 11, 6, 21, 56, 18, 433, DateTimeKind.Utc).AddTicks(7428), null, null, "", "", "Warranty", null, "", 5, 1, 6, null, null }
+                    { 1, "color", new DateTime(2025, 11, 7, 16, 2, 17, 732, DateTimeKind.Utc).AddTicks(2020), null, null, "", "", "Color", null, "", 1, 1, 3, null, null },
+                    { 2, "size", new DateTime(2025, 11, 7, 16, 2, 17, 732, DateTimeKind.Utc).AddTicks(2024), null, null, "", "", "Size", null, "", 2, 1, 4, null, null },
+                    { 3, "material", new DateTime(2025, 11, 7, 16, 2, 17, 732, DateTimeKind.Utc).AddTicks(2027), null, null, "", "", "Material", null, "", 3, 1, 5, null, null },
+                    { 4, "weight", new DateTime(2025, 11, 7, 16, 2, 17, 732, DateTimeKind.Utc).AddTicks(2029), null, null, "", "", "Weight", null, "", 4, 1, 2, null, null },
+                    { 5, "warranty", new DateTime(2025, 11, 7, 16, 2, 17, 732, DateTimeKind.Utc).AddTicks(2031), null, null, "", "", "Warranty", null, "", 5, 1, 6, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1338,11 +1600,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "IntegrationCode", "LongDescription", "Name", "ParentId", "ShortDescription", "Status", "TaxRate", "Type", "Unit", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "iphone-15-pro", new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9397), null, "APPLE-IP15P", "The iPhone 15 Pro features a titanium design, A17 Pro chip, and advanced camera system.", "iPhone 15 Pro", null, "Latest iPhone with Pro features", 1, 18m, 2, "pcs", null, null },
-                    { 2, "galaxy-s24", new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9402), null, "SAMSUNG-GS24", "Samsung Galaxy S24 with AI-powered features and exceptional camera quality.", "Samsung Galaxy S24", null, "Premium Android smartphone", 1, 18m, 2, "pcs", null, null },
-                    { 3, "macbook-pro-14", new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9405), null, "APPLE-MBP14", "MacBook Pro 14-inch with M3 chip, perfect for professional workflows.", "MacBook Pro 14\"", null, "Professional laptop for creators", 1, 18m, 2, "pcs", null, null },
-                    { 4, "dell-xps-13", new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9407), null, "DELL-XPS13", "Dell XPS 13 with Intel Core processors and premium build quality.", "Dell XPS 13", null, "Ultra-portable Windows laptop", 1, 18m, 2, "pcs", null, null },
-                    { 5, "airpods-pro", new DateTime(2025, 11, 6, 21, 56, 18, 435, DateTimeKind.Utc).AddTicks(9410), null, "APPLE-APP", "AirPods Pro with active noise cancellation and spatial audio.", "AirPods Pro", null, "Wireless earbuds with ANC", 1, 18m, 1, "pcs", null, null }
+                    { 1, "iphone-15-pro", new DateTime(2025, 11, 7, 16, 2, 17, 734, DateTimeKind.Utc).AddTicks(5438), null, "APPLE-IP15P", "The iPhone 15 Pro features a titanium design, A17 Pro chip, and advanced camera system.", "iPhone 15 Pro", null, "Latest iPhone with Pro features", 1, 18m, 2, "pcs", null, null },
+                    { 2, "galaxy-s24", new DateTime(2025, 11, 7, 16, 2, 17, 734, DateTimeKind.Utc).AddTicks(5443), null, "SAMSUNG-GS24", "Samsung Galaxy S24 with AI-powered features and exceptional camera quality.", "Samsung Galaxy S24", null, "Premium Android smartphone", 1, 18m, 2, "pcs", null, null },
+                    { 3, "macbook-pro-14", new DateTime(2025, 11, 7, 16, 2, 17, 734, DateTimeKind.Utc).AddTicks(5446), null, "APPLE-MBP14", "MacBook Pro 14-inch with M3 chip, perfect for professional workflows.", "MacBook Pro 14\"", null, "Professional laptop for creators", 1, 18m, 2, "pcs", null, null },
+                    { 4, "dell-xps-13", new DateTime(2025, 11, 7, 16, 2, 17, 734, DateTimeKind.Utc).AddTicks(5450), null, "DELL-XPS13", "Dell XPS 13 with Intel Core processors and premium build quality.", "Dell XPS 13", null, "Ultra-portable Windows laptop", 1, 18m, 2, "pcs", null, null },
+                    { 5, "airpods-pro", new DateTime(2025, 11, 7, 16, 2, 17, 734, DateTimeKind.Utc).AddTicks(5453), null, "APPLE-APP", "AirPods Pro with active noise cancellation and spatial audio.", "AirPods Pro", null, "Wireless earbuds with ANC", 1, 18m, 1, "pcs", null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1384,11 +1646,11 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "IntegrationCode", "LongDescription", "Name", "ParentId", "ShortDescription", "SortOrder", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "apple", new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5167), null, "APPLE", "Apple Inc. is an American multinational technology company.", "Apple", null, "Technology company", 1, 1, null, null },
-                    { 2, "samsung", new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5171), null, "SAMSUNG", "Samsung Electronics is a South Korean multinational electronics corporation.", "Samsung", null, "Electronics manufacturer", 2, 1, null, null },
-                    { 3, "dell", new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5173), null, "DELL", "Dell Technologies is an American multinational computer technology company.", "Dell", null, "Computer technology company", 3, 1, null, null },
-                    { 4, "microsoft", new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5176), null, "MICROSOFT", "Microsoft Corporation is an American multinational technology corporation.", "Microsoft", null, "Software corporation", 4, 1, null, null },
-                    { 5, "sony", new DateTime(2025, 11, 6, 21, 56, 18, 438, DateTimeKind.Utc).AddTicks(5178), null, "SONY", "Sony Corporation is a Japanese multinational conglomerate corporation.", "Sony", null, "Entertainment and technology", 5, 1, null, null }
+                    { 1, "apple", new DateTime(2025, 11, 7, 16, 2, 17, 737, DateTimeKind.Utc).AddTicks(8012), null, "APPLE", "Apple Inc. is an American multinational technology company.", "Apple", null, "Technology company", 1, 1, null, null },
+                    { 2, "samsung", new DateTime(2025, 11, 7, 16, 2, 17, 737, DateTimeKind.Utc).AddTicks(8016), null, "SAMSUNG", "Samsung Electronics is a South Korean multinational electronics corporation.", "Samsung", null, "Electronics manufacturer", 2, 1, null, null },
+                    { 3, "dell", new DateTime(2025, 11, 7, 16, 2, 17, 737, DateTimeKind.Utc).AddTicks(8018), null, "DELL", "Dell Technologies is an American multinational computer technology company.", "Dell", null, "Computer technology company", 3, 1, null, null },
+                    { 4, "microsoft", new DateTime(2025, 11, 7, 16, 2, 17, 737, DateTimeKind.Utc).AddTicks(8021), null, "MICROSOFT", "Microsoft Corporation is an American multinational technology corporation.", "Microsoft", null, "Software corporation", 4, 1, null, null },
+                    { 5, "sony", new DateTime(2025, 11, 7, 16, 2, 17, 737, DateTimeKind.Utc).AddTicks(8023), null, "SONY", "Sony Corporation is a Japanese multinational conglomerate corporation.", "Sony", null, "Entertainment and technology", 5, 1, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1633,6 +1895,35 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "DataSchemaFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DataSchemaId", "DefaultValue", "Description", "FieldKey", "FieldName", "IsActive", "IsFilterable", "IsRequired", "IsSortable", "OptionsJson", "Placeholder", "ShowInDetails", "ShowInListing", "SortOrder", "Status", "Type", "Unit", "UpdatedAt", "UpdatedBy", "ValidationRules" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 11, 7, 16, 2, 17, 727, DateTimeKind.Utc).AddTicks(5926), null, 2, null, "Internal storage capacity", "storage_gb", "Storage", true, true, true, true, "[{\"value\":\"64\",\"label\":\"64 GB\"},{\"value\":\"128\",\"label\":\"128 GB\"},{\"value\":\"256\",\"label\":\"256 GB\"},{\"value\":\"512\",\"label\":\"512 GB\"},{\"value\":\"1024\",\"label\":\"1 TB\"}]", null, true, true, 1, 1, 14, "GB", null, null, null },
+                    { 2, new DateTime(2025, 11, 7, 16, 2, 17, 727, DateTimeKind.Utc).AddTicks(5932), null, 2, null, "Display screen size", "screen_size", "Screen Size", true, true, true, true, null, null, true, true, 2, 1, 3, "inches", null, null, "{\"min\":3.0,\"max\":10.0,\"step\":0.1}" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "DataSchemaFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DataSchemaId", "DefaultValue", "Description", "FieldKey", "FieldName", "IsActive", "IsFilterable", "OptionsJson", "Placeholder", "ShowInDetails", "ShowInListing", "SortOrder", "Status", "Type", "Unit", "UpdatedAt", "UpdatedBy", "ValidationRules" },
+                values: new object[] { 3, new DateTime(2025, 11, 7, 16, 2, 17, 727, DateTimeKind.Utc).AddTicks(5935), null, 2, null, "Display technology type", "screen_type", "Screen Type", true, true, "[{\"value\":\"LCD\",\"label\":\"LCD\"},{\"value\":\"OLED\",\"label\":\"OLED\"},{\"value\":\"AMOLED\",\"label\":\"AMOLED\"},{\"value\":\"Super AMOLED\",\"label\":\"Super AMOLED\"},{\"value\":\"IPS\",\"label\":\"IPS\"}]", null, true, true, 3, 1, 14, null, null, null, null });
+
+            migrationBuilder.InsertData(
+                table: "DataSchemaFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DataSchemaId", "DefaultValue", "Description", "FieldKey", "FieldName", "IsActive", "IsFilterable", "IsSortable", "OptionsJson", "Placeholder", "ShowInDetails", "SortOrder", "Status", "Type", "Unit", "UpdatedAt", "UpdatedBy", "ValidationRules" },
+                values: new object[] { 4, new DateTime(2025, 11, 7, 16, 2, 17, 727, DateTimeKind.Utc).AddTicks(5939), null, 2, null, "Maximum screen brightness", "brightness", "Brightness", true, true, true, null, null, true, 4, 1, 3, "nits", null, null, "{\"min\":100,\"max\":3000}" });
+
+            migrationBuilder.InsertData(
+                table: "DataSchemaFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DataSchemaId", "DefaultValue", "Description", "FieldKey", "FieldName", "IsActive", "IsFilterable", "IsRequired", "IsSortable", "OptionsJson", "Placeholder", "ShowInDetails", "ShowInListing", "SortOrder", "Status", "Type", "Unit", "UpdatedAt", "UpdatedBy", "ValidationRules" },
+                values: new object[] { 5, new DateTime(2025, 11, 7, 16, 2, 17, 727, DateTimeKind.Utc).AddTicks(5942), null, 2, null, "Random Access Memory", "ram_gb", "RAM", true, true, true, true, "[{\"value\":\"2\",\"label\":\"2 GB\"},{\"value\":\"3\",\"label\":\"3 GB\"},{\"value\":\"4\",\"label\":\"4 GB\"},{\"value\":\"6\",\"label\":\"6 GB\"},{\"value\":\"8\",\"label\":\"8 GB\"},{\"value\":\"12\",\"label\":\"12 GB\"},{\"value\":\"16\",\"label\":\"16 GB\"}]", null, true, true, 5, 1, 14, "GB", null, null, null });
+
+            migrationBuilder.InsertData(
+                table: "DataSchemaFields",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DataSchemaId", "DefaultValue", "Description", "FieldKey", "FieldName", "IsActive", "IsFilterable", "IsSortable", "OptionsJson", "Placeholder", "ShowInDetails", "ShowInListing", "SortOrder", "Status", "Type", "Unit", "UpdatedAt", "UpdatedBy", "ValidationRules" },
+                values: new object[] { 6, new DateTime(2025, 11, 7, 16, 2, 17, 727, DateTimeKind.Utc).AddTicks(5945), null, 2, null, "Battery capacity in mAh", "battery_mah", "Battery Capacity", true, true, true, null, null, true, true, 6, 1, 3, "mAh", null, null, "{\"min\":1000,\"max\":10000}" });
+
+            migrationBuilder.InsertData(
                 table: "LayoutSections",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsRequired", "LayoutId", "Position", "SectionId", "SortOrder", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
@@ -1659,400 +1950,400 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "Category", "CreatedAt", "CreatedBy", "Description", "IsActive", "Key", "LanguageId", "Status", "UpdatedAt", "UpdatedBy", "Value" },
                 values: new object[,]
                 {
-                    { 1, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6585), null, "Turkish translation for Common.Save", true, "Common.Save", 1, 0, null, null, "Kaydet" },
-                    { 2, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6592), null, "Turkish translation for Common.Cancel", true, "Common.Cancel", 1, 0, null, null, "İptal" },
-                    { 3, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6593), null, "Turkish translation for Common.Delete", true, "Common.Delete", 1, 0, null, null, "Sil" },
-                    { 4, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6643), null, "Turkish translation for Common.Edit", true, "Common.Edit", 1, 0, null, null, "Düzenle" },
-                    { 5, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6645), null, "Turkish translation for Common.Add", true, "Common.Add", 1, 0, null, null, "Ekle" },
-                    { 6, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6649), null, "Turkish translation for Common.Update", true, "Common.Update", 1, 0, null, null, "Güncelle" },
-                    { 7, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6650), null, "Turkish translation for Common.Create", true, "Common.Create", 1, 0, null, null, "Oluştur" },
-                    { 8, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6651), null, "Turkish translation for Common.Remove", true, "Common.Remove", 1, 0, null, null, "Kaldır" },
-                    { 9, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6652), null, "Turkish translation for Common.Search", true, "Common.Search", 1, 0, null, null, "Ara" },
-                    { 10, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6653), null, "Turkish translation for Common.Filter", true, "Common.Filter", 1, 0, null, null, "Filtrele" },
-                    { 11, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6655), null, "Turkish translation for Common.Export", true, "Common.Export", 1, 0, null, null, "Dışa Aktar" },
-                    { 12, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6656), null, "Turkish translation for Common.Import", true, "Common.Import", 1, 0, null, null, "İçe Aktar" },
-                    { 13, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6656), null, "Turkish translation for Common.Upload", true, "Common.Upload", 1, 0, null, null, "Yükle" },
-                    { 14, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6657), null, "Turkish translation for Common.Download", true, "Common.Download", 1, 0, null, null, "İndir" },
-                    { 15, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6658), null, "Turkish translation for Common.Preview", true, "Common.Preview", 1, 0, null, null, "Önizle" },
-                    { 16, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6659), null, "Turkish translation for Common.Publish", true, "Common.Publish", 1, 0, null, null, "Yayınla" },
-                    { 17, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6660), null, "Turkish translation for Common.Draft", true, "Common.Draft", 1, 0, null, null, "Taslak" },
-                    { 18, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6661), null, "Turkish translation for Common.Active", true, "Common.Active", 1, 0, null, null, "Aktif" },
-                    { 19, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6662), null, "Turkish translation for Common.Inactive", true, "Common.Inactive", 1, 0, null, null, "Pasif" },
-                    { 20, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6663), null, "Turkish translation for Common.Yes", true, "Common.Yes", 1, 0, null, null, "Evet" },
-                    { 21, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6671), null, "Turkish translation for Common.No", true, "Common.No", 1, 0, null, null, "Hayır" },
-                    { 22, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6672), null, "Turkish translation for Common.OK", true, "Common.OK", 1, 0, null, null, "Tamam" },
-                    { 23, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6673), null, "Turkish translation for Common.Close", true, "Common.Close", 1, 0, null, null, "Kapat" },
-                    { 24, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6674), null, "Turkish translation for Common.Back", true, "Common.Back", 1, 0, null, null, "Geri" },
-                    { 25, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6674), null, "Turkish translation for Common.Next", true, "Common.Next", 1, 0, null, null, "İleri" },
-                    { 26, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6676), null, "Turkish translation for Common.Previous", true, "Common.Previous", 1, 0, null, null, "Önceki" },
-                    { 27, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6677), null, "Turkish translation for Common.Loading", true, "Common.Loading", 1, 0, null, null, "Yükleniyor..." },
-                    { 28, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6677), null, "Turkish translation for Common.Success", true, "Common.Success", 1, 0, null, null, "Başarılı" },
-                    { 29, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6678), null, "Turkish translation for Common.Error", true, "Common.Error", 1, 0, null, null, "Hata" },
-                    { 30, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6689), null, "Turkish translation for Common.Warning", true, "Common.Warning", 1, 0, null, null, "Uyarı" },
-                    { 31, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6690), null, "Turkish translation for Common.Info", true, "Common.Info", 1, 0, null, null, "Bilgi" },
-                    { 32, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6691), null, "Turkish translation for Common.Refresh", true, "Common.Refresh", 1, 0, null, null, "Yenile" },
-                    { 33, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6692), null, "Turkish translation for Common.Settings", true, "Common.Settings", 1, 0, null, null, "Ayarlar" },
-                    { 34, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6694), null, "Turkish translation for Common.ViewAll", true, "Common.ViewAll", 1, 0, null, null, "Tümünü Gör" },
-                    { 35, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6694), null, "Turkish translation for Common.All", true, "Common.All", 1, 0, null, null, "Tümü" },
-                    { 36, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6695), null, "Turkish translation for Common.Actions", true, "Common.Actions", 1, 0, null, null, "İşlemler" },
-                    { 37, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6718), null, "Turkish translation for Common.AreYouSure", true, "Common.AreYouSure", 1, 0, null, null, "Emin misiniz?" },
-                    { 38, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6719), null, "Turkish translation for Common.UnexpectedError", true, "Common.UnexpectedError", 1, 0, null, null, "Beklenmeyen bir hata oluştu" },
-                    { 39, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6722), null, "Turkish translation for Page.Title", true, "Page.Title", 1, 0, null, null, "Sayfa Başlığı" },
-                    { 40, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6724), null, "Turkish translation for Page.Content", true, "Page.Content", 1, 0, null, null, "Sayfa İçeriği" },
-                    { 41, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6725), null, "Turkish translation for Page.Description", true, "Page.Description", 1, 0, null, null, "Sayfa Açıklaması" },
-                    { 42, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6726), null, "Turkish translation for Page.Keywords", true, "Page.Keywords", 1, 0, null, null, "Anahtar Kelimeler" },
-                    { 43, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6727), null, "Turkish translation for Page.Author", true, "Page.Author", 1, 0, null, null, "Yazar" },
-                    { 44, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6728), null, "Turkish translation for Page.CreatedAt", true, "Page.CreatedAt", 1, 0, null, null, "Oluşturulma Tarihi" },
-                    { 45, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6729), null, "Turkish translation for Page.UpdatedAt", true, "Page.UpdatedAt", 1, 0, null, null, "Güncellenme Tarihi" },
-                    { 46, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6730), null, "Turkish translation for Page.Status", true, "Page.Status", 1, 0, null, null, "Durum" },
-                    { 47, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6731), null, "Turkish translation for Page.Type", true, "Page.Type", 1, 0, null, null, "Sayfa Tipi" },
-                    { 48, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6731), null, "Turkish translation for Page.Layout", true, "Page.Layout", 1, 0, null, null, "Düzen" },
-                    { 49, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6732), null, "Turkish translation for Page.Template", true, "Page.Template", 1, 0, null, null, "Şablon" },
-                    { 50, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6733), null, "Turkish translation for Page.SEO", true, "Page.SEO", 1, 0, null, null, "SEO Ayarları" },
-                    { 51, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6734), null, "Turkish translation for Page.Sections", true, "Page.Sections", 1, 0, null, null, "Bölümler" },
-                    { 52, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6735), null, "Turkish translation for Page.Items", true, "Page.Items", 1, 0, null, null, "Öğeler" },
-                    { 53, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6736), null, "Turkish translation for Page.Fields", true, "Page.Fields", 1, 0, null, null, "Alanlar" },
-                    { 54, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6738), null, "Turkish translation for Section.Name", true, "Section.Name", 1, 0, null, null, "Bölüm Adı" },
-                    { 55, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6739), null, "Turkish translation for Section.Type", true, "Section.Type", 1, 0, null, null, "Bölüm Tipi" },
-                    { 56, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6740), null, "Turkish translation for Section.Key", true, "Section.Key", 1, 0, null, null, "Bölüm Anahtarı" },
-                    { 57, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6741), null, "Turkish translation for Section.Order", true, "Section.Order", 1, 0, null, null, "Sıralama" },
-                    { 58, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6742), null, "Turkish translation for Section.Settings", true, "Section.Settings", 1, 0, null, null, "Ayarlar" },
-                    { 59, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6743), null, "Turkish translation for Section.Items", true, "Section.Items", 1, 0, null, null, "Öğeler" },
-                    { 60, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6744), null, "Turkish translation for Section.AddItem", true, "Section.AddItem", 1, 0, null, null, "Öğe Ekle" },
-                    { 61, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6745), null, "Turkish translation for Section.EditItems", true, "Section.EditItems", 1, 0, null, null, "Öğeleri Düzenle" },
-                    { 62, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6746), null, "Turkish translation for Section.Duplicate", true, "Section.Duplicate", 1, 0, null, null, "Kopyala" },
-                    { 63, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6746), null, "Turkish translation for Section.Remove", true, "Section.Remove", 1, 0, null, null, "Kaldır" },
-                    { 64, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6747), null, "Turkish translation for Section.Hero", true, "Section.Hero", 1, 0, null, null, "Ana Bölüm" },
-                    { 65, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6748), null, "Turkish translation for Section.Navbar", true, "Section.Navbar", 1, 0, null, null, "Navigasyon" },
-                    { 66, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6750), null, "Turkish translation for Section.Footer", true, "Section.Footer", 1, 0, null, null, "Alt Bilgi" },
-                    { 67, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6751), null, "Turkish translation for Section.Content", true, "Section.Content", 1, 0, null, null, "İçerik" },
-                    { 68, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6752), null, "Turkish translation for Section.Gallery", true, "Section.Gallery", 1, 0, null, null, "Galeri" },
-                    { 69, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6813), null, "Turkish translation for Section.Contact", true, "Section.Contact", 1, 0, null, null, "İletişim" },
-                    { 70, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6817), null, "Turkish translation for Validation.Required", true, "Validation.Required", 1, 0, null, null, "Bu alan zorunludur" },
-                    { 71, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6818), null, "Turkish translation for Validation.Email", true, "Validation.Email", 1, 0, null, null, "Geçerli bir e-posta adresi giriniz" },
-                    { 72, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6819), null, "Turkish translation for Validation.MinLength", true, "Validation.MinLength", 1, 0, null, null, "En az {0} karakter olmalıdır" },
-                    { 73, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6820), null, "Turkish translation for Validation.MaxLength", true, "Validation.MaxLength", 1, 0, null, null, "En fazla {0} karakter olmalıdır" },
-                    { 74, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6821), null, "Turkish translation for Validation.Range", true, "Validation.Range", 1, 0, null, null, "{0} ile {1} arasında olmalıdır" },
-                    { 75, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6822), null, "Turkish translation for Validation.Numeric", true, "Validation.Numeric", 1, 0, null, null, "Sayısal bir değer giriniz" },
-                    { 76, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6823), null, "Turkish translation for Validation.Date", true, "Validation.Date", 1, 0, null, null, "Geçerli bir tarih giriniz" },
-                    { 77, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6824), null, "Turkish translation for Validation.Url", true, "Validation.Url", 1, 0, null, null, "Geçerli bir URL giriniz" },
-                    { 78, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6824), null, "Turkish translation for Validation.Phone", true, "Validation.Phone", 1, 0, null, null, "Geçerli bir telefon numarası giriniz" },
-                    { 79, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6825), null, "Turkish translation for Validation.Password", true, "Validation.Password", 1, 0, null, null, "Şifre en az 8 karakter olmalıdır" },
-                    { 80, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6828), null, "Turkish translation for Navigation.Dashboard", true, "Navigation.Dashboard", 1, 0, null, null, "Dashboard" },
-                    { 81, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6829), null, "Turkish translation for Navigation.Announcements", true, "Navigation.Announcements", 1, 0, null, null, "Duyurular" },
-                    { 82, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6830), null, "Turkish translation for Navigation.Campaigns", true, "Navigation.Campaigns", 1, 0, null, null, "Kampanyalar" },
-                    { 83, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6831), null, "Turkish translation for Navigation.Content", true, "Navigation.Content", 1, 0, null, null, "İçerik" },
-                    { 84, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6831), null, "Turkish translation for Navigation.Pages", true, "Navigation.Pages", 1, 0, null, null, "Sayfalar" },
-                    { 85, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6832), null, "Turkish translation for Navigation.Sections", true, "Navigation.Sections", 1, 0, null, null, "Bölümler" },
-                    { 86, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6833), null, "Turkish translation for Navigation.Layouts", true, "Navigation.Layouts", 1, 0, null, null, "Düzenler" },
-                    { 87, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6834), null, "Turkish translation for Navigation.WebUrlManagement", true, "Navigation.WebUrlManagement", 1, 0, null, null, "Web URL Yönetimi" },
-                    { 88, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6835), null, "Turkish translation for Navigation.News", true, "Navigation.News", 1, 0, null, null, "Haberler" },
-                    { 89, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6836), null, "Turkish translation for Navigation.Blog", true, "Navigation.Blog", 1, 0, null, null, "Blog" },
-                    { 90, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6837), null, "Turkish translation for Navigation.Templates", true, "Navigation.Templates", 1, 0, null, null, "Şablonlar" },
-                    { 91, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6838), null, "Turkish translation for Navigation.SectionItems", true, "Navigation.SectionItems", 1, 0, null, null, "Bölüm Öğeleri" },
-                    { 92, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6839), null, "Turkish translation for Navigation.ECommerce", true, "Navigation.ECommerce", 1, 0, null, null, "E-Ticaret" },
-                    { 93, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6840), null, "Turkish translation for Navigation.Products", true, "Navigation.Products", 1, 0, null, null, "Ürünler" },
-                    { 94, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6841), null, "Turkish translation for Navigation.Categories", true, "Navigation.Categories", 1, 0, null, null, "Kategoriler" },
-                    { 95, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6842), null, "Turkish translation for Navigation.Orders", true, "Navigation.Orders", 1, 0, null, null, "Siparişler" },
-                    { 96, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6843), null, "Turkish translation for Navigation.Users", true, "Navigation.Users", 1, 0, null, null, "Kullanıcılar" },
-                    { 97, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6844), null, "Turkish translation for Navigation.ManageUsers", true, "Navigation.ManageUsers", 1, 0, null, null, "Kullanıcı Yönetimi" },
-                    { 98, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6845), null, "Turkish translation for Navigation.ManageRoles", true, "Navigation.ManageRoles", 1, 0, null, null, "Rol Yönetimi" },
-                    { 99, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6845), null, "Turkish translation for Navigation.ManagePermissions", true, "Navigation.ManagePermissions", 1, 0, null, null, "İzin Yönetimi" },
-                    { 100, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6846), null, "Turkish translation for Navigation.Analytics", true, "Navigation.Analytics", 1, 0, null, null, "Analitik" },
-                    { 101, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6847), null, "Turkish translation for Navigation.Settings", true, "Navigation.Settings", 1, 0, null, null, "Ayarlar" },
-                    { 102, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6848), null, "Turkish translation for Navigation.GeneralSettings", true, "Navigation.GeneralSettings", 1, 0, null, null, "Genel Ayarlar" },
-                    { 103, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6849), null, "Turkish translation for Navigation.Countries", true, "Navigation.Countries", 1, 0, null, null, "Ülkeler" },
-                    { 104, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6850), null, "Turkish translation for Navigation.Languages", true, "Navigation.Languages", 1, 0, null, null, "Diller" },
-                    { 105, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6891), null, "Turkish translation for Navigation.Localization", true, "Navigation.Localization", 1, 0, null, null, "Lokalizasyon" },
-                    { 106, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6892), null, "Turkish translation for Navigation.Profile", true, "Navigation.Profile", 1, 0, null, null, "Profil" },
-                    { 107, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6893), null, "Turkish translation for Navigation.Help", true, "Navigation.Help", 1, 0, null, null, "Yardım" },
-                    { 108, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6894), null, "Turkish translation for Navigation.Logout", true, "Navigation.Logout", 1, 0, null, null, "Çıkış" },
-                    { 109, "Language", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6896), null, "Turkish translation for Language.English", true, "Language.English", 1, 0, null, null, "İngilizce" },
-                    { 110, "Language", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6898), null, "Turkish translation for Language.Turkish", true, "Language.Turkish", 1, 0, null, null, "Türkçe" },
-                    { 111, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6900), null, "Turkish translation for Dashboard.Title", true, "Dashboard.Title", 1, 0, null, null, "Dashboard" },
-                    { 112, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6902), null, "Turkish translation for Dashboard.WelcomeMessage", true, "Dashboard.WelcomeMessage", 1, 0, null, null, "Hoş geldin! CMS analitiklerin ve son aktivitelerin özeti burada." },
-                    { 113, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6903), null, "Turkish translation for Dashboard.Last7Days", true, "Dashboard.Last7Days", 1, 0, null, null, "Son 7 gün" },
-                    { 114, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6904), null, "Turkish translation for Dashboard.Last30Days", true, "Dashboard.Last30Days", 1, 0, null, null, "Son 30 gün" },
-                    { 115, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6904), null, "Turkish translation for Dashboard.Last90Days", true, "Dashboard.Last90Days", 1, 0, null, null, "Son 90 gün" },
-                    { 116, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6905), null, "Turkish translation for Dashboard.TotalUsers", true, "Dashboard.TotalUsers", 1, 0, null, null, "Toplam Kullanıcı" },
-                    { 117, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6906), null, "Turkish translation for Dashboard.TotalRevenue", true, "Dashboard.TotalRevenue", 1, 0, null, null, "Toplam Gelir" },
-                    { 118, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6907), null, "Turkish translation for Dashboard.Products", true, "Dashboard.Products", 1, 0, null, null, "Ürünler" },
-                    { 119, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6908), null, "Turkish translation for Dashboard.SupportTickets", true, "Dashboard.SupportTickets", 1, 0, null, null, "Destek Biletleri" },
-                    { 120, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6909), null, "Turkish translation for Dashboard.FromLastMonth", true, "Dashboard.FromLastMonth", 1, 0, null, null, "geçen aydan" },
-                    { 121, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6910), null, "Turkish translation for Dashboard.SalesOverview", true, "Dashboard.SalesOverview", 1, 0, null, null, "Satış Genel Bakış" },
-                    { 122, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6910), null, "Turkish translation for Dashboard.Monthly", true, "Dashboard.Monthly", 1, 0, null, null, "Aylık" },
-                    { 123, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6911), null, "Turkish translation for Dashboard.ChartVisualization", true, "Dashboard.ChartVisualization", 1, 0, null, null, "Grafik görselleştirmesi burada olacak" },
-                    { 124, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6912), null, "Turkish translation for Dashboard.ThisYear", true, "Dashboard.ThisYear", 1, 0, null, null, "Bu Yıl" },
-                    { 125, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6913), null, "Turkish translation for Dashboard.LastYear", true, "Dashboard.LastYear", 1, 0, null, null, "Geçen Yıl" },
-                    { 126, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6914), null, "Turkish translation for Dashboard.RecentActivities", true, "Dashboard.RecentActivities", 1, 0, null, null, "Son Aktiviteler" },
-                    { 127, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6915), null, "Turkish translation for Dashboard.TopProducts", true, "Dashboard.TopProducts", 1, 0, null, null, "En İyi Ürünler" },
-                    { 128, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6916), null, "Turkish translation for Dashboard.Product", true, "Dashboard.Product", 1, 0, null, null, "Ürün" },
-                    { 129, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6917), null, "Turkish translation for Dashboard.Category", true, "Dashboard.Category", 1, 0, null, null, "Kategori" },
-                    { 130, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6919), null, "Turkish translation for Dashboard.Sales", true, "Dashboard.Sales", 1, 0, null, null, "Satışlar" },
-                    { 131, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6951), null, "Turkish translation for Dashboard.Status", true, "Dashboard.Status", 1, 0, null, null, "Durum" },
-                    { 132, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6952), null, "Turkish translation for Dashboard.LatestOrders", true, "Dashboard.LatestOrders", 1, 0, null, null, "Son Siparişler" },
-                    { 133, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6954), null, "Turkish translation for Dashboard.Today", true, "Dashboard.Today", 1, 0, null, null, "Bugün" },
-                    { 134, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6954), null, "Turkish translation for Dashboard.Yesterday", true, "Dashboard.Yesterday", 1, 0, null, null, "Dün" },
-                    { 135, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6955), null, "Turkish translation for Dashboard.OrderId", true, "Dashboard.OrderId", 1, 0, null, null, "Sipariş ID" },
-                    { 136, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6956), null, "Turkish translation for Dashboard.Customer", true, "Dashboard.Customer", 1, 0, null, null, "Müşteri" },
-                    { 137, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6957), null, "Turkish translation for Dashboard.Date", true, "Dashboard.Date", 1, 0, null, null, "Tarih" },
-                    { 138, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6958), null, "Turkish translation for Dashboard.Amount", true, "Dashboard.Amount", 1, 0, null, null, "Tutar" },
-                    { 139, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6961), null, "Turkish translation for Localization.SystemDescription", true, "Localization.SystemDescription", 1, 0, null, null, "Sistem genelinde kullanılan metin çevirilerini yönetin" },
-                    { 140, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6962), null, "Turkish translation for Localization.Keys", true, "Localization.Keys", 1, 0, null, null, "Lokalizasyon Anahtarları" },
-                    { 141, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6963), null, "Turkish translation for Localization.Key", true, "Localization.Key", 1, 0, null, null, "Anahtar" },
-                    { 142, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6964), null, "Turkish translation for Localization.AddKey", true, "Localization.AddKey", 1, 0, null, null, "Yeni Anahtar Ekle" },
-                    { 143, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6965), null, "Turkish translation for Localization.EditKey", true, "Localization.EditKey", 1, 0, null, null, "Anahtar Düzenle" },
-                    { 144, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6966), null, "Turkish translation for Localization.KeyDetails", true, "Localization.KeyDetails", 1, 0, null, null, "Anahtar Detayları" },
-                    { 145, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6967), null, "Turkish translation for Localization.AddKeyDescription", true, "Localization.AddKeyDescription", 1, 0, null, null, "Yeni bir lokalizasyon anahtarı ve çevirilerini ekleyin" },
-                    { 146, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6968), null, "Turkish translation for Localization.EditKeyDescription", true, "Localization.EditKeyDescription", 1, 0, null, null, "Mevcut lokalizasyon anahtarını ve çevirilerini düzenleyin" },
-                    { 147, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6969), null, "Turkish translation for Localization.KeyPlaceholder", true, "Localization.KeyPlaceholder", 1, 0, null, null, "örn: Common.Save" },
-                    { 148, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6970), null, "Turkish translation for Localization.KeyHint", true, "Localization.KeyHint", 1, 0, null, null, "Nokta ile ayrılmış hiyerarşik anahtar kullanın" },
-                    { 149, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6970), null, "Turkish translation for Localization.KeyReadonly", true, "Localization.KeyReadonly", 1, 0, null, null, "Anahtar değiştirilemez" },
-                    { 150, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6971), null, "Turkish translation for Localization.Description", true, "Localization.Description", 1, 0, null, null, "Açıklama" },
-                    { 151, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6972), null, "Turkish translation for Localization.DescriptionPlaceholder", true, "Localization.DescriptionPlaceholder", 1, 0, null, null, "Bu anahtarın ne için kullanıldığını açıklayın" },
-                    { 152, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6973), null, "Turkish translation for Localization.SelectCategory", true, "Localization.SelectCategory", 1, 0, null, null, "Kategori Seçin" },
-                    { 153, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6974), null, "Turkish translation for Localization.Translations", true, "Localization.Translations", 1, 0, null, null, "Çeviriler" },
-                    { 154, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6975), null, "Turkish translation for Localization.TranslationPlaceholder", true, "Localization.TranslationPlaceholder", 1, 0, null, null, "{0} dilinde çeviri girin" },
-                    { 155, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6976), null, "Turkish translation for Localization.Translated", true, "Localization.Translated", 1, 0, null, null, "Çevrildi" },
-                    { 156, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6977), null, "Turkish translation for Localization.NotTranslated", true, "Localization.NotTranslated", 1, 0, null, null, "Çevrilmedi" },
-                    { 157, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6978), null, "Turkish translation for Localization.LastUpdated", true, "Localization.LastUpdated", 1, 0, null, null, "Son Güncelleme" },
-                    { 158, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6978), null, "Turkish translation for Localization.SearchPlaceholder", true, "Localization.SearchPlaceholder", 1, 0, null, null, "Anahtar veya değer ara..." },
-                    { 159, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6979), null, "Turkish translation for Localization.ShowingResults", true, "Localization.ShowingResults", 1, 0, null, null, "{0}-{1} / {2} sonuç gösteriliyor" },
-                    { 160, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6980), null, "Turkish translation for Localization.NoKeys", true, "Localization.NoKeys", 1, 0, null, null, "Lokalizasyon anahtarı bulunamadı" },
-                    { 161, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6981), null, "Turkish translation for Localization.NoKeysDescription", true, "Localization.NoKeysDescription", 1, 0, null, null, "Henüz hiç lokalizasyon anahtarı eklenmemiş" },
-                    { 162, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6982), null, "Turkish translation for Localization.AddFirstKey", true, "Localization.AddFirstKey", 1, 0, null, null, "İlk Anahtarı Ekle" },
-                    { 163, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(6983), null, "Turkish translation for Localization.DeleteConfirmation", true, "Localization.DeleteConfirmation", 1, 0, null, null, "Bu anahtarı ve tüm çevirilerini silmek istediğinizden emin misiniz?" },
-                    { 164, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7063), null, "English translation for Common.Save", true, "Common.Save", 2, 0, null, null, "Save" },
-                    { 165, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7066), null, "English translation for Common.Cancel", true, "Common.Cancel", 2, 0, null, null, "Cancel" },
-                    { 166, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7067), null, "English translation for Common.Delete", true, "Common.Delete", 2, 0, null, null, "Delete" },
-                    { 167, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7068), null, "English translation for Common.Edit", true, "Common.Edit", 2, 0, null, null, "Edit" },
-                    { 168, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7068), null, "English translation for Common.Add", true, "Common.Add", 2, 0, null, null, "Add" },
-                    { 169, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7070), null, "English translation for Common.Update", true, "Common.Update", 2, 0, null, null, "Update" },
-                    { 170, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7070), null, "English translation for Common.Create", true, "Common.Create", 2, 0, null, null, "Create" },
-                    { 171, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7071), null, "English translation for Common.Remove", true, "Common.Remove", 2, 0, null, null, "Remove" },
-                    { 172, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7072), null, "English translation for Common.Search", true, "Common.Search", 2, 0, null, null, "Search" },
-                    { 173, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7073), null, "English translation for Common.Filter", true, "Common.Filter", 2, 0, null, null, "Filter" },
-                    { 174, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7073), null, "English translation for Common.Export", true, "Common.Export", 2, 0, null, null, "Export" },
-                    { 175, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7074), null, "English translation for Common.Import", true, "Common.Import", 2, 0, null, null, "Import" },
-                    { 176, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7075), null, "English translation for Common.Upload", true, "Common.Upload", 2, 0, null, null, "Upload" },
-                    { 177, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7076), null, "English translation for Common.Download", true, "Common.Download", 2, 0, null, null, "Download" },
-                    { 178, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7077), null, "English translation for Common.Preview", true, "Common.Preview", 2, 0, null, null, "Preview" },
-                    { 179, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7078), null, "English translation for Common.Publish", true, "Common.Publish", 2, 0, null, null, "Publish" },
-                    { 180, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7079), null, "English translation for Common.Draft", true, "Common.Draft", 2, 0, null, null, "Draft" },
-                    { 181, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7079), null, "English translation for Common.Active", true, "Common.Active", 2, 0, null, null, "Active" },
-                    { 182, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7080), null, "English translation for Common.Inactive", true, "Common.Inactive", 2, 0, null, null, "Inactive" },
-                    { 183, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7081), null, "English translation for Common.Yes", true, "Common.Yes", 2, 0, null, null, "Yes" },
-                    { 184, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7082), null, "English translation for Common.No", true, "Common.No", 2, 0, null, null, "No" },
-                    { 185, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7083), null, "English translation for Common.OK", true, "Common.OK", 2, 0, null, null, "OK" },
-                    { 186, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7084), null, "English translation for Common.Close", true, "Common.Close", 2, 0, null, null, "Close" },
-                    { 187, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7085), null, "English translation for Common.Back", true, "Common.Back", 2, 0, null, null, "Back" },
-                    { 188, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7086), null, "English translation for Common.Next", true, "Common.Next", 2, 0, null, null, "Next" },
-                    { 189, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7086), null, "English translation for Common.Previous", true, "Common.Previous", 2, 0, null, null, "Previous" },
-                    { 190, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7087), null, "English translation for Common.Loading", true, "Common.Loading", 2, 0, null, null, "Loading..." },
-                    { 191, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7088), null, "English translation for Common.Success", true, "Common.Success", 2, 0, null, null, "Success" },
-                    { 192, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7089), null, "English translation for Common.Error", true, "Common.Error", 2, 0, null, null, "Error" },
-                    { 193, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7090), null, "English translation for Common.Warning", true, "Common.Warning", 2, 0, null, null, "Warning" },
-                    { 194, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7090), null, "English translation for Common.Info", true, "Common.Info", 2, 0, null, null, "Info" },
-                    { 195, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7091), null, "English translation for Common.Refresh", true, "Common.Refresh", 2, 0, null, null, "Refresh" },
-                    { 196, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7092), null, "English translation for Common.Settings", true, "Common.Settings", 2, 0, null, null, "Settings" },
-                    { 197, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7093), null, "English translation for Common.ViewAll", true, "Common.ViewAll", 2, 0, null, null, "View All" },
-                    { 198, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7093), null, "English translation for Common.All", true, "Common.All", 2, 0, null, null, "All" },
-                    { 199, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7095), null, "English translation for Common.Actions", true, "Common.Actions", 2, 0, null, null, "Actions" },
-                    { 200, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7095), null, "English translation for Common.AreYouSure", true, "Common.AreYouSure", 2, 0, null, null, "Are you sure?" },
-                    { 201, "Common", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7096), null, "English translation for Common.UnexpectedError", true, "Common.UnexpectedError", 2, 0, null, null, "An unexpected error occurred" },
-                    { 202, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7185), null, "English translation for Page.Title", true, "Page.Title", 2, 0, null, null, "Page Title" },
-                    { 203, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7187), null, "English translation for Page.Content", true, "Page.Content", 2, 0, null, null, "Page Content" },
-                    { 204, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7188), null, "English translation for Page.Description", true, "Page.Description", 2, 0, null, null, "Page Description" },
-                    { 205, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7189), null, "English translation for Page.Keywords", true, "Page.Keywords", 2, 0, null, null, "Keywords" },
-                    { 206, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7190), null, "English translation for Page.Author", true, "Page.Author", 2, 0, null, null, "Author" },
-                    { 207, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7191), null, "English translation for Page.CreatedAt", true, "Page.CreatedAt", 2, 0, null, null, "Created At" },
-                    { 208, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7192), null, "English translation for Page.UpdatedAt", true, "Page.UpdatedAt", 2, 0, null, null, "Updated At" },
-                    { 209, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7192), null, "English translation for Page.Status", true, "Page.Status", 2, 0, null, null, "Status" },
-                    { 210, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7193), null, "English translation for Page.Type", true, "Page.Type", 2, 0, null, null, "Page Type" },
-                    { 211, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7194), null, "English translation for Page.Layout", true, "Page.Layout", 2, 0, null, null, "Layout" },
-                    { 212, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7195), null, "English translation for Page.Template", true, "Page.Template", 2, 0, null, null, "Template" },
-                    { 213, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7196), null, "English translation for Page.SEO", true, "Page.SEO", 2, 0, null, null, "SEO Settings" },
-                    { 214, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7196), null, "English translation for Page.Sections", true, "Page.Sections", 2, 0, null, null, "Sections" },
-                    { 215, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7197), null, "English translation for Page.Items", true, "Page.Items", 2, 0, null, null, "Items" },
-                    { 216, "Page", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7198), null, "English translation for Page.Fields", true, "Page.Fields", 2, 0, null, null, "Fields" },
-                    { 217, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7201), null, "English translation for Section.Name", true, "Section.Name", 2, 0, null, null, "Section Name" },
-                    { 218, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7202), null, "English translation for Section.Type", true, "Section.Type", 2, 0, null, null, "Section Type" },
-                    { 219, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7203), null, "English translation for Section.Key", true, "Section.Key", 2, 0, null, null, "Section Key" },
-                    { 220, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7204), null, "English translation for Section.Order", true, "Section.Order", 2, 0, null, null, "Order" },
-                    { 221, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7204), null, "English translation for Section.Settings", true, "Section.Settings", 2, 0, null, null, "Settings" },
-                    { 222, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7205), null, "English translation for Section.Items", true, "Section.Items", 2, 0, null, null, "Items" },
-                    { 223, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7206), null, "English translation for Section.AddItem", true, "Section.AddItem", 2, 0, null, null, "Add Item" },
-                    { 224, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7207), null, "English translation for Section.EditItems", true, "Section.EditItems", 2, 0, null, null, "Edit Items" },
-                    { 225, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7208), null, "English translation for Section.Duplicate", true, "Section.Duplicate", 2, 0, null, null, "Duplicate" },
-                    { 226, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7209), null, "English translation for Section.Remove", true, "Section.Remove", 2, 0, null, null, "Remove" },
-                    { 227, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7209), null, "English translation for Section.Hero", true, "Section.Hero", 2, 0, null, null, "Hero Section" },
-                    { 228, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7210), null, "English translation for Section.Navbar", true, "Section.Navbar", 2, 0, null, null, "Navigation" },
-                    { 229, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7211), null, "English translation for Section.Footer", true, "Section.Footer", 2, 0, null, null, "Footer" },
-                    { 230, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7212), null, "English translation for Section.Content", true, "Section.Content", 2, 0, null, null, "Content" },
-                    { 231, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7213), null, "English translation for Section.Gallery", true, "Section.Gallery", 2, 0, null, null, "Gallery" },
-                    { 232, "Section", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7214), null, "English translation for Section.Contact", true, "Section.Contact", 2, 0, null, null, "Contact" },
-                    { 233, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7216), null, "English translation for Validation.Required", true, "Validation.Required", 2, 0, null, null, "This field is required" },
-                    { 234, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7217), null, "English translation for Validation.Email", true, "Validation.Email", 2, 0, null, null, "Please enter a valid email address" },
-                    { 235, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7218), null, "English translation for Validation.MinLength", true, "Validation.MinLength", 2, 0, null, null, "Must be at least {0} characters" },
-                    { 236, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7219), null, "English translation for Validation.MaxLength", true, "Validation.MaxLength", 2, 0, null, null, "Must be at most {0} characters" },
-                    { 237, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7220), null, "English translation for Validation.Range", true, "Validation.Range", 2, 0, null, null, "Must be between {0} and {1}" },
-                    { 238, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7221), null, "English translation for Validation.Numeric", true, "Validation.Numeric", 2, 0, null, null, "Please enter a numeric value" },
-                    { 239, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7281), null, "English translation for Validation.Date", true, "Validation.Date", 2, 0, null, null, "Please enter a valid date" },
-                    { 240, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7282), null, "English translation for Validation.Url", true, "Validation.Url", 2, 0, null, null, "Please enter a valid URL" },
-                    { 241, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7282), null, "English translation for Validation.Phone", true, "Validation.Phone", 2, 0, null, null, "Please enter a valid phone number" },
-                    { 242, "Validation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7283), null, "English translation for Validation.Password", true, "Validation.Password", 2, 0, null, null, "Password must be at least 8 characters" },
-                    { 243, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7286), null, "English translation for Navigation.Dashboard", true, "Navigation.Dashboard", 2, 0, null, null, "Dashboard" },
-                    { 244, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7287), null, "English translation for Navigation.Announcements", true, "Navigation.Announcements", 2, 0, null, null, "Announcements" },
-                    { 245, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7289), null, "English translation for Navigation.Campaigns", true, "Navigation.Campaigns", 2, 0, null, null, "Campaigns" },
-                    { 246, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7289), null, "English translation for Navigation.Content", true, "Navigation.Content", 2, 0, null, null, "Content" },
-                    { 247, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7290), null, "English translation for Navigation.Pages", true, "Navigation.Pages", 2, 0, null, null, "Pages" },
-                    { 248, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7291), null, "English translation for Navigation.Sections", true, "Navigation.Sections", 2, 0, null, null, "Sections" },
-                    { 249, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7292), null, "English translation for Navigation.Layouts", true, "Navigation.Layouts", 2, 0, null, null, "Layouts" },
-                    { 250, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7293), null, "English translation for Navigation.WebUrlManagement", true, "Navigation.WebUrlManagement", 2, 0, null, null, "Web URL Management" },
-                    { 251, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7294), null, "English translation for Navigation.News", true, "Navigation.News", 2, 0, null, null, "News" },
-                    { 252, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7295), null, "English translation for Navigation.Blog", true, "Navigation.Blog", 2, 0, null, null, "Blog" },
-                    { 253, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7296), null, "English translation for Navigation.Templates", true, "Navigation.Templates", 2, 0, null, null, "Templates" },
-                    { 254, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7297), null, "English translation for Navigation.SectionItems", true, "Navigation.SectionItems", 2, 0, null, null, "Section Items" },
-                    { 255, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7297), null, "English translation for Navigation.ECommerce", true, "Navigation.ECommerce", 2, 0, null, null, "E-Commerce" },
-                    { 256, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7298), null, "English translation for Navigation.Products", true, "Navigation.Products", 2, 0, null, null, "Products" },
-                    { 257, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7299), null, "English translation for Navigation.Categories", true, "Navigation.Categories", 2, 0, null, null, "Categories" },
-                    { 258, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7356), null, "English translation for Navigation.Orders", true, "Navigation.Orders", 2, 0, null, null, "Orders" },
-                    { 259, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7358), null, "English translation for Navigation.Users", true, "Navigation.Users", 2, 0, null, null, "Users" },
-                    { 260, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7358), null, "English translation for Navigation.ManageUsers", true, "Navigation.ManageUsers", 2, 0, null, null, "Manage Users" },
-                    { 261, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7359), null, "English translation for Navigation.ManageRoles", true, "Navigation.ManageRoles", 2, 0, null, null, "Manage Roles" },
-                    { 262, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7360), null, "English translation for Navigation.ManagePermissions", true, "Navigation.ManagePermissions", 2, 0, null, null, "Manage Permissions" },
-                    { 263, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7361), null, "English translation for Navigation.Analytics", true, "Navigation.Analytics", 2, 0, null, null, "Analytics" },
-                    { 264, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7362), null, "English translation for Navigation.Settings", true, "Navigation.Settings", 2, 0, null, null, "Settings" },
-                    { 265, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7363), null, "English translation for Navigation.GeneralSettings", true, "Navigation.GeneralSettings", 2, 0, null, null, "General Settings" },
-                    { 266, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7364), null, "English translation for Navigation.Countries", true, "Navigation.Countries", 2, 0, null, null, "Countries" },
-                    { 267, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7364), null, "English translation for Navigation.Languages", true, "Navigation.Languages", 2, 0, null, null, "Languages" },
-                    { 268, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7365), null, "English translation for Navigation.Localization", true, "Navigation.Localization", 2, 0, null, null, "Localization" },
-                    { 269, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7366), null, "English translation for Navigation.Profile", true, "Navigation.Profile", 2, 0, null, null, "Profile" },
-                    { 270, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7367), null, "English translation for Navigation.Help", true, "Navigation.Help", 2, 0, null, null, "Help" },
-                    { 271, "Navigation", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7368), null, "English translation for Navigation.Logout", true, "Navigation.Logout", 2, 0, null, null, "Logout" },
-                    { 272, "Language", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7370), null, "English translation for Language.English", true, "Language.English", 2, 0, null, null, "English" },
-                    { 273, "Language", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7371), null, "English translation for Language.Turkish", true, "Language.Turkish", 2, 0, null, null, "Turkish" },
-                    { 274, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7374), null, "English translation for Dashboard.Title", true, "Dashboard.Title", 2, 0, null, null, "Dashboard" },
-                    { 275, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7375), null, "English translation for Dashboard.WelcomeMessage", true, "Dashboard.WelcomeMessage", 2, 0, null, null, "Welcome back! Here's a summary of your CMS analytics and recent activity." },
-                    { 276, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7376), null, "English translation for Dashboard.Last7Days", true, "Dashboard.Last7Days", 2, 0, null, null, "Last 7 days" },
-                    { 277, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7377), null, "English translation for Dashboard.Last30Days", true, "Dashboard.Last30Days", 2, 0, null, null, "Last 30 days" },
-                    { 278, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7378), null, "English translation for Dashboard.Last90Days", true, "Dashboard.Last90Days", 2, 0, null, null, "Last 90 days" },
-                    { 279, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7379), null, "English translation for Dashboard.TotalUsers", true, "Dashboard.TotalUsers", 2, 0, null, null, "Total Users" },
-                    { 280, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7380), null, "English translation for Dashboard.TotalRevenue", true, "Dashboard.TotalRevenue", 2, 0, null, null, "Total Revenue" },
-                    { 281, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7381), null, "English translation for Dashboard.Products", true, "Dashboard.Products", 2, 0, null, null, "Products" },
-                    { 282, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7382), null, "English translation for Dashboard.SupportTickets", true, "Dashboard.SupportTickets", 2, 0, null, null, "Support Tickets" },
-                    { 283, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7382), null, "English translation for Dashboard.FromLastMonth", true, "Dashboard.FromLastMonth", 2, 0, null, null, "from last month" },
-                    { 284, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7383), null, "English translation for Dashboard.SalesOverview", true, "Dashboard.SalesOverview", 2, 0, null, null, "Sales Overview" },
-                    { 285, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7384), null, "English translation for Dashboard.Monthly", true, "Dashboard.Monthly", 2, 0, null, null, "Monthly" },
-                    { 286, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7385), null, "English translation for Dashboard.ChartVisualization", true, "Dashboard.ChartVisualization", 2, 0, null, null, "Chart visualization goes here" },
-                    { 287, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7386), null, "English translation for Dashboard.ThisYear", true, "Dashboard.ThisYear", 2, 0, null, null, "This Year" },
-                    { 288, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7386), null, "English translation for Dashboard.LastYear", true, "Dashboard.LastYear", 2, 0, null, null, "Last Year" },
-                    { 289, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7387), null, "English translation for Dashboard.RecentActivities", true, "Dashboard.RecentActivities", 2, 0, null, null, "Recent Activities" },
-                    { 290, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7388), null, "English translation for Dashboard.TopProducts", true, "Dashboard.TopProducts", 2, 0, null, null, "Top Products" },
-                    { 291, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7409), null, "English translation for Dashboard.Product", true, "Dashboard.Product", 2, 0, null, null, "Product" },
-                    { 292, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7410), null, "English translation for Dashboard.Category", true, "Dashboard.Category", 2, 0, null, null, "Category" },
-                    { 293, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7411), null, "English translation for Dashboard.Sales", true, "Dashboard.Sales", 2, 0, null, null, "Sales" },
-                    { 294, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7411), null, "English translation for Dashboard.Status", true, "Dashboard.Status", 2, 0, null, null, "Status" },
-                    { 295, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7412), null, "English translation for Dashboard.LatestOrders", true, "Dashboard.LatestOrders", 2, 0, null, null, "Latest Orders" },
-                    { 296, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7413), null, "English translation for Dashboard.Today", true, "Dashboard.Today", 2, 0, null, null, "Today" },
-                    { 297, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7414), null, "English translation for Dashboard.Yesterday", true, "Dashboard.Yesterday", 2, 0, null, null, "Yesterday" },
-                    { 298, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7415), null, "English translation for Dashboard.OrderId", true, "Dashboard.OrderId", 2, 0, null, null, "Order ID" },
-                    { 299, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7416), null, "English translation for Dashboard.Customer", true, "Dashboard.Customer", 2, 0, null, null, "Customer" },
-                    { 300, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7416), null, "English translation for Dashboard.Date", true, "Dashboard.Date", 2, 0, null, null, "Date" },
-                    { 301, "Dashboard", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7417), null, "English translation for Dashboard.Amount", true, "Dashboard.Amount", 2, 0, null, null, "Amount" },
-                    { 302, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7420), null, "English translation for Localization.SystemDescription", true, "Localization.SystemDescription", 2, 0, null, null, "Manage text translations used throughout the system" },
-                    { 303, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7421), null, "English translation for Localization.Keys", true, "Localization.Keys", 2, 0, null, null, "Localization Keys" },
-                    { 304, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7422), null, "English translation for Localization.Key", true, "Localization.Key", 2, 0, null, null, "Key" },
-                    { 305, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7423), null, "English translation for Localization.AddKey", true, "Localization.AddKey", 2, 0, null, null, "Add New Key" },
-                    { 306, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7424), null, "English translation for Localization.EditKey", true, "Localization.EditKey", 2, 0, null, null, "Edit Key" },
-                    { 307, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7425), null, "English translation for Localization.KeyDetails", true, "Localization.KeyDetails", 2, 0, null, null, "Key Details" },
-                    { 308, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7426), null, "English translation for Localization.AddKeyDescription", true, "Localization.AddKeyDescription", 2, 0, null, null, "Add a new localization key and its translations" },
-                    { 309, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7426), null, "English translation for Localization.EditKeyDescription", true, "Localization.EditKeyDescription", 2, 0, null, null, "Edit existing localization key and its translations" },
-                    { 310, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7427), null, "English translation for Localization.KeyPlaceholder", true, "Localization.KeyPlaceholder", 2, 0, null, null, "e.g: Common.Save" },
-                    { 311, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7428), null, "English translation for Localization.KeyHint", true, "Localization.KeyHint", 2, 0, null, null, "Use dot-separated hierarchical key" },
-                    { 312, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7429), null, "English translation for Localization.KeyReadonly", true, "Localization.KeyReadonly", 2, 0, null, null, "Key cannot be changed" },
-                    { 313, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7430), null, "English translation for Localization.Description", true, "Localization.Description", 2, 0, null, null, "Description" },
-                    { 314, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7431), null, "English translation for Localization.DescriptionPlaceholder", true, "Localization.DescriptionPlaceholder", 2, 0, null, null, "Describe what this key is used for" },
-                    { 315, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7431), null, "English translation for Localization.SelectCategory", true, "Localization.SelectCategory", 2, 0, null, null, "Select Category" },
-                    { 316, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7432), null, "English translation for Localization.Translations", true, "Localization.Translations", 2, 0, null, null, "Translations" },
-                    { 317, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7433), null, "English translation for Localization.TranslationPlaceholder", true, "Localization.TranslationPlaceholder", 2, 0, null, null, "Enter translation in {0}" },
-                    { 318, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7434), null, "English translation for Localization.Translated", true, "Localization.Translated", 2, 0, null, null, "Translated" },
-                    { 319, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7435), null, "English translation for Localization.NotTranslated", true, "Localization.NotTranslated", 2, 0, null, null, "Not Translated" },
-                    { 320, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7436), null, "English translation for Localization.LastUpdated", true, "Localization.LastUpdated", 2, 0, null, null, "Last Updated" },
-                    { 321, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7436), null, "English translation for Localization.SearchPlaceholder", true, "Localization.SearchPlaceholder", 2, 0, null, null, "Search key or value..." },
-                    { 322, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7437), null, "English translation for Localization.ShowingResults", true, "Localization.ShowingResults", 2, 0, null, null, "Showing {0}-{1} of {2} results" },
-                    { 323, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7438), null, "English translation for Localization.NoKeys", true, "Localization.NoKeys", 2, 0, null, null, "No localization keys found" },
-                    { 324, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7439), null, "English translation for Localization.NoKeysDescription", true, "Localization.NoKeysDescription", 2, 0, null, null, "No localization keys have been added yet" },
-                    { 325, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7440), null, "English translation for Localization.AddFirstKey", true, "Localization.AddFirstKey", 2, 0, null, null, "Add First Key" },
-                    { 326, "Localization", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7462), null, "English translation for Localization.DeleteConfirmation", true, "Localization.DeleteConfirmation", 2, 0, null, null, "Are you sure you want to delete this key and all its translations?" },
-                    { 327, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7495), null, "Turkish translation for Navigation.ProductManagement", true, "Navigation.ProductManagement", 1, 0, null, null, "Ürün Yönetimi" },
-                    { 328, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7497), null, "Turkish translation for Navigation.Variants", true, "Navigation.Variants", 1, 0, null, null, "Varyantlar" },
-                    { 329, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7497), null, "Turkish translation for Navigation.Trademarks", true, "Navigation.Trademarks", 1, 0, null, null, "Markalar" },
-                    { 330, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7498), null, "Turkish translation for Navigation.Cart", true, "Navigation.Cart", 1, 0, null, null, "Sepet" },
-                    { 331, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7499), null, "Turkish translation for Navigation.Payments", true, "Navigation.Payments", 1, 0, null, null, "Ödemeler" },
-                    { 332, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7500), null, "Turkish translation for Product.Name", true, "Product.Name", 1, 0, null, null, "Ürün Adı" },
-                    { 333, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7501), null, "Turkish translation for Product.Code", true, "Product.Code", 1, 0, null, null, "Ürün Kodu" },
-                    { 334, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7502), null, "Turkish translation for Product.IntegrationCode", true, "Product.IntegrationCode", 1, 0, null, null, "Entegrasyon Kodu" },
-                    { 335, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7503), null, "Turkish translation for Product.ShortDescription", true, "Product.ShortDescription", 1, 0, null, null, "Kısa Açıklama" },
-                    { 336, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7503), null, "Turkish translation for Product.LongDescription", true, "Product.LongDescription", 1, 0, null, null, "Uzun Açıklama" },
-                    { 337, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7504), null, "Turkish translation for Product.Unit", true, "Product.Unit", 1, 0, null, null, "Birim" },
-                    { 338, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7505), null, "Turkish translation for Product.Type", true, "Product.Type", 1, 0, null, null, "Ürün Tipi" },
-                    { 339, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7506), null, "Turkish translation for Product.TaxRate", true, "Product.TaxRate", 1, 0, null, null, "Vergi Oranı" },
-                    { 340, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7507), null, "Turkish translation for Product.Parent", true, "Product.Parent", 1, 0, null, null, "Üst Ürün" },
-                    { 341, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7508), null, "Turkish translation for Product.Variants", true, "Product.Variants", 1, 0, null, null, "Varyantlar" },
-                    { 342, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7509), null, "Turkish translation for Product.Categories", true, "Product.Categories", 1, 0, null, null, "Kategoriler" },
-                    { 343, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7532), null, "Turkish translation for Product.Trademarks", true, "Product.Trademarks", 1, 0, null, null, "Markalar" },
-                    { 344, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7533), null, "Turkish translation for Product.CreateNew", true, "Product.CreateNew", 1, 0, null, null, "Yeni Ürün Oluştur" },
-                    { 345, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7533), null, "Turkish translation for Product.EditProduct", true, "Product.EditProduct", 1, 0, null, null, "Ürün Düzenle" },
-                    { 346, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7534), null, "Turkish translation for Product.DeleteProduct", true, "Product.DeleteProduct", 1, 0, null, null, "Ürün Sil" },
-                    { 347, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7535), null, "Turkish translation for Product.ProductDetails", true, "Product.ProductDetails", 1, 0, null, null, "Ürün Detayları" },
-                    { 348, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7536), null, "Turkish translation for Variant.Name", true, "Variant.Name", 1, 0, null, null, "Varyant Adı" },
-                    { 349, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7537), null, "Turkish translation for Variant.Code", true, "Variant.Code", 1, 0, null, null, "Varyant Kodu" },
-                    { 350, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7537), null, "Turkish translation for Variant.Product", true, "Variant.Product", 1, 0, null, null, "Ürün" },
-                    { 351, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7538), null, "Turkish translation for Variant.CreateNew", true, "Variant.CreateNew", 1, 0, null, null, "Yeni Varyant Oluştur" },
-                    { 352, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7539), null, "Turkish translation for Variant.EditVariant", true, "Variant.EditVariant", 1, 0, null, null, "Varyant Düzenle" },
-                    { 353, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7540), null, "Turkish translation for Variant.DeleteVariant", true, "Variant.DeleteVariant", 1, 0, null, null, "Varyant Sil" },
-                    { 354, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7541), null, "Turkish translation for Trademark.Name", true, "Trademark.Name", 1, 0, null, null, "Marka Adı" },
-                    { 355, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7542), null, "Turkish translation for Trademark.Code", true, "Trademark.Code", 1, 0, null, null, "Marka Kodu" },
-                    { 356, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7542), null, "Turkish translation for Trademark.SortOrder", true, "Trademark.SortOrder", 1, 0, null, null, "Sıralama" },
-                    { 357, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7543), null, "Turkish translation for Trademark.Parent", true, "Trademark.Parent", 1, 0, null, null, "Üst Marka" },
-                    { 358, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7544), null, "Turkish translation for Trademark.CreateNew", true, "Trademark.CreateNew", 1, 0, null, null, "Yeni Marka Oluştur" },
-                    { 359, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7545), null, "Turkish translation for Trademark.EditTrademark", true, "Trademark.EditTrademark", 1, 0, null, null, "Marka Düzenle" },
-                    { 360, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7546), null, "Turkish translation for Trademark.DeleteTrademark", true, "Trademark.DeleteTrademark", 1, 0, null, null, "Marka Sil" },
-                    { 361, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7549), null, "English translation for Navigation.ProductManagement", true, "Navigation.ProductManagement", 2, 0, null, null, "Product Management" },
-                    { 362, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7550), null, "English translation for Navigation.Variants", true, "Navigation.Variants", 2, 0, null, null, "Variants" },
-                    { 363, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7551), null, "English translation for Navigation.Trademarks", true, "Navigation.Trademarks", 2, 0, null, null, "Trademarks" },
-                    { 364, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7551), null, "English translation for Navigation.Cart", true, "Navigation.Cart", 2, 0, null, null, "Cart" },
-                    { 365, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7552), null, "English translation for Navigation.Payments", true, "Navigation.Payments", 2, 0, null, null, "Payments" },
-                    { 366, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7553), null, "English translation for Product.Name", true, "Product.Name", 2, 0, null, null, "Product Name" },
-                    { 367, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7554), null, "English translation for Product.Code", true, "Product.Code", 2, 0, null, null, "Product Code" },
-                    { 368, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7555), null, "English translation for Product.IntegrationCode", true, "Product.IntegrationCode", 2, 0, null, null, "Integration Code" },
-                    { 369, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7556), null, "English translation for Product.ShortDescription", true, "Product.ShortDescription", 2, 0, null, null, "Short Description" },
-                    { 370, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7556), null, "English translation for Product.LongDescription", true, "Product.LongDescription", 2, 0, null, null, "Long Description" },
-                    { 371, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7557), null, "English translation for Product.Unit", true, "Product.Unit", 2, 0, null, null, "Unit" },
-                    { 372, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7558), null, "English translation for Product.Type", true, "Product.Type", 2, 0, null, null, "Product Type" },
-                    { 373, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7559), null, "English translation for Product.TaxRate", true, "Product.TaxRate", 2, 0, null, null, "Tax Rate" },
-                    { 374, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7560), null, "English translation for Product.Parent", true, "Product.Parent", 2, 0, null, null, "Parent Product" },
-                    { 375, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7561), null, "English translation for Product.Variants", true, "Product.Variants", 2, 0, null, null, "Variants" },
-                    { 376, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7561), null, "English translation for Product.Categories", true, "Product.Categories", 2, 0, null, null, "Categories" },
-                    { 377, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7562), null, "English translation for Product.Trademarks", true, "Product.Trademarks", 2, 0, null, null, "Trademarks" },
-                    { 378, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7563), null, "English translation for Product.CreateNew", true, "Product.CreateNew", 2, 0, null, null, "Create New Product" },
-                    { 379, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7577), null, "English translation for Product.EditProduct", true, "Product.EditProduct", 2, 0, null, null, "Edit Product" },
-                    { 380, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7578), null, "English translation for Product.DeleteProduct", true, "Product.DeleteProduct", 2, 0, null, null, "Delete Product" },
-                    { 381, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7579), null, "English translation for Product.ProductDetails", true, "Product.ProductDetails", 2, 0, null, null, "Product Details" },
-                    { 382, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7579), null, "English translation for Variant.Name", true, "Variant.Name", 2, 0, null, null, "Variant Name" },
-                    { 383, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7580), null, "English translation for Variant.Code", true, "Variant.Code", 2, 0, null, null, "Variant Code" },
-                    { 384, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7581), null, "English translation for Variant.Product", true, "Variant.Product", 2, 0, null, null, "Product" },
-                    { 385, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7582), null, "English translation for Variant.CreateNew", true, "Variant.CreateNew", 2, 0, null, null, "Create New Variant" },
-                    { 386, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7583), null, "English translation for Variant.EditVariant", true, "Variant.EditVariant", 2, 0, null, null, "Edit Variant" },
-                    { 387, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7584), null, "English translation for Variant.DeleteVariant", true, "Variant.DeleteVariant", 2, 0, null, null, "Delete Variant" },
-                    { 388, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7585), null, "English translation for Trademark.Name", true, "Trademark.Name", 2, 0, null, null, "Trademark Name" },
-                    { 389, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7585), null, "English translation for Trademark.Code", true, "Trademark.Code", 2, 0, null, null, "Trademark Code" },
-                    { 390, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7586), null, "English translation for Trademark.SortOrder", true, "Trademark.SortOrder", 2, 0, null, null, "Sort Order" },
-                    { 391, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7587), null, "English translation for Trademark.Parent", true, "Trademark.Parent", 2, 0, null, null, "Parent Trademark" },
-                    { 392, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7588), null, "English translation for Trademark.CreateNew", true, "Trademark.CreateNew", 2, 0, null, null, "Create New Trademark" },
-                    { 393, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7589), null, "English translation for Trademark.EditTrademark", true, "Trademark.EditTrademark", 2, 0, null, null, "Edit Trademark" },
-                    { 394, "Product", new DateTime(2025, 11, 6, 21, 56, 18, 429, DateTimeKind.Utc).AddTicks(7589), null, "English translation for Trademark.DeleteTrademark", true, "Trademark.DeleteTrademark", 2, 0, null, null, "Delete Trademark" }
+                    { 1, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8712), null, "Turkish translation for Common.Save", true, "Common.Save", 1, 0, null, null, "Kaydet" },
+                    { 2, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8718), null, "Turkish translation for Common.Cancel", true, "Common.Cancel", 1, 0, null, null, "İptal" },
+                    { 3, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8721), null, "Turkish translation for Common.Delete", true, "Common.Delete", 1, 0, null, null, "Sil" },
+                    { 4, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8722), null, "Turkish translation for Common.Edit", true, "Common.Edit", 1, 0, null, null, "Düzenle" },
+                    { 5, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8724), null, "Turkish translation for Common.Add", true, "Common.Add", 1, 0, null, null, "Ekle" },
+                    { 6, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8727), null, "Turkish translation for Common.Update", true, "Common.Update", 1, 0, null, null, "Güncelle" },
+                    { 7, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8728), null, "Turkish translation for Common.Create", true, "Common.Create", 1, 0, null, null, "Oluştur" },
+                    { 8, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8729), null, "Turkish translation for Common.Remove", true, "Common.Remove", 1, 0, null, null, "Kaldır" },
+                    { 9, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8730), null, "Turkish translation for Common.Search", true, "Common.Search", 1, 0, null, null, "Ara" },
+                    { 10, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8732), null, "Turkish translation for Common.Filter", true, "Common.Filter", 1, 0, null, null, "Filtrele" },
+                    { 11, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8733), null, "Turkish translation for Common.Export", true, "Common.Export", 1, 0, null, null, "Dışa Aktar" },
+                    { 12, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8734), null, "Turkish translation for Common.Import", true, "Common.Import", 1, 0, null, null, "İçe Aktar" },
+                    { 13, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8735), null, "Turkish translation for Common.Upload", true, "Common.Upload", 1, 0, null, null, "Yükle" },
+                    { 14, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8736), null, "Turkish translation for Common.Download", true, "Common.Download", 1, 0, null, null, "İndir" },
+                    { 15, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8737), null, "Turkish translation for Common.Preview", true, "Common.Preview", 1, 0, null, null, "Önizle" },
+                    { 16, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8739), null, "Turkish translation for Common.Publish", true, "Common.Publish", 1, 0, null, null, "Yayınla" },
+                    { 17, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8740), null, "Turkish translation for Common.Draft", true, "Common.Draft", 1, 0, null, null, "Taslak" },
+                    { 18, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8741), null, "Turkish translation for Common.Active", true, "Common.Active", 1, 0, null, null, "Aktif" },
+                    { 19, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8742), null, "Turkish translation for Common.Inactive", true, "Common.Inactive", 1, 0, null, null, "Pasif" },
+                    { 20, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8776), null, "Turkish translation for Common.Yes", true, "Common.Yes", 1, 0, null, null, "Evet" },
+                    { 21, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8784), null, "Turkish translation for Common.No", true, "Common.No", 1, 0, null, null, "Hayır" },
+                    { 22, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8785), null, "Turkish translation for Common.OK", true, "Common.OK", 1, 0, null, null, "Tamam" },
+                    { 23, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8786), null, "Turkish translation for Common.Close", true, "Common.Close", 1, 0, null, null, "Kapat" },
+                    { 24, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8787), null, "Turkish translation for Common.Back", true, "Common.Back", 1, 0, null, null, "Geri" },
+                    { 25, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8788), null, "Turkish translation for Common.Next", true, "Common.Next", 1, 0, null, null, "İleri" },
+                    { 26, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8789), null, "Turkish translation for Common.Previous", true, "Common.Previous", 1, 0, null, null, "Önceki" },
+                    { 27, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8790), null, "Turkish translation for Common.Loading", true, "Common.Loading", 1, 0, null, null, "Yükleniyor..." },
+                    { 28, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8791), null, "Turkish translation for Common.Success", true, "Common.Success", 1, 0, null, null, "Başarılı" },
+                    { 29, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8792), null, "Turkish translation for Common.Error", true, "Common.Error", 1, 0, null, null, "Hata" },
+                    { 30, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8802), null, "Turkish translation for Common.Warning", true, "Common.Warning", 1, 0, null, null, "Uyarı" },
+                    { 31, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8803), null, "Turkish translation for Common.Info", true, "Common.Info", 1, 0, null, null, "Bilgi" },
+                    { 32, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8804), null, "Turkish translation for Common.Refresh", true, "Common.Refresh", 1, 0, null, null, "Yenile" },
+                    { 33, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8805), null, "Turkish translation for Common.Settings", true, "Common.Settings", 1, 0, null, null, "Ayarlar" },
+                    { 34, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8807), null, "Turkish translation for Common.ViewAll", true, "Common.ViewAll", 1, 0, null, null, "Tümünü Gör" },
+                    { 35, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8808), null, "Turkish translation for Common.All", true, "Common.All", 1, 0, null, null, "Tümü" },
+                    { 36, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8809), null, "Turkish translation for Common.Actions", true, "Common.Actions", 1, 0, null, null, "İşlemler" },
+                    { 37, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8810), null, "Turkish translation for Common.AreYouSure", true, "Common.AreYouSure", 1, 0, null, null, "Emin misiniz?" },
+                    { 38, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8811), null, "Turkish translation for Common.UnexpectedError", true, "Common.UnexpectedError", 1, 0, null, null, "Beklenmeyen bir hata oluştu" },
+                    { 39, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8815), null, "Turkish translation for Page.Title", true, "Page.Title", 1, 0, null, null, "Sayfa Başlığı" },
+                    { 40, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8816), null, "Turkish translation for Page.Content", true, "Page.Content", 1, 0, null, null, "Sayfa İçeriği" },
+                    { 41, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8817), null, "Turkish translation for Page.Description", true, "Page.Description", 1, 0, null, null, "Sayfa Açıklaması" },
+                    { 42, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8818), null, "Turkish translation for Page.Keywords", true, "Page.Keywords", 1, 0, null, null, "Anahtar Kelimeler" },
+                    { 43, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8819), null, "Turkish translation for Page.Author", true, "Page.Author", 1, 0, null, null, "Yazar" },
+                    { 44, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8821), null, "Turkish translation for Page.CreatedAt", true, "Page.CreatedAt", 1, 0, null, null, "Oluşturulma Tarihi" },
+                    { 45, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8823), null, "Turkish translation for Page.UpdatedAt", true, "Page.UpdatedAt", 1, 0, null, null, "Güncellenme Tarihi" },
+                    { 46, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8824), null, "Turkish translation for Page.Status", true, "Page.Status", 1, 0, null, null, "Durum" },
+                    { 47, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8825), null, "Turkish translation for Page.Type", true, "Page.Type", 1, 0, null, null, "Sayfa Tipi" },
+                    { 48, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8826), null, "Turkish translation for Page.Layout", true, "Page.Layout", 1, 0, null, null, "Düzen" },
+                    { 49, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8827), null, "Turkish translation for Page.Template", true, "Page.Template", 1, 0, null, null, "Şablon" },
+                    { 50, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8828), null, "Turkish translation for Page.SEO", true, "Page.SEO", 1, 0, null, null, "SEO Ayarları" },
+                    { 51, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8829), null, "Turkish translation for Page.Sections", true, "Page.Sections", 1, 0, null, null, "Bölümler" },
+                    { 52, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8830), null, "Turkish translation for Page.Items", true, "Page.Items", 1, 0, null, null, "Öğeler" },
+                    { 53, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8831), null, "Turkish translation for Page.Fields", true, "Page.Fields", 1, 0, null, null, "Alanlar" },
+                    { 54, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8834), null, "Turkish translation for Section.Name", true, "Section.Name", 1, 0, null, null, "Bölüm Adı" },
+                    { 55, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8859), null, "Turkish translation for Section.Type", true, "Section.Type", 1, 0, null, null, "Bölüm Tipi" },
+                    { 56, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8860), null, "Turkish translation for Section.Key", true, "Section.Key", 1, 0, null, null, "Bölüm Anahtarı" },
+                    { 57, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8861), null, "Turkish translation for Section.Order", true, "Section.Order", 1, 0, null, null, "Sıralama" },
+                    { 58, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8862), null, "Turkish translation for Section.Settings", true, "Section.Settings", 1, 0, null, null, "Ayarlar" },
+                    { 59, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8863), null, "Turkish translation for Section.Items", true, "Section.Items", 1, 0, null, null, "Öğeler" },
+                    { 60, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8864), null, "Turkish translation for Section.AddItem", true, "Section.AddItem", 1, 0, null, null, "Öğe Ekle" },
+                    { 61, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8865), null, "Turkish translation for Section.EditItems", true, "Section.EditItems", 1, 0, null, null, "Öğeleri Düzenle" },
+                    { 62, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8867), null, "Turkish translation for Section.Duplicate", true, "Section.Duplicate", 1, 0, null, null, "Kopyala" },
+                    { 63, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8868), null, "Turkish translation for Section.Remove", true, "Section.Remove", 1, 0, null, null, "Kaldır" },
+                    { 64, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8869), null, "Turkish translation for Section.Hero", true, "Section.Hero", 1, 0, null, null, "Ana Bölüm" },
+                    { 65, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8870), null, "Turkish translation for Section.Navbar", true, "Section.Navbar", 1, 0, null, null, "Navigasyon" },
+                    { 66, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8872), null, "Turkish translation for Section.Footer", true, "Section.Footer", 1, 0, null, null, "Alt Bilgi" },
+                    { 67, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8873), null, "Turkish translation for Section.Content", true, "Section.Content", 1, 0, null, null, "İçerik" },
+                    { 68, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8874), null, "Turkish translation for Section.Gallery", true, "Section.Gallery", 1, 0, null, null, "Galeri" },
+                    { 69, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8875), null, "Turkish translation for Section.Contact", true, "Section.Contact", 1, 0, null, null, "İletişim" },
+                    { 70, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8878), null, "Turkish translation for Validation.Required", true, "Validation.Required", 1, 0, null, null, "Bu alan zorunludur" },
+                    { 71, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8880), null, "Turkish translation for Validation.Email", true, "Validation.Email", 1, 0, null, null, "Geçerli bir e-posta adresi giriniz" },
+                    { 72, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8881), null, "Turkish translation for Validation.MinLength", true, "Validation.MinLength", 1, 0, null, null, "En az {0} karakter olmalıdır" },
+                    { 73, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8882), null, "Turkish translation for Validation.MaxLength", true, "Validation.MaxLength", 1, 0, null, null, "En fazla {0} karakter olmalıdır" },
+                    { 74, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8884), null, "Turkish translation for Validation.Range", true, "Validation.Range", 1, 0, null, null, "{0} ile {1} arasında olmalıdır" },
+                    { 75, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8885), null, "Turkish translation for Validation.Numeric", true, "Validation.Numeric", 1, 0, null, null, "Sayısal bir değer giriniz" },
+                    { 76, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8886), null, "Turkish translation for Validation.Date", true, "Validation.Date", 1, 0, null, null, "Geçerli bir tarih giriniz" },
+                    { 77, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8887), null, "Turkish translation for Validation.Url", true, "Validation.Url", 1, 0, null, null, "Geçerli bir URL giriniz" },
+                    { 78, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8888), null, "Turkish translation for Validation.Phone", true, "Validation.Phone", 1, 0, null, null, "Geçerli bir telefon numarası giriniz" },
+                    { 79, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8889), null, "Turkish translation for Validation.Password", true, "Validation.Password", 1, 0, null, null, "Şifre en az 8 karakter olmalıdır" },
+                    { 80, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8893), null, "Turkish translation for Navigation.Dashboard", true, "Navigation.Dashboard", 1, 0, null, null, "Dashboard" },
+                    { 81, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8895), null, "Turkish translation for Navigation.Announcements", true, "Navigation.Announcements", 1, 0, null, null, "Duyurular" },
+                    { 82, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8896), null, "Turkish translation for Navigation.Campaigns", true, "Navigation.Campaigns", 1, 0, null, null, "Kampanyalar" },
+                    { 83, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8897), null, "Turkish translation for Navigation.Content", true, "Navigation.Content", 1, 0, null, null, "İçerik" },
+                    { 84, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8898), null, "Turkish translation for Navigation.Pages", true, "Navigation.Pages", 1, 0, null, null, "Sayfalar" },
+                    { 85, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8900), null, "Turkish translation for Navigation.Sections", true, "Navigation.Sections", 1, 0, null, null, "Bölümler" },
+                    { 86, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8901), null, "Turkish translation for Navigation.Layouts", true, "Navigation.Layouts", 1, 0, null, null, "Düzenler" },
+                    { 87, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8932), null, "Turkish translation for Navigation.WebUrlManagement", true, "Navigation.WebUrlManagement", 1, 0, null, null, "Web URL Yönetimi" },
+                    { 88, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8933), null, "Turkish translation for Navigation.News", true, "Navigation.News", 1, 0, null, null, "Haberler" },
+                    { 89, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8934), null, "Turkish translation for Navigation.Blog", true, "Navigation.Blog", 1, 0, null, null, "Blog" },
+                    { 90, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8935), null, "Turkish translation for Navigation.Templates", true, "Navigation.Templates", 1, 0, null, null, "Şablonlar" },
+                    { 91, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8937), null, "Turkish translation for Navigation.SectionItems", true, "Navigation.SectionItems", 1, 0, null, null, "Bölüm Öğeleri" },
+                    { 92, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8938), null, "Turkish translation for Navigation.ECommerce", true, "Navigation.ECommerce", 1, 0, null, null, "E-Ticaret" },
+                    { 93, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8939), null, "Turkish translation for Navigation.Products", true, "Navigation.Products", 1, 0, null, null, "Ürünler" },
+                    { 94, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8940), null, "Turkish translation for Navigation.Categories", true, "Navigation.Categories", 1, 0, null, null, "Kategoriler" },
+                    { 95, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8941), null, "Turkish translation for Navigation.Orders", true, "Navigation.Orders", 1, 0, null, null, "Siparişler" },
+                    { 96, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8942), null, "Turkish translation for Navigation.Users", true, "Navigation.Users", 1, 0, null, null, "Kullanıcılar" },
+                    { 97, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8943), null, "Turkish translation for Navigation.ManageUsers", true, "Navigation.ManageUsers", 1, 0, null, null, "Kullanıcı Yönetimi" },
+                    { 98, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8944), null, "Turkish translation for Navigation.ManageRoles", true, "Navigation.ManageRoles", 1, 0, null, null, "Rol Yönetimi" },
+                    { 99, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8945), null, "Turkish translation for Navigation.ManagePermissions", true, "Navigation.ManagePermissions", 1, 0, null, null, "İzin Yönetimi" },
+                    { 100, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8946), null, "Turkish translation for Navigation.Analytics", true, "Navigation.Analytics", 1, 0, null, null, "Analitik" },
+                    { 101, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8947), null, "Turkish translation for Navigation.Settings", true, "Navigation.Settings", 1, 0, null, null, "Ayarlar" },
+                    { 102, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8948), null, "Turkish translation for Navigation.GeneralSettings", true, "Navigation.GeneralSettings", 1, 0, null, null, "Genel Ayarlar" },
+                    { 103, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8949), null, "Turkish translation for Navigation.Countries", true, "Navigation.Countries", 1, 0, null, null, "Ülkeler" },
+                    { 104, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8950), null, "Turkish translation for Navigation.Languages", true, "Navigation.Languages", 1, 0, null, null, "Diller" },
+                    { 105, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8951), null, "Turkish translation for Navigation.Localization", true, "Navigation.Localization", 1, 0, null, null, "Lokalizasyon" },
+                    { 106, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8953), null, "Turkish translation for Navigation.Profile", true, "Navigation.Profile", 1, 0, null, null, "Profil" },
+                    { 107, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8954), null, "Turkish translation for Navigation.Help", true, "Navigation.Help", 1, 0, null, null, "Yardım" },
+                    { 108, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8955), null, "Turkish translation for Navigation.Logout", true, "Navigation.Logout", 1, 0, null, null, "Çıkış" },
+                    { 109, "Language", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8958), null, "Turkish translation for Language.English", true, "Language.English", 1, 0, null, null, "İngilizce" },
+                    { 110, "Language", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8960), null, "Turkish translation for Language.Turkish", true, "Language.Turkish", 1, 0, null, null, "Türkçe" },
+                    { 111, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8963), null, "Turkish translation for Dashboard.Title", true, "Dashboard.Title", 1, 0, null, null, "Dashboard" },
+                    { 112, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8965), null, "Turkish translation for Dashboard.WelcomeMessage", true, "Dashboard.WelcomeMessage", 1, 0, null, null, "Hoş geldin! CMS analitiklerin ve son aktivitelerin özeti burada." },
+                    { 113, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8966), null, "Turkish translation for Dashboard.Last7Days", true, "Dashboard.Last7Days", 1, 0, null, null, "Son 7 gün" },
+                    { 114, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8967), null, "Turkish translation for Dashboard.Last30Days", true, "Dashboard.Last30Days", 1, 0, null, null, "Son 30 gün" },
+                    { 115, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8968), null, "Turkish translation for Dashboard.Last90Days", true, "Dashboard.Last90Days", 1, 0, null, null, "Son 90 gün" },
+                    { 116, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8969), null, "Turkish translation for Dashboard.TotalUsers", true, "Dashboard.TotalUsers", 1, 0, null, null, "Toplam Kullanıcı" },
+                    { 117, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8970), null, "Turkish translation for Dashboard.TotalRevenue", true, "Dashboard.TotalRevenue", 1, 0, null, null, "Toplam Gelir" },
+                    { 118, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8971), null, "Turkish translation for Dashboard.Products", true, "Dashboard.Products", 1, 0, null, null, "Ürünler" },
+                    { 119, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8972), null, "Turkish translation for Dashboard.SupportTickets", true, "Dashboard.SupportTickets", 1, 0, null, null, "Destek Biletleri" },
+                    { 120, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8973), null, "Turkish translation for Dashboard.FromLastMonth", true, "Dashboard.FromLastMonth", 1, 0, null, null, "geçen aydan" },
+                    { 121, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(8974), null, "Turkish translation for Dashboard.SalesOverview", true, "Dashboard.SalesOverview", 1, 0, null, null, "Satış Genel Bakış" },
+                    { 122, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9000), null, "Turkish translation for Dashboard.Monthly", true, "Dashboard.Monthly", 1, 0, null, null, "Aylık" },
+                    { 123, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9001), null, "Turkish translation for Dashboard.ChartVisualization", true, "Dashboard.ChartVisualization", 1, 0, null, null, "Grafik görselleştirmesi burada olacak" },
+                    { 124, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9002), null, "Turkish translation for Dashboard.ThisYear", true, "Dashboard.ThisYear", 1, 0, null, null, "Bu Yıl" },
+                    { 125, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9003), null, "Turkish translation for Dashboard.LastYear", true, "Dashboard.LastYear", 1, 0, null, null, "Geçen Yıl" },
+                    { 126, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9004), null, "Turkish translation for Dashboard.RecentActivities", true, "Dashboard.RecentActivities", 1, 0, null, null, "Son Aktiviteler" },
+                    { 127, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9005), null, "Turkish translation for Dashboard.TopProducts", true, "Dashboard.TopProducts", 1, 0, null, null, "En İyi Ürünler" },
+                    { 128, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9007), null, "Turkish translation for Dashboard.Product", true, "Dashboard.Product", 1, 0, null, null, "Ürün" },
+                    { 129, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9008), null, "Turkish translation for Dashboard.Category", true, "Dashboard.Category", 1, 0, null, null, "Kategori" },
+                    { 130, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9010), null, "Turkish translation for Dashboard.Sales", true, "Dashboard.Sales", 1, 0, null, null, "Satışlar" },
+                    { 131, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9011), null, "Turkish translation for Dashboard.Status", true, "Dashboard.Status", 1, 0, null, null, "Durum" },
+                    { 132, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9013), null, "Turkish translation for Dashboard.LatestOrders", true, "Dashboard.LatestOrders", 1, 0, null, null, "Son Siparişler" },
+                    { 133, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9014), null, "Turkish translation for Dashboard.Today", true, "Dashboard.Today", 1, 0, null, null, "Bugün" },
+                    { 134, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9015), null, "Turkish translation for Dashboard.Yesterday", true, "Dashboard.Yesterday", 1, 0, null, null, "Dün" },
+                    { 135, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9016), null, "Turkish translation for Dashboard.OrderId", true, "Dashboard.OrderId", 1, 0, null, null, "Sipariş ID" },
+                    { 136, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9017), null, "Turkish translation for Dashboard.Customer", true, "Dashboard.Customer", 1, 0, null, null, "Müşteri" },
+                    { 137, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9018), null, "Turkish translation for Dashboard.Date", true, "Dashboard.Date", 1, 0, null, null, "Tarih" },
+                    { 138, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9019), null, "Turkish translation for Dashboard.Amount", true, "Dashboard.Amount", 1, 0, null, null, "Tutar" },
+                    { 139, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9022), null, "Turkish translation for Localization.SystemDescription", true, "Localization.SystemDescription", 1, 0, null, null, "Sistem genelinde kullanılan metin çevirilerini yönetin" },
+                    { 140, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9024), null, "Turkish translation for Localization.Keys", true, "Localization.Keys", 1, 0, null, null, "Lokalizasyon Anahtarları" },
+                    { 141, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9025), null, "Turkish translation for Localization.Key", true, "Localization.Key", 1, 0, null, null, "Anahtar" },
+                    { 142, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9026), null, "Turkish translation for Localization.AddKey", true, "Localization.AddKey", 1, 0, null, null, "Yeni Anahtar Ekle" },
+                    { 143, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9027), null, "Turkish translation for Localization.EditKey", true, "Localization.EditKey", 1, 0, null, null, "Anahtar Düzenle" },
+                    { 144, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9029), null, "Turkish translation for Localization.KeyDetails", true, "Localization.KeyDetails", 1, 0, null, null, "Anahtar Detayları" },
+                    { 145, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9030), null, "Turkish translation for Localization.AddKeyDescription", true, "Localization.AddKeyDescription", 1, 0, null, null, "Yeni bir lokalizasyon anahtarı ve çevirilerini ekleyin" },
+                    { 146, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9031), null, "Turkish translation for Localization.EditKeyDescription", true, "Localization.EditKeyDescription", 1, 0, null, null, "Mevcut lokalizasyon anahtarını ve çevirilerini düzenleyin" },
+                    { 147, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9032), null, "Turkish translation for Localization.KeyPlaceholder", true, "Localization.KeyPlaceholder", 1, 0, null, null, "örn: Common.Save" },
+                    { 148, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9058), null, "Turkish translation for Localization.KeyHint", true, "Localization.KeyHint", 1, 0, null, null, "Nokta ile ayrılmış hiyerarşik anahtar kullanın" },
+                    { 149, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9059), null, "Turkish translation for Localization.KeyReadonly", true, "Localization.KeyReadonly", 1, 0, null, null, "Anahtar değiştirilemez" },
+                    { 150, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9060), null, "Turkish translation for Localization.Description", true, "Localization.Description", 1, 0, null, null, "Açıklama" },
+                    { 151, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9061), null, "Turkish translation for Localization.DescriptionPlaceholder", true, "Localization.DescriptionPlaceholder", 1, 0, null, null, "Bu anahtarın ne için kullanıldığını açıklayın" },
+                    { 152, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9063), null, "Turkish translation for Localization.SelectCategory", true, "Localization.SelectCategory", 1, 0, null, null, "Kategori Seçin" },
+                    { 153, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9064), null, "Turkish translation for Localization.Translations", true, "Localization.Translations", 1, 0, null, null, "Çeviriler" },
+                    { 154, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9065), null, "Turkish translation for Localization.TranslationPlaceholder", true, "Localization.TranslationPlaceholder", 1, 0, null, null, "{0} dilinde çeviri girin" },
+                    { 155, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9067), null, "Turkish translation for Localization.Translated", true, "Localization.Translated", 1, 0, null, null, "Çevrildi" },
+                    { 156, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9068), null, "Turkish translation for Localization.NotTranslated", true, "Localization.NotTranslated", 1, 0, null, null, "Çevrilmedi" },
+                    { 157, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9069), null, "Turkish translation for Localization.LastUpdated", true, "Localization.LastUpdated", 1, 0, null, null, "Son Güncelleme" },
+                    { 158, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9070), null, "Turkish translation for Localization.SearchPlaceholder", true, "Localization.SearchPlaceholder", 1, 0, null, null, "Anahtar veya değer ara..." },
+                    { 159, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9071), null, "Turkish translation for Localization.ShowingResults", true, "Localization.ShowingResults", 1, 0, null, null, "{0}-{1} / {2} sonuç gösteriliyor" },
+                    { 160, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9072), null, "Turkish translation for Localization.NoKeys", true, "Localization.NoKeys", 1, 0, null, null, "Lokalizasyon anahtarı bulunamadı" },
+                    { 161, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9073), null, "Turkish translation for Localization.NoKeysDescription", true, "Localization.NoKeysDescription", 1, 0, null, null, "Henüz hiç lokalizasyon anahtarı eklenmemiş" },
+                    { 162, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9074), null, "Turkish translation for Localization.AddFirstKey", true, "Localization.AddFirstKey", 1, 0, null, null, "İlk Anahtarı Ekle" },
+                    { 163, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9075), null, "Turkish translation for Localization.DeleteConfirmation", true, "Localization.DeleteConfirmation", 1, 0, null, null, "Bu anahtarı ve tüm çevirilerini silmek istediğinizden emin misiniz?" },
+                    { 164, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9079), null, "English translation for Common.Save", true, "Common.Save", 2, 0, null, null, "Save" },
+                    { 165, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9080), null, "English translation for Common.Cancel", true, "Common.Cancel", 2, 0, null, null, "Cancel" },
+                    { 166, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9082), null, "English translation for Common.Delete", true, "Common.Delete", 2, 0, null, null, "Delete" },
+                    { 167, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9083), null, "English translation for Common.Edit", true, "Common.Edit", 2, 0, null, null, "Edit" },
+                    { 168, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9084), null, "English translation for Common.Add", true, "Common.Add", 2, 0, null, null, "Add" },
+                    { 169, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9085), null, "English translation for Common.Update", true, "Common.Update", 2, 0, null, null, "Update" },
+                    { 170, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9086), null, "English translation for Common.Create", true, "Common.Create", 2, 0, null, null, "Create" },
+                    { 171, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9087), null, "English translation for Common.Remove", true, "Common.Remove", 2, 0, null, null, "Remove" },
+                    { 172, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9088), null, "English translation for Common.Search", true, "Common.Search", 2, 0, null, null, "Search" },
+                    { 173, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9089), null, "English translation for Common.Filter", true, "Common.Filter", 2, 0, null, null, "Filter" },
+                    { 174, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9090), null, "English translation for Common.Export", true, "Common.Export", 2, 0, null, null, "Export" },
+                    { 175, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9091), null, "English translation for Common.Import", true, "Common.Import", 2, 0, null, null, "Import" },
+                    { 176, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9092), null, "English translation for Common.Upload", true, "Common.Upload", 2, 0, null, null, "Upload" },
+                    { 177, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9093), null, "English translation for Common.Download", true, "Common.Download", 2, 0, null, null, "Download" },
+                    { 178, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9094), null, "English translation for Common.Preview", true, "Common.Preview", 2, 0, null, null, "Preview" },
+                    { 179, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9095), null, "English translation for Common.Publish", true, "Common.Publish", 2, 0, null, null, "Publish" },
+                    { 180, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9096), null, "English translation for Common.Draft", true, "Common.Draft", 2, 0, null, null, "Draft" },
+                    { 181, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9097), null, "English translation for Common.Active", true, "Common.Active", 2, 0, null, null, "Active" },
+                    { 182, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9098), null, "English translation for Common.Inactive", true, "Common.Inactive", 2, 0, null, null, "Inactive" },
+                    { 183, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9099), null, "English translation for Common.Yes", true, "Common.Yes", 2, 0, null, null, "Yes" },
+                    { 184, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9133), null, "English translation for Common.No", true, "Common.No", 2, 0, null, null, "No" },
+                    { 185, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9134), null, "English translation for Common.OK", true, "Common.OK", 2, 0, null, null, "OK" },
+                    { 186, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9135), null, "English translation for Common.Close", true, "Common.Close", 2, 0, null, null, "Close" },
+                    { 187, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9136), null, "English translation for Common.Back", true, "Common.Back", 2, 0, null, null, "Back" },
+                    { 188, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9137), null, "English translation for Common.Next", true, "Common.Next", 2, 0, null, null, "Next" },
+                    { 189, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9138), null, "English translation for Common.Previous", true, "Common.Previous", 2, 0, null, null, "Previous" },
+                    { 190, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9139), null, "English translation for Common.Loading", true, "Common.Loading", 2, 0, null, null, "Loading..." },
+                    { 191, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9140), null, "English translation for Common.Success", true, "Common.Success", 2, 0, null, null, "Success" },
+                    { 192, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9141), null, "English translation for Common.Error", true, "Common.Error", 2, 0, null, null, "Error" },
+                    { 193, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9142), null, "English translation for Common.Warning", true, "Common.Warning", 2, 0, null, null, "Warning" },
+                    { 194, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9143), null, "English translation for Common.Info", true, "Common.Info", 2, 0, null, null, "Info" },
+                    { 195, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9144), null, "English translation for Common.Refresh", true, "Common.Refresh", 2, 0, null, null, "Refresh" },
+                    { 196, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9145), null, "English translation for Common.Settings", true, "Common.Settings", 2, 0, null, null, "Settings" },
+                    { 197, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9146), null, "English translation for Common.ViewAll", true, "Common.ViewAll", 2, 0, null, null, "View All" },
+                    { 198, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9147), null, "English translation for Common.All", true, "Common.All", 2, 0, null, null, "All" },
+                    { 199, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9148), null, "English translation for Common.Actions", true, "Common.Actions", 2, 0, null, null, "Actions" },
+                    { 200, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9149), null, "English translation for Common.AreYouSure", true, "Common.AreYouSure", 2, 0, null, null, "Are you sure?" },
+                    { 201, "Common", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9150), null, "English translation for Common.UnexpectedError", true, "Common.UnexpectedError", 2, 0, null, null, "An unexpected error occurred" },
+                    { 202, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9154), null, "English translation for Page.Title", true, "Page.Title", 2, 0, null, null, "Page Title" },
+                    { 203, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9155), null, "English translation for Page.Content", true, "Page.Content", 2, 0, null, null, "Page Content" },
+                    { 204, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9156), null, "English translation for Page.Description", true, "Page.Description", 2, 0, null, null, "Page Description" },
+                    { 205, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9157), null, "English translation for Page.Keywords", true, "Page.Keywords", 2, 0, null, null, "Keywords" },
+                    { 206, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9158), null, "English translation for Page.Author", true, "Page.Author", 2, 0, null, null, "Author" },
+                    { 207, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9159), null, "English translation for Page.CreatedAt", true, "Page.CreatedAt", 2, 0, null, null, "Created At" },
+                    { 208, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9160), null, "English translation for Page.UpdatedAt", true, "Page.UpdatedAt", 2, 0, null, null, "Updated At" },
+                    { 209, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9161), null, "English translation for Page.Status", true, "Page.Status", 2, 0, null, null, "Status" },
+                    { 210, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9162), null, "English translation for Page.Type", true, "Page.Type", 2, 0, null, null, "Page Type" },
+                    { 211, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9164), null, "English translation for Page.Layout", true, "Page.Layout", 2, 0, null, null, "Layout" },
+                    { 212, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9165), null, "English translation for Page.Template", true, "Page.Template", 2, 0, null, null, "Template" },
+                    { 213, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9166), null, "English translation for Page.SEO", true, "Page.SEO", 2, 0, null, null, "SEO Settings" },
+                    { 214, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9167), null, "English translation for Page.Sections", true, "Page.Sections", 2, 0, null, null, "Sections" },
+                    { 215, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9168), null, "English translation for Page.Items", true, "Page.Items", 2, 0, null, null, "Items" },
+                    { 216, "Page", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9169), null, "English translation for Page.Fields", true, "Page.Fields", 2, 0, null, null, "Fields" },
+                    { 217, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9172), null, "English translation for Section.Name", true, "Section.Name", 2, 0, null, null, "Section Name" },
+                    { 218, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9174), null, "English translation for Section.Type", true, "Section.Type", 2, 0, null, null, "Section Type" },
+                    { 219, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9175), null, "English translation for Section.Key", true, "Section.Key", 2, 0, null, null, "Section Key" },
+                    { 220, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9176), null, "English translation for Section.Order", true, "Section.Order", 2, 0, null, null, "Order" },
+                    { 221, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9198), null, "English translation for Section.Settings", true, "Section.Settings", 2, 0, null, null, "Settings" },
+                    { 222, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9200), null, "English translation for Section.Items", true, "Section.Items", 2, 0, null, null, "Items" },
+                    { 223, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9201), null, "English translation for Section.AddItem", true, "Section.AddItem", 2, 0, null, null, "Add Item" },
+                    { 224, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9203), null, "English translation for Section.EditItems", true, "Section.EditItems", 2, 0, null, null, "Edit Items" },
+                    { 225, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9204), null, "English translation for Section.Duplicate", true, "Section.Duplicate", 2, 0, null, null, "Duplicate" },
+                    { 226, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9205), null, "English translation for Section.Remove", true, "Section.Remove", 2, 0, null, null, "Remove" },
+                    { 227, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9206), null, "English translation for Section.Hero", true, "Section.Hero", 2, 0, null, null, "Hero Section" },
+                    { 228, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9207), null, "English translation for Section.Navbar", true, "Section.Navbar", 2, 0, null, null, "Navigation" },
+                    { 229, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9208), null, "English translation for Section.Footer", true, "Section.Footer", 2, 0, null, null, "Footer" },
+                    { 230, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9209), null, "English translation for Section.Content", true, "Section.Content", 2, 0, null, null, "Content" },
+                    { 231, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9211), null, "English translation for Section.Gallery", true, "Section.Gallery", 2, 0, null, null, "Gallery" },
+                    { 232, "Section", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9212), null, "English translation for Section.Contact", true, "Section.Contact", 2, 0, null, null, "Contact" },
+                    { 233, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9215), null, "English translation for Validation.Required", true, "Validation.Required", 2, 0, null, null, "This field is required" },
+                    { 234, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9217), null, "English translation for Validation.Email", true, "Validation.Email", 2, 0, null, null, "Please enter a valid email address" },
+                    { 235, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9218), null, "English translation for Validation.MinLength", true, "Validation.MinLength", 2, 0, null, null, "Must be at least {0} characters" },
+                    { 236, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9219), null, "English translation for Validation.MaxLength", true, "Validation.MaxLength", 2, 0, null, null, "Must be at most {0} characters" },
+                    { 237, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9221), null, "English translation for Validation.Range", true, "Validation.Range", 2, 0, null, null, "Must be between {0} and {1}" },
+                    { 238, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9222), null, "English translation for Validation.Numeric", true, "Validation.Numeric", 2, 0, null, null, "Please enter a numeric value" },
+                    { 239, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9223), null, "English translation for Validation.Date", true, "Validation.Date", 2, 0, null, null, "Please enter a valid date" },
+                    { 240, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9224), null, "English translation for Validation.Url", true, "Validation.Url", 2, 0, null, null, "Please enter a valid URL" },
+                    { 241, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9225), null, "English translation for Validation.Phone", true, "Validation.Phone", 2, 0, null, null, "Please enter a valid phone number" },
+                    { 242, "Validation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9226), null, "English translation for Validation.Password", true, "Validation.Password", 2, 0, null, null, "Password must be at least 8 characters" },
+                    { 243, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9229), null, "English translation for Navigation.Dashboard", true, "Navigation.Dashboard", 2, 0, null, null, "Dashboard" },
+                    { 244, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9231), null, "English translation for Navigation.Announcements", true, "Navigation.Announcements", 2, 0, null, null, "Announcements" },
+                    { 245, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9232), null, "English translation for Navigation.Campaigns", true, "Navigation.Campaigns", 2, 0, null, null, "Campaigns" },
+                    { 246, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9234), null, "English translation for Navigation.Content", true, "Navigation.Content", 2, 0, null, null, "Content" },
+                    { 247, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9235), null, "English translation for Navigation.Pages", true, "Navigation.Pages", 2, 0, null, null, "Pages" },
+                    { 248, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9236), null, "English translation for Navigation.Sections", true, "Navigation.Sections", 2, 0, null, null, "Sections" },
+                    { 249, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9237), null, "English translation for Navigation.Layouts", true, "Navigation.Layouts", 2, 0, null, null, "Layouts" },
+                    { 250, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9239), null, "English translation for Navigation.WebUrlManagement", true, "Navigation.WebUrlManagement", 2, 0, null, null, "Web URL Management" },
+                    { 251, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9240), null, "English translation for Navigation.News", true, "Navigation.News", 2, 0, null, null, "News" },
+                    { 252, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9241), null, "English translation for Navigation.Blog", true, "Navigation.Blog", 2, 0, null, null, "Blog" },
+                    { 253, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9242), null, "English translation for Navigation.Templates", true, "Navigation.Templates", 2, 0, null, null, "Templates" },
+                    { 254, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9243), null, "English translation for Navigation.SectionItems", true, "Navigation.SectionItems", 2, 0, null, null, "Section Items" },
+                    { 255, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9244), null, "English translation for Navigation.ECommerce", true, "Navigation.ECommerce", 2, 0, null, null, "E-Commerce" },
+                    { 256, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9279), null, "English translation for Navigation.Products", true, "Navigation.Products", 2, 0, null, null, "Products" },
+                    { 257, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9280), null, "English translation for Navigation.Categories", true, "Navigation.Categories", 2, 0, null, null, "Categories" },
+                    { 258, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9283), null, "English translation for Navigation.Orders", true, "Navigation.Orders", 2, 0, null, null, "Orders" },
+                    { 259, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9284), null, "English translation for Navigation.Users", true, "Navigation.Users", 2, 0, null, null, "Users" },
+                    { 260, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9285), null, "English translation for Navigation.ManageUsers", true, "Navigation.ManageUsers", 2, 0, null, null, "Manage Users" },
+                    { 261, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9286), null, "English translation for Navigation.ManageRoles", true, "Navigation.ManageRoles", 2, 0, null, null, "Manage Roles" },
+                    { 262, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9287), null, "English translation for Navigation.ManagePermissions", true, "Navigation.ManagePermissions", 2, 0, null, null, "Manage Permissions" },
+                    { 263, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9288), null, "English translation for Navigation.Analytics", true, "Navigation.Analytics", 2, 0, null, null, "Analytics" },
+                    { 264, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9289), null, "English translation for Navigation.Settings", true, "Navigation.Settings", 2, 0, null, null, "Settings" },
+                    { 265, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9291), null, "English translation for Navigation.GeneralSettings", true, "Navigation.GeneralSettings", 2, 0, null, null, "General Settings" },
+                    { 266, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9292), null, "English translation for Navigation.Countries", true, "Navigation.Countries", 2, 0, null, null, "Countries" },
+                    { 267, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9293), null, "English translation for Navigation.Languages", true, "Navigation.Languages", 2, 0, null, null, "Languages" },
+                    { 268, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9294), null, "English translation for Navigation.Localization", true, "Navigation.Localization", 2, 0, null, null, "Localization" },
+                    { 269, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9295), null, "English translation for Navigation.Profile", true, "Navigation.Profile", 2, 0, null, null, "Profile" },
+                    { 270, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9296), null, "English translation for Navigation.Help", true, "Navigation.Help", 2, 0, null, null, "Help" },
+                    { 271, "Navigation", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9297), null, "English translation for Navigation.Logout", true, "Navigation.Logout", 2, 0, null, null, "Logout" },
+                    { 272, "Language", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9300), null, "English translation for Language.English", true, "Language.English", 2, 0, null, null, "English" },
+                    { 273, "Language", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9302), null, "English translation for Language.Turkish", true, "Language.Turkish", 2, 0, null, null, "Turkish" },
+                    { 274, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9341), null, "English translation for Dashboard.Title", true, "Dashboard.Title", 2, 0, null, null, "Dashboard" },
+                    { 275, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9343), null, "English translation for Dashboard.WelcomeMessage", true, "Dashboard.WelcomeMessage", 2, 0, null, null, "Welcome back! Here's a summary of your CMS analytics and recent activity." },
+                    { 276, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9344), null, "English translation for Dashboard.Last7Days", true, "Dashboard.Last7Days", 2, 0, null, null, "Last 7 days" },
+                    { 277, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9345), null, "English translation for Dashboard.Last30Days", true, "Dashboard.Last30Days", 2, 0, null, null, "Last 30 days" },
+                    { 278, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9346), null, "English translation for Dashboard.Last90Days", true, "Dashboard.Last90Days", 2, 0, null, null, "Last 90 days" },
+                    { 279, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9347), null, "English translation for Dashboard.TotalUsers", true, "Dashboard.TotalUsers", 2, 0, null, null, "Total Users" },
+                    { 280, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9348), null, "English translation for Dashboard.TotalRevenue", true, "Dashboard.TotalRevenue", 2, 0, null, null, "Total Revenue" },
+                    { 281, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9350), null, "English translation for Dashboard.Products", true, "Dashboard.Products", 2, 0, null, null, "Products" },
+                    { 282, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9351), null, "English translation for Dashboard.SupportTickets", true, "Dashboard.SupportTickets", 2, 0, null, null, "Support Tickets" },
+                    { 283, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9352), null, "English translation for Dashboard.FromLastMonth", true, "Dashboard.FromLastMonth", 2, 0, null, null, "from last month" },
+                    { 284, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9353), null, "English translation for Dashboard.SalesOverview", true, "Dashboard.SalesOverview", 2, 0, null, null, "Sales Overview" },
+                    { 285, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9354), null, "English translation for Dashboard.Monthly", true, "Dashboard.Monthly", 2, 0, null, null, "Monthly" },
+                    { 286, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9355), null, "English translation for Dashboard.ChartVisualization", true, "Dashboard.ChartVisualization", 2, 0, null, null, "Chart visualization goes here" },
+                    { 287, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9356), null, "English translation for Dashboard.ThisYear", true, "Dashboard.ThisYear", 2, 0, null, null, "This Year" },
+                    { 288, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9357), null, "English translation for Dashboard.LastYear", true, "Dashboard.LastYear", 2, 0, null, null, "Last Year" },
+                    { 289, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9359), null, "English translation for Dashboard.RecentActivities", true, "Dashboard.RecentActivities", 2, 0, null, null, "Recent Activities" },
+                    { 290, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9360), null, "English translation for Dashboard.TopProducts", true, "Dashboard.TopProducts", 2, 0, null, null, "Top Products" },
+                    { 291, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9361), null, "English translation for Dashboard.Product", true, "Dashboard.Product", 2, 0, null, null, "Product" },
+                    { 292, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9362), null, "English translation for Dashboard.Category", true, "Dashboard.Category", 2, 0, null, null, "Category" },
+                    { 293, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9363), null, "English translation for Dashboard.Sales", true, "Dashboard.Sales", 2, 0, null, null, "Sales" },
+                    { 294, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9364), null, "English translation for Dashboard.Status", true, "Dashboard.Status", 2, 0, null, null, "Status" },
+                    { 295, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9365), null, "English translation for Dashboard.LatestOrders", true, "Dashboard.LatestOrders", 2, 0, null, null, "Latest Orders" },
+                    { 296, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9366), null, "English translation for Dashboard.Today", true, "Dashboard.Today", 2, 0, null, null, "Today" },
+                    { 297, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9367), null, "English translation for Dashboard.Yesterday", true, "Dashboard.Yesterday", 2, 0, null, null, "Yesterday" },
+                    { 298, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9368), null, "English translation for Dashboard.OrderId", true, "Dashboard.OrderId", 2, 0, null, null, "Order ID" },
+                    { 299, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9369), null, "English translation for Dashboard.Customer", true, "Dashboard.Customer", 2, 0, null, null, "Customer" },
+                    { 300, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9370), null, "English translation for Dashboard.Date", true, "Dashboard.Date", 2, 0, null, null, "Date" },
+                    { 301, "Dashboard", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9372), null, "English translation for Dashboard.Amount", true, "Dashboard.Amount", 2, 0, null, null, "Amount" },
+                    { 302, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9375), null, "English translation for Localization.SystemDescription", true, "Localization.SystemDescription", 2, 0, null, null, "Manage text translations used throughout the system" },
+                    { 303, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9376), null, "English translation for Localization.Keys", true, "Localization.Keys", 2, 0, null, null, "Localization Keys" },
+                    { 304, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9378), null, "English translation for Localization.Key", true, "Localization.Key", 2, 0, null, null, "Key" },
+                    { 305, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9379), null, "English translation for Localization.AddKey", true, "Localization.AddKey", 2, 0, null, null, "Add New Key" },
+                    { 306, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9380), null, "English translation for Localization.EditKey", true, "Localization.EditKey", 2, 0, null, null, "Edit Key" },
+                    { 307, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9381), null, "English translation for Localization.KeyDetails", true, "Localization.KeyDetails", 2, 0, null, null, "Key Details" },
+                    { 308, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9382), null, "English translation for Localization.AddKeyDescription", true, "Localization.AddKeyDescription", 2, 0, null, null, "Add a new localization key and its translations" },
+                    { 309, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9409), null, "English translation for Localization.EditKeyDescription", true, "Localization.EditKeyDescription", 2, 0, null, null, "Edit existing localization key and its translations" },
+                    { 310, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9411), null, "English translation for Localization.KeyPlaceholder", true, "Localization.KeyPlaceholder", 2, 0, null, null, "e.g: Common.Save" },
+                    { 311, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9412), null, "English translation for Localization.KeyHint", true, "Localization.KeyHint", 2, 0, null, null, "Use dot-separated hierarchical key" },
+                    { 312, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9413), null, "English translation for Localization.KeyReadonly", true, "Localization.KeyReadonly", 2, 0, null, null, "Key cannot be changed" },
+                    { 313, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9414), null, "English translation for Localization.Description", true, "Localization.Description", 2, 0, null, null, "Description" },
+                    { 314, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9415), null, "English translation for Localization.DescriptionPlaceholder", true, "Localization.DescriptionPlaceholder", 2, 0, null, null, "Describe what this key is used for" },
+                    { 315, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9417), null, "English translation for Localization.SelectCategory", true, "Localization.SelectCategory", 2, 0, null, null, "Select Category" },
+                    { 316, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9418), null, "English translation for Localization.Translations", true, "Localization.Translations", 2, 0, null, null, "Translations" },
+                    { 317, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9419), null, "English translation for Localization.TranslationPlaceholder", true, "Localization.TranslationPlaceholder", 2, 0, null, null, "Enter translation in {0}" },
+                    { 318, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9420), null, "English translation for Localization.Translated", true, "Localization.Translated", 2, 0, null, null, "Translated" },
+                    { 319, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9421), null, "English translation for Localization.NotTranslated", true, "Localization.NotTranslated", 2, 0, null, null, "Not Translated" },
+                    { 320, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9423), null, "English translation for Localization.LastUpdated", true, "Localization.LastUpdated", 2, 0, null, null, "Last Updated" },
+                    { 321, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9424), null, "English translation for Localization.SearchPlaceholder", true, "Localization.SearchPlaceholder", 2, 0, null, null, "Search key or value..." },
+                    { 322, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9425), null, "English translation for Localization.ShowingResults", true, "Localization.ShowingResults", 2, 0, null, null, "Showing {0}-{1} of {2} results" },
+                    { 323, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9426), null, "English translation for Localization.NoKeys", true, "Localization.NoKeys", 2, 0, null, null, "No localization keys found" },
+                    { 324, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9428), null, "English translation for Localization.NoKeysDescription", true, "Localization.NoKeysDescription", 2, 0, null, null, "No localization keys have been added yet" },
+                    { 325, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9429), null, "English translation for Localization.AddFirstKey", true, "Localization.AddFirstKey", 2, 0, null, null, "Add First Key" },
+                    { 326, "Localization", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9430), null, "English translation for Localization.DeleteConfirmation", true, "Localization.DeleteConfirmation", 2, 0, null, null, "Are you sure you want to delete this key and all its translations?" },
+                    { 327, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9498), null, "Turkish translation for Navigation.ProductManagement", true, "Navigation.ProductManagement", 1, 0, null, null, "Ürün Yönetimi" },
+                    { 328, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9500), null, "Turkish translation for Navigation.Variants", true, "Navigation.Variants", 1, 0, null, null, "Varyantlar" },
+                    { 329, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9501), null, "Turkish translation for Navigation.Trademarks", true, "Navigation.Trademarks", 1, 0, null, null, "Markalar" },
+                    { 330, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9503), null, "Turkish translation for Navigation.Cart", true, "Navigation.Cart", 1, 0, null, null, "Sepet" },
+                    { 331, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9504), null, "Turkish translation for Navigation.Payments", true, "Navigation.Payments", 1, 0, null, null, "Ödemeler" },
+                    { 332, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9505), null, "Turkish translation for Product.Name", true, "Product.Name", 1, 0, null, null, "Ürün Adı" },
+                    { 333, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9506), null, "Turkish translation for Product.Code", true, "Product.Code", 1, 0, null, null, "Ürün Kodu" },
+                    { 334, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9507), null, "Turkish translation for Product.IntegrationCode", true, "Product.IntegrationCode", 1, 0, null, null, "Entegrasyon Kodu" },
+                    { 335, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9508), null, "Turkish translation for Product.ShortDescription", true, "Product.ShortDescription", 1, 0, null, null, "Kısa Açıklama" },
+                    { 336, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9509), null, "Turkish translation for Product.LongDescription", true, "Product.LongDescription", 1, 0, null, null, "Uzun Açıklama" },
+                    { 337, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9510), null, "Turkish translation for Product.Unit", true, "Product.Unit", 1, 0, null, null, "Birim" },
+                    { 338, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9511), null, "Turkish translation for Product.Type", true, "Product.Type", 1, 0, null, null, "Ürün Tipi" },
+                    { 339, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9512), null, "Turkish translation for Product.TaxRate", true, "Product.TaxRate", 1, 0, null, null, "Vergi Oranı" },
+                    { 340, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9513), null, "Turkish translation for Product.Parent", true, "Product.Parent", 1, 0, null, null, "Üst Ürün" },
+                    { 341, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9514), null, "Turkish translation for Product.Variants", true, "Product.Variants", 1, 0, null, null, "Varyantlar" },
+                    { 342, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9515), null, "Turkish translation for Product.Categories", true, "Product.Categories", 1, 0, null, null, "Kategoriler" },
+                    { 343, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9517), null, "Turkish translation for Product.Trademarks", true, "Product.Trademarks", 1, 0, null, null, "Markalar" },
+                    { 344, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9518), null, "Turkish translation for Product.CreateNew", true, "Product.CreateNew", 1, 0, null, null, "Yeni Ürün Oluştur" },
+                    { 345, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9519), null, "Turkish translation for Product.EditProduct", true, "Product.EditProduct", 1, 0, null, null, "Ürün Düzenle" },
+                    { 346, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9520), null, "Turkish translation for Product.DeleteProduct", true, "Product.DeleteProduct", 1, 0, null, null, "Ürün Sil" },
+                    { 347, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9521), null, "Turkish translation for Product.ProductDetails", true, "Product.ProductDetails", 1, 0, null, null, "Ürün Detayları" },
+                    { 348, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9522), null, "Turkish translation for Variant.Name", true, "Variant.Name", 1, 0, null, null, "Varyant Adı" },
+                    { 349, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9523), null, "Turkish translation for Variant.Code", true, "Variant.Code", 1, 0, null, null, "Varyant Kodu" },
+                    { 350, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9524), null, "Turkish translation for Variant.Product", true, "Variant.Product", 1, 0, null, null, "Ürün" },
+                    { 351, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9525), null, "Turkish translation for Variant.CreateNew", true, "Variant.CreateNew", 1, 0, null, null, "Yeni Varyant Oluştur" },
+                    { 352, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9526), null, "Turkish translation for Variant.EditVariant", true, "Variant.EditVariant", 1, 0, null, null, "Varyant Düzenle" },
+                    { 353, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9527), null, "Turkish translation for Variant.DeleteVariant", true, "Variant.DeleteVariant", 1, 0, null, null, "Varyant Sil" },
+                    { 354, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9528), null, "Turkish translation for Trademark.Name", true, "Trademark.Name", 1, 0, null, null, "Marka Adı" },
+                    { 355, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9529), null, "Turkish translation for Trademark.Code", true, "Trademark.Code", 1, 0, null, null, "Marka Kodu" },
+                    { 356, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9530), null, "Turkish translation for Trademark.SortOrder", true, "Trademark.SortOrder", 1, 0, null, null, "Sıralama" },
+                    { 357, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9531), null, "Turkish translation for Trademark.Parent", true, "Trademark.Parent", 1, 0, null, null, "Üst Marka" },
+                    { 358, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9533), null, "Turkish translation for Trademark.CreateNew", true, "Trademark.CreateNew", 1, 0, null, null, "Yeni Marka Oluştur" },
+                    { 359, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9534), null, "Turkish translation for Trademark.EditTrademark", true, "Trademark.EditTrademark", 1, 0, null, null, "Marka Düzenle" },
+                    { 360, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9535), null, "Turkish translation for Trademark.DeleteTrademark", true, "Trademark.DeleteTrademark", 1, 0, null, null, "Marka Sil" },
+                    { 361, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9562), null, "English translation for Navigation.ProductManagement", true, "Navigation.ProductManagement", 2, 0, null, null, "Product Management" },
+                    { 362, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9564), null, "English translation for Navigation.Variants", true, "Navigation.Variants", 2, 0, null, null, "Variants" },
+                    { 363, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9565), null, "English translation for Navigation.Trademarks", true, "Navigation.Trademarks", 2, 0, null, null, "Trademarks" },
+                    { 364, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9567), null, "English translation for Navigation.Cart", true, "Navigation.Cart", 2, 0, null, null, "Cart" },
+                    { 365, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9568), null, "English translation for Navigation.Payments", true, "Navigation.Payments", 2, 0, null, null, "Payments" },
+                    { 366, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9569), null, "English translation for Product.Name", true, "Product.Name", 2, 0, null, null, "Product Name" },
+                    { 367, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9570), null, "English translation for Product.Code", true, "Product.Code", 2, 0, null, null, "Product Code" },
+                    { 368, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9571), null, "English translation for Product.IntegrationCode", true, "Product.IntegrationCode", 2, 0, null, null, "Integration Code" },
+                    { 369, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9572), null, "English translation for Product.ShortDescription", true, "Product.ShortDescription", 2, 0, null, null, "Short Description" },
+                    { 370, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9573), null, "English translation for Product.LongDescription", true, "Product.LongDescription", 2, 0, null, null, "Long Description" },
+                    { 371, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9574), null, "English translation for Product.Unit", true, "Product.Unit", 2, 0, null, null, "Unit" },
+                    { 372, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9575), null, "English translation for Product.Type", true, "Product.Type", 2, 0, null, null, "Product Type" },
+                    { 373, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9577), null, "English translation for Product.TaxRate", true, "Product.TaxRate", 2, 0, null, null, "Tax Rate" },
+                    { 374, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9578), null, "English translation for Product.Parent", true, "Product.Parent", 2, 0, null, null, "Parent Product" },
+                    { 375, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9579), null, "English translation for Product.Variants", true, "Product.Variants", 2, 0, null, null, "Variants" },
+                    { 376, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9580), null, "English translation for Product.Categories", true, "Product.Categories", 2, 0, null, null, "Categories" },
+                    { 377, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9581), null, "English translation for Product.Trademarks", true, "Product.Trademarks", 2, 0, null, null, "Trademarks" },
+                    { 378, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9582), null, "English translation for Product.CreateNew", true, "Product.CreateNew", 2, 0, null, null, "Create New Product" },
+                    { 379, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9583), null, "English translation for Product.EditProduct", true, "Product.EditProduct", 2, 0, null, null, "Edit Product" },
+                    { 380, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9584), null, "English translation for Product.DeleteProduct", true, "Product.DeleteProduct", 2, 0, null, null, "Delete Product" },
+                    { 381, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9585), null, "English translation for Product.ProductDetails", true, "Product.ProductDetails", 2, 0, null, null, "Product Details" },
+                    { 382, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9586), null, "English translation for Variant.Name", true, "Variant.Name", 2, 0, null, null, "Variant Name" },
+                    { 383, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9587), null, "English translation for Variant.Code", true, "Variant.Code", 2, 0, null, null, "Variant Code" },
+                    { 384, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9588), null, "English translation for Variant.Product", true, "Variant.Product", 2, 0, null, null, "Product" },
+                    { 385, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9589), null, "English translation for Variant.CreateNew", true, "Variant.CreateNew", 2, 0, null, null, "Create New Variant" },
+                    { 386, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9590), null, "English translation for Variant.EditVariant", true, "Variant.EditVariant", 2, 0, null, null, "Edit Variant" },
+                    { 387, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9591), null, "English translation for Variant.DeleteVariant", true, "Variant.DeleteVariant", 2, 0, null, null, "Delete Variant" },
+                    { 388, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9592), null, "English translation for Trademark.Name", true, "Trademark.Name", 2, 0, null, null, "Trademark Name" },
+                    { 389, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9594), null, "English translation for Trademark.Code", true, "Trademark.Code", 2, 0, null, null, "Trademark Code" },
+                    { 390, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9595), null, "English translation for Trademark.SortOrder", true, "Trademark.SortOrder", 2, 0, null, null, "Sort Order" },
+                    { 391, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9596), null, "English translation for Trademark.Parent", true, "Trademark.Parent", 2, 0, null, null, "Parent Trademark" },
+                    { 392, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9597), null, "English translation for Trademark.CreateNew", true, "Trademark.CreateNew", 2, 0, null, null, "Create New Trademark" },
+                    { 393, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9599), null, "English translation for Trademark.EditTrademark", true, "Trademark.EditTrademark", 2, 0, null, null, "Edit Trademark" },
+                    { 394, "Product", new DateTime(2025, 11, 7, 16, 2, 17, 720, DateTimeKind.Utc).AddTicks(9600), null, "English translation for Trademark.DeleteTrademark", true, "Trademark.DeleteTrademark", 2, 0, null, null, "Delete Trademark" }
                 });
 
             migrationBuilder.InsertData(
@@ -2060,16 +2351,16 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "LanguageId", "LongDescription", "Name", "OptionId", "ShortDescription", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5079), null, 1, null, "Renk", 1, "Ürün rengi", 1, null, null },
-                    { 2, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5083), null, 2, null, "Color", 1, "Product color", 1, null, null },
-                    { 3, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5085), null, 1, null, "Beden", 2, "Ürün bedeni", 1, null, null },
-                    { 4, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5086), null, 2, null, "Size", 2, "Product size", 1, null, null },
-                    { 5, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5088), null, 1, null, "Malzeme", 3, "Ürün malzemesi", 1, null, null },
-                    { 6, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5089), null, 2, null, "Material", 3, "Product material", 1, null, null },
-                    { 7, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5090), null, 1, null, "Ağırlık", 4, "Ürün ağırlığı", 1, null, null },
-                    { 8, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5091), null, 2, null, "Weight", 4, "Product weight", 1, null, null },
-                    { 9, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5093), null, 1, null, "Garanti", 5, "Ürün garanti süresi", 1, null, null },
-                    { 10, new DateTime(2025, 11, 6, 21, 56, 18, 434, DateTimeKind.Utc).AddTicks(5094), null, 2, null, "Warranty", 5, "Product warranty period", 1, null, null }
+                    { 1, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(297), null, 1, null, "Renk", 1, "Ürün rengi", 1, null, null },
+                    { 2, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(300), null, 2, null, "Color", 1, "Product color", 1, null, null },
+                    { 3, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(302), null, 1, null, "Beden", 2, "Ürün bedeni", 1, null, null },
+                    { 4, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(304), null, 2, null, "Size", 2, "Product size", 1, null, null },
+                    { 5, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(305), null, 1, null, "Malzeme", 3, "Ürün malzemesi", 1, null, null },
+                    { 6, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(307), null, 2, null, "Material", 3, "Product material", 1, null, null },
+                    { 7, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(308), null, 1, null, "Ağırlık", 4, "Ürün ağırlığı", 1, null, null },
+                    { 8, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(310), null, 2, null, "Weight", 4, "Product weight", 1, null, null },
+                    { 9, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(311), null, 1, null, "Garanti", 5, "Ürün garanti süresi", 1, null, null },
+                    { 10, new DateTime(2025, 11, 7, 16, 2, 17, 733, DateTimeKind.Utc).AddTicks(313), null, 2, null, "Warranty", 5, "Product warranty period", 1, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -2096,69 +2387,69 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsDefault", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
-                values: new object[] { 1, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7606), null, true, null, 1, 0m, 1, 1, 1, null, null, null, "Natural Titanium" });
+                values: new object[] { 1, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1645), null, true, null, 1, 0m, 1, 1, 1, null, null, null, "Natural Titanium" });
 
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
                 values: new object[,]
                 {
-                    { 2, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7609), null, null, 1, 0m, 1, 2, 1, null, null, null, "Blue Titanium" },
-                    { 3, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7611), null, null, 1, 0m, 1, 3, 1, null, null, null, "White Titanium" },
-                    { 4, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7615), null, null, 5, 200m, 1, 1, 1, null, null, null, "2 Years" }
+                    { 2, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1649), null, null, 1, 0m, 1, 2, 1, null, null, null, "Blue Titanium" },
+                    { 3, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1652), null, null, 1, 0m, 1, 3, 1, null, null, null, "White Titanium" },
+                    { 4, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1657), null, null, 5, 200m, 1, 1, 1, null, null, null, "2 Years" }
                 });
 
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsDefault", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
-                values: new object[] { 5, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7617), null, true, null, 1, 0m, 2, 1, 1, null, null, null, "Onyx Black" });
+                values: new object[] { 5, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1660), null, true, null, 1, 0m, 2, 1, 1, null, null, null, "Onyx Black" });
 
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
                 values: new object[,]
                 {
-                    { 6, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7619), null, null, 1, 0m, 2, 2, 1, null, null, null, "Cobalt Violet" },
-                    { 7, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7621), null, null, 5, 100m, 2, 1, 1, null, null, null, "1 Year" }
+                    { 6, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1662), null, null, 1, 0m, 2, 2, 1, null, null, null, "Cobalt Violet" },
+                    { 7, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1664), null, null, 5, 100m, 2, 1, 1, null, null, null, "1 Year" }
                 });
 
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsDefault", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
-                values: new object[] { 8, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7623), null, true, null, 1, 0m, 3, 1, 1, null, null, null, "Space Gray" });
+                values: new object[] { 8, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1666), null, true, null, 1, 0m, 3, 1, 1, null, null, null, "Space Gray" });
 
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
-                values: new object[] { 9, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7625), null, null, 1, 0m, 3, 2, 1, null, null, null, "Silver" });
-
-            migrationBuilder.InsertData(
-                table: "ProductOptions",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsDefault", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
-                values: new object[,]
-                {
-                    { 10, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7626), null, true, null, 4, 0m, 3, 1, 1, null, null, null, "1.55 kg" },
-                    { 11, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7628), null, true, null, 1, 0m, 4, 1, 1, null, null, null, "Platinum Silver" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ProductOptions",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
-                values: new object[] { 12, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7630), null, null, 1, 50m, 4, 2, 1, null, null, null, "Graphite" });
+                values: new object[] { 9, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1668), null, null, 1, 0m, 3, 2, 1, null, null, null, "Silver" });
 
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsDefault", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
                 values: new object[,]
                 {
-                    { 13, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7631), null, true, null, 4, 0m, 4, 1, 1, null, null, null, "1.23 kg" },
-                    { 14, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7633), null, true, null, 1, 0m, 5, 1, 1, null, null, null, "White" }
+                    { 10, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1670), null, true, null, 4, 0m, 3, 1, 1, null, null, null, "1.55 kg" },
+                    { 11, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1672), null, true, null, 1, 0m, 4, 1, 1, null, null, null, "Platinum Silver" }
                 });
 
             migrationBuilder.InsertData(
                 table: "ProductOptions",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
-                values: new object[] { 15, new DateTime(2025, 11, 6, 21, 56, 18, 436, DateTimeKind.Utc).AddTicks(7640), null, null, 5, 50m, 5, 1, 1, null, null, null, "1 Year" });
+                values: new object[] { 12, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1674), null, null, 1, 50m, 4, 2, 1, null, null, null, "Graphite" });
+
+            migrationBuilder.InsertData(
+                table: "ProductOptions",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsDefault", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
+                values: new object[,]
+                {
+                    { 13, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1676), null, true, null, 4, 0m, 4, 1, 1, null, null, null, "1.23 kg" },
+                    { 14, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1678), null, true, null, 1, 0m, 5, 1, 1, null, null, null, "White" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductOptions",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "JsonValue", "OptionId", "PriceModifier", "ProductId", "SortOrder", "Status", "StockQuantity", "UpdatedAt", "UpdatedBy", "Value" },
+                values: new object[] { 15, new DateTime(2025, 11, 7, 16, 2, 17, 736, DateTimeKind.Utc).AddTicks(1685), null, null, 5, 50m, 5, 1, 1, null, null, null, "1 Year" });
 
             migrationBuilder.InsertData(
                 table: "SectionItems",
@@ -2489,15 +2780,15 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 columns: new[] { "Id", "Code", "CreatedAt", "CreatedBy", "IntegrationCode", "LongDescription", "Name", "ProductId", "ShortDescription", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "iphone-15-pro-128gb-natural", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7153), null, "APPLE-IP15P-128-NAT", "", "iPhone 15 Pro 128GB Natural Titanium", 1, "128GB Natural Titanium", 1, null, null },
-                    { 2, "iphone-15-pro-256gb-blue", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7156), null, "APPLE-IP15P-256-BLUE", "", "iPhone 15 Pro 256GB Blue Titanium", 1, "256GB Blue Titanium", 1, null, null },
-                    { 3, "iphone-15-pro-512gb-white", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7159), null, "APPLE-IP15P-512-WHITE", "", "iPhone 15 Pro 512GB White Titanium", 1, "512GB White Titanium", 1, null, null },
-                    { 4, "galaxy-s24-128gb-black", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7160), null, "SAMSUNG-GS24-128-BLACK", "", "Galaxy S24 128GB Onyx Black", 2, "128GB Onyx Black", 1, null, null },
-                    { 5, "galaxy-s24-256gb-violet", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7162), null, "SAMSUNG-GS24-256-VIOLET", "", "Galaxy S24 256GB Cobalt Violet", 2, "256GB Cobalt Violet", 1, null, null },
-                    { 6, "macbook-pro-14-m3-512gb", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7164), null, "APPLE-MBP14-M3-512", "", "MacBook Pro 14\" M3 512GB", 3, "M3 chip, 512GB SSD", 1, null, null },
-                    { 7, "macbook-pro-14-m3-1tb", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7166), null, "APPLE-MBP14-M3-1TB", "", "MacBook Pro 14\" M3 1TB", 3, "M3 chip, 1TB SSD", 1, null, null },
-                    { 8, "dell-xps-13-i5-256gb", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7168), null, "DELL-XPS13-I5-256", "", "Dell XPS 13 Intel i5 256GB", 4, "Intel i5, 256GB SSD", 1, null, null },
-                    { 9, "dell-xps-13-i7-512gb", new DateTime(2025, 11, 6, 21, 56, 18, 440, DateTimeKind.Utc).AddTicks(7169), null, "DELL-XPS13-I7-512", "", "Dell XPS 13 Intel i7 512GB", 4, "Intel i7, 512GB SSD", 1, null, null }
+                    { 1, "iphone-15-pro-128gb-natural", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(1978), null, "APPLE-IP15P-128-NAT", "", "iPhone 15 Pro 128GB Natural Titanium", 1, "128GB Natural Titanium", 1, null, null },
+                    { 2, "iphone-15-pro-256gb-blue", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(1984), null, "APPLE-IP15P-256-BLUE", "", "iPhone 15 Pro 256GB Blue Titanium", 1, "256GB Blue Titanium", 1, null, null },
+                    { 3, "iphone-15-pro-512gb-white", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(1987), null, "APPLE-IP15P-512-WHITE", "", "iPhone 15 Pro 512GB White Titanium", 1, "512GB White Titanium", 1, null, null },
+                    { 4, "galaxy-s24-128gb-black", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(1989), null, "SAMSUNG-GS24-128-BLACK", "", "Galaxy S24 128GB Onyx Black", 2, "128GB Onyx Black", 1, null, null },
+                    { 5, "galaxy-s24-256gb-violet", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(1991), null, "SAMSUNG-GS24-256-VIOLET", "", "Galaxy S24 256GB Cobalt Violet", 2, "256GB Cobalt Violet", 1, null, null },
+                    { 6, "macbook-pro-14-m3-512gb", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(1993), null, "APPLE-MBP14-M3-512", "", "MacBook Pro 14\" M3 512GB", 3, "M3 chip, 512GB SSD", 1, null, null },
+                    { 7, "macbook-pro-14-m3-1tb", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(1995), null, "APPLE-MBP14-M3-1TB", "", "MacBook Pro 14\" M3 1TB", 3, "M3 chip, 1TB SSD", 1, null, null },
+                    { 8, "dell-xps-13-i5-256gb", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(2023), null, "DELL-XPS13-I5-256", "", "Dell XPS 13 Intel i5 256GB", 4, "Intel i5, 256GB SSD", 1, null, null },
+                    { 9, "dell-xps-13-i7-512gb", new DateTime(2025, 11, 7, 16, 2, 17, 740, DateTimeKind.Utc).AddTicks(2025), null, "DELL-XPS13-I7-512", "", "Dell XPS 13 Intel i7 512GB", 4, "Intel i7, 512GB SSD", 1, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -3056,6 +3347,157 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 column: "SortOrder");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFields_FieldName",
+                table: "DataSchemaFields",
+                column: "FieldName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFields_IsActive",
+                table: "DataSchemaFields",
+                column: "IsActive");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFields_IsFilterable",
+                table: "DataSchemaFields",
+                column: "IsFilterable");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFields_IsSortable",
+                table: "DataSchemaFields",
+                column: "IsSortable");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFields_SchemaId_FieldKey",
+                table: "DataSchemaFields",
+                columns: new[] { "DataSchemaId", "FieldKey" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFields_SortOrder",
+                table: "DataSchemaFields",
+                column: "SortOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFields_Type",
+                table: "DataSchemaFields",
+                column: "Type");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldTranslations_DataSchemaFieldId",
+                table: "DataSchemaFieldTranslations",
+                column: "DataSchemaFieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldTranslations_Field_Language",
+                table: "DataSchemaFieldTranslations",
+                columns: new[] { "DataSchemaFieldId", "LanguageId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldTranslations_LanguageId",
+                table: "DataSchemaFieldTranslations",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_BooleanValue",
+                table: "DataSchemaFieldValues",
+                column: "BooleanValue");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_DateValue",
+                table: "DataSchemaFieldValues",
+                column: "DateValue");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_FieldId",
+                table: "DataSchemaFieldValues",
+                column: "FieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_NumericValue",
+                table: "DataSchemaFieldValues",
+                column: "NumericValue");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_Product_Schema_Field",
+                table: "DataSchemaFieldValues",
+                columns: new[] { "ProductId", "SchemaId", "FieldId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_ProductId",
+                table: "DataSchemaFieldValues",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_SchemaId",
+                table: "DataSchemaFieldValues",
+                column: "SchemaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValues_SortOrder",
+                table: "DataSchemaFieldValues",
+                column: "SortOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValueTranslations_DataSchemaFieldValueId",
+                table: "DataSchemaFieldValueTranslations",
+                column: "DataSchemaFieldValueId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValueTranslations_LanguageId",
+                table: "DataSchemaFieldValueTranslations",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaFieldValueTranslations_Value_Language",
+                table: "DataSchemaFieldValueTranslations",
+                columns: new[] { "DataSchemaFieldValueId", "LanguageId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemas_IsActive",
+                table: "DataSchemas",
+                column: "IsActive");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemas_Key",
+                table: "DataSchemas",
+                column: "Key",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemas_Name",
+                table: "DataSchemas",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemas_SortOrder",
+                table: "DataSchemas",
+                column: "SortOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemas_Status",
+                table: "DataSchemas",
+                column: "Status");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaTranslations_DataSchemaId",
+                table: "DataSchemaTranslations",
+                column: "DataSchemaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaTranslations_LanguageId",
+                table: "DataSchemaTranslations",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSchemaTranslations_Schema_Language",
+                table: "DataSchemaTranslations",
+                columns: new[] { "DataSchemaId", "LanguageId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Languages_Code",
                 table: "Languages",
                 column: "Code",
@@ -3242,6 +3684,37 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 table: "PageTranslations",
                 columns: new[] { "PageId", "LanguageId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDataSchemas_IsActive",
+                table: "ProductDataSchemas",
+                column: "IsActive");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDataSchemas_IsPrimary",
+                table: "ProductDataSchemas",
+                column: "IsPrimary");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDataSchemas_Product_Schema",
+                table: "ProductDataSchemas",
+                columns: new[] { "ProductId", "SchemaId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDataSchemas_ProductId",
+                table: "ProductDataSchemas",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDataSchemas_SchemaId",
+                table: "ProductDataSchemas",
+                column: "SchemaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDataSchemas_SortOrder",
+                table: "ProductDataSchemas",
+                column: "SortOrder");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductOptions_OptionId",
@@ -3548,6 +4021,15 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "Countries");
 
             migrationBuilder.DropTable(
+                name: "DataSchemaFieldTranslations");
+
+            migrationBuilder.DropTable(
+                name: "DataSchemaFieldValueTranslations");
+
+            migrationBuilder.DropTable(
+                name: "DataSchemaTranslations");
+
+            migrationBuilder.DropTable(
                 name: "LayoutSections");
 
             migrationBuilder.DropTable(
@@ -3561,6 +4043,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "PageTranslations");
+
+            migrationBuilder.DropTable(
+                name: "ProductDataSchemas");
 
             migrationBuilder.DropTable(
                 name: "ProductOptions");
@@ -3608,6 +4093,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "Continents");
 
             migrationBuilder.DropTable(
+                name: "DataSchemaFieldValues");
+
+            migrationBuilder.DropTable(
                 name: "Pages");
 
             migrationBuilder.DropTable(
@@ -3626,6 +4114,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
                 name: "Variants");
 
             migrationBuilder.DropTable(
+                name: "DataSchemaFields");
+
+            migrationBuilder.DropTable(
                 name: "Contents");
 
             migrationBuilder.DropTable(
@@ -3639,6 +4130,9 @@ namespace PazarAtlasi.CMS.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "DataSchemas");
 
             migrationBuilder.DropTable(
                 name: "SectionItems");

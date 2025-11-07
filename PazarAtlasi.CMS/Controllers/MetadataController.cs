@@ -871,8 +871,7 @@ namespace PazarAtlasi.CMS.Controllers
             var totalCount = await query.CountAsync();
             
             var dataSchemas = await query
-                .OrderBy(ds => ds.Category)
-                .ThenBy(ds => ds.SortOrder)
+                .OrderBy(ds => ds.SortOrder)
                 .ThenBy(ds => ds.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -884,7 +883,6 @@ namespace PazarAtlasi.CMS.Controllers
                 Name = ds.Name,
                 Key = ds.Key,
                 Description = ds.Description,
-                Category = ds.Category,
                 FieldsCount = ds.Fields.Count,
                 ProductsCount = ds.ProductDataSchemas.Count,
                 IsActive = ds.IsActive,
@@ -967,7 +965,6 @@ namespace PazarAtlasi.CMS.Controllers
                     Name = model.Name,
                     Key = model.Key,
                     Description = model.Description,
-                    Category = model.Category,
                     Configuration = model.Configuration ?? "{}",
                     SortOrder = model.SortOrder,
                     IsActive = model.IsActive,
@@ -989,7 +986,6 @@ namespace PazarAtlasi.CMS.Controllers
                             LanguageId = t.LanguageId,
                             Name = t.Name,
                             Description = t.Description,
-                            Category = t.Category,
                             CreatedAt = DateTime.UtcNow
                         }).ToList();
 
@@ -1101,7 +1097,6 @@ namespace PazarAtlasi.CMS.Controllers
                 Name = dataSchema.Name,
                 Key = dataSchema.Key,
                 Description = dataSchema.Description,
-                Category = dataSchema.Category,
                 Configuration = dataSchema.Configuration,
                 SortOrder = dataSchema.SortOrder,
                 IsActive = dataSchema.IsActive,
@@ -1124,7 +1119,6 @@ namespace PazarAtlasi.CMS.Controllers
                     IsDefault = t.Language?.IsDefault ?? false,
                     Name = t.Name,
                     Description = t.Description,
-                    Category = t.Category
                 }).ToList(),
                 Fields = dataSchema.Fields.Select(f => new DataSchemaFieldCreateViewModel
                 {
@@ -1220,7 +1214,6 @@ namespace PazarAtlasi.CMS.Controllers
                 Name = dataSchema.Name,
                 Key = dataSchema.Key,
                 Description = dataSchema.Description,
-                Category = dataSchema.Category,
                 Configuration = dataSchema.Configuration,
                 SortOrder = dataSchema.SortOrder,
                 IsActive = dataSchema.IsActive,
@@ -1276,7 +1269,6 @@ namespace PazarAtlasi.CMS.Controllers
                     IsDefault = t.Language?.IsDefault ?? false,
                     Name = t.Name,
                     Description = t.Description,
-                    Category = t.Category
                 }).ToList(),
                 Products = dataSchema.ProductDataSchemas.Select(pds => new ProductDataSchemaViewModel
                 {
@@ -1358,8 +1350,7 @@ namespace PazarAtlasi.CMS.Controllers
                 var schemas = await _context.DataSchemas
                     .Include(ds => ds.Fields)
                     .Where(ds => ds.IsActive && !ds.IsDeleted)
-                    .OrderBy(ds => ds.Category)
-                    .ThenBy(ds => ds.SortOrder)
+                    .OrderBy(ds => ds.SortOrder)
                     .ThenBy(ds => ds.Name)
                     .Select(ds => new
                     {
@@ -1367,7 +1358,6 @@ namespace PazarAtlasi.CMS.Controllers
                         name = ds.Name,
                         key = ds.Key,
                         description = ds.Description,
-                        category = ds.Category,
                         fieldsCount = ds.Fields.Count(f => f.IsActive)
                     })
                     .ToListAsync();
@@ -1735,8 +1725,7 @@ namespace PazarAtlasi.CMS.Controllers
             // Load available data schemas
             model.AvailableDataSchemas = await _context.DataSchemas
                 .Where(ds => ds.IsActive && !ds.IsDeleted)
-                .OrderBy(ds => ds.Category)
-                .ThenBy(ds => ds.SortOrder)
+                .OrderBy(ds => ds.SortOrder)
                 .ThenBy(ds => ds.Name)
                 .Select(ds => new DataSchemaListViewModel
                 {
@@ -1744,7 +1733,6 @@ namespace PazarAtlasi.CMS.Controllers
                     Name = ds.Name,
                     Key = ds.Key,
                     Description = ds.Description,
-                    Category = ds.Category,
                     FieldsCount = ds.Fields.Count(f => f.IsActive),
                     IsActive = ds.IsActive
                 })

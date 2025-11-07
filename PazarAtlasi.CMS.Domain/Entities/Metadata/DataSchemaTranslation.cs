@@ -27,11 +27,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Metadata
         /// </summary>
         public string? Description { get; set; }
 
-        /// <summary>
-        /// Translated category name
-        /// </summary>
-        public string? Category { get; set; }
-
         // Navigation Properties
         /// <summary>
         /// Parent data schema

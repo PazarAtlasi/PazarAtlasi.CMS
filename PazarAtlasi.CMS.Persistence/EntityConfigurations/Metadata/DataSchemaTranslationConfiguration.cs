@@ -18,7 +18,6 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Metadata
             builder.Property(t => t.LanguageId).HasColumnName("LanguageId").IsRequired();
             builder.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(200);
             builder.Property(t => t.Description).HasColumnName("Description").HasMaxLength(1000);
-            builder.Property(t => t.Category).HasColumnName("Category").HasMaxLength(100);
             builder.Property(t => t.Status).HasColumnName("Status").HasDefaultValue(Status.Active);
             builder.Property(t => t.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(t => t.UpdatedAt).HasColumnName("UpdatedAt");

@@ -12,14 +12,6 @@
                     <i class="fas fa-database text-blue-600 mr-3"></i>
                     @Model.Name
                 </h1>
-                <div class="flex items-center space-x-4 text-sm text-slate-600">
-                    <span><i class="fas fa-key mr-1"></i>@Model.Key</span>
-                    @if (!string.IsNullOrEmpty(Model.Category))
-                    {
-                        <span><i class="fas fa-tag mr-1"></i>@Model.Category</span>
-                    }
-                    <span><i class="fas fa-calendar mr-1"></i>@Model.CreatedAt.ToString("dd.MM.yyyy")</span>
-                </div>
                 @if (!string.IsNullOrEmpty(Model.Description))
                 {
                     <p class="text-slate-600 mt-2">@Model.Description</p>
@@ -108,13 +100,6 @@
                 <div class="text-sm font-medium text-slate-700 mb-1">Şema Anahtarı</div>
                 <div class="text-slate-900 font-mono">@Model.Key</div>
             </div>
-            @if (!string.IsNullOrEmpty(Model.Category))
-            {
-                <div class="bg-slate-50 rounded-lg p-4">
-                    <div class="text-sm font-medium text-slate-700 mb-1">Kategori</div>
-                    <div class="text-slate-900">@Model.Category</div>
-                </div>
-            }
             <div class="bg-slate-50 rounded-lg p-4">
                 <div class="text-sm font-medium text-slate-700 mb-1">Durum</div>
                 <div>
@@ -426,13 +411,6 @@
                             <div class="mb-2">
                                 <span class="font-medium text-slate-700 text-sm">Şema Adı:</span>
                                 <div class="text-slate-900">@translation.Name</div>
-                            </div>
-                        }
-                        @if (!string.IsNullOrEmpty(translation.Category))
-                        {
-                            <div class="mb-2">
-                                <span class="font-medium text-slate-700 text-sm">Kategori:</span>
-                                <div class="text-slate-900">@translation.Category</div>
                             </div>
                         }
                         @if (!string.IsNullOrEmpty(translation.Description))

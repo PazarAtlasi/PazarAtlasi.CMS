@@ -12,7 +12,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string Name { get; set; } = string.Empty;
         public string Key { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public string? Category { get; set; }
         public int FieldsCount { get; set; }
         public int ProductsCount { get; set; }
         public bool IsActive { get; set; }
@@ -34,9 +33,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
 
         [StringLength(1000, ErrorMessage = "Description cannot exceed 1000 characters")]
         public string? Description { get; set; }
-
-        [StringLength(100, ErrorMessage = "Category cannot exceed 100 characters")]
-        public string? Category { get; set; }
 
         public string? Configuration { get; set; }
 
@@ -66,7 +62,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string Name { get; set; } = string.Empty;
         public string Key { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public string? Category { get; set; }
         public string? Configuration { get; set; }
         public int SortOrder { get; set; }
         public bool IsActive { get; set; }
@@ -287,7 +282,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public bool IsDefault { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public string? Category { get; set; }
     }
 
     public class DataSchemaTranslationViewModel : DataSchemaTranslationCreateViewModel

@@ -24,11 +24,6 @@ namespace PazarAtlasi.CMS.Domain.Entities.Metadata
         public string? Description { get; set; }
 
         /// <summary>
-        /// Schema category (e.g., "Electronics", "Clothing", "Books")
-        /// </summary>
-        public string? Category { get; set; }
-
-        /// <summary>
         /// JSON configuration for schema settings
         /// </summary>
         public string? Configuration { get; set; }
