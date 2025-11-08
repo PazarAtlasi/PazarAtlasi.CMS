@@ -9,64 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
-        :root {
-            --sidebar-width: 250px;
-            --sidebar-collapsed-width: 70px;
-            --sidebar-bg: linear-gradient(to bottom, #2c3e50, #1a202c);
-            --sidebar-hover-bg: rgba(255, 255, 255, 0.1);
-            --submenu-bg: rgba(0, 0, 0, 0.2);
-        }
-
         html,
         body {
             font-family: 'Inter', sans-serif;
-        }
-
-        /* Critical styles for sidebar hover */
-        #sidebar:hover {
-            width: var(--sidebar-width) !important;
-        }
-
-        #sidebar:hover .sidebar-header h3,
-        #sidebar:hover .sidebar-link span, 
-        #sidebar:hover .dropdown-icon {
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-
-        #sidebar:hover + .main-content {
-            margin-left: var(--sidebar-width) !important;
-        }
-
-        #sidebar {
-            background: var(--sidebar-bg);
-            transition: width 0.3s ease;
-        }
-
-        #sidebar:not(.collapsed) {
-            width: var(--sidebar-width) !important;
-        }
-
-        #sidebar.collapsed {
-            width: var(--sidebar-collapsed-width) !important;
-        }
-        
-        #sidebar.sidebar-hover,
-        #sidebar.collapsed.sidebar-hover {
-            width: var(--sidebar-width) !important;
-        }
-
-        #sidebar .sidebar-header {
-            background: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-link:hover {
-            background: var(--sidebar-hover-bg) !important;
-        }
-
-        .sidebar-submenu {
-            background: var(--submenu-bg) !important;
         }
         
         .flag-icon {
@@ -87,35 +32,37 @@
             background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDgwMCI+CjxyZWN0IHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjgwMCIgZmlsbD0iI2UzMGEwYSIvPgo8Y2lyY2xlIGN4PSI0MjUiIGN5PSI0MDAiIHI9IjIwMCIgZmlsbD0iI2ZmZiIvPgo8Y2lyY2xlIGN4PSI0NzUiIGN5PSI0MDAiIHI9IjE2MCIgZmlsbD0iI2UzMGEwYSIvPgo8c3RhciBwb2ludHM9IjU4OS4xLDQ2NCA1MjUsMzAwIDQ2MC45LDQ2NCA2MDMuNSwzNjguNSAzNjguNSwzNjguNSIgZmlsbD0iI2ZmZiIvPgo8L3N2Zz4=');
         }
         
-        /* Sidebar collapsed specific styles */
-        .sidebar.collapsed .sidebar-header h3,
-        .sidebar.collapsed .sidebar-link span,
-        .sidebar.collapsed .dropdown-icon {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        
-        .sidebar.sidebar-hover .sidebar-header h3,
-        .sidebar.sidebar-hover .sidebar-link span,
-        .sidebar.sidebar-hover .dropdown-icon,
-        .sidebar:not(.collapsed) .sidebar-header h3,
-        .sidebar:not(.collapsed) .sidebar-link span,
-        .sidebar:not(.collapsed) .dropdown-icon {
-            opacity: 1;
-            visibility: visible;
-            transition-delay: 0.2s;
-        }
-        
-        /* Main content adjustment for collapsed sidebar */
+        /* Main content adjustment for sidebar */
         .main-content {
-            margin-left: var(--sidebar-collapsed-width) !important;
-            transition: margin-left 0.5s ease;
+            margin-left: 6rem !important; /* 96px = w-24 */
+            transition: margin-left 0.3s ease;
         }
         
-        #sidebar:not(.collapsed) + .main-content,
-        #sidebar.sidebar-hover + .main-content {
-            margin-left: var(--sidebar-width) !important;
+        #sidebar:hover + .main-content {
+            margin-left: 18rem !important; /* 288px = w-72 */
+        }
+        
+        /* Header always on top */
+        header {
+            z-index: 999 !important;
+            position: sticky !important;
+            top: 0 !important;
+            background-color: white !important;
+        }
+        
+        /* Ensure dropdowns are above header */
+        .language-menu,
+        .dropdown-menu {
+            z-index: 1001 !important;
+        }
+        
+        /* Prevent content from overlapping header */
+        .main-content > * {
+            position: relative;
+        }
+        
+        .main-content .z-10 {
+            z-index: 10 !important;
         }
     </style>
     <!-- Instead of using Tailwind's CDN browser build, we'll add the CDN link as a stylesheet -->
@@ -126,193 +73,15 @@
 <body class="bg-slate-100 text-slate-800">
     <div class="flex min-h-screen relative">
         <!-- Sidebar -->
-        <div class="fixed left-0 top-0 bottom-0 z-10 min-h-screen text-white shadow-md overflow-y-auto transition-all duration-500 collapsed"
-            id="sidebar" style="width: 70px; transition: width 0.3s ease;">
-            <div class="p-5 text-center border-b border-white/10 sidebar-header">
-                <h3 class="text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis tracking-wide">Pazar Atlasi
-                </h3>
-            </div>
-            <ul class="py-3 list-none m-0">
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
-                    <a href="/Home/Index"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-tachometer-alt w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Dashboard")</span>
-                    </a>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
-                    <a href="@Url.Action("Index", "Announcement")"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-bullhorn w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Announcements")</span>
-                    </a>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
-                    <a href="@Url.Action("Index", "Campaigns")"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-ad w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Campaigns")</span>
-                    </a>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
-                    <a href="#"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-file-alt w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Content")</span>
-                        <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
-                    </a>
-                    <ul
-                        class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
-                        <li><a href="/Content/Pages"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-list w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Pages")</a></li>
-                        <li><a href="/Content/Sections"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Sections")</a></li>
-                        <li><a href="/Content/Layouts"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-th-large w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Layouts")</a></li>
-                        <li><a href="/Content/WebUrl"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-link w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.WebUrlManagement")</a></li>
-                        <li><a href="#"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-newspaper w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.News")</a></li>
-                        <li><a href="@Url.Action("Index", "Blog")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-blog w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Blog")</a></li>
-                        <li><a href="@Url.Action("Template", "Content")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Templates")</a></li>
-                        <li><a href="@Url.Action("SectionItems", "Content")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-list-ul w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.SectionItems")</a></li>
-                    </ul>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
-                    <a href="#"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-box w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.ProductManagement")</span>
-                        <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
-                    </a>
-                    <ul
-                        class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
-                        <li><a href="@Url.Action("Products", "Metadata")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-box w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Products")</a></li>
-                        <li><a href="@Url.Action("Variants", "Metadata")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-layer-group w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Variants")</a></li>
-                        <li><a href="@Url.Action("Categories", "Metadata")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-tags w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Categories")</a></li>
-                        <li><a href="@Url.Action("Trademarks", "Metadata")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-trademark w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Trademarks")</a></li>
-                        <li><a href="@Url.Action("DataSchemas", "Metadata")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-database w-[18px] mr-2.5 text-center text-sm"></i> Şema Yönetimi</a></li>
-                    </ul>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
-                    <a href="#"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-shopping-cart w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.ECommerce")</span>
-                        <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
-                    </a>
-                    <ul
-                        class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
-                        <li><a href="#"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-receipt w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Orders")</a></li>
-                        <li><a href="#"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-shopping-basket w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Cart")</a></li>
-                        <li><a href="#"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-credit-card w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Payments")</a></li>
-                    </ul>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
-                    <a href="#"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-users w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Users")</span>
-                        <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
-                    </a>
-                    <ul
-                        class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
-                        <li><a href="@Url.Action("Index", "Users")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-plus w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.ManageUsers")</a>
-                        </li>
-                        <li><a href="@Url.Action("Index", "Roles")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-shield w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.ManageRoles")</a></li>
-                        <li><a href="@Url.Action("Index", "Permissions")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-user-cog w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.ManagePermissions")</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item">
-                    <a href="#"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-chart-line w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Analytics")</span>
-                    </a>
-                </li>
-                <li class="relative mx-3 my-1 rounded-lg overflow-hidden sidebar-item has-submenu">
-                    <a href="#"
-                        class="flex items-center py-3 px-4 text-white/90 hover:text-white transition-all duration-300 rounded-lg sidebar-link">
-                        <i class="fas fa-cog w-5 mr-3 text-center text-lg"></i>
-                        <span
-                            class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis font-medium tracking-wide">@Html.L("Navigation.Settings")</span>
-                        <i class="fas fa-chevron-right text-sm opacity-70 transition-transform dropdown-icon"></i>
-                    </a>
-                    <ul
-                        class="max-h-0 overflow-hidden list-none p-0 m-0 transition-all duration-300 rounded-b-lg sidebar-submenu">
-                        <li><a href="@Url.Action("Index", "Settings")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-cogs w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.GeneralSettings")</a></li>
-                        <li><a href="@Url.Action("Countries", "Settings")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-globe w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Countries")</a></li>
-                        <li><a href="@Url.Action("Languages", "Settings")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-language w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Languages")</a></li>
-                        <li><a href="@Url.Action("Localization", "Settings")"
-                                class="flex items-center py-2.5 px-4 pl-11 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"><i
-                                    class="fas fa-globe-americas w-[18px] mr-2.5 text-center text-sm"></i> @Html.L("Navigation.Localization")</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+        @await Html.PartialAsync("_Sidebar")
 
         <!-- Main Content -->
         <div
             class="flex-1 ml-[var(--sidebar-width)] transition-all duration-300 min-h-screen flex flex-col main-content">
             <!-- Header -->
             <header
-                class="h-[60px] bg-white shadow flex items-center justify-between px-6 sticky top-0 z-[99] border-b border-slate-100">
-                <div class="menu-toggle">
-                    <button id="menu-btn"
-                        class="bg-transparent border-0 text-slate-700 text-xl cursor-pointer outline-none w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-slate-100">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-
-                <div class="flex-1 max-w-[450px] mx-8 search-container">
+                class="h-[60px] bg-white shadow-md flex items-center justify-between px-6 sticky top-0 z-20 border-b border-slate-100">
+                <div class="flex-1 max-w-[450px] search-container">
                     <div class="relative w-full search-box">
                         <i
                             class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 text-sm"></i>
