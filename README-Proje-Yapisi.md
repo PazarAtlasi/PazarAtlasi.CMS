@@ -2961,6 +2961,18 @@ Bu güncellemeler ile PazarAtlasi CMS daha kullanıcı dostu, performanslı ve m
 
 PazarAtlasi CMS'e Section yapısına benzer şekilde, ürünler için dinamik özellik yönetimi sistemi eklendi. Bu sistem, her ürünün özelliklerinin ürün bazında değişebileceği durumlar için esnek bir çözüm sunar.
 
+### 🔄 Son Güncelleme (Aralık 2024)
+
+**Category Alanı Kaldırıldı**: DataSchema entity'sinden ve tüm ilgili yapılardan `Category` property'si kaldırıldı. Bu değişiklik şunları içerir:
+
+- ✅ **Entity Katmanı**: `DataSchema` ve `DataSchemaTranslation` entity'lerinden Category kaldırıldı
+- ✅ **ViewModel Katmanı**: Tüm DataSchema ViewModels'den Category property'leri temizlendi
+- ✅ **View Katmanı**: CreateDataSchema ve DataSchemas view'larından Category input/sütun/filtre kaldırıldı
+- ✅ **Configuration Katmanı**: DataSchema ve DataSchemaTranslation configuration'larından Category column ve index kaldırıldı
+- ✅ **Seed Data**: Örnek verilerdeki Category değerleri temizlendi
+
+**Neden Kaldırıldı?**: DataSchema'lar zaten Product'lara bağlı ve Product'ların kendi Category ilişkileri var. DataSchema seviyesinde ayrı bir kategori yönetimi gereksiz karmaşıklık yaratıyordu.
+
 ### 🎯 Sistem Mantığı
 
 DataSchema sistemi, Section-SectionItem-SectionItemField mantığına benzer şekilde çalışır:
@@ -2987,7 +2999,6 @@ public class DataSchema : Entity<int>
     public string Name { get; set; } = string.Empty;           // "iPhone 15 Specifications"
     public string Key { get; set; } = string.Empty;            // "iphone-15-specs"
     public string? Description { get; set; }                   // Şema açıklaması
-    public string? Category { get; set; }                      // "Electronics", "Clothing"
     public string? Configuration { get; set; }                 // JSON konfigürasyon
     public int SortOrder { get; set; } = 0;                   // Sıralama
     public bool IsActive { get; set; } = true;                // Aktif mi?
@@ -3145,7 +3156,7 @@ Sistem tam çoklu dil desteği sunar:
   "schema": {
     "name": "Smartphone Specifications",
     "key": "smartphone-specs",
-    "category": "Electronics"
+    "description": "Detailed specifications for smartphones"
   },
   "fields": [
     {
@@ -3272,7 +3283,7 @@ Sistem tam çoklu dil desteği sunar:
 
 ```sql
 -- Ana şema tablosu
-DataSchemas (Id, Name, Key, Description, Category, Configuration, SortOrder, IsActive, ...)
+DataSchemas (Id, Name, Key, Description, Configuration, SortOrder, IsActive, ...)
 
 -- Alan tanımları tablosu
 DataSchemaFields (Id, DataSchemaId, FieldKey, FieldName, Type, IsRequired, IsTranslatable,
@@ -3287,7 +3298,7 @@ DataSchemaFieldValues (Id, ProductId, SchemaId, FieldId, Value, JsonValue, Numer
                        BooleanValue, DateValue, SortOrder, ...)
 
 -- Çeviri tabloları
-DataSchemaTranslations (Id, DataSchemaId, LanguageId, Name, Description, Category, ...)
+DataSchemaTranslations (Id, DataSchemaId, LanguageId, Name, Description, ...)
 DataSchemaFieldTranslations (Id, DataSchemaFieldId, LanguageId, FieldName, Description,
                               Placeholder, Unit, OptionsJson, ...)
 DataSchemaFieldValueTranslations (Id, DataSchemaFieldValueId, LanguageId, Value, JsonValue, ...)
