@@ -10,6 +10,7 @@ using PazarAtlasi.CMS.Domain.Entities.AgentMarketplace;
 using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Domain.Enums;
 using PazarAtlasi.CMS.Services.Interfaces;
+using PazarAtlasi.CMS.Models.ViewModels;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -31,36 +32,63 @@ namespace PazarAtlasi.CMS.Controllers
         /// <summary>
         /// Main marketplace view - shows all available agents in a grid
         /// </summary>
-        public async Task<IActionResult> Index(AgentCategory? category = null, AgentType? type = null, string search = null)
+        public async Task<IActionResult> Index(AgentMarketplaceFilterViewModel filter, int page = 1, int pageSize = 12)
         {
+            filter ??= new AgentMarketplaceFilterViewModel();
+            
             var query = _context.Agents
                 .Include(a => a.Pricings.Where(p => p.IsActive))
                 .Include(a => a.Capabilities.Where(c => c.IsKeyFeature))
                 .Where(a => a.IsActive);
 
             // Apply filters
-            if (category.HasValue)
-                query = query.Where(a => a.Category == category.Value);
+            if (filter.Category.HasValue)
+                query = query.Where(a => a.Category == filter.Category.Value);
 
-            if (type.HasValue)
-                query = query.Where(a => a.Type == type.Value);
+            if (filter.Type.HasValue)
+                query = query.Where(a => a.Type == filter.Type.Value);
 
-            if (!string.IsNullOrEmpty(search))
-                query = query.Where(a => a.Name.Contains(search) || a.Description.Contains(search));
+            if (!string.IsNullOrEmpty(filter.SearchTerm))
+                query = query.Where(a => a.Name.Contains(filter.SearchTerm) || a.Description.Contains(filter.SearchTerm));
 
+            if (filter.IsFeatured.HasValue)
+                query = query.Where(a => a.IsFeatured == filter.IsFeatured.Value);
+
+            // Apply sorting
+            query = filter.SortBy?.ToLower() switch
+            {
+                "name" => filter.SortDirection == "desc" ? query.OrderByDescending(a => a.Name) : query.OrderBy(a => a.Name),
+                "category" => filter.SortDirection == "desc" ? query.OrderByDescending(a => a.Category) : query.OrderBy(a => a.Category),
+                "type" => filter.SortDirection == "desc" ? query.OrderByDescending(a => a.Type) : query.OrderBy(a => a.Type),
+                _ => query.OrderByDescending(a => a.IsFeatured).ThenBy(a => a.SortOrder).ThenBy(a => a.Name)
+            };
+
+            var totalCount = await query.CountAsync();
             var agents = await query
-                .OrderByDescending(a => a.IsFeatured)
-                .ThenBy(a => a.SortOrder)
-                .ThenBy(a => a.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            ViewBag.Categories = Enum.GetValues<AgentCategory>().Cast<AgentCategory>();
-            ViewBag.Types = Enum.GetValues<AgentType>().Cast<AgentType>();
-            ViewBag.CurrentCategory = category;
-            ViewBag.CurrentType = type;
-            ViewBag.CurrentSearch = search;
+            var viewModel = new AgentMarketplaceIndexViewModel
+            {
+                Agents = agents.Select(MapToAgentCardViewModel).ToList(),
+                Categories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
+                { 
+                    Value = c, 
+                    DisplayName = c.ToString() 
+                }).ToList(),
+                Types = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
+                { 
+                    Value = t, 
+                    DisplayName = t.ToString() 
+                }).ToList(),
+                Filter = filter,
+                TotalCount = totalCount,
+                PageSize = pageSize,
+                CurrentPage = page
+            };
 
-            return View(agents);
+            return View(viewModel);
         }
 
         /// <summary>
@@ -77,7 +105,21 @@ namespace PazarAtlasi.CMS.Controllers
             if (agent == null)
                 return NotFound();
 
-            return View(agent);
+            // TODO: Get current user ID from authentication
+            int currentUserId = 1; // Placeholder
+
+            // Check if user has active subscription
+            var userSubscription = await _context.AgentSubscriptions
+                .Include(s => s.Pricing)
+                .FirstOrDefaultAsync(s => s.AgentId == id && 
+                                        s.UserId == currentUserId && 
+                                        s.Status == SubscriptionStatus.Active);
+
+            var viewModel = MapToAgentDetailsViewModel(agent);
+            viewModel.UserSubscription = userSubscription != null ? MapToAgentSubscriptionViewModel(userSubscription) : null;
+            viewModel.CanTest = true; // For now, allow all users to test
+
+            return View(viewModel);
         }
 
         /// <summary>
@@ -140,7 +182,25 @@ namespace PazarAtlasi.CMS.Controllers
                 .OrderByDescending(s => s.CreatedAt)
                 .ToListAsync();
 
-            return View(subscriptions);
+            var viewModel = new MySubscriptionsViewModel
+            {
+                ActiveSubscriptions = subscriptions
+                    .Where(s => s.Status == SubscriptionStatus.Active)
+                    .Select(MapToAgentSubscriptionViewModel)
+                    .ToList(),
+                ExpiredSubscriptions = subscriptions
+                    .Where(s => s.Status != SubscriptionStatus.Active)
+                    .Select(MapToAgentSubscriptionViewModel)
+                    .ToList(),
+                TotalMonthlyCost = subscriptions
+                    .Where(s => s.Status == SubscriptionStatus.Active && s.Pricing.Type == PricingType.Monthly)
+                    .Sum(s => s.Pricing.Price),
+                TotalUsageThisMonth = subscriptions
+                    .Where(s => s.Status == SubscriptionStatus.Active)
+                    .Sum(s => s.CurrentUsage)
+            };
+
+            return View(viewModel);
         }
 
         /// <summary>
@@ -225,11 +285,36 @@ namespace PazarAtlasi.CMS.Controllers
         /// </summary>
         public IActionResult Create()
         {
-            ViewBag.AgentTypes = Enum.GetValues<AgentType>().Cast<AgentType>();
-            ViewBag.AgentCategories = Enum.GetValues<AgentCategory>().Cast<AgentCategory>();
-            ViewBag.ExecutionTypes = Enum.GetValues<AgentExecutionType>().Cast<AgentExecutionType>();
+            var viewModel = new AgentCreateEditViewModel
+            {
+                AvailableTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
+                { 
+                    Value = t, 
+                    DisplayName = t.ToString() 
+                }).ToList(),
+                AvailableCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
+                { 
+                    Value = c, 
+                    DisplayName = c.ToString() 
+                }).ToList(),
+                AvailableExecutionTypes = Enum.GetValues<AgentExecutionType>().Select(e => new AgentExecutionTypeViewModel 
+                { 
+                    Value = e, 
+                    DisplayName = e.ToString() 
+                }).ToList(),
+                AvailableIntegrationTypes = Enum.GetValues<IntegrationType>().Select(i => new IntegrationTypeViewModel 
+                { 
+                    Value = i, 
+                    DisplayName = GetIntegrationTypeDisplayName(i) 
+                }).ToList(),
+                AvailableIntegrationTriggers = Enum.GetValues<IntegrationTrigger>().Select(t => new IntegrationTriggerViewModel 
+                { 
+                    Value = t, 
+                    DisplayName = t.ToString() 
+                }).ToList()
+            };
             
-            return View(new Agent());
+            return View(viewModel);
         }
 
         /// <summary>
@@ -237,20 +322,47 @@ namespace PazarAtlasi.CMS.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Agent agent, List<AgentIntegration> integrations)
+        public async Task<IActionResult> Create(AgentCreateEditViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var agent = MapToAgentEntity(viewModel);
+
                 // Process integrations
-                if (integrations != null && integrations.Any())
+                if (viewModel.Integrations != null && viewModel.Integrations.Any())
                 {
-                    foreach (var integration in integrations.Where(i => !string.IsNullOrEmpty(i.Name)))
+                    int integrationIndex = 0;
+                    foreach (var integrationViewModel in viewModel.Integrations.Where(i => !string.IsNullOrEmpty(i.Name)))
                     {
+                        var integration = MapToAgentIntegrationEntity(integrationViewModel);
                         // Convert form data to JSON configuration
-                        var configJson = ProcessIntegrationConfiguration(integration);
+                        var configJson = ProcessIntegrationConfiguration(integration, integrationIndex);
                         integration.ConfigurationJson = configJson;
                         integration.Agent = agent;
                         agent.Integrations.Add(integration);
+                        integrationIndex++;
+                    }
+                }
+
+                // Process capabilities
+                if (viewModel.Capabilities != null && viewModel.Capabilities.Any())
+                {
+                    foreach (var capabilityViewModel in viewModel.Capabilities.Where(c => !string.IsNullOrEmpty(c.Name)))
+                    {
+                        var capability = MapToAgentCapabilityEntity(capabilityViewModel);
+                        capability.Agent = agent;
+                        agent.Capabilities.Add(capability);
+                    }
+                }
+
+                // Process pricings
+                if (viewModel.Pricings != null && viewModel.Pricings.Any())
+                {
+                    foreach (var pricingViewModel in viewModel.Pricings)
+                    {
+                        var pricing = MapToAgentPricingEntity(pricingViewModel);
+                        pricing.Agent = agent;
+                        agent.Pricings.Add(pricing);
                     }
                 }
 
@@ -261,27 +373,33 @@ namespace PazarAtlasi.CMS.Controllers
                 return RedirectToAction(nameof(Manage));
             }
 
-            ViewBag.AgentTypes = Enum.GetValues<AgentType>().Cast<AgentType>();
-            ViewBag.AgentCategories = Enum.GetValues<AgentCategory>().Cast<AgentCategory>();
-            ViewBag.ExecutionTypes = Enum.GetValues<AgentExecutionType>().Cast<AgentExecutionType>();
-            
-            return View(agent);
+            // Reload dropdown data
+            PopulateDropdownData(viewModel);
+            return View(viewModel);
         }
 
         /// <summary>
         /// Process integration configuration from form data to JSON
         /// </summary>
-        private string ProcessIntegrationConfiguration(AgentIntegration integration)
+        private string ProcessIntegrationConfiguration(AgentIntegration integration, int integrationIndex)
         {
             var config = new Dictionary<string, object>();
 
-            // Get configuration from Request.Form based on integration type
-            var formKeys = Request.Form.Keys.Where(k => k.Contains($"ConfigurationJson."));
+            // Get configuration from Request.Form based on integration index
+            var formKeys = Request.Form.Keys.Where(k => k.Contains($"Integrations[{integrationIndex}].ConfigurationJson."));
+            
+            // Debug: Log all form keys for this integration
+            var allKeys = Request.Form.Keys.ToList();
+            System.Diagnostics.Debug.WriteLine($"All form keys: {string.Join(", ", allKeys)}");
+            System.Diagnostics.Debug.WriteLine($"Looking for keys containing: Integrations[{integrationIndex}].ConfigurationJson.");
+            System.Diagnostics.Debug.WriteLine($"Found keys: {string.Join(", ", formKeys)}");
             
             foreach (var key in formKeys)
             {
                 var configKey = key.Split('.').Last();
                 var value = Request.Form[key].ToString();
+                
+                System.Diagnostics.Debug.WriteLine($"Processing key: {key}, configKey: {configKey}, value: {value}");
                 
                 if (!string.IsNullOrEmpty(value))
                 {
@@ -305,10 +423,14 @@ namespace PazarAtlasi.CMS.Controllers
                 }
             }
 
-            return JsonSerializer.Serialize(config, new JsonSerializerOptions 
+            var json = JsonSerializer.Serialize(config, new JsonSerializerOptions 
             { 
                 WriteIndented = true 
             });
+            
+            System.Diagnostics.Debug.WriteLine($"Generated JSON for integration {integrationIndex}: {json}");
+            
+            return json;
         }
 
         /// <summary>
@@ -547,13 +669,16 @@ namespace PazarAtlasi.CMS.Controllers
                 {
                     var result = await _n8nService.ExecuteAgentAsync(agent, integration, inputData);
                     
-                    return Ok(new 
-                    { 
-                        success = result.Success,
-                        data = result.Data,
-                        error = result.ErrorMessage,
-                        duration = result.ExecutionDurationMs
-                    });
+                    var testResult = new TestAgentResultViewModel
+                    {
+                        Success = result.Success,
+                        Data = result.Data,
+                        ErrorMessage = result.ErrorMessage,
+                        ExecutionDurationMs = result.ExecutionDurationMs,
+                        ExecutionTime = result.ExecutionTime
+                    };
+                    
+                    return Ok(testResult);
                 }
 
                 return BadRequest(new { error = "Test execution not supported for this integration type" });
@@ -607,6 +732,247 @@ namespace PazarAtlasi.CMS.Controllers
         private async Task<bool> AgentExists(int id)
         {
             return await _context.Agents.AnyAsync(e => e.Id == id);
+        }
+
+        // ===== MAPPING METHODS =====
+
+        private AgentCardViewModel MapToAgentCardViewModel(Agent agent)
+        {
+            return new AgentCardViewModel
+            {
+                Id = agent.Id,
+                Name = agent.Name,
+                Description = agent.Description,
+                IconClass = agent.IconClass,
+                ImageUrl = agent.ImageUrl,
+                Type = agent.Type,
+                Category = agent.Category,
+                IsFeatured = agent.IsFeatured,
+                IsActive = agent.IsActive,
+                TopCapabilities = agent.Capabilities
+                    .Where(c => c.IsKeyFeature)
+                    .OrderBy(c => c.SortOrder)
+                    .Take(3)
+                    .Select(MapToAgentCapabilityViewModel)
+                    .ToList(),
+                Pricings = agent.Pricings
+                    .Where(p => p.IsActive)
+                    .Select(MapToAgentPricingViewModel)
+                    .ToList(),
+                StartingPrice = agent.Pricings
+                    .Where(p => p.IsActive)
+                    .OrderBy(p => p.Price)
+                    .FirstOrDefault()?.Price,
+                StartingPriceCurrency = agent.Pricings
+                    .Where(p => p.IsActive)
+                    .OrderBy(p => p.Price)
+                    .FirstOrDefault()?.Currency
+            };
+        }
+
+        private AgentDetailsViewModel MapToAgentDetailsViewModel(Agent agent)
+        {
+            return new AgentDetailsViewModel
+            {
+                Id = agent.Id,
+                Name = agent.Name,
+                Description = agent.Description,
+                DetailedDescription = agent.DetailedDescription,
+                IconClass = agent.IconClass,
+                ImageUrl = agent.ImageUrl,
+                Type = agent.Type,
+                Category = agent.Category,
+                ExecutionType = agent.ExecutionType,
+                IsActive = agent.IsActive,
+                IsFeatured = agent.IsFeatured,
+                Version = agent.Version,
+                Capabilities = agent.Capabilities
+                    .OrderBy(c => c.SortOrder)
+                    .Select(MapToAgentCapabilityViewModel)
+                    .ToList(),
+                Pricings = agent.Pricings
+                    .Where(p => p.IsActive)
+                    .Select(MapToAgentPricingViewModel)
+                    .ToList(),
+                Integrations = agent.Integrations
+                    .Where(i => i.IsActive)
+                    .Select(MapToAgentIntegrationViewModel)
+                    .ToList()
+            };
+        }
+
+        private AgentCapabilityViewModel MapToAgentCapabilityViewModel(AgentCapability capability)
+        {
+            return new AgentCapabilityViewModel
+            {
+                Id = capability.Id,
+                Name = capability.Name,
+                Description = capability.Description,
+                IconClass = capability.IconClass,
+                IsKeyFeature = capability.IsKeyFeature,
+                SortOrder = capability.SortOrder
+            };
+        }
+
+        private AgentPricingViewModel MapToAgentPricingViewModel(AgentPricing pricing)
+        {
+            return new AgentPricingViewModel
+            {
+                Id = pricing.Id,
+                Type = pricing.Type,
+                Price = pricing.Price,
+                Currency = pricing.Currency,
+                UsageLimit = pricing.UsageLimit,
+                IsDefault = pricing.IsDefault,
+                Description = pricing.Description ?? string.Empty,
+                Features = pricing.Features ?? string.Empty,
+                SortOrder = pricing.SortOrder
+            };
+        }
+
+        private AgentIntegrationViewModel MapToAgentIntegrationViewModel(AgentIntegration integration)
+        {
+            return new AgentIntegrationViewModel
+            {
+                Id = integration.Id,
+                Type = integration.Type,
+                Name = integration.Name,
+                ConfigurationJson = integration.ConfigurationJson,
+                TriggerType = integration.TriggerType,
+                Priority = integration.Priority,
+                IsActive = integration.IsActive,
+                Metadata = integration.Metadata
+            };
+        }
+
+        private AgentSubscriptionViewModel MapToAgentSubscriptionViewModel(AgentSubscription subscription)
+        {
+            return new AgentSubscriptionViewModel
+            {
+                Id = subscription.Id,
+                AgentId = subscription.AgentId,
+                AgentName = subscription.Agent?.Name ?? "Unknown",
+                UserId = subscription.UserId.ToString(),
+                Pricing = MapToAgentPricingViewModel(subscription.Pricing),
+                StartDate = subscription.StartDate,
+                EndDate = subscription.EndDate,
+                Status = subscription.Status,
+                CurrentUsage = subscription.CurrentUsage,
+                UsageLimit = subscription.Pricing?.UsageLimit,
+                AgentCount = subscription.AgentCount ?? 1,
+                TotalCost = subscription.TotalCost,
+                NextBillingDate = subscription.NextBillingDate
+            };
+        }
+
+        private Agent MapToAgentEntity(AgentCreateEditViewModel viewModel)
+        {
+            return new Agent
+            {
+                Id = viewModel.Id,
+                Name = viewModel.Name,
+                Description = viewModel.Description,
+                DetailedDescription = viewModel.DetailedDescription,
+                Type = viewModel.Type,
+                Category = viewModel.Category,
+                ExecutionType = viewModel.ExecutionType,
+                IconClass = viewModel.IconClass,
+                ImageUrl = viewModel.ImageUrl,
+                IsActive = viewModel.IsActive,
+                IsFeatured = viewModel.IsFeatured,
+                SortOrder = viewModel.SortOrder,
+                Version = viewModel.Version
+            };
+        }
+
+        private AgentCapability MapToAgentCapabilityEntity(AgentCapabilityCreateEditViewModel viewModel)
+        {
+            return new AgentCapability
+            {
+                Id = viewModel.Id,
+                Name = viewModel.Name,
+                Description = viewModel.Description,
+                IconClass = viewModel.IconClass,
+                IsKeyFeature = viewModel.IsKeyFeature,
+                SortOrder = viewModel.SortOrder,
+                IsActive = viewModel.IsActive
+            };
+        }
+
+        private AgentPricing MapToAgentPricingEntity(AgentPricingCreateEditViewModel viewModel)
+        {
+            return new AgentPricing
+            {
+                Id = viewModel.Id,
+                Type = viewModel.Type,
+                Price = viewModel.Price,
+                Currency = viewModel.Currency,
+                UsageLimit = viewModel.UsageLimit,
+                IsDefault = viewModel.IsDefault,
+                IsActive = viewModel.IsActive,
+                Description = viewModel.Description,
+                Features = viewModel.Features
+            };
+        }
+
+        private AgentIntegration MapToAgentIntegrationEntity(AgentIntegrationCreateEditViewModel viewModel)
+        {
+            return new AgentIntegration
+            {
+                Id = viewModel.Id,
+                Type = viewModel.Type,
+                Name = viewModel.Name,
+                ConfigurationJson = viewModel.ConfigurationJson,
+                TriggerType = viewModel.TriggerType,
+                Priority = viewModel.Priority,
+                IsActive = viewModel.IsActive ?? true,
+                Metadata = viewModel.Metadata
+            };
+        }
+
+        private void PopulateDropdownData(AgentCreateEditViewModel viewModel)
+        {
+            viewModel.AvailableTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
+            { 
+                Value = t, 
+                DisplayName = t.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
+            { 
+                Value = c, 
+                DisplayName = c.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableExecutionTypes = Enum.GetValues<AgentExecutionType>().Select(e => new AgentExecutionTypeViewModel 
+            { 
+                Value = e, 
+                DisplayName = e.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableIntegrationTypes = Enum.GetValues<IntegrationType>().Select(i => new IntegrationTypeViewModel 
+            { 
+                Value = i, 
+                DisplayName = GetIntegrationTypeDisplayName(i) 
+            }).ToList();
+            
+            viewModel.AvailableIntegrationTriggers = Enum.GetValues<IntegrationTrigger>().Select(t => new IntegrationTriggerViewModel 
+            { 
+                Value = t, 
+                DisplayName = t.ToString() 
+            }).ToList();
+        }
+
+        private string GetIntegrationTypeDisplayName(IntegrationType type)
+        {
+            return type switch
+            {
+                IntegrationType.N8n => "N8n Workflow",
+                IntegrationType.CustomAPI => "Custom API",
+                IntegrationType.Webhook => "Webhook",
+                IntegrationType.Internal => "Internal Service",
+                _ => type.ToString()
+            };
         }
     }
 }

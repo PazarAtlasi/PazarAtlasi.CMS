@@ -1,4 +1,4 @@
-@model List<PazarAtlasi.CMS.Domain.Entities.AgentMarketplace.AgentSubscription>
+@model PazarAtlasi.CMS.Models.ViewModels.MySubscriptionsViewModel
 @using PazarAtlasi.CMS.Domain.Enums
 
 @{
@@ -27,7 +27,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
-        @if (Model.Any())
+        @if (Model.ActiveSubscriptions.Any() || Model.ExpiredSubscriptions.Any())
         {
             <!-- Subscription Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -37,7 +37,7 @@
                             <i class="fas fa-robot text-blue-600 text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-2xl font-bold text-slate-900">@Model.Count</div>
+                            <div class="text-2xl font-bold text-slate-900">@(Model.ActiveSubscriptions.Count + Model.ExpiredSubscriptions.Count)</div>
                             <div class="text-sm text-slate-500">Total Subscriptions</div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                             <i class="fas fa-check-circle text-green-600 text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-2xl font-bold text-slate-900">@Model.Count(s => s.Status == SubscriptionStatus.Active)</div>
+                            <div class="text-2xl font-bold text-slate-900">@Model.ActiveSubscriptions.Count</div>
                             <div class="text-sm text-slate-500">Active</div>
                         </div>
                     </div>
@@ -61,8 +61,8 @@
                             <i class="fas fa-pause-circle text-yellow-600 text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-2xl font-bold text-slate-900">@Model.Count(s => s.Status == SubscriptionStatus.Paused)</div>
-                            <div class="text-sm text-slate-500">Paused</div>
+                            <div class="text-2xl font-bold text-slate-900">@Model.ExpiredSubscriptions.Count</div>
+                            <div class="text-sm text-slate-500">Expired</div>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                             <i class="fas fa-chart-line text-slate-600 text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-2xl font-bold text-slate-900">@Model.Sum(s => s.CurrentUsage)</div>
+                            <div class="text-2xl font-bold text-slate-900">@Model.TotalUsageThisMonth</div>
                             <div class="text-sm text-slate-500">Total Usage</div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
 
             <!-- Subscriptions List -->
             <div class="space-y-6">
-                @foreach (var subscription in Model.OrderByDescending(s => s.CreatedAt))
+                @foreach (var subscription in Model.ActiveSubscriptions.Concat(Model.ExpiredSubscriptions).OrderByDescending(s => s.StartDate))
                 {
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                         <div class="p-6">
@@ -90,17 +90,17 @@
                                 <!-- Agent Info -->
                                 <div class="flex items-start">
                                     <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl mr-6 flex-shrink-0">
-                                        <i class="@subscription.Agent.IconClass"></i>
+                                        <i class="fas fa-robot"></i>
                                     </div>
                                     <div>
-                                        <h3 class="text-xl font-semibold text-slate-900 mb-1">@subscription.Agent.Name</h3>
-                                        <p class="text-slate-600 mb-3">@subscription.Agent.Description</p>
+                                        <h3 class="text-xl font-semibold text-slate-900 mb-1">@subscription.AgentName</h3>
+                                        <p class="text-slate-600 mb-3">Subscription Details</p>
                                         <div class="flex items-center space-x-4">
                                             <span class="px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full">
-                                                @subscription.Agent.Category
+                                                Subscription
                                             </span>
-                                            <span class="px-3 py-1 text-sm font-medium @(subscription.Status == SubscriptionStatus.Active ? "bg-green-100 text-green-800" : subscription.Status == SubscriptionStatus.Paused ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800") rounded-full">
-                                                @subscription.Status
+                                            <span class="px-3 py-1 text-sm font-medium @(subscription.IsActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800") rounded-full">
+                                                @subscription.StatusDisplayName
                                             </span>
                                         </div>
                                     </div>
@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="text-sm text-slate-500">
                                         @subscription.Pricing.Type
-                                        @if (subscription.AgentCount.HasValue && subscription.Pricing.Type == PricingType.PerAgent)
+                                        @if (subscription.AgentCount > 1 && subscription.Pricing.Type == PricingType.PerAgent)
                                         {
                                             <span> × @subscription.AgentCount agents</span>
                                         }

@@ -1,4 +1,4 @@
-@model List<PazarAtlasi.CMS.Domain.Entities.AgentMarketplace.Agent>
+@model PazarAtlasi.CMS.Models.ViewModels.AgentMarketplaceIndexViewModel
 @using PazarAtlasi.CMS.Domain.Enums
 
 @{
@@ -22,11 +22,11 @@
                 <!-- Quick Stats -->
                 <div class="flex space-x-6">
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600">@Model.Count</div>
+                        <div class="text-2xl font-bold text-blue-600">@Model.TotalCount</div>
                         <div class="text-sm text-slate-500">Available Agents</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-green-600">@Model.Count(a => a.IsFeatured)</div>
+                        <div class="text-2xl font-bold text-green-600">@Model.Agents.Count(a => a.IsFeatured)</div>
                         <div class="text-sm text-slate-500">Featured</div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="flex-1 min-w-[300px]">
                     <div class="relative">
                         <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" name="search" value="@ViewBag.CurrentSearch" 
+                        <input type="text" name="Filter.SearchTerm" value="@Model.Filter.SearchTerm" 
                                placeholder="Search agents..." 
                                class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
@@ -50,12 +50,12 @@
 
                 <!-- Category Filter -->
                 <div class="min-w-[180px]">
-                    <select name="category" class="w-full py-3 px-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select name="Filter.Category" class="w-full py-3 px-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Categories</option>
-                        @foreach (var category in ViewBag.Categories)
+                        @foreach (var category in Model.Categories)
                         {
-                            <!option value="@category" @(ViewBag.CurrentCategory?.ToString() == category.ToString() ? "selected" : "")>
-                                @category
+                            <!option value="@category.Value" @(Model.Filter.Category?.ToString() == category.Value.ToString() ? "selected=\"selected\"" : "")>
+                                @category.DisplayName
                             </!option>
                         }
                     </select>
@@ -63,12 +63,12 @@
 
                 <!-- Type Filter -->
                 <div class="min-w-[180px]">
-                    <select name="type" class="w-full py-3 px-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select name="Filter.Type" class="w-full py-3 px-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">All Types</option>
-                        @foreach (var type in ViewBag.Types)
+                        @foreach (var type in Model.Types)
                         {
-                            <!option value="@type" @(ViewBag.CurrentType?.ToString() == type.ToString() ? "selected" : "")>
-                                @type
+                            <!option value="@type.Value" @(Model.Filter.Type?.ToString() == type.Value.ToString() ? "selected=\"selected\"" : "")>
+                                @type.DisplayName
                             </!option>
                         }
                     </select>
@@ -80,7 +80,7 @@
                 </button>
 
                 <!-- Clear Filters -->
-                @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch) || ViewBag.CurrentCategory != null || ViewBag.CurrentType != null)
+                @if (!string.IsNullOrEmpty(Model.Filter.SearchTerm) || Model.Filter.Category != null || Model.Filter.Type != null)
                 {
                     <a href="@Url.Action("Index")" class="px-4 py-3 text-slate-600 hover:text-slate-800 transition-colors">
                         <i class="fas fa-times mr-1"></i>Clear
@@ -90,10 +90,10 @@
         </div>
 
         <!-- Agents Grid -->
-        @if (Model.Any())
+        @if (Model.Agents.Any())
         {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach (var agent in Model)
+                @foreach (var agent in Model.Agents)
                 {
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300 overflow-hidden group">
                         <!-- Agent Header -->
@@ -125,21 +125,15 @@
                             <p class="text-slate-600 text-sm mb-4 line-clamp-3">@agent.Description</p>
 
                             <!-- Key Capabilities -->
-                            @if (agent.Capabilities.Any())
+                            @if (agent.TopCapabilities.Any())
                             {
                                 <div class="mb-4">
                                     <h4 class="text-sm font-medium text-slate-700 mb-2">Key Features:</h4>
                                     <div class="flex flex-wrap gap-1">
-                                        @foreach (var capability in agent.Capabilities.Take(3))
+                                        @foreach (var capability in agent.TopCapabilities)
                                         {
                                             <span class="px-2 py-1 text-xs bg-slate-100 text-slate-600 rounded-md">
                                                 <i class="@capability.IconClass mr-1"></i>@capability.Name
-                                            </span>
-                                        }
-                                        @if (agent.Capabilities.Count > 3)
-                                        {
-                                            <span class="px-2 py-1 text-xs bg-slate-100 text-slate-600 rounded-md">
-                                                +@(agent.Capabilities.Count - 3) more
                                             </span>
                                         }
                                     </div>
@@ -155,11 +149,12 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <div class="text-2xl font-bold text-slate-900">
-                                            $@defaultPricing.Price.ToString("0.00")
+                                            @defaultPricing.FormattedPrice
                                             <span class="text-sm font-normal text-slate-500">
                                                 /@(defaultPricing.Type == PricingType.Monthly ? "month" : 
                                                    defaultPricing.Type == PricingType.PerUse ? "use" : 
-                                                   defaultPricing.Type == PricingType.PerAgent ? "agent" : "")
+                                                   defaultPricing.Type == PricingType.PerAgent ? "agent" : 
+                                                   defaultPricing.Type == PricingType.OneTime ? "once" : "")
                                             </span>
                                         </div>
                                         @if (defaultPricing.UsageLimit.HasValue)
@@ -199,6 +194,45 @@
                     View All Agents
                 </a>
             </div>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="flex justify-center mt-12">
+                    <nav class="flex items-center space-x-2">
+                        @if (Model.CurrentPage > 1)
+                        {
+                            <a href="@Url.Action("Index", new { page = Model.CurrentPage - 1, Filter = Model.Filter })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        }
+
+                        @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                        {
+                            @if (i == Model.CurrentPage)
+                            {
+                                <span class="px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md">@i</span>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", new { page = i, Filter = Model.Filter })" 
+                                   class="px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors">
+                                    @i
+                                </a>
+                            }
+                        }
+
+                        @if (Model.CurrentPage < Model.TotalPages)
+                        {
+                            <a href="@Url.Action("Index", new { page = Model.CurrentPage + 1, Filter = Model.Filter })" 
+                               class="px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        }
+                    </nav>
+                </div>
+            }
         }
     </div>
 </div>

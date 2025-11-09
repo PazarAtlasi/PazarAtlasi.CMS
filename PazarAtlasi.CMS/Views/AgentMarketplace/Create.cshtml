@@ -1,4 +1,4 @@
-@model PazarAtlasi.CMS.Domain.Entities.AgentMarketplace.Agent
+@model PazarAtlasi.CMS.Models.ViewModels.AgentCreateEditViewModel
 @using PazarAtlasi.CMS.Domain.Enums
 
 @{
@@ -57,9 +57,9 @@
                         <select asp-for="Type"
                             class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Type</option>
-                            @foreach (var type in ViewBag.AgentTypes)
+                            @foreach (var type in Model.AvailableTypes)
                             {
-                                <option value="@type">@type</option>
+                                <option value="@type.Value">@type.DisplayName</option>
                             }
                         </select>
                         <span asp-validation-for="Type" class="text-red-600 text-sm"></span>
@@ -70,9 +70,9 @@
                         <select asp-for="Category"
                             class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Category</option>
-                            @foreach (var category in ViewBag.AgentCategories)
+                            @foreach (var category in Model.AvailableCategories)
                             {
-                                <option value="@category">@category</option>
+                                <option value="@category.Value">@category.DisplayName</option>
                             }
                         </select>
                         <span asp-validation-for="Category" class="text-red-600 text-sm"></span>
@@ -84,9 +84,9 @@
                         <select asp-for="ExecutionType"
                             class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Execution Type</option>
-                            @foreach (var execType in ViewBag.ExecutionTypes)
+                            @foreach (var execType in Model.AvailableExecutionTypes)
                             {
-                                <option value="@execType">@execType</option>
+                                <option value="@execType.Value">@execType.DisplayName</option>
                             }
                         </select>
                         <span asp-validation-for="ExecutionType" class="text-red-600 text-sm"></span>
@@ -191,10 +191,10 @@
                                 <select name="Integrations[INDEX].Type"
                                     class="integration-type w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="">Select Type</option>
-                                    <option value="N8nWorkflow">N8n Workflow</option>
-                                    <option value="CustomApi">Custom API</option>
-                                    <option value="Webhook">Webhook</option>
-                                    <option value="InternalService">Internal Service</option>
+                                    @foreach (var integrationType in Model.AvailableIntegrationTypes)
+                                    {
+                                        <option value="@((int)integrationType.Value)">@integrationType.DisplayName</option>
+                                    }
                                 </select>
                             </div>
 
@@ -202,10 +202,10 @@
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Trigger Type</label>
                                 <select name="Integrations[INDEX].TriggerType"
                                     class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="Manual">Manual</option>
-                                    <option value="ApiCall">API Call</option>
-                                    <option value="Schedule">Schedule</option>
-                                    <option value="Event">Event</option>
+                                    @foreach (var triggerType in Model.AvailableIntegrationTriggers)
+                                    {
+                                        <option value="@((int)triggerType.Value)">@triggerType.DisplayName</option>
+                                    }
                                 </select>
                             </div>
 
@@ -224,7 +224,8 @@
 
                         <div class="mt-4">
                             <div class="flex items-center">
-                                <input type="checkbox" name="Integrations[INDEX].IsActive"
+                                <input type="hidden" name="Integrations[INDEX].IsActive" value="false">
+                                <input type="checkbox" name="Integrations[INDEX].IsActive" value="true"
                                     class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" checked>
                                 <label class="ml-2 block text-sm text-slate-700">Active</label>
                             </div>
@@ -265,7 +266,7 @@
 
         // Integration configuration templates
         const integrationConfigs = {
-            'N8nWorkflow': {
+            '1': { // N8n
                 title: 'N8n Workflow Configuration',
                 fields: [
                     {
@@ -328,7 +329,7 @@
                     }
                 ]
             },
-            'CustomApi': {
+            '2': { // CustomAPI
                 title: 'Custom API Configuration',
                 fields: [
                     {
@@ -373,7 +374,7 @@
                     }
                 ]
             },
-            'Webhook': {
+            '3': { // Webhook
                 title: 'Webhook Configuration',
                 fields: [
                     {
@@ -400,7 +401,7 @@
                     }
                 ]
             },
-            'InternalService': {
+            '4': { // Internal
                 title: 'Internal Service Configuration',
                 fields: [
                     {
@@ -477,8 +478,8 @@
 
             const config = integrationConfigs[type];
             let html = `<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 class="font-medium text-blue-900 mb-3">${config.title}</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+                        <h4 class="font-medium text-blue-900 mb-3">${config.title}</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
 
             config.fields.forEach(field => {
                 html += generateFieldHtml(field, index);
@@ -502,19 +503,19 @@
                 case 'password':
                 case 'number':
                     inputHtml = `<input type="${field.type}" name="${fieldName}" 
-                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                            placeholder="${field.placeholder || ''}" 
-                            ${field.required ? 'required' : ''}
-                            ${field.min ? `min="${field.min}"` : ''}
-                            ${field.max ? `max="${field.max}"` : ''}
-                            ${field.default ? `value="${field.default}"` : ''}
-                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
+                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                placeholder="${field.placeholder || ''}" 
+                                ${field.required ? 'required' : ''}
+                                ${field.min ? `min="${field.min}"` : ''}
+                                ${field.max ? `max="${field.max}"` : ''}
+                                ${field.default ? `value="${field.default}"` : ''}
+                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
                     break;
 
                 case 'select':
                     inputHtml = `<select name="${fieldName}" 
-                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
+                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
                     field.options.forEach(option => {
                         const selected = field.default === option ? 'selected' : '';
                         inputHtml += `<option value="${option}" ${selected}>${option}</option>`;
@@ -524,15 +525,15 @@
 
                 case 'textarea':
                     inputHtml = `<textarea name="${fieldName}" rows="3"
-                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                            placeholder="${field.placeholder || ''}"
-                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>${field.default || ''}</textarea>`;
+                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                placeholder="${field.placeholder || ''}"
+                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>${field.default || ''}</textarea>`;
                     break;
 
                 case 'multiselect':
                     inputHtml = `<select name="${fieldName}" multiple 
-                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
+                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
                     field.options.forEach(option => {
                         inputHtml += `<option value="${option}">${option}</option>`;
                     });
@@ -541,14 +542,14 @@
             }
 
             return `
-                    <div class="config-field" ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">
-                            ${field.label} ${field.required ? '<span class="text-red-500">*</span>' : ''}
-                        </label>
-                        ${inputHtml}
-                        ${field.help ? `<p class="text-xs text-slate-500 mt-1">${field.help}</p>` : ''}
-                    </div>
-                `;
+                        <div class="config-field" ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">
+                                ${field.label} ${field.required ? '<span class="text-red-500">*</span>' : ''}
+                            </label>
+                            ${inputHtml}
+                            ${field.help ? `<p class="text-xs text-slate-500 mt-1">${field.help}</p>` : ''}
+                        </div>
+                    `;
         }
 
         // Add conditional field logic

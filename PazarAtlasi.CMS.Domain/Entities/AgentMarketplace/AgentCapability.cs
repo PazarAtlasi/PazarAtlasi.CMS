@@ -34,6 +34,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.AgentMarketplace
         /// </summary>
         public bool IsKeyFeature { get; set; } = false;
         
+        /// <summary>
+        /// Whether this capability is active/enabled
+        /// </summary>
+        public bool IsActive { get; set; } = true;
+        
         // Navigation Properties
         public virtual Agent Agent { get; set; } = null!;
         public virtual ICollection<AgentCapabilityTranslation> Translations { get; set; } = new List<AgentCapabilityTranslation>();

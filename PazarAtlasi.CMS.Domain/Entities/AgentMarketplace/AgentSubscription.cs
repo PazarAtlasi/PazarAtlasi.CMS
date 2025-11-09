@@ -54,6 +54,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.AgentMarketplace
         public decimal? LastBilledAmount { get; set; }
         
         /// <summary>
+        /// Total cost accumulated for this subscription
+        /// </summary>
+        public decimal TotalCost { get; set; } = 0;
+        
+        /// <summary>
         /// Additional configuration for this subscription
         /// </summary>
         public string? ConfigurationJson { get; set; }

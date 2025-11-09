@@ -36,6 +36,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.AgentMarketplace
         public string? Description { get; set; }
         
         /// <summary>
+        /// Features included in this pricing plan
+        /// </summary>
+        public string? Features { get; set; }
+        
+        /// <summary>
         /// Whether this is the default/recommended pricing
         /// </summary>
         public bool IsDefault { get; set; } = false;
