@@ -1,0 +1,242 @@
+@model PazarAtlasi.CMS.Domain.Entities.AgentMarketplace.Agent
+@using PazarAtlasi.CMS.Domain.Enums
+
+@{
+    ViewData["Title"] = Model.Name + " - Agent Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <!-- Back Navigation -->
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <a href="@Url.Action("Index")" class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Marketplace
+        </a>
+    </div>
+
+    <!-- Agent Header -->
+    <div class="bg-white shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between">
+                <div class="flex items-start mb-6 lg:mb-0">
+                    <div class="w-20 h-20 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl mr-6 flex-shrink-0">
+                        <i class="@Model.IconClass"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h1 class="text-4xl font-bold text-slate-900">@Model.Name</h1>
+                            @if (Model.IsFeatured)
+                            {
+                                <span class="px-3 py-1 text-sm font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                                    <i class="fas fa-star mr-1"></i>Featured
+                                </span>
+                            }
+                        </div>
+                        <p class="text-xl text-slate-600 mb-4">@Model.Description</p>
+                        <div class="flex items-center space-x-4">
+                            <span class="px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full">
+                                @Model.Category
+                            </span>
+                            <span class="px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
+                                @Model.Type
+                            </span>
+                            <span class="px-3 py-1 text-sm font-medium bg-purple-100 text-purple-800 rounded-full">
+                                @Model.ExecutionType
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Description -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <h2 class="text-2xl font-semibold text-slate-900 mb-4">About This Agent</h2>
+                    <div class="prose prose-slate max-w-none">
+                        <p class="text-slate-700 leading-relaxed">@Model.DetailedDescription</p>
+                    </div>
+                </div>
+
+                <!-- Capabilities -->
+                @if (Model.Capabilities.Any())
+                {
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <h2 class="text-2xl font-semibold text-slate-900 mb-6">Capabilities & Features</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @foreach (var capability in Model.Capabilities.OrderBy(c => c.SortOrder))
+                            {
+                                <div class="flex items-start p-4 bg-slate-50 rounded-lg @(capability.IsKeyFeature ? "ring-2 ring-blue-200 bg-blue-50" : "")">
+                                    <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-blue-600 mr-4 flex-shrink-0 shadow-sm">
+                                        <i class="@capability.IconClass"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-slate-900 mb-1 @(capability.IsKeyFeature ? "text-blue-900" : "")">
+                                            @capability.Name
+                                            @if (capability.IsKeyFeature)
+                                            {
+                                                <span class="ml-2 text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">KEY</span>
+                                            }
+                                        </h3>
+                                        <p class="text-sm text-slate-600">@capability.Description</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Integration Information -->
+                @if (Model.Integrations.Any())
+                {
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <h2 class="text-2xl font-semibold text-slate-900 mb-6">Integration Details</h2>
+                        <div class="space-y-4">
+                            @foreach (var integration in Model.Integrations.OrderBy(i => i.Priority))
+                            {
+                                <div class="flex items-center p-4 bg-slate-50 rounded-lg">
+                                    <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-green-600 mr-4 flex-shrink-0 shadow-sm">
+                                        <i class="fas fa-plug"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-slate-900">@integration.Name</h3>
+                                        <div class="flex items-center space-x-4 mt-1">
+                                            <span class="text-sm text-slate-600">Type: @integration.Type</span>
+                                            <span class="text-sm text-slate-600">Trigger: @integration.TriggerType</span>
+                                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+                                                @(integration.IsActive ? "Active" : "Inactive")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar - Pricing & Subscription -->
+            <div class="space-y-6">
+                <!-- Pricing Plans -->
+                @if (Model.Pricings.Any())
+                {
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sticky top-6">
+                        <h2 class="text-xl font-semibold text-slate-900 mb-6">Choose Your Plan</h2>
+                        
+                        <div class="space-y-4">
+                            @foreach (var pricing in Model.Pricings.OrderBy(p => p.SortOrder))
+                            {
+                                <div class="border border-slate-200 rounded-lg p-4 @(pricing.IsDefault ? "ring-2 ring-blue-500 bg-blue-50" : "")">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="font-semibold text-slate-900">
+                                            @pricing.Type
+                                            @if (pricing.IsDefault)
+                                            {
+                                                <span class="ml-2 text-xs bg-blue-600 text-white px-2 py-1 rounded-full">RECOMMENDED</span>
+                                            }
+                                        </h3>
+                                    </div>
+                                    
+                                    <div class="text-3xl font-bold text-slate-900 mb-2">
+                                        $@pricing.Price.ToString("0.00")
+                                        <span class="text-lg font-normal text-slate-500">
+                                            /@(pricing.Type == PricingType.Monthly ? "month" : 
+                                               pricing.Type == PricingType.PerUse ? "use" : 
+                                               pricing.Type == PricingType.PerAgent ? "agent" : 
+                                               pricing.Type == PricingType.Annual ? "year" : "")
+                                        </span>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(pricing.Description))
+                                    {
+                                        <p class="text-sm text-slate-600 mb-3">@pricing.Description</p>
+                                    }
+
+                                    @if (pricing.UsageLimit.HasValue)
+                                    {
+                                        <div class="text-sm text-slate-600 mb-3">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            Up to @pricing.UsageLimit uses per @(pricing.Type == PricingType.Monthly ? "month" : "billing cycle")
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-sm text-slate-600 mb-3">
+                                            <i class="fas fa-infinity text-green-500 mr-2"></i>
+                                            Unlimited usage
+                                        </div>
+                                    }
+
+                                    <!-- Subscribe Button -->
+                                    <form method="post" asp-action="Subscribe" class="w-full">
+                                        <input type="hidden" name="agentId" value="@Model.Id" />
+                                        <input type="hidden" name="pricingId" value="@pricing.Id" />
+                                        
+                                        @if (pricing.Type == PricingType.PerAgent)
+                                        {
+                                            <div class="mb-3">
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">Number of Agents</label>
+                                                <input type="number" name="agentCount" min="1" value="1" 
+                                                       class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            </div>
+                                        }
+
+                                        <button type="submit" 
+                                                class="w-full py-3 px-4 @(pricing.IsDefault ? "bg-blue-600 hover:bg-blue-700" : "bg-slate-600 hover:bg-slate-700") text-white rounded-lg font-medium transition-colors">
+                                            Subscribe Now
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div class="mt-6 pt-6 border-t border-slate-200">
+                            <div class="space-y-2 text-sm text-slate-600">
+                                <div class="flex items-center">
+                                    <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                                    30-day money back guarantee
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-sync text-blue-500 mr-2"></i>
+                                    Cancel anytime
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-headset text-purple-500 mr-2"></i>
+                                    24/7 support included
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Agent Stats -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="font-semibold text-slate-900 mb-4">Agent Information</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Version:</span>
+                            <span class="font-medium">@Model.Version</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Status:</span>
+                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+                                @(Model.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Execution:</span>
+                            <span class="font-medium">@Model.ExecutionType</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

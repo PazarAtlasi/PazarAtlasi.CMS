@@ -1,0 +1,155 @@
+@model PazarAtlasi.CMS.Domain.Entities.AgentMarketplace.Agent
+@using PazarAtlasi.CMS.Domain.Enums
+
+@{
+    ViewData["Title"] = "Create New Agent";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <!-- Back Navigation -->
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <a href="@Url.Action("Manage")" class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Manage Agents
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">
+                <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
+                Create New Agent
+            </h1>
+            <p class="text-lg text-slate-600">Add a new AI agent to the marketplace</p>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <form asp-action="Create" method="post" class="space-y-8">
+            <div asp-validation-summary="ModelOnly" class="text-red-600"></div>
+
+            <!-- Basic Information -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-xl font-semibold text-slate-900 mb-6">Basic Information</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-2">Agent Name</label>
+                        <input asp-for="Name" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Reporting Agent">
+                        <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Version" class="block text-sm font-medium text-slate-700 mb-2">Version</label>
+                        <input asp-for="Version" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="1.0.0">
+                        <span asp-validation-for="Version" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Type" class="block text-sm font-medium text-slate-700 mb-2">Agent Type</label>
+                        <select asp-for="Type" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select Type</option>
+                            @foreach (var type in ViewBag.AgentTypes)
+                            {
+                                <option value="@type">@type</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Type" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Category" class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+                        <select asp-for="Category" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select Category</option>
+                            @foreach (var category in ViewBag.AgentCategories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Category" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="ExecutionType" class="block text-sm font-medium text-slate-700 mb-2">Execution Type</label>
+                        <select asp-for="ExecutionType" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select Execution Type</option>
+                            @foreach (var execType in ViewBag.ExecutionTypes)
+                            {
+                                <option value="@execType">@execType</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ExecutionType" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="IconClass" class="block text-sm font-medium text-slate-700 mb-2">Icon Class</label>
+                        <input asp-for="IconClass" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="fas fa-robot">
+                        <span asp-validation-for="IconClass" class="text-red-600 text-sm"></span>
+                        <p class="text-xs text-slate-500 mt-1">Use FontAwesome icon classes (e.g., fas fa-robot)</p>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label asp-for="Description" class="block text-sm font-medium text-slate-700 mb-2">Short Description</label>
+                    <textarea asp-for="Description" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Brief description of what this agent does..."></textarea>
+                    <span asp-validation-for="Description" class="text-red-600 text-sm"></span>
+                </div>
+
+                <div class="mt-6">
+                    <label asp-for="DetailedDescription" class="block text-sm font-medium text-slate-700 mb-2">Detailed Description</label>
+                    <textarea asp-for="DetailedDescription" rows="6" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Detailed explanation of the agent's capabilities, use cases, and benefits..."></textarea>
+                    <span asp-validation-for="DetailedDescription" class="text-red-600 text-sm"></span>
+                </div>
+
+                <div class="mt-6">
+                    <label asp-for="ImageUrl" class="block text-sm font-medium text-slate-700 mb-2">Image URL (Optional)</label>
+                    <input asp-for="ImageUrl" type="url" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com/agent-image.png">
+                    <span asp-validation-for="ImageUrl" class="text-red-600 text-sm"></span>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-xl font-semibold text-slate-900 mb-6">Settings</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="SortOrder" class="block text-sm font-medium text-slate-700 mb-2">Sort Order</label>
+                        <input asp-for="SortOrder" type="number" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="0">
+                        <span asp-validation-for="SortOrder" class="text-red-600 text-sm"></span>
+                        <p class="text-xs text-slate-500 mt-1">Lower numbers appear first</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <input asp-for="IsActive" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
+                            <label asp-for="IsActive" class="ml-2 block text-sm text-slate-700">Active</label>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input asp-for="IsFeatured" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
+                            <label asp-for="IsFeatured" class="ml-2 block text-sm text-slate-700">Featured Agent</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-between pt-6">
+                <a href="@Url.Action("Manage")" class="px-6 py-3 text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                    Cancel
+                </a>
+                <div class="space-x-3">
+                    <button type="submit" name="status" value="Draft" class="px-6 py-3 text-slate-700 bg-slate-100 border border-slate-300 rounded-lg hover:bg-slate-200 transition-colors">
+                        Save as Draft
+                    </button>
+                    <button type="submit" name="status" value="Active" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Create & Activate
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

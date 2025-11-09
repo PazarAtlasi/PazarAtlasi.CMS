@@ -1,0 +1,234 @@
+@model List<PazarAtlasi.CMS.Domain.Entities.AgentMarketplace.AgentUsageLog>
+@using PazarAtlasi.CMS.Domain.Enums
+
+@{
+    ViewData["Title"] = "Usage Logs - " + ViewBag.Subscription.Agent.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var subscription = ViewBag.Subscription as PazarAtlasi.CMS.Domain.Entities.AgentMarketplace.AgentSubscription;
+}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <!-- Back Navigation -->
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <a href="@Url.Action("MySubscriptions")" class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to My Subscriptions
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl mr-6">
+                        <i class="@subscription.Agent.IconClass"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-slate-900 mb-1">@subscription.Agent.Name</h1>
+                        <p class="text-lg text-slate-600">Usage History & Analytics</p>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="flex space-x-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">@subscription.CurrentUsage</div>
+                        <div class="text-sm text-slate-500">Current Usage</div>
+                    </div>
+                    @if (subscription.Pricing.UsageLimit.HasValue)
+                    {
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600">@(subscription.Pricing.UsageLimit.Value - subscription.CurrentUsage)</div>
+                            <div class="text-sm text-slate-500">Remaining</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Usage Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                        <i class="fas fa-play text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-slate-900">@Model.Count</div>
+                        <div class="text-sm text-slate-500">Total Executions</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mr-4">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-slate-900">@Model.Count(l => l.Status == AgentExecutionStatus.Success)</div>
+                        <div class="text-sm text-slate-500">Successful</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center mr-4">
+                        <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-slate-900">@Model.Count(l => l.Status == AgentExecutionStatus.Failed)</div>
+                        <div class="text-sm text-slate-500">Failed</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mr-4">
+                        <i class="fas fa-clock text-purple-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-slate-900">@(Model.Any() ? Model.Average(l => l.ExecutionDurationMs) : 0)ms</div>
+                        <div class="text-sm text-slate-500">Avg Duration</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Logs Table -->
+        @if (Model.Any())
+        {
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-200">
+                    <h2 class="text-xl font-semibold text-slate-900">Execution History</h2>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Execution Time</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Duration</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Integration</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Cost</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            @foreach (var log in Model)
+                            {
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-slate-900">@log.ExecutionTime.ToString("MMM dd, yyyy")</div>
+                                        <div class="text-sm text-slate-500">@log.ExecutionTime.ToString("HH:mm:ss")</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            @(log.Status == AgentExecutionStatus.Success ? "bg-green-100 text-green-800" : 
+                                              log.Status == AgentExecutionStatus.Failed ? "bg-red-100 text-red-800" : 
+                                              log.Status == AgentExecutionStatus.InProgress ? "bg-yellow-100 text-yellow-800" : 
+                                              "bg-slate-100 text-slate-800")">
+                                            @log.Status
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        @log.ExecutionDurationMs ms
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        @if (log.Integration != null)
+                                        {
+                                            <div class="flex items-center">
+                                                <i class="fas fa-plug text-slate-400 mr-2"></i>
+                                                @log.Integration.Name
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-slate-500">Direct</span>
+                                        }
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        @if (log.Cost.HasValue)
+                                        {
+                                            <span class="text-green-600 font-medium">$@log.Cost.Value.ToString("0.0000")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-slate-500">-</span>
+                                        }
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button onclick="showLogDetails(@log.Id)" class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-eye mr-1"></i>Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (ViewBag.TotalPages > 1)
+                {
+                    <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+                        <div class="text-sm text-slate-700">
+                            Showing page @ViewBag.CurrentPage of @ViewBag.TotalPages (@ViewBag.TotalCount total records)
+                        </div>
+                        <div class="flex space-x-2">
+                            @if (ViewBag.CurrentPage > 1)
+                            {
+                                <a href="@Url.Action("UsageLogs", new { subscriptionId = subscription.Id, page = ViewBag.CurrentPage - 1 })" 
+                                   class="px-3 py-2 text-sm bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                    Previous
+                                </a>
+                            }
+                            
+                            @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                            {
+                                <a href="@Url.Action("UsageLogs", new { subscriptionId = subscription.Id, page = i })" 
+                                   class="px-3 py-2 text-sm @(i == ViewBag.CurrentPage ? "bg-blue-600 text-white" : "bg-white text-slate-700 hover:bg-slate-50") border border-slate-300 rounded-md">
+                                    @i
+                                </a>
+                            }
+                            
+                            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                            {
+                                <a href="@Url.Action("UsageLogs", new { subscriptionId = subscription.Id, page = ViewBag.CurrentPage + 1 })" 
+                                   class="px-3 py-2 text-sm bg-white border border-slate-300 rounded-md hover:bg-slate-50">
+                                    Next
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+                <div class="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-chart-line text-2xl text-slate-400"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">No usage logs yet</h3>
+                <p class="text-slate-600">This agent hasn't been executed yet. Usage logs will appear here once the agent starts running.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Log Details Modal (placeholder) -->
+<script>
+function showLogDetails(logId) {
+    // TODO: Implement modal to show detailed log information
+    alert('Log details for ID: ' + logId + '\n\nThis feature will show detailed execution logs, input/output data, and error messages.');
+}
+</script>
+

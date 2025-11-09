@@ -7,6 +7,7 @@ using PazarAtlasi.CMS.Domain.Entities.Announcement;
 using PazarAtlasi.CMS.Domain.Entities.Content;
 using PazarAtlasi.CMS.Domain.Entities.Localization;
 using PazarAtlasi.CMS.Domain.Entities.Metadata;
+using PazarAtlasi.CMS.Domain.Entities.AgentMarketplace;
 
 namespace PazarAtlasi.CMS.Persistence.Context
 {
@@ -90,7 +91,18 @@ namespace PazarAtlasi.CMS.Persistence.Context
         public DbSet<DataSchemaFieldTranslation> DataSchemaFieldTranslations { get; set; }
         public DbSet<DataSchemaFieldValueTranslation> DataSchemaFieldValueTranslations { get; set; }
 
-
+        // Agent Marketplace
+        public DbSet<Agent> Agents { get; set; }
+        public DbSet<AgentTranslation> AgentTranslations { get; set; }
+        public DbSet<AgentPricing> AgentPricings { get; set; }
+        public DbSet<AgentPricingTranslation> AgentPricingTranslations { get; set; }
+        public DbSet<AgentCapability> AgentCapabilities { get; set; }
+        public DbSet<AgentCapabilityTranslation> AgentCapabilityTranslations { get; set; }
+        public DbSet<AgentSubscription> AgentSubscriptions { get; set; }
+        public DbSet<AgentIntegration> AgentIntegrations { get; set; }
+        public DbSet<AgentIntegrationTranslation> AgentIntegrationTranslations { get; set; }
+        public DbSet<AgentUsageLog> AgentUsageLogs { get; set; }
+        public DbSet<AgentIntegrationLog> AgentIntegrationLogs { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

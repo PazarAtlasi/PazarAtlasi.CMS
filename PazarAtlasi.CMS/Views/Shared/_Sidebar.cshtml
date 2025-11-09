@@ -207,6 +207,40 @@
                 </ul>
             </li>
 
+            <!-- Agent Marketplace (with submenu) -->
+            <li class="relative sidebar-item mx-2" data-menu="agentmarketplace">
+                <button onclick="toggleSubmenu(this)" 
+                        class="w-full flex items-center h-12 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 group/item">
+                    <div class="w-24 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-xl text-gray-600"></i>
+                    </div>
+                    <span class="flex-1 text-left font-medium text-base whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">Agent Marketplace</span>
+                    <i class="fas fa-chevron-right text-sm submenu-icon text-gray-400 transition-transform duration-200 opacity-0 group-hover:opacity-100 mr-4"></i>
+                </button>
+                <ul class="hidden mt-1 ml-9 space-y-0.5 submenu bg-gray-50 rounded-lg p-2">
+                    <li><a href="@Url.Action("Index", "AgentMarketplace")" 
+                           class="flex items-center h-9 px-3 text-sm rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-all duration-200">
+                        <i class="fas fa-store w-5 text-center text-xs text-gray-500"></i>
+                        <span class="ml-2 whitespace-nowrap">Marketplace</span>
+                    </a></li>
+                    <li><a href="@Url.Action("MySubscriptions", "AgentMarketplace")" 
+                           class="flex items-center h-9 px-3 text-sm rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-all duration-200">
+                        <i class="fas fa-user-check w-5 text-center text-xs text-gray-500"></i>
+                        <span class="ml-2 whitespace-nowrap">My Subscriptions</span>
+                    </a></li>
+                    <li><a href="@Url.Action("Manage", "AgentMarketplace")" 
+                           class="flex items-center h-9 px-3 text-sm rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-all duration-200">
+                        <i class="fas fa-cogs w-5 text-center text-xs text-gray-500"></i>
+                        <span class="ml-2 whitespace-nowrap">Manage Agents</span>
+                    </a></li>
+                    <li><a href="@Url.Action("Analytics", "AgentMarketplace")" 
+                           class="flex items-center h-9 px-3 text-sm rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-all duration-200">
+                        <i class="fas fa-chart-bar w-5 text-center text-xs text-gray-500"></i>
+                        <span class="ml-2 whitespace-nowrap">Analytics</span>
+                    </a></li>
+                </ul>
+            </li>
+
             <!-- Analytics -->
             <li class="mx-2">
                 <a href="#" 
