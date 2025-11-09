@@ -2,7 +2,7 @@
 @using PazarAtlasi.CMS.Domain.Enums
 
 @{
-    ViewData["Title"] = "Create New Agent";
+    ViewData["Title"] = "Edit Agent";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -20,16 +20,17 @@
     <div class="bg-white shadow-sm border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 py-8">
             <h1 class="text-4xl font-bold text-slate-900 mb-2">
-                <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
-                Create New Agent
+                <i class="fas fa-edit text-blue-600 mr-3"></i>
+                Edit Agent
             </h1>
-            <p class="text-lg text-slate-600">Add a new AI agent to the marketplace</p>
+            <p class="text-lg text-slate-600">Update agent information and configuration</p>
         </div>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 py-8">
-        <form asp-action="Create" method="post" class="space-y-8">
+        <form asp-action="Edit" method="post" class="space-y-8">
             <div asp-validation-summary="ModelOnly" class="text-red-600"></div>
+            <input asp-for="Id" type="hidden" />
 
             <!-- Basic Information -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
@@ -51,15 +52,16 @@
                             placeholder="1.0.0">
                         <span asp-validation-for="Version" class="text-red-600 text-sm"></span>
                     </div>
+                </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                     <div>
                         <label asp-for="Type" class="block text-sm font-medium text-slate-700 mb-2">Agent Type</label>
-                        <select asp-for="Type"
-                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select asp-for="Type" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Type</option>
-                            @foreach (var type in Model.AvailableAgentTypes)
+                            @foreach (var agentType in Model.AvailableAgentTypes)
                             {
-                                <option value="@type.Value">@type.DisplayName</option>
+                                <option value="@((int)agentType.Value)" selected="@(Model.Type == agentType.Value ? "selected" : "")">@agentType.DisplayName</option>
                             }
                         </select>
                         <span asp-validation-for="Type" class="text-red-600 text-sm"></span>
@@ -67,34 +69,32 @@
 
                     <div>
                         <label asp-for="Category" class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-                        <select asp-for="Category"
-                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select asp-for="Category" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Category</option>
                             @foreach (var category in Model.AvailableAgentCategories)
                             {
-                                <option value="@category.Value">@category.DisplayName</option>
+                                <option value="@((int)category.Value)" selected="@(Model.Category == category.Value ? "selected" : "")">@category.DisplayName</option>
                             }
                         </select>
                         <span asp-validation-for="Category" class="text-red-600 text-sm"></span>
                     </div>
 
                     <div>
-                        <label asp-for="ExecutionType" class="block text-sm font-medium text-slate-700 mb-2">Execution
-                            Type</label>
-                        <select asp-for="ExecutionType"
-                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <label asp-for="ExecutionType" class="block text-sm font-medium text-slate-700 mb-2">Execution Type</label>
+                        <select asp-for="ExecutionType" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Execution Type</option>
-                            @foreach (var execType in Model.AvailableExecutionTypes)
+                            @foreach (var executionType in Model.AvailableExecutionTypes)
                             {
-                                <option value="@execType.Value">@execType.DisplayName</option>
+                                <option value="@((int)executionType.Value)" selected="@(Model.ExecutionType == executionType.Value ? "selected" : "")">@executionType.DisplayName</option>
                             }
                         </select>
                         <span asp-validation-for="ExecutionType" class="text-red-600 text-sm"></span>
                     </div>
+                </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div>
-                        <label asp-for="IconClass" class="block text-sm font-medium text-slate-700 mb-2">Icon
-                            Class</label>
+                        <label asp-for="IconClass" class="block text-sm font-medium text-slate-700 mb-2">Icon Class</label>
                         <input asp-for="IconClass"
                             class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="fas fa-robot">
@@ -156,17 +156,91 @@
                         <div class="flex items-center">
                             <input asp-for="IsFeatured" type="checkbox"
                                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
-                            <label asp-for="IsFeatured" class="ml-2 block text-sm text-slate-700">Featured Agent</label>
+                            <label asp-for="IsFeatured" class="ml-2 block text-sm text-slate-700">Featured</label>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input asp-for="IsPublic" type="checkbox"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
+                            <label asp-for="IsPublic" class="ml-2 block text-sm text-slate-700">Public</label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Integration Configuration -->
+            <!-- Integrations -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <h2 class="text-xl font-semibold text-slate-900 mb-6">Integration Configuration</h2>
+                <h2 class="text-xl font-semibold text-slate-900 mb-6">Integrations</h2>
 
                 <div id="integrations-container">
+                    @if (Model.Integrations != null && Model.Integrations.Any())
+                    {
+                        @for (int i = 0; i < Model.Integrations.Count; i++)
+                        {
+                            <div class="integration-item border border-slate-200 rounded-lg p-4 mb-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-medium text-slate-900">Integration #@(i + 1)</h3>
+                                    <button type="button" class="text-red-600 hover:text-red-800 remove-integration">
+                                        <i class="fas fa-trash mr-1"></i>Remove
+                                    </button>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Integration Name</label>
+                                        <input asp-for="Integrations[i].Name"
+                                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="e.g., Report Generator Workflow">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Integration Type</label>
+                                        <select asp-for="Integrations[i].Type"
+                                            class="integration-type w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            <option value="">Select Type</option>
+                                            @foreach (var integrationType in Model.AvailableIntegrationTypes)
+                                            {
+                                                <option value="@((int)integrationType.Value)" selected="@(Model.Integrations[i].Type == integrationType.Value ? "selected" : "")">@integrationType.DisplayName</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Trigger Type</label>
+                                        <select asp-for="Integrations[i].TriggerType"
+                                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                            @foreach (var triggerType in Model.AvailableIntegrationTriggers)
+                                            {
+                                                <option value="@((int)triggerType.Value)" selected="@(Model.Integrations[i].TriggerType == triggerType.Value ? "selected" : "")">@triggerType.DisplayName</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Priority</label>
+                                        <input asp-for="Integrations[i].Priority" type="number"
+                                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            value="1" min="1">
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Configuration Area -->
+                                <div class="mt-4 integration-config-area">
+                                    <!-- Configuration will be dynamically loaded here -->
+                                </div>
+
+                                <div class="mt-4">
+                                    <div class="flex items-center">
+                                        <input type="hidden" asp-for="Integrations[i].IsActive" value="false">
+                                        <input asp-for="Integrations[i].IsActive" type="checkbox" value="true"
+                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
+                                        <label class="ml-2 block text-sm text-slate-700">Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
                     <!-- Integration Template (Hidden) -->
                     <div id="integration-template" class="integration-item border border-slate-200 rounded-lg p-4 mb-4"
                         style="display: none;">
@@ -252,7 +326,7 @@
                     </button>
                     <button type="submit" name="status" value="Active"
                         class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        Create & Activate
+                        Update & Activate
                     </button>
                 </div>
             </div>
@@ -262,7 +336,7 @@
 
 @section Scripts {
     <script>
-        let integrationCounter = 0;
+        let integrationCounter = @(Model.Integrations?.Count ?? 0);
 
         // Integration configuration templates
         const integrationConfigs = {
@@ -298,8 +372,6 @@
                         label: 'Timeout (ms)',
                         type: 'number',
                         default: 30000,
-                        min: 1000,
-                        max: 300000,
                         help: 'Request timeout in milliseconds'
                     },
                     {
@@ -307,17 +379,15 @@
                         label: 'Retry Count',
                         type: 'number',
                         default: 3,
-                        min: 0,
-                        max: 10,
                         help: 'Number of retry attempts on failure'
                     },
                     {
                         name: 'authentication',
                         label: 'Authentication',
                         type: 'select',
-                        options: ['none', 'bearer', 'basic', 'apikey'],
+                        options: ['none', 'basic', 'bearer', 'apikey'],
                         default: 'none',
-                        help: 'Authentication method for webhook'
+                        help: 'Authentication method'
                     },
                     {
                         name: 'authToken',
@@ -349,20 +419,10 @@
                         help: 'HTTP method for API calls'
                     },
                     {
-                        name: 'contentType',
-                        label: 'Content Type',
-                        type: 'select',
-                        options: ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data', 'text/plain'],
-                        default: 'application/json',
-                        help: 'Content type for request body'
-                    },
-                    {
                         name: 'timeout',
                         label: 'Timeout (ms)',
                         type: 'number',
-                        default: 15000,
-                        min: 1000,
-                        max: 300000,
+                        default: 30000,
                         help: 'Request timeout in milliseconds'
                     },
                     {
@@ -431,27 +491,23 @@
             }
         };
 
-        // Add new integration
+        // Add integration functionality
         document.getElementById('add-integration').addEventListener('click', function () {
             const template = document.getElementById('integration-template');
             const container = document.getElementById('integrations-container');
             const clone = template.cloneNode(true);
 
-            integrationCounter++;
-            clone.id = 'integration-' + integrationCounter;
+            clone.id = '';
             clone.style.display = 'block';
+            clone.querySelector('.integration-number').textContent = integrationCounter + 1;
 
-            // Update form field names and IDs
+            // Update all name attributes
             const inputs = clone.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
-                const name = input.getAttribute('name');
-                if (name) {
-                    input.setAttribute('name', name.replace('INDEX', integrationCounter - 1));
+                if (input.name) {
+                    input.name = input.name.replace('[INDEX]', `[${integrationCounter}]`);
                 }
             });
-
-            // Update integration number
-            clone.querySelector('.integration-number').textContent = integrationCounter;
 
             // Add remove functionality
             clone.querySelector('.remove-integration').addEventListener('click', function () {
@@ -461,92 +517,79 @@
             // Add integration type change handler
             const typeSelect = clone.querySelector('.integration-type');
             typeSelect.addEventListener('change', function () {
-                updateIntegrationConfig(clone, this.value, integrationCounter - 1);
+                loadIntegrationConfig(this.value, clone.querySelector('.integration-config-area'), integrationCounter);
             });
 
             container.appendChild(clone);
+            integrationCounter++;
         });
 
-        // Update integration configuration based on type
-        function updateIntegrationConfig(container, type, index) {
-            const configArea = container.querySelector('.integration-config-area');
+        // Remove integration functionality for existing items
+        document.querySelectorAll('.remove-integration').forEach(button => {
+            button.addEventListener('click', function () {
+                button.closest('.integration-item').remove();
+            });
+        });
 
-            if (!type || !integrationConfigs[type]) {
-                configArea.innerHTML = '';
+        // Integration type change handlers for existing items
+        document.querySelectorAll('.integration-type').forEach(select => {
+            select.addEventListener('change', function () {
+                const integrationItem = this.closest('.integration-item');
+                const configArea = integrationItem.querySelector('.integration-config-area');
+                const index = Array.from(integrationItem.parentNode.children).indexOf(integrationItem);
+                loadIntegrationConfig(this.value, configArea, index);
+            });
+
+            // Load existing configuration on page load
+            if (select.value) {
+                const integrationItem = select.closest('.integration-item');
+                const configArea = integrationItem.querySelector('.integration-config-area');
+                const index = Array.from(integrationItem.parentNode.children).indexOf(integrationItem);
+                loadIntegrationConfig(select.value, configArea, index);
+            }
+        });
+
+        // Load integration configuration
+        function loadIntegrationConfig(integrationType, container, index) {
+            if (!integrationType || !integrationConfigs[integrationType]) {
+                container.innerHTML = '';
                 return;
             }
 
-            const config = integrationConfigs[type];
-            let html = `<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <h4 class="font-medium text-blue-900 mb-3">${config.title}</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
-
-            config.fields.forEach(field => {
-                html += generateFieldHtml(field, index);
-            });
-
-            html += '</div></div>';
-            configArea.innerHTML = html;
-
-            // Add conditional field logic
-            addConditionalFieldLogic(configArea);
+            const config = integrationConfigs[integrationType];
+            container.innerHTML = `
+                        <h4 class="font-medium text-slate-900 mb-3">${config.title}</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${config.fields.map(field => generateFieldHTML(field, index)).join('')}
+                        </div>
+                    `;
         }
 
-        // Generate HTML for configuration field
-        function generateFieldHtml(field, index) {
+        // Generate field HTML
+        function generateFieldHTML(field, index) {
+            let input = '';
             const fieldName = `Integrations[${index}].ConfigurationJson.${field.name}`;
-            let inputHtml = '';
 
             switch (field.type) {
-                case 'text':
-                case 'url':
-                case 'password':
-                case 'number':
-                    inputHtml = `<input type="${field.type}" name="${fieldName}" 
-                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                placeholder="${field.placeholder || ''}" 
-                                ${field.required ? 'required' : ''}
-                                ${field.min ? `min="${field.min}"` : ''}
-                                ${field.max ? `max="${field.max}"` : ''}
-                                ${field.default ? `value="${field.default}"` : ''}
-                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
-                    break;
-
                 case 'select':
-                    inputHtml = `<select name="${fieldName}" 
-                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
-                    field.options.forEach(option => {
-                        const selected = field.default === option ? 'selected' : '';
-                        inputHtml += `<option value="${option}" ${selected}>${option}</option>`;
-                    });
-                    inputHtml += '</select>';
+                    input = `<select name="${fieldName}" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                ${field.options.map(option => `<option value="${option}" ${field.default === option ? 'selected' : ''}>${option}</option>`).join('')}
+                            </select>`;
                     break;
-
                 case 'textarea':
-                    inputHtml = `<textarea name="${fieldName}" rows="3"
-                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                placeholder="${field.placeholder || ''}"
-                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>${field.default || ''}</textarea>`;
+                    input = `<textarea name="${fieldName}" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="${field.placeholder || ''}">${field.default || ''}</textarea>`;
                     break;
-
-                case 'multiselect':
-                    inputHtml = `<select name="${fieldName}" multiple 
-                                class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
-                    field.options.forEach(option => {
-                        inputHtml += `<option value="${option}">${option}</option>`;
-                    });
-                    inputHtml += '</select>';
+                case 'number':
+                    input = `<input type="number" name="${fieldName}" value="${field.default || ''}" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="${field.placeholder || ''}">`;
                     break;
+                default:
+                    input = `<input type="${field.type}" name="${fieldName}" value="${field.default || ''}" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="${field.placeholder || ''}" ${field.required ? 'required' : ''}>`;
             }
 
             return `
-                        <div class="config-field" ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">
-                                ${field.label} ${field.required ? '<span class="text-red-500">*</span>' : ''}
-                            </label>
-                            ${inputHtml}
+                        <div ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">${field.label}</label>
+                            ${input}
                             ${field.help ? `<p class="text-xs text-slate-500 mt-1">${field.help}</p>` : ''}
                         </div>
                     `;
@@ -574,11 +617,5 @@
                 }
             });
         }
-
-        // Add first integration by default
-        document.addEventListener('DOMContentLoaded', function () {
-            // Auto-add first integration when page loads
-            // document.getElementById('add-integration').click();
-        });
     </script>
 }

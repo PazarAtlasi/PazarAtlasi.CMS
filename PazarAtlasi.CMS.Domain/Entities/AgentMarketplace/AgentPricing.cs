@@ -11,6 +11,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.AgentMarketplace
         public int AgentId { get; set; }
         
         /// <summary>
+        /// Name of the pricing plan (e.g., "Basic", "Premium", "Enterprise")
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+        
+        /// <summary>
         /// Type of pricing (Monthly, PerUse, PerAgent, OneTime)
         /// </summary>
         public PricingType Type { get; set; }

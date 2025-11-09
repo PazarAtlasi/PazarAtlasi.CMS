@@ -91,6 +91,7 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string? ImageUrl { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsFeatured { get; set; } = false;
+        public bool IsPublic { get; set; } = true;
         public int SortOrder { get; set; } = 0;
         public string Version { get; set; } = "1.0.0";
         
@@ -104,11 +105,15 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public List<AgentIntegrationCreateEditViewModel> Integrations { get; set; } = new List<AgentIntegrationCreateEditViewModel>();
         
         // For dropdowns
-        public List<AgentTypeViewModel> AvailableTypes { get; set; } = new List<AgentTypeViewModel>();
-        public List<AgentCategoryViewModel> AvailableCategories { get; set; } = new List<AgentCategoryViewModel>();
+        public List<AgentTypeViewModel> AvailableAgentTypes { get; set; } = new List<AgentTypeViewModel>();
+        public List<AgentCategoryViewModel> AvailableAgentCategories { get; set; } = new List<AgentCategoryViewModel>();
         public List<AgentExecutionTypeViewModel> AvailableExecutionTypes { get; set; } = new List<AgentExecutionTypeViewModel>();
         public List<IntegrationTypeViewModel> AvailableIntegrationTypes { get; set; } = new List<IntegrationTypeViewModel>();
         public List<IntegrationTriggerViewModel> AvailableIntegrationTriggers { get; set; } = new List<IntegrationTriggerViewModel>();
+        
+        // For backward compatibility
+        public List<AgentTypeViewModel> AvailableTypes => AvailableAgentTypes;
+        public List<AgentCategoryViewModel> AvailableCategories => AvailableAgentCategories;
     }
 
     // Agent Capability ViewModel
@@ -120,23 +125,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public string IconClass { get; set; } = string.Empty;
         public bool IsKeyFeature { get; set; }
         public int SortOrder { get; set; }
-    }
-
-    public class AgentCapabilityCreateEditViewModel
-    {
-        public int Id { get; set; }
-        
-        [Required(ErrorMessage = "Capability name is required")]
-        [StringLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
-        public string Name { get; set; } = string.Empty;
-        
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
-        public string Description { get; set; } = string.Empty;
-        
-        public string IconClass { get; set; } = "fas fa-check";
-        public bool IsKeyFeature { get; set; }
-        public int SortOrder { get; set; }
-        public bool IsActive { get; set; } = true;
     }
 
     // Agent Pricing ViewModel
@@ -167,34 +155,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         }
     }
 
-    public class AgentPricingCreateEditViewModel
-    {
-        public int Id { get; set; }
-        
-        [Required(ErrorMessage = "Pricing type is required")]
-        public PricingType Type { get; set; }
-        
-        [Required(ErrorMessage = "Price is required")]
-        [Range(0.01, 999999.99, ErrorMessage = "Price must be between 0.01 and 999999.99")]
-        public decimal Price { get; set; }
-        
-        [Required(ErrorMessage = "Currency is required")]
-        [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency must be 3 characters")]
-        public string Currency { get; set; } = "USD";
-        
-        [Range(1, int.MaxValue, ErrorMessage = "Usage limit must be greater than 0")]
-        public int? UsageLimit { get; set; }
-        
-        public bool IsDefault { get; set; }
-        public bool IsActive { get; set; } = true;
-        
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
-        public string Description { get; set; } = string.Empty;
-        
-        [StringLength(1000, ErrorMessage = "Features cannot exceed 1000 characters")]
-        public string Features { get; set; } = string.Empty;
-    }
-
     // Agent Integration ViewModel
     public class AgentIntegrationViewModel
     {
@@ -219,27 +179,6 @@ namespace PazarAtlasi.CMS.Models.ViewModels
                 _ => type.ToString()
             };
         }
-    }
-
-    public class AgentIntegrationCreateEditViewModel
-    {
-        public int Id { get; set; }
-        
-        [Required(ErrorMessage = "Integration type is required")]
-        public IntegrationType Type { get; set; }
-        
-        [Required(ErrorMessage = "Integration name is required")]
-        [StringLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
-        public string Name { get; set; } = string.Empty;
-        
-        public string? ConfigurationJson { get; set; } = "{}";
-        
-        [Required(ErrorMessage = "Trigger type is required")]
-        public IntegrationTrigger TriggerType { get; set; }
-        
-        public int Priority { get; set; } = 0;
-        public bool? IsActive { get; set; }
-        public string? Metadata { get; set; }
     }
 
     // Agent Subscription ViewModel
@@ -466,5 +405,83 @@ namespace PazarAtlasi.CMS.Models.ViewModels
         public int ExecutionDurationMs { get; set; }
         public DateTime ExecutionTime { get; set; }
         public int? ExecutionId { get; set; }
+    }
+
+
+    public class AgentPricingCreateEditViewModel
+    {
+        public int Id { get; set; }
+        
+        [Required(ErrorMessage = "Pricing name is required")]
+        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
+        public string Name { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Pricing type is required")]
+        public PricingType Type { get; set; }
+        
+        [Required(ErrorMessage = "Price is required")]
+        [Range(0, double.MaxValue, ErrorMessage = "Price must be non-negative")]
+        public decimal Price { get; set; }
+        
+        [Required(ErrorMessage = "Currency is required")]
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency must be 3 characters")]
+        public string Currency { get; set; } = "USD";
+        
+        [Range(1, int.MaxValue, ErrorMessage = "Usage limit must be greater than 0")]
+        public int? UsageLimit { get; set; }
+        
+        [StringLength(1000, ErrorMessage = "Features cannot exceed 1000 characters")]
+        public string Features { get; set; } = string.Empty;
+        
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        public string Description { get; set; } = string.Empty;
+        
+        public int SortOrder { get; set; } = 0;
+        public bool IsDefault { get; set; } = false;
+        public bool IsActive { get; set; } = true;
+    }
+
+    // Create/Edit ViewModels for form binding
+    public class AgentCapabilityCreateEditViewModel
+    {
+        public int Id { get; set; }
+        
+        [Required(ErrorMessage = "Capability name is required")]
+        [StringLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
+        public string Name { get; set; } = string.Empty;
+        
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        public string Description { get; set; } = string.Empty;
+        
+        [StringLength(100, ErrorMessage = "Icon class cannot exceed 100 characters")]
+        public string IconClass { get; set; } = string.Empty;
+        
+        public bool IsActive { get; set; } = true;
+        public bool IsKeyFeature { get; set; } = false;
+        public int SortOrder { get; set; } = 0;
+    }
+
+    public class AgentIntegrationCreateEditViewModel
+    {
+        public int Id { get; set; }
+        
+        [Required(ErrorMessage = "Integration name is required")]
+        [StringLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
+        public string Name { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Integration type is required")]
+        public IntegrationType Type { get; set; }
+        
+        [Required(ErrorMessage = "Trigger type is required")]
+        public IntegrationTrigger TriggerType { get; set; }
+        
+        public int Priority { get; set; } = 0;
+        public bool IsActive { get; set; } = true;
+        
+        [StringLength(4000, ErrorMessage = "Configuration JSON cannot exceed 4000 characters")]
+        public string ConfigurationJson { get; set; } = "{}";
+        
+        [StringLength(2000, ErrorMessage = "Metadata cannot exceed 2000 characters")]
+        public string Metadata { get; set; } = string.Empty;
     }
 }

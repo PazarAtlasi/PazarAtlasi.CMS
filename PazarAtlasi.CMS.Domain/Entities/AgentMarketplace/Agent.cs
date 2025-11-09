@@ -64,6 +64,11 @@ namespace PazarAtlasi.CMS.Domain.Entities.AgentMarketplace
         public bool IsFeatured { get; set; } = false;
         
         /// <summary>
+        /// Whether this agent is publicly available or private
+        /// </summary>
+        public bool IsPublic { get; set; } = true;
+        
+        /// <summary>
         /// Agent version for updates and compatibility
         /// </summary>
         public string Version { get; set; } = "1.0.0";

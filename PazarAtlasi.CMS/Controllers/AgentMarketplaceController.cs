@@ -287,12 +287,12 @@ namespace PazarAtlasi.CMS.Controllers
         {
             var viewModel = new AgentCreateEditViewModel
             {
-                AvailableTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
+                AvailableAgentTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
                 { 
                     Value = t, 
                     DisplayName = t.ToString() 
                 }).ToList(),
-                AvailableCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
+                AvailableAgentCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
                 { 
                     Value = c, 
                     DisplayName = c.ToString() 
@@ -374,7 +374,36 @@ namespace PazarAtlasi.CMS.Controllers
             }
 
             // Reload dropdown data
-            PopulateDropdownData(viewModel);
+            viewModel.AvailableAgentTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
+            { 
+                Value = t, 
+                DisplayName = t.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableAgentCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
+            { 
+                Value = c, 
+                DisplayName = c.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableExecutionTypes = Enum.GetValues<AgentExecutionType>().Select(e => new AgentExecutionTypeViewModel 
+            { 
+                Value = e, 
+                DisplayName = e.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableIntegrationTypes = Enum.GetValues<IntegrationType>().Select(i => new IntegrationTypeViewModel 
+            { 
+                Value = i, 
+                DisplayName = GetIntegrationTypeDisplayName(i) 
+            }).ToList();
+            
+            viewModel.AvailableIntegrationTriggers = Enum.GetValues<IntegrationTrigger>().Select(t => new IntegrationTriggerViewModel 
+            { 
+                Value = t, 
+                DisplayName = t.ToString() 
+            }).ToList();
+            
             return View(viewModel);
         }
 
@@ -434,7 +463,7 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         /// <summary>
-        /// Admin: Edit agent
+        /// Admin: Edit agent (GET)
         /// </summary>
         public async Task<IActionResult> Edit(int id)
         {
@@ -447,11 +476,90 @@ namespace PazarAtlasi.CMS.Controllers
             if (agent == null)
                 return NotFound();
 
-            ViewBag.AgentTypes = Enum.GetValues<AgentType>().Cast<AgentType>();
-            ViewBag.AgentCategories = Enum.GetValues<AgentCategory>().Cast<AgentCategory>();
-            ViewBag.ExecutionTypes = Enum.GetValues<AgentExecutionType>().Cast<AgentExecutionType>();
+            var viewModel = new AgentCreateEditViewModel
+            {
+                Id = agent.Id,
+                Name = agent.Name,
+                Description = agent.Description,
+                DetailedDescription = agent.DetailedDescription,
+                Version = agent.Version,
+                Type = agent.Type,
+                Category = agent.Category,
+                ExecutionType = agent.ExecutionType,
+                IconClass = agent.IconClass,
+                ImageUrl = agent.ImageUrl,
+                SortOrder = agent.SortOrder,
+                IsActive = agent.IsActive,
+                IsFeatured = agent.IsFeatured,
+                IsPublic = agent.IsPublic,
+                
+                // Map capabilities
+                Capabilities = agent.Capabilities.Select(c => new AgentCapabilityCreateEditViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    IsActive = c.IsActive
+                }).ToList(),
+                
+                // Map pricings
+                Pricings = agent.Pricings.Select(p => new AgentPricingCreateEditViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Type = p.Type,
+                    Price = p.Price,
+                    Currency = p.Currency,
+                    UsageLimit = p.UsageLimit,
+                    Features = p.Features,
+                    SortOrder = p.SortOrder
+                }).ToList(),
+                
+                // Map integrations
+                Integrations = agent.Integrations.Select(i => new AgentIntegrationCreateEditViewModel
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Type = i.Type,
+                    TriggerType = i.TriggerType,
+                    Priority = i.Priority,
+                    IsActive = i.IsActive,
+                    ConfigurationJson = i.ConfigurationJson
+                }).ToList()
+            };
 
-            return View(agent);
+            // Populate dropdown data
+            viewModel.AvailableAgentTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
+            { 
+                Value = t, 
+                DisplayName = t.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableAgentCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
+            { 
+                Value = c, 
+                DisplayName = c.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableExecutionTypes = Enum.GetValues<AgentExecutionType>().Select(e => new AgentExecutionTypeViewModel 
+            { 
+                Value = e, 
+                DisplayName = e.ToString() 
+            }).ToList();
+            
+            viewModel.AvailableIntegrationTypes = Enum.GetValues<IntegrationType>().Select(i => new IntegrationTypeViewModel 
+            { 
+                Value = i, 
+                DisplayName = GetIntegrationTypeDisplayName(i) 
+            }).ToList();
+            
+            viewModel.AvailableIntegrationTriggers = Enum.GetValues<IntegrationTrigger>().Select(t => new IntegrationTriggerViewModel 
+            { 
+                Value = t, 
+                DisplayName = t.ToString() 
+            }).ToList();
+
+            return View(viewModel);
         }
 
         /// <summary>
@@ -459,34 +567,97 @@ namespace PazarAtlasi.CMS.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Agent agent)
+        public async Task<IActionResult> Edit(int id, AgentCreateEditViewModel viewModel)
         {
-            if (id != agent.Id)
+            if (id != viewModel.Id)
                 return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(agent);
+                    var existingAgent = await _context.Agents
+                        .Include(a => a.Pricings)
+                        .Include(a => a.Capabilities)
+                        .Include(a => a.Integrations)
+                        .FirstOrDefaultAsync(a => a.Id == id);
+
+                    if (existingAgent == null)
+                        return NotFound();
+
+                    // Update basic properties
+                    existingAgent.Name = viewModel.Name;
+                    existingAgent.Description = viewModel.Description;
+                    existingAgent.DetailedDescription = viewModel.DetailedDescription;
+                    existingAgent.Version = viewModel.Version;
+                    existingAgent.Type = viewModel.Type;
+                    existingAgent.Category = viewModel.Category;
+                    existingAgent.ExecutionType = viewModel.ExecutionType;
+                    existingAgent.IconClass = viewModel.IconClass;
+                    existingAgent.ImageUrl = viewModel.ImageUrl;
+                    existingAgent.SortOrder = viewModel.SortOrder;
+                    existingAgent.IsActive = viewModel.IsActive;
+                    existingAgent.IsFeatured = viewModel.IsFeatured;
+                    existingAgent.IsPublic = viewModel.IsPublic;
+                    existingAgent.UpdatedAt = DateTime.UtcNow;
+
+                    // Update capabilities
+                    existingAgent.Capabilities.Clear();
+                    if (viewModel.Capabilities != null && viewModel.Capabilities.Any())
+                    {
+                        foreach (var capabilityViewModel in viewModel.Capabilities.Where(c => !string.IsNullOrEmpty(c.Name)))
+                        {
+                            var capability = MapToAgentCapabilityEntity(capabilityViewModel);
+                            capability.Agent = existingAgent;
+                            existingAgent.Capabilities.Add(capability);
+                        }
+                    }
+
+                    // Update pricings
+                    existingAgent.Pricings.Clear();
+                    if (viewModel.Pricings != null && viewModel.Pricings.Any())
+                    {
+                        foreach (var pricingViewModel in viewModel.Pricings)
+                        {
+                            var pricing = MapToAgentPricingEntity(pricingViewModel);
+                            pricing.Agent = existingAgent;
+                            existingAgent.Pricings.Add(pricing);
+                        }
+                    }
+
+                    // Update integrations
+                    existingAgent.Integrations.Clear();
+                    if (viewModel.Integrations != null && viewModel.Integrations.Any())
+                    {
+                        int integrationIndex = 0;
+                        foreach (var integrationViewModel in viewModel.Integrations.Where(i => !string.IsNullOrEmpty(i.Name)))
+                        {
+                            var integration = MapToAgentIntegrationEntity(integrationViewModel);
+                            // Convert form data to JSON configuration
+                            var configJson = ProcessIntegrationConfiguration(integration, integrationIndex);
+                            integration.ConfigurationJson = configJson;
+                            integration.Agent = existingAgent;
+                            existingAgent.Integrations.Add(integration);
+                            integrationIndex++;
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                     
-                    TempData["Success"] = "Agent updated successfully!";
+                    TempData["Success"] = $"Agent '{existingAgent.Name}' updated successfully with {existingAgent.Integrations.Count} integration(s)!";
                     return RedirectToAction(nameof(Manage));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await AgentExists(agent.Id))
+                    if (!await AgentExists(viewModel.Id))
                         return NotFound();
                     throw;
                 }
             }
 
-            ViewBag.AgentTypes = Enum.GetValues<AgentType>().Cast<AgentType>();
-            ViewBag.AgentCategories = Enum.GetValues<AgentCategory>().Cast<AgentCategory>();
-            ViewBag.ExecutionTypes = Enum.GetValues<AgentExecutionType>().Cast<AgentExecutionType>();
-
-            return View(agent);
+            // Reload dropdown data
+            PopulateDropdownData(viewModel);
+            return View(viewModel);
         }
 
         /// <summary>
@@ -925,20 +1096,20 @@ namespace PazarAtlasi.CMS.Controllers
                 ConfigurationJson = viewModel.ConfigurationJson,
                 TriggerType = viewModel.TriggerType,
                 Priority = viewModel.Priority,
-                IsActive = viewModel.IsActive ?? true,
+                IsActive = viewModel.IsActive,
                 Metadata = viewModel.Metadata
             };
         }
 
         private void PopulateDropdownData(AgentCreateEditViewModel viewModel)
         {
-            viewModel.AvailableTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
+            viewModel.AvailableAgentTypes = Enum.GetValues<AgentType>().Select(t => new AgentTypeViewModel 
             { 
                 Value = t, 
                 DisplayName = t.ToString() 
             }).ToList();
             
-            viewModel.AvailableCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
+            viewModel.AvailableAgentCategories = Enum.GetValues<AgentCategory>().Select(c => new AgentCategoryViewModel 
             { 
                 Value = c, 
                 DisplayName = c.ToString() 
@@ -962,6 +1133,7 @@ namespace PazarAtlasi.CMS.Controllers
                 DisplayName = t.ToString() 
             }).ToList();
         }
+
 
         private string GetIntegrationTypeDisplayName(IntegrationType type)
         {
