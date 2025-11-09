@@ -49,15 +49,31 @@ const SectionModal = (function () {
         existingModal.remove();
       }
 
-      // Create modal overlay
+      // Create modal overlay with proper backdrop
       const modalOverlay = document.createElement("div");
       modalOverlay.id = "sectionModalOverlay";
       modalOverlay.className =
-        "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4";
+        "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4";
+      modalOverlay.style.zIndex = "9999";
       modalOverlay.innerHTML = html;
 
       document.body.appendChild(modalOverlay);
       document.body.style.overflow = "hidden";
+
+      // Ensure modal content is above backdrop
+      const modalContent =
+        modalOverlay.querySelector(".section-modal");
+      if (modalContent) {
+        modalContent.style.position = "relative";
+        modalContent.style.zIndex = "10000";
+      }
+
+      // Close modal when clicking on backdrop (outside modal content)
+      modalOverlay.addEventListener("click", function (e) {
+        if (e.target === modalOverlay) {
+          close();
+        }
+      });
 
       // Initialize current section from hidden fields
       const sectionIdInput = document.getElementById("sectionId");

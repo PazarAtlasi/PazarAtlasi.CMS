@@ -42,7 +42,7 @@
             margin-left: 18rem !important; /* 288px = w-72 */
         }
         
-        /* Header always on top */
+        /* Header always on top (but below modals) */
         header {
             z-index: 999 !important;
             position: sticky !important;
@@ -54,6 +54,17 @@
         .language-menu,
         .dropdown-menu {
             z-index: 1001 !important;
+        }
+        
+        /* Modal overlay should be above everything */
+        #sectionModalOverlay {
+            z-index: 9999 !important;
+        }
+        
+        /* Modal content should be above overlay backdrop */
+        #sectionModalOverlay .section-modal {
+            position: relative;
+            z-index: 10000 !important;
         }
         
         /* Prevent content from overlapping header */

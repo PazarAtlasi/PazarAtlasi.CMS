@@ -216,6 +216,56 @@
             DataSchemaManager.addField();
         }
 
+        // Toggle field translations visibility
+        function toggleFieldTranslations(fieldIndex) {
+            const checkbox = document.getElementById('field_' + fieldIndex + '_IsTranslatable');
+            const translationsDiv = document.getElementById('fieldTranslations_' + fieldIndex);
+
+            if (checkbox && translationsDiv) {
+                if (checkbox.checked) {
+                    translationsDiv.classList.remove('hidden');
+                    translationsDiv.style.opacity = '0';
+                    translationsDiv.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        translationsDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                        translationsDiv.style.opacity = '1';
+                        translationsDiv.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    translationsDiv.classList.add('hidden');
+                }
+            }
+        }
+
+        // Switch field translation tabs
+        function switchFieldTranslationTab(fieldIndex, tabIndex) {
+            // Hide all tab contents for this field
+            const allContents = document.querySelectorAll('.field-translation-content-' + fieldIndex);
+            allContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            const allTabs = document.querySelectorAll('.field-translation-tab-' + fieldIndex);
+            allTabs.forEach(tab => {
+                tab.classList.remove('border-green-500', 'text-green-600');
+                tab.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            // Show selected tab content
+            const selectedContent = document.getElementById('fieldTranslationTab_' + fieldIndex + '_' + tabIndex);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+
+            // Add active class to selected tab
+            const selectedTab = document.querySelector('.field-translation-tab-' + fieldIndex + '[data-tab-index="' + tabIndex + '"]');
+            if (selectedTab) {
+                selectedTab.classList.add('border-green-500', 'text-green-600');
+                selectedTab.classList.remove('border-transparent', 'text-slate-500');
+            }
+        }
+
         // Save as draft
         function saveDraft() {
             const form = document.getElementById('createSchemaForm');

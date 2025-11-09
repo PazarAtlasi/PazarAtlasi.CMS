@@ -183,13 +183,94 @@
                                     <span class="ml-2 text-sm text-slate-700">Zorunlu</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="Fields[@i].IsTranslatable" value="true" @(field.IsTranslatable ? "checked" : "") class="h-4 w-4 text-blue-600 rounded">
+                                    <input type="checkbox" 
+                                           id="field_@(i)_IsTranslatable"
+                                           name="Fields[@i].IsTranslatable" 
+                                           value="true" 
+                                           @(field.IsTranslatable ? "checked" : "") 
+                                           class="h-4 w-4 text-blue-600 rounded"
+                                           onchange="toggleFieldTranslations(@i)">
                                     <span class="ml-2 text-sm text-slate-700">Çevrilebilir</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="checkbox" name="Fields[@i].IsActive" value="true" @(field.IsActive ? "checked" : "") class="h-4 w-4 text-blue-600 rounded">
                                     <span class="ml-2 text-sm text-slate-700">Aktif</span>
                                 </label>
+                            </div>
+                            
+                            <!-- Field Translations (Collapsible) -->
+                            <div id="fieldTranslations_@i" class="mt-4 @(field.IsTranslatable ? "" : "hidden")">
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <h5 class="text-sm font-semibold text-slate-800 mb-3 flex items-center">
+                                        <i class="fas fa-language text-green-600 mr-2"></i>
+                                        Alan Çevirileri
+                                    </h5>
+                                    
+                                    <!-- Language Tabs for Field -->
+                                    <div class="border-b border-slate-200 mb-3">
+                                        <nav class="-mb-px flex space-x-4">
+                                            @for (int langIdx = 0; langIdx < Model.AvailableLanguages.Count; langIdx++)
+                                            {
+                                                var lang = Model.AvailableLanguages[langIdx];
+                                                <button type="button" 
+                                                        class="field-translation-tab-@(i) py-2 px-1 border-b-2 font-medium text-xs transition-colors @(lang.IsDefault ? "border-green-500 text-green-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
+                                                        data-field-index="@i"
+                                                        data-tab-index="@langIdx"
+                                                        onclick="switchFieldTranslationTab(@i, @langIdx)">
+                                                    @lang.Name
+                                                    @if (lang.IsDefault)
+                                                    {
+                                                        <span class="ml-1 text-xs">●</span>
+                                                    }
+                                                </button>
+                                            }
+                                        </nav>
+                                    </div>
+                                    
+                                    <!-- Translation Content for Each Language -->
+                                    @for (int langIdx = 0; langIdx < Model.AvailableLanguages.Count; langIdx++)
+                                    {
+                                        var lang = Model.AvailableLanguages[langIdx];
+                                        var fieldTranslation = field.Translations?.FirstOrDefault(t => t.LanguageId == lang.Id);
+                                        
+                                        <div id="fieldTranslationTab_@(i)_@(langIdx)" 
+                                             class="field-translation-content-@(i) @(lang.IsDefault ? "" : "hidden")">
+                                            <input type="hidden" name="Fields[@i].Translations[@langIdx].LanguageId" value="@lang.Id" />
+                                            
+                                            <div class="space-y-3">
+                                                <div>
+                                                    <label class="block text-xs font-medium text-slate-700 mb-1">
+                                                        Alan Adı (@lang.Name)
+                                                    </label>
+                                                    <input type="text" 
+                                                           name="Fields[@i].Translations[@langIdx].FieldName" 
+                                                           value="@(fieldTranslation?.FieldName ?? "")"
+                                                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                                                           placeholder="@lang.Name dilinde alan adı">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-xs font-medium text-slate-700 mb-1">
+                                                        Açıklama (@lang.Name)
+                                                    </label>
+                                                    <textarea name="Fields[@i].Translations[@langIdx].Description" 
+                                                              rows="2"
+                                                              class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                                                              placeholder="@lang.Name dilinde açıklama">@(fieldTranslation?.Description ?? "")</textarea>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-xs font-medium text-slate-700 mb-1">
+                                                        Placeholder (@lang.Name)
+                                                    </label>
+                                                    <input type="text" 
+                                                           name="Fields[@i].Translations[@langIdx].Placeholder" 
+                                                           value="@(fieldTranslation?.Placeholder ?? "")"
+                                                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                                                           placeholder="@lang.Name dilinde placeholder">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     }
@@ -265,6 +346,56 @@
             }
         }
 
+        // Toggle field translations visibility
+        function toggleFieldTranslations(fieldIndex) {
+            const checkbox = document.getElementById('field_' + fieldIndex + '_IsTranslatable');
+            const translationsDiv = document.getElementById('fieldTranslations_' + fieldIndex);
+
+            if (checkbox && translationsDiv) {
+                if (checkbox.checked) {
+                    translationsDiv.classList.remove('hidden');
+                    translationsDiv.style.opacity = '0';
+                    translationsDiv.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        translationsDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                        translationsDiv.style.opacity = '1';
+                        translationsDiv.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    translationsDiv.classList.add('hidden');
+                }
+            }
+        }
+
+        // Switch field translation tabs
+        function switchFieldTranslationTab(fieldIndex, tabIndex) {
+            // Hide all tab contents for this field
+            const allContents = document.querySelectorAll('.field-translation-content-' + fieldIndex);
+            allContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            const allTabs = document.querySelectorAll('.field-translation-tab-' + fieldIndex);
+            allTabs.forEach(tab => {
+                tab.classList.remove('border-green-500', 'text-green-600');
+                tab.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            // Show selected tab content
+            const selectedContent = document.getElementById('fieldTranslationTab_' + fieldIndex + '_' + tabIndex);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+
+            // Add active class to selected tab
+            const selectedTab = document.querySelector('.field-translation-tab-' + fieldIndex + '[data-tab-index="' + tabIndex + '"]');
+            if (selectedTab) {
+                selectedTab.classList.add('border-green-500', 'text-green-600');
+                selectedTab.classList.remove('border-transparent', 'text-slate-500');
+            }
+        }
+
         // Add field functionality
         function addField() {
             const container = document.getElementById('fieldsContainer');
@@ -272,6 +403,51 @@
             
             if (emptyState) {
                 emptyState.remove();
+            }
+
+            // Build translations HTML for all languages
+            let translationsHtml = '';
+            @for (int langIdx = 0; langIdx < Model.AvailableLanguages.Count; langIdx++)
+            {
+                var lang = Model.AvailableLanguages[langIdx];
+                <text>
+                translationsHtml += `
+                    <div id="fieldTranslationTab_${fieldIndex}_@langIdx" 
+                         class="field-translation-content-${fieldIndex} @(lang.IsDefault ? "" : "hidden")">
+                        <input type="hidden" name="Fields[${fieldIndex}].Translations[@langIdx].LanguageId" value="@lang.Id" />
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">
+                                    Alan Adı (@lang.Name)
+                                </label>
+                                <input type="text" 
+                                       name="Fields[${fieldIndex}].Translations[@langIdx].Label" 
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                                       placeholder="@lang.Name dilinde alan adı">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">
+                                    Açıklama (@lang.Name)
+                                </label>
+                                <textarea name="Fields[${fieldIndex}].Translations[@langIdx].Description" 
+                                          rows="2"
+                                          class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                                          placeholder="@lang.Name dilinde açıklama"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">
+                                    Placeholder (@lang.Name)
+                                </label>
+                                <input type="text" 
+                                       name="Fields[${fieldIndex}].Translations[@langIdx].Placeholder" 
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                                       placeholder="@lang.Name dilinde placeholder">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                </text>
             }
 
             const fieldHtml = `
@@ -318,13 +494,54 @@
                             <span class="ml-2 text-sm text-slate-700">Zorunlu</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="Fields[${fieldIndex}].IsTranslatable" value="true" class="h-4 w-4 text-blue-600 rounded">
+                            <input type="checkbox" 
+                                   id="field_${fieldIndex}_IsTranslatable"
+                                   name="Fields[${fieldIndex}].IsTranslatable" 
+                                   value="true" 
+                                   class="h-4 w-4 text-blue-600 rounded"
+                                   onchange="toggleFieldTranslations(${fieldIndex})">
                             <span class="ml-2 text-sm text-slate-700">Çevrilebilir</span>
                         </label>
                         <label class="flex items-center">
                             <input type="checkbox" name="Fields[${fieldIndex}].IsActive" value="true" checked class="h-4 w-4 text-blue-600 rounded">
                             <span class="ml-2 text-sm text-slate-700">Aktif</span>
                         </label>
+                    </div>
+                    
+                    <!-- Field Translations (Collapsible) -->
+                    <div id="fieldTranslations_${fieldIndex}" class="mt-4 hidden">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h5 class="text-sm font-semibold text-slate-800 mb-3 flex items-center">
+                                <i class="fas fa-language text-green-600 mr-2"></i>
+                                Alan Çevirileri
+                            </h5>
+                            
+                            <!-- Language Tabs for Field -->
+                            <div class="border-b border-slate-200 mb-3">
+                                <nav class="-mb-px flex space-x-4">
+                                    @for (int langIdx = 0; langIdx < Model.AvailableLanguages.Count; langIdx++)
+                                    {
+                                        var lang = Model.AvailableLanguages[langIdx];
+                                        <text>
+                                        <button type="button" 
+                                                class="field-translation-tab-${fieldIndex} py-2 px-1 border-b-2 font-medium text-xs transition-colors @(lang.IsDefault ? "border-green-500 text-green-600" : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300")"
+                                                data-field-index="${fieldIndex}"
+                                                data-tab-index="@langIdx"
+                                                onclick="switchFieldTranslationTab(${fieldIndex}, @langIdx)">
+                                            @lang.Name
+                                            @if (lang.IsDefault)
+                                            {
+                                                <text><span class="ml-1 text-xs">●</span></text>
+                                            }
+                                        </button>
+                                        </text>
+                                    }
+                                </nav>
+                            </div>
+                            
+                            <!-- Translation Content for Each Language -->
+                            ${translationsHtml}
+                        </div>
                     </div>
                 </div>
             `;

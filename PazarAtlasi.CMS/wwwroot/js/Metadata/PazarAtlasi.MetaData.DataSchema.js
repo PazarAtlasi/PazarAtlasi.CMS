@@ -345,8 +345,11 @@ if (typeof DataSchemaManager === "undefined") {
                             <label class="ml-2 block text-sm text-slate-700">Zorunlu</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="Fields[${fieldIndex}].IsTranslatable" 
+                            <input type="checkbox" 
+                                   id="field_${fieldIndex}_IsTranslatable"
+                                   name="Fields[${fieldIndex}].IsTranslatable" 
                                    class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-slate-300 rounded" 
+                                   onchange="toggleFieldTranslations(${fieldIndex})"
                                    ${isTranslatable ? "checked" : ""}>
                             <label class="ml-2 block text-sm text-slate-700">Çevrilebilir</label>
                         </div>
@@ -382,60 +385,61 @@ if (typeof DataSchemaManager === "undefined") {
                         </div>
                     </div>
 
-                    <!-- Field Translations -->
-                    <div class="field-translations">
-                        <h5 class="text-sm font-semibold text-slate-800 mb-3 flex items-center">
-                            <i class="fas fa-language text-green-600 mr-2"></i>
-                            Alan Çevirileri
-                        </h5>
+                    <!-- Field Translations (Collapsible) -->
+                    <div id="fieldTranslations_${fieldIndex}" class="field-translations ${
+        isTranslatable ? "" : "hidden"
+      }">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h5 class="text-sm font-semibold text-slate-800 mb-3 flex items-center">
+                                <i class="fas fa-language text-green-600 mr-2"></i>
+                                Alan Çevirileri
+                            </h5>
                         
-                        <!-- Translation Tabs -->
-                        <div class="border-b border-slate-200 mb-3">
-                            <nav class="-mb-px flex space-x-4 field-translation-tabs">
-                                ${availableLanguages
-                                  .map(
-                                    (lang, langIndex) => `
-                                    <button type="button" 
-                                            class="field-translation-tab py-1 px-2 border-b-2 font-medium text-xs transition-colors ${
-                                              lang.isDefault
-                                                ? "border-purple-500 text-purple-600"
-                                                : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-                                            }"
-                                            data-language-id="${
-                                              lang.id
-                                            }"
-                                            onclick="switchFieldTranslationTab(this, ${
-                                              lang.id
-                                            })">
-                                        ${lang.name}
-                                        ${
+                            <!-- Translation Tabs -->
+                            <div class="border-b border-slate-200 mb-3">
+                                <nav class="-mb-px flex space-x-4 field-translation-tabs">
+                                    ${availableLanguages
+                                      .map(
+                                        (lang, langIndex) => `
+                                        <button type="button" 
+                                                class="field-translation-tab-${fieldIndex} py-1 px-2 border-b-2 font-medium text-xs transition-colors ${
                                           lang.isDefault
-                                            ? '<span class="ml-1 text-xs bg-purple-100 text-purple-600 px-1 py-0.5 rounded">Varsayılan</span>'
-                                            : ""
-                                        }
-                                    </button>
-                                `
-                                  )
-                                  .join("")}
-                            </nav>
-                        </div>
+                                            ? "border-green-500 text-green-600"
+                                            : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+                                        }"
+                                                data-field-index="${fieldIndex}"
+                                                data-tab-index="${langIndex}"
+                                                onclick="switchFieldTranslationTab(${fieldIndex}, ${langIndex})">
+                                            ${lang.name}
+                                            ${
+                                              lang.isDefault
+                                                ? '<span class="ml-1 text-xs">●</span>'
+                                                : ""
+                                            }
+                                        </button>
+                                    `
+                                      )
+                                      .join("")}
+                                </nav>
+                            </div>
 
-                        <!-- Translation Content -->
-                        ${availableLanguages
-                          .map(
-                            (lang, langIndex) => `
-                            <div class="field-translation-content ${
-                              lang.isDefault ? "" : "hidden"
-                            }" data-language-id="${lang.id}">
+                            <!-- Translation Content -->
+                            ${availableLanguages
+                              .map(
+                                (lang, langIndex) => `
+                                <div id="fieldTranslationTab_${fieldIndex}_${langIndex}" 
+                                     class="field-translation-content-${fieldIndex} ${
+                                  lang.isDefault ? "" : "hidden"
+                                }" data-language-id="${lang.id}">
                                 <input type="hidden" name="Fields[${fieldIndex}].Translations[${langIndex}].LanguageId" value="${
-                              lang.id
-                            }" />
+                                  lang.id
+                                }" />
                                 <input type="hidden" name="Fields[${fieldIndex}].Translations[${langIndex}].LanguageName" value="${
-                              lang.name
-                            }" />
+                                  lang.name
+                                }" />
                                 <input type="hidden" name="Fields[${fieldIndex}].Translations[${langIndex}].IsDefault" value="${
-                              lang.isDefault
-                            }" />
+                                  lang.isDefault
+                                }" />
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
@@ -477,10 +481,11 @@ if (typeof DataSchemaManager === "undefined") {
                                              lang.name
                                            } dilinde placeholder metni">
                                 </div>
-                            </div>
-                        `
-                          )
-                          .join("")}
+                                </div>
+                            `
+                              )
+                              .join("")}
+                        </div>
                     </div>
                 </div>
             `;
