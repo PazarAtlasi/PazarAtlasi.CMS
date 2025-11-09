@@ -1,0 +1,180 @@
+@model PazarAtlasi.CMS.Domain.Entities.Metadata.Variant
+
+@{
+    ViewData["Title"] = "Create Variant";
+    var products = ViewBag.Products as List<PazarAtlasi.CMS.Domain.Entities.Metadata.Product> ?? new List<PazarAtlasi.CMS.Domain.Entities.Metadata.Product>();
+}
+
+<div class="variant-create">
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <h4 class="text-2xl font-bold text-slate-800 inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    Create New Variant
+                </h4>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    Add a new product variant with specific attributes.
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <a href="@Url.Action("Variants")" class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Variants
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md">
+        <form asp-action="CreateVariant" method="post" class="p-6">
+            <div asp-validation-summary="ModelOnly" class="text-red-600 mb-4"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div class="space-y-4">
+                    <h5 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">
+                        <i class="fas fa-layer-group mr-2 text-purple-600"></i> Basic Information
+                    </h5>
+                    
+                    <div>
+                        <label asp-for="ProductId" class="block text-sm font-medium text-slate-700 mb-2">Parent Product *</label>
+                        <select asp-for="ProductId" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" required>
+                            <option value="">-- Select Product --</option>
+                            @foreach (var product in products)
+                            {
+                                <option value="@product.Id">@product.Name (@product.Code)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-red-600 text-sm"></span>
+                        <p class="text-xs text-slate-500 mt-1">Select the parent product for this variant</p>
+                    </div>
+
+                    <div>
+                        <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-2">Variant Name *</label>
+                        <input asp-for="Name" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="e.g., Red - Large, 128GB - Black">
+                        <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Code" class="block text-sm font-medium text-slate-700 mb-2">Variant Code *</label>
+                        <input asp-for="Code" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="SKU or variant code">
+                        <span asp-validation-for="Code" class="text-red-600 text-sm"></span>
+                        <p class="text-xs text-slate-500 mt-1">Unique identifier for this variant</p>
+                    </div>
+
+                    <div>
+                        <label asp-for="IntegrationCode" class="block text-sm font-medium text-slate-700 mb-2">Integration Code</label>
+                        <input asp-for="IntegrationCode" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="External system code">
+                        <span asp-validation-for="IntegrationCode" class="text-red-600 text-sm"></span>
+                    </div>
+                </div>
+
+                <!-- Description & Settings -->
+                <div class="space-y-4">
+                    <h5 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">
+                        <i class="fas fa-align-left mr-2 text-purple-600"></i> Description & Settings
+                    </h5>
+                    
+                    <div>
+                        <label asp-for="ShortDescription" class="block text-sm font-medium text-slate-700 mb-2">Short Description</label>
+                        <textarea asp-for="ShortDescription" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="Brief variant description"></textarea>
+                        <span asp-validation-for="ShortDescription" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="LongDescription" class="block text-sm font-medium text-slate-700 mb-2">Long Description</label>
+                        <textarea asp-for="LongDescription" rows="4" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="Detailed variant description"></textarea>
+                        <span asp-validation-for="LongDescription" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Status" class="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                        <select asp-for="Status" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Active">Active</option>
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Draft">Draft</option>
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Pending">Pending</option>
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Archived">Archived</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <!-- Preview Card -->
+                    <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <h6 class="text-sm font-medium text-slate-700 mb-3">Preview</h6>
+                        <div class="flex items-center">
+                            <div class="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-layer-group text-orange-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-slate-900" id="preview-name">Variant Name</div>
+                                <div class="text-xs text-slate-500" id="preview-code">variant-code</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start">
+                            <i class="fas fa-lightbulb text-blue-600 mt-0.5 mr-2"></i>
+                            <div class="text-sm text-blue-800">
+                                <p class="font-medium mb-1">Variant Tips</p>
+                                <ul class="text-xs space-y-1 list-disc list-inside">
+                                    <li>Use descriptive names (Color - Size)</li>
+                                    <li>Keep codes unique and consistent</li>
+                                    <li>Add detailed descriptions for clarity</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-slate-200">
+                <a href="@Url.Action("Variants")" class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center">
+                    <i class="fas fa-save mr-2"></i> Create Variant
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameInput = document.querySelector('input[name="Name"]');
+        const codeInput = document.querySelector('input[name="Code"]');
+        const previewName = document.getElementById('preview-name');
+        const previewCode = document.getElementById('preview-code');
+
+        function updatePreview() {
+            previewName.textContent = nameInput.value || 'Variant Name';
+            previewCode.textContent = codeInput.value || 'variant-code';
+        }
+
+        function generateCode() {
+            if (!codeInput.value && nameInput.value) {
+                const code = nameInput.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim('-');
+                codeInput.value = code;
+                updatePreview();
+            }
+        }
+
+        nameInput.addEventListener('input', function() {
+            updatePreview();
+            generateCode();
+        });
+
+        codeInput.addEventListener('input', updatePreview);
+
+        updatePreview();
+    });
+</script>

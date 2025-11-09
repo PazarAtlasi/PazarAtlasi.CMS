@@ -256,6 +256,83 @@ namespace PazarAtlasi.CMS.Controllers
             return View(variant);
         }
 
+        /// <summary>
+        /// Variant edit page - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> EditVariant(int id)
+        {
+            var variant = await _context.Variants
+                .Include(v => v.Product)
+                .Include(v => v.Translations)
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            if (variant == null)
+            {
+                return NotFound();
+            }
+
+            return View(variant);
+        }
+
+        /// <summary>
+        /// Variant edit - POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVariant(int id, Variant variant)
+        {
+            if (id != variant.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(variant);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Variant updated successfully.";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!VariantExists(variant.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Variants));
+            }
+            return View(variant);
+        }
+
+        /// <summary>
+        /// Variant delete
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> DeleteVariant(int id)
+        {
+            var variant = await _context.Variants.FindAsync(id);
+            if (variant != null)
+            {
+                variant.IsDeleted = true;
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Variant deleted successfully.";
+            }
+
+            return RedirectToAction(nameof(Variants));
+        }
+
+        private bool VariantExists(int id)
+        {
+            return _context.Variants.Any(e => e.Id == id);
+        }
+
         #endregion
 
         #region Categories
@@ -1185,6 +1262,92 @@ namespace PazarAtlasi.CMS.Controllers
             }
 
             return View(model);
+        }
+
+        /// <summary>
+        /// DataSchema edit - POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditDataSchema(int id, DataSchemaEditViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var dataSchema = await _context.DataSchemas
+                        .Include(ds => ds.Translations)
+                        .Include(ds => ds.Fields)
+                            .ThenInclude(f => f.Translations)
+                        .FirstOrDefaultAsync(ds => ds.Id == id);
+
+                    if (dataSchema == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update basic properties
+                    dataSchema.Name = model.Name;
+                    dataSchema.Description = model.Description;
+                    dataSchema.Configuration = model.Configuration;
+                    dataSchema.SortOrder = model.SortOrder;
+                    dataSchema.IsActive = model.IsActive;
+                    dataSchema.Status = model.Status;
+                    dataSchema.UpdatedAt = DateTime.UtcNow;
+
+                    // Update translations
+                    if (model.Translations != null && model.Translations.Any())
+                    {
+                        // Remove existing translations
+                        _context.DataSchemaTranslations.RemoveRange(dataSchema.Translations);
+
+                        // Add new translations
+                        var newTranslations = model.Translations
+                            .Where(t => !string.IsNullOrWhiteSpace(t.Name))
+                            .Select(t => new DataSchemaTranslation
+                            {
+                                DataSchemaId = dataSchema.Id,
+                                LanguageId = t.LanguageId,
+                                Name = t.Name,
+                                Description = t.Description,
+                                CreatedAt = DateTime.UtcNow
+                            }).ToList();
+
+                        if (newTranslations.Any())
+                        {
+                            _context.DataSchemaTranslations.AddRange(newTranslations);
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Data schema updated successfully.";
+                    return RedirectToAction(nameof(DataSchemas));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DataSchemaExists(model.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            await ReloadDataSchemaCreateModel(model);
+            return View(model);
+        }
+
+        private bool DataSchemaExists(int id)
+        {
+            return _context.DataSchemas.Any(e => e.Id == id);
         }
 
         /// <summary>

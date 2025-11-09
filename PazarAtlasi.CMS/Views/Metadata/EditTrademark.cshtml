@@ -1,0 +1,163 @@
+@model PazarAtlasi.CMS.Domain.Entities.Metadata.Trademark
+
+@{
+    ViewData["Title"] = "Edit Trademark";
+}
+
+<div class="trademark-edit">
+    <div class="flex flex-wrap items-center mb-8">
+        <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
+            <div class="page-title-box">
+                <h4 class="text-2xl font-bold text-slate-800 inline-block after:content-[''] after:absolute after:bottom-[-8px] after:left-0 after:w-10 after:h-[3px] after:bg-purple-800 after:rounded-full">
+                    Edit Trademark
+                </h4>
+                <p class="text-slate-500 mt-3 max-w-xl">
+                    Update trademark information and settings.
+                </p>
+            </div>
+        </div>
+        <div class="w-full lg:w-1/3 text-left lg:text-right">
+            <div class="inline-flex items-center space-x-2">
+                <a href="@Url.Action("Trademarks")" class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Trademarks
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md">
+        <form asp-action="EditTrademark" method="post" class="p-6">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-red-600 mb-4"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div class="space-y-4">
+                    <h5 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">
+                        <i class="fas fa-trademark mr-2 text-purple-600"></i> Basic Information
+                    </h5>
+                    
+                    <div>
+                        <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-2">Trademark Name *</label>
+                        <input asp-for="Name" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="Enter trademark name">
+                        <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Code" class="block text-sm font-medium text-slate-700 mb-2">Trademark Code *</label>
+                        <input asp-for="Code" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="Enter trademark code">
+                        <span asp-validation-for="Code" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="IntegrationCode" class="block text-sm font-medium text-slate-700 mb-2">Integration Code</label>
+                        <input asp-for="IntegrationCode" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="External system code">
+                        <span asp-validation-for="IntegrationCode" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="ShortDescription" class="block text-sm font-medium text-slate-700 mb-2">Short Description</label>
+                        <textarea asp-for="ShortDescription" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="Brief trademark description"></textarea>
+                        <span asp-validation-for="ShortDescription" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="LongDescription" class="block text-sm font-medium text-slate-700 mb-2">Long Description</label>
+                        <textarea asp-for="LongDescription" rows="4" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400" placeholder="Detailed trademark description"></textarea>
+                        <span asp-validation-for="LongDescription" class="text-red-600 text-sm"></span>
+                    </div>
+                </div>
+
+                <!-- Settings & Info -->
+                <div class="space-y-4">
+                    <h5 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">
+                        <i class="fas fa-cog mr-2 text-purple-600"></i> Settings
+                    </h5>
+                    
+                    <div>
+                        <label asp-for="SortOrder" class="block text-sm font-medium text-slate-700 mb-2">Sort Order</label>
+                        <input asp-for="SortOrder" type="number" min="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                        <span asp-validation-for="SortOrder" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Status" class="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                        <select asp-for="Status" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400">
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Active">Active</option>
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Draft">Draft</option>
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Pending">Pending</option>
+                            <option value="@PazarAtlasi.CMS.Domain.Common.Status.Archived">Archived</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-red-600 text-sm"></span>
+                    </div>
+
+                    <!-- Info Card -->
+                    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-2"></i>
+                            <div class="text-sm text-blue-800">
+                                <p class="font-medium mb-1">Trademark Information</p>
+                                <p class="text-xs">Created: @Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
+                                @if (Model.UpdatedAt.HasValue)
+                                {
+                                    <p class="text-xs">Updated: @Model.UpdatedAt.Value.ToString("dd MMM yyyy HH:mm")</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Card -->
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <h6 class="text-sm font-medium text-slate-700 mb-3">Preview</h6>
+                        <div class="flex items-center">
+                            <div class="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-trademark text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-slate-900" id="preview-name">@Model.Name</div>
+                                <div class="text-xs text-slate-500" id="preview-code">@Model.Code</div>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ShortDescription))
+                        {
+                            <div class="mt-3 pt-3 border-t border-slate-200">
+                                <p class="text-xs text-slate-600" id="preview-description">@Model.ShortDescription</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-slate-200">
+                <a href="@Url.Action("Trademarks")" class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="py-2 px-4 bg-purple-800 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors inline-flex items-center">
+                    <i class="fas fa-save mr-2"></i> Update Trademark
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameInput = document.querySelector('input[name="Name"]');
+        const codeInput = document.querySelector('input[name="Code"]');
+        const descInput = document.querySelector('textarea[name="ShortDescription"]');
+        const previewName = document.getElementById('preview-name');
+        const previewCode = document.getElementById('preview-code');
+        const previewDesc = document.getElementById('preview-description');
+
+        function updatePreview() {
+            if (previewName) previewName.textContent = nameInput.value || 'Trademark Name';
+            if (previewCode) previewCode.textContent = codeInput.value || 'trademark-code';
+            if (previewDesc) previewDesc.textContent = descInput.value || 'Short description...';
+        }
+
+        if (nameInput) nameInput.addEventListener('input', updatePreview);
+        if (codeInput) codeInput.addEventListener('input', updatePreview);
+        if (descInput) descInput.addEventListener('input', updatePreview);
+    });
+</script>
