@@ -77,16 +77,22 @@ Agent Marketplace/
 
 ### 🎯 Temel Özellikler:
 
-- **Metadata Management**: Product, Category, Trademark, Variant, Option yönetimi
-- **Product Option System**: Esnek ürün özellik sistemi (Color, Size, Material vb.)
-- **Tab-Based Translations**: Çoklu dil desteği ile kullanıcı dostu interface
-- **Content-Based SEO Management**: Merkezi SEO parametre yönetimi
-- **Multi-language Slug System**: Dil bazında URL yönetimi ve canonical yapısı
-- **Layout-Based Page Editing**: Esnek sayfa düzenleme sistemi
-- **Hierarchical Content Structure**: Section → SectionItem → Field hiyerarşisi
-- **Multi-language Support**: Gelişmiş çoklu dil desteği
-- **Advanced Caching**: Hybrid cache sistemi (Memory + Redis)
-- **Real-time Preview**: Field ve section önizleme sistemi
+- **🤖 Agent Marketplace**: AI agent marketplace with N8n integration and subscription management
+- **🔗 N8n Workflow Integration**: Full n8n workflow support with webhook triggers and authentication
+- **📊 Usage Analytics**: Real-time execution tracking, performance metrics, and billing
+- **🧪 Agent Testing**: Interactive test interface with JSON input/output monitoring
+- **💰 Flexible Pricing**: Multi-tier pricing models (Monthly, Per-Use, Per-Agent, Yearly)
+- **🔧 Dynamic Integrations**: Support for N8n, Custom API, Webhook, and Internal Service integrations
+- **📈 Metadata Management**: Product, Category, Trademark, Variant, Option yönetimi
+- **🎨 Product Option System**: Esnek ürün özellik sistemi (Color, Size, Material vb.)
+- **🌐 Tab-Based Translations**: Çoklu dil desteği ile kullanıcı dostu interface
+- **🔍 Content-Based SEO Management**: Merkezi SEO parametre yönetimi
+- **🔗 Multi-language Slug System**: Dil bazında URL yönetimi ve canonical yapısı
+- **📝 Layout-Based Page Editing**: Esnek sayfa düzenleme sistemi
+- **🏗️ Hierarchical Content Structure**: Section → SectionItem → Field hiyerarşisi
+- **🌍 Multi-language Support**: Gelişmiş çoklu dil desteği
+- **⚡ Advanced Caching**: Hybrid cache sistemi (Memory + Redis)
+- **👁️ Real-time Preview**: Field ve section önizleme sistemi
 
 ## 🏗️ Katman Yapısı
 
@@ -100,10 +106,20 @@ PazarAtlasi.CMS.Domain/
 │   ├── Entity.cs           # Base entity sınıfı
 │   └── Enums.cs           # Genel enum'lar
 ├── Entities/
+│   ├── AgentMarketplace/  # 🤖 AI Agent Marketplace entity'leri
+│   │   ├── Agent.cs                      # Core agent entity
+│   │   ├── AgentPricing.cs              # Pricing models
+│   │   ├── AgentCapability.cs           # Agent capabilities
+│   │   ├── AgentSubscription.cs         # User subscriptions
+│   │   ├── AgentIntegration.cs          # Integration configs
+│   │   ├── AgentUsageLog.cs             # Usage tracking
+│   │   ├── AgentIntegrationLog.cs       # Integration logs
+│   │   └── *Translation.cs              # Multi-language support
 │   ├── Content/           # İçerik entity'leri
 │   ├── Identity/          # Kullanıcı entity'leri
 │   └── Metadata/          # Meta veri entity'leri
 ├── Enums/                 # Domain enum'ları
+│   └── AgentMarketplaceEnums.cs         # 🤖 Agent-specific enums
 ├── Exceptions/            # Domain exception'ları
 └── ValueObjects/          # Value object'ler
 ```
@@ -115,10 +131,19 @@ Veritabanı işlemlerinin yapıldığı katman.
 ```
 PazarAtlasi.CMS.Persistence/
 ├── Context/
-│   └── ApplicationDbContext.cs
+│   └── PazarAtlasiDbContext.cs         # Main DB context with Agent entities
 ├── EntityConfigurations/
-│   └── Content/           # Entity configuration'ları
-├── Migrations/            # EF Core migration'ları
+│   ├── AgentMarketplace/  # 🤖 Agent Marketplace configurations
+│   │   ├── AgentConfiguration.cs                # Agent entity config with seed data
+│   │   ├── AgentPricingConfiguration.cs         # Pricing config with examples
+│   │   ├── AgentCapabilityConfiguration.cs      # Capability config with features
+│   │   ├── AgentSubscriptionConfiguration.cs    # Subscription management config
+│   │   ├── AgentIntegrationConfiguration.cs     # Integration config with N8n examples
+│   │   ├── AgentUsageLogConfiguration.cs        # Usage tracking config
+│   │   ├── AgentIntegrationLogConfiguration.cs  # Integration logging config
+│   │   └── *TranslationConfiguration.cs         # Multi-language configs
+│   └── Content/           # Content entity configuration'ları
+├── Migrations/            # EF Core migration'ları (including Agent tables)
 └── Interceptors/          # EF Core interceptor'ları
 ```
 
@@ -3443,5 +3468,225 @@ Bu sistem sayesinde:
 - Çoklu dil desteği ile global pazarlara hitap edilebilir
 - Gelişmiş filtreleme ve arama özellikleri sunulabilir
 - Performanslı ve ölçeklenebilir bir yapı elde edilir
+
+---
+
+## 🤖 Agent Marketplace Sistemi
+
+### 📋 Genel Bakış
+
+Agent Marketplace, PazarAtlasi CMS'e entegre edilmiş tam özellikli bir AI agent pazaryeri sistemidir. N8n workflow entegrasyonu ile güçlü otomasyon yetenekleri sunar.
+
+### 🎯 Temel Özellikler
+
+#### 🔧 Agent Yönetimi
+- **Comprehensive CRUD**: Agent oluşturma, düzenleme, silme ve test etme
+- **Dynamic Configuration**: Integration tipine göre dinamik konfigürasyon formları
+- **Multi-language Support**: Tüm agent bilgileri için çoklu dil desteği
+- **Capability Management**: Agent yetenekleri ve özelliklerinin detaylı yönetimi
+
+#### 🔗 Integration Sistemi
+- **N8n Workflow**: Tam n8n workflow desteği ve webhook entegrasyonu
+- **Custom API**: Özel API endpoint'leri ile entegrasyon
+- **Webhook Support**: Webhook tabanlı tetikleme sistemi
+- **Internal Service**: Dahili servis entegrasyonları
+
+#### 💰 Subscription & Billing
+- **Flexible Pricing**: Monthly, Per-Use, Per-Agent, Yearly pricing modelleri
+- **Usage Tracking**: Detaylı kullanım takibi ve limit yönetimi
+- **Automatic Billing**: Otomatik faturalandırma ve usage log'lama
+- **Subscription Management**: Kullanıcı subscription yönetimi
+
+#### 🧪 Test & Analytics
+- **Interactive Testing**: JSON input/output ile gerçek zamanlı test
+- **Execution Monitoring**: Execution süreleri ve performans metrikleri
+- **Usage Analytics**: Detaylı kullanım analitikleri ve raporlama
+- **Error Handling**: Comprehensive hata yönetimi ve logging
+
+### 🏗️ Entity Yapısı
+
+#### Core Entities
+
+```csharp
+// Ana agent entity'si
+public class Agent : Entity<int>
+{
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string DetailedDescription { get; set; }
+    public AgentType Type { get; set; }
+    public AgentCategory Category { get; set; }
+    public AgentExecutionType ExecutionType { get; set; }
+    public string IconClass { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsFeatured { get; set; }
+    
+    // Navigation Properties
+    public virtual ICollection<AgentPricing> Pricings { get; set; }
+    public virtual ICollection<AgentCapability> Capabilities { get; set; }
+    public virtual ICollection<AgentIntegration> Integrations { get; set; }
+    public virtual ICollection<AgentSubscription> Subscriptions { get; set; }
+    public virtual ICollection<AgentTranslation> Translations { get; set; }
+}
+
+// Esnek pricing modeli
+public class AgentPricing : Entity<int>
+{
+    public int AgentId { get; set; }
+    public PricingType Type { get; set; } // Monthly, PerUse, PerAgent, Yearly
+    public decimal Price { get; set; }
+    public string Currency { get; set; }
+    public int? UsageLimit { get; set; }
+    public bool IsDefault { get; set; }
+}
+
+// Integration konfigürasyonları
+public class AgentIntegration : Entity<int>
+{
+    public int AgentId { get; set; }
+    public IntegrationType Type { get; set; } // N8n, CustomAPI, Webhook, Internal
+    public string Name { get; set; }
+    public string ConfigurationJson { get; set; } // Flexible JSON config
+    public IntegrationTrigger TriggerType { get; set; }
+    public int Priority { get; set; }
+    public bool IsActive { get; set; }
+}
+```
+
+### 🔧 N8n Integration
+
+#### Dynamic Configuration
+
+N8n entegrasyonu için dinamik konfigürasyon alanları:
+
+```javascript
+// N8n Workflow Configuration
+const n8nConfig = {
+    workflowId: "report_generator_001",
+    webhookUrl: "https://n8n.example.com/webhook/your-webhook",
+    httpMethod: "POST",
+    timeout: 30000,
+    retryCount: 3,
+    authentication: "bearer",
+    authToken: "your-auth-token"
+};
+```
+
+#### Service Layer
+
+```csharp
+public interface IN8nService
+{
+    Task<AgentExecutionResult> ExecuteAgentAsync(Agent agent, AgentIntegration integration, object inputData);
+    Task<AgentExecutionResult> TriggerWorkflowAsync(string webhookUrl, string httpMethod, object data);
+    Task<bool> ValidateWorkflowConfigurationAsync(AgentIntegration integration);
+}
+```
+
+### 🎨 UI Components
+
+#### Agent Marketplace Grid
+- **Responsive Design**: Modern Tailwind CSS ile responsive tasarım
+- **Filter System**: Category, Type, ve search filtreleri
+- **Agent Cards**: Capability'ler, pricing, ve quick actions
+- **Pagination**: Büyük agent listeleri için sayfalama
+
+#### Agent Detail Page
+- **Comprehensive Info**: Detaylı agent bilgileri ve capabilities
+- **Pricing Plans**: Farklı pricing seçenekleri ve karşılaştırma
+- **Integration Details**: Aktif integration'ların listesi
+- **Test Interface**: Interactive test butonu ve modal
+
+### 🚀 API Endpoints
+
+#### Agent Execution
+```csharp
+[HttpPost]
+public async Task<IActionResult> ExecuteAgent(int agentId, int subscriptionId, [FromBody] object inputData)
+{
+    // Validate subscription and usage limits
+    // Execute via appropriate integration type
+    // Log usage and update billing
+    // Return execution results
+}
+
+[HttpPost]
+public async Task<IActionResult> TestAgent(int agentId, [FromBody] object inputData)
+{
+    // Test execution without affecting usage quotas
+    // Return test results with performance metrics
+}
+```
+
+### 🔄 Workflow Examples
+
+#### 1. Agent Oluşturma
+```bash
+1. Admin /AgentMarketplace/Create sayfasına gider
+2. Agent bilgilerini doldurur (Name, Description, Type, Category)
+3. "Add Integration" ile N8n entegrasyonu ekler
+4. N8n webhook URL'i ve konfigürasyonunu girer
+5. Agent capabilities'lerini tanımlar
+6. Pricing model'lerini ayarlar
+7. "Create & Activate" ile agent'ı yayınlar
+```
+
+#### 2. Agent Test Etme
+```bash
+1. Agent detail sayfasında "Test Agent" butonuna tıklar
+2. JSON input verisini modal'da girer
+3. "Run Test" ile agent'ı test eder
+4. N8n workflow tetiklenir
+5. Execution sonuçları real-time gösterilir
+6. Performance metrics (duration, success/failure) görüntülenir
+```
+
+### 🎯 Avantajlar
+
+#### ✅ Esneklik
+- **Multiple Integration Types**: N8n, Custom API, Webhook, Internal Service
+- **Dynamic Configuration**: Integration tipine göre özel konfigürasyon
+- **Flexible Pricing**: Farklı business model'lere uygun pricing
+- **Multi-language**: Tam çoklu dil desteği
+
+#### ✅ Performans
+- **Async Execution**: Non-blocking agent execution
+- **Retry Mechanisms**: Hata durumunda otomatik retry
+- **Timeout Controls**: Configurable timeout değerleri
+- **Efficient Logging**: Optimize edilmiş usage tracking
+
+#### ✅ Güvenlik
+- **Authentication Support**: Bearer, API Key, Basic auth
+- **Usage Limits**: Subscription bazında kullanım limitleri
+- **Secure Configuration**: Encrypted configuration storage
+- **Access Control**: User-based subscription management
+
+### 📋 Kurulum ve Migration
+
+#### Migration Oluşturma
+```bash
+# Agent Marketplace migration'ı oluştur
+dotnet ef migrations add AddAgentMarketplaceSystem -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+
+# Database'i güncelle
+dotnet ef database update -p PazarAtlasi.CMS.Persistence -s PazarAtlasi.CMS
+```
+
+#### Seed Data
+Sistem otomatik olarak örnek agent'lar oluşturur:
+- **Reporting Agent**: Monthly subscription ile rapor oluşturma
+- **Call Center Agent**: Per-agent pricing ile müşteri hizmetleri
+- **Content Generation Agent**: Per-use pricing ile içerik üretimi
+
+### 🎯 Sonuç
+
+Agent Marketplace sistemi, PazarAtlasi CMS'e güçlü AI otomasyon yetenekleri kazandırır. N8n entegrasyonu ile birlikte, kullanıcılar karmaşık iş süreçlerini otomatikleştirip, kullanım bazında faturalandırma yapabilirler.
+
+Bu sistem sayesinde:
+- **AI-Powered Automation**: N8n workflow'ları ile güçlü otomasyon
+- **Flexible Business Models**: Farklı pricing stratejileri
+- **Comprehensive Monitoring**: Detaylı analytics ve reporting
+- **Scalable Architecture**: Büyük ölçekli kullanım için optimize edilmiş
+- **Developer-Friendly**: Kolay entegrasyon ve genişletme imkanları
 
 ---
