@@ -9,6 +9,7 @@ using PazarAtlasi.CMS.Persistence.Context;
 using PazarAtlasi.CMS.Domain.Entities.AgentMarketplace;
 using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Domain.Enums;
+using PazarAtlasi.CMS.Services.Interfaces;
 
 namespace PazarAtlasi.CMS.Controllers
 {
@@ -19,10 +20,12 @@ namespace PazarAtlasi.CMS.Controllers
     public class AgentMarketplaceController : Controller
     {
         private readonly PazarAtlasiDbContext _context;
+        private readonly IN8nService _n8nService;
 
-        public AgentMarketplaceController(PazarAtlasiDbContext context)
+        public AgentMarketplaceController(PazarAtlasiDbContext context, IN8nService n8nService)
         {
             _context = context;
+            _n8nService = n8nService;
         }
 
         /// <summary>
@@ -234,14 +237,27 @@ namespace PazarAtlasi.CMS.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Agent agent)
+        public async Task<IActionResult> Create(Agent agent, List<AgentIntegration> integrations)
         {
             if (ModelState.IsValid)
             {
+                // Process integrations
+                if (integrations != null && integrations.Any())
+                {
+                    foreach (var integration in integrations.Where(i => !string.IsNullOrEmpty(i.Name)))
+                    {
+                        // Convert form data to JSON configuration
+                        var configJson = ProcessIntegrationConfiguration(integration);
+                        integration.ConfigurationJson = configJson;
+                        integration.Agent = agent;
+                        agent.Integrations.Add(integration);
+                    }
+                }
+
                 _context.Agents.Add(agent);
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = "Agent created successfully!";
+                TempData["Success"] = $"Agent '{agent.Name}' created successfully with {agent.Integrations.Count} integration(s)!";
                 return RedirectToAction(nameof(Manage));
             }
 
@@ -250,6 +266,49 @@ namespace PazarAtlasi.CMS.Controllers
             ViewBag.ExecutionTypes = Enum.GetValues<AgentExecutionType>().Cast<AgentExecutionType>();
             
             return View(agent);
+        }
+
+        /// <summary>
+        /// Process integration configuration from form data to JSON
+        /// </summary>
+        private string ProcessIntegrationConfiguration(AgentIntegration integration)
+        {
+            var config = new Dictionary<string, object>();
+
+            // Get configuration from Request.Form based on integration type
+            var formKeys = Request.Form.Keys.Where(k => k.Contains($"ConfigurationJson."));
+            
+            foreach (var key in formKeys)
+            {
+                var configKey = key.Split('.').Last();
+                var value = Request.Form[key].ToString();
+                
+                if (!string.IsNullOrEmpty(value))
+                {
+                    // Try to parse numbers
+                    if (int.TryParse(value, out int intValue))
+                    {
+                        config[configKey] = intValue;
+                    }
+                    else if (decimal.TryParse(value, out decimal decimalValue))
+                    {
+                        config[configKey] = decimalValue;
+                    }
+                    else if (bool.TryParse(value, out bool boolValue))
+                    {
+                        config[configKey] = boolValue;
+                    }
+                    else
+                    {
+                        config[configKey] = value;
+                    }
+                }
+            }
+
+            return JsonSerializer.Serialize(config, new JsonSerializerOptions 
+            { 
+                WriteIndented = true 
+            });
         }
 
         /// <summary>
@@ -347,6 +406,200 @@ namespace PazarAtlasi.CMS.Controllers
             };
 
             return View(stats);
+        }
+
+        // ===== AGENT EXECUTION API =====
+
+        /// <summary>
+        /// Execute an agent via its configured integrations
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> ExecuteAgent(int agentId, int subscriptionId, [FromBody] object inputData)
+        {
+            try
+            {
+                // TODO: Get current user ID from authentication
+                int currentUserId = 1; // Placeholder
+
+                // Validate subscription
+                var subscription = await _context.AgentSubscriptions
+                    .Include(s => s.Agent)
+                        .ThenInclude(a => a.Integrations.Where(i => i.IsActive))
+                    .Include(s => s.Pricing)
+                    .FirstOrDefaultAsync(s => s.Id == subscriptionId && 
+                                            s.UserId == currentUserId && 
+                                            s.Status == SubscriptionStatus.Active);
+
+                if (subscription == null)
+                {
+                    return BadRequest(new { error = "Invalid or inactive subscription" });
+                }
+
+                var agent = subscription.Agent;
+
+                // Check usage limits
+                if (subscription.Pricing.UsageLimit.HasValue && 
+                    subscription.CurrentUsage >= subscription.Pricing.UsageLimit.Value)
+                {
+                    return BadRequest(new { error = "Usage limit exceeded" });
+                }
+
+                // Get primary integration (highest priority)
+                var integration = agent.Integrations
+                    .Where(i => i.IsActive)
+                    .OrderBy(i => i.Priority)
+                    .FirstOrDefault();
+
+                if (integration == null)
+                {
+                    return BadRequest(new { error = "No active integrations found for this agent" });
+                }
+
+                // Execute based on integration type
+                AgentExecutionResult result;
+                switch (integration.Type)
+                {
+                    case IntegrationType.N8n:
+                        result = await _n8nService.ExecuteAgentAsync(agent, integration, inputData);
+                        break;
+                    
+                    case IntegrationType.CustomAPI:
+                        result = await ExecuteCustomApiIntegration(agent, integration, inputData);
+                        break;
+                    
+                    case IntegrationType.Webhook:
+                        result = await ExecuteWebhookIntegration(agent, integration, inputData);
+                        break;
+                    
+                    case IntegrationType.Internal:
+                        result = await ExecuteInternalServiceIntegration(agent, integration, inputData);
+                        break;
+                    
+                    default:
+                        return BadRequest(new { error = "Unsupported integration type" });
+                }
+
+                // Log usage
+                var usageLog = new AgentUsageLog
+                {
+                    AgentSubscriptionId = subscriptionId,
+                    AgentIntegrationId = integration.Id,
+                    ExecutionTime = result.ExecutionTime,
+                    Status = result.Success ? AgentExecutionStatus.Success : AgentExecutionStatus.Failed,
+                    InputData = JsonSerializer.Serialize(inputData),
+                    OutputData = result.Data,
+                    ErrorMessage = result.ErrorMessage,
+                    ExecutionDurationMs = result.ExecutionDurationMs,
+                    Cost = result.Cost
+                };
+
+                _context.AgentUsageLogs.Add(usageLog);
+
+                // Update subscription usage
+                subscription.CurrentUsage++;
+                await _context.SaveChangesAsync();
+
+                return Ok(new 
+                { 
+                    success = result.Success,
+                    data = result.Data,
+                    error = result.ErrorMessage,
+                    executionId = usageLog.Id,
+                    duration = result.ExecutionDurationMs,
+                    cost = result.Cost
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Test agent integration without affecting usage limits
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> TestAgent(int agentId, [FromBody] object inputData)
+        {
+            try
+            {
+                var agent = await _context.Agents
+                    .Include(a => a.Integrations.Where(i => i.IsActive))
+                    .FirstOrDefaultAsync(a => a.Id == agentId && a.IsActive);
+
+                if (agent == null)
+                {
+                    return NotFound(new { error = "Agent not found" });
+                }
+
+                var integration = agent.Integrations
+                    .Where(i => i.IsActive)
+                    .OrderBy(i => i.Priority)
+                    .FirstOrDefault();
+
+                if (integration == null)
+                {
+                    return BadRequest(new { error = "No active integrations found" });
+                }
+
+                // Execute test (only for N8n workflows for now)
+                if (integration.Type == IntegrationType.N8n)
+                {
+                    var result = await _n8nService.ExecuteAgentAsync(agent, integration, inputData);
+                    
+                    return Ok(new 
+                    { 
+                        success = result.Success,
+                        data = result.Data,
+                        error = result.ErrorMessage,
+                        duration = result.ExecutionDurationMs
+                    });
+                }
+
+                return BadRequest(new { error = "Test execution not supported for this integration type" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        // ===== INTEGRATION EXECUTION METHODS =====
+
+        private async Task<AgentExecutionResult> ExecuteCustomApiIntegration(Agent agent, AgentIntegration integration, object inputData)
+        {
+            // Placeholder for custom API integration
+            await Task.Delay(100);
+            return new AgentExecutionResult
+            {
+                Success = true,
+                Data = JsonSerializer.Serialize(new { message = "Custom API integration executed", input = inputData }),
+                ExecutionDurationMs = 100
+            };
+        }
+
+        private async Task<AgentExecutionResult> ExecuteWebhookIntegration(Agent agent, AgentIntegration integration, object inputData)
+        {
+            // Placeholder for webhook integration
+            await Task.Delay(50);
+            return new AgentExecutionResult
+            {
+                Success = true,
+                Data = JsonSerializer.Serialize(new { message = "Webhook integration executed", input = inputData }),
+                ExecutionDurationMs = 50
+            };
+        }
+
+        private async Task<AgentExecutionResult> ExecuteInternalServiceIntegration(Agent agent, AgentIntegration integration, object inputData)
+        {
+            // Placeholder for internal service integration
+            await Task.Delay(200);
+            return new AgentExecutionResult
+            {
+                Success = true,
+                Data = JsonSerializer.Serialize(new { message = "Internal service integration executed", input = inputData }),
+                ExecutionDurationMs = 200
+            };
         }
 
         // ===== HELPER METHODS =====

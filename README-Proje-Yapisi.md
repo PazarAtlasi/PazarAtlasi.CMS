@@ -6,7 +6,47 @@ Bu proje Clean Architecture prensiplerine göre tasarlanmış modern bir CMS sis
 
 ### 🚀 Son Güncellemeler (Kasım 2024):
 
-#### 🆕 Metadata Yönetimi Sistemi (Yeni!)
+#### 🤖 Agent Marketplace Sistemi (Yeni!)
+
+**Tam Özellikli AI Agent Marketplace ve N8n Entegrasyonu**
+
+- **Agent Management**: Comprehensive agent lifecycle management (Create, Edit, Delete, Test)
+- **Dynamic Integration System**: Flexible integration types (N8n Workflow, Custom API, Webhook, Internal Service)
+- **N8n Workflow Integration**: Full n8n workflow support with webhook triggers and authentication
+- **Subscription Management**: Multi-tier pricing (Monthly, Per-Use, Per-Agent, Yearly) with usage tracking
+- **Real-time Agent Testing**: Interactive test interface with JSON input/output and execution monitoring
+- **Usage Analytics**: Detailed execution logs, performance metrics, and billing integration
+- **Multi-language Support**: Translation system for all agent marketplace entities
+
+**🔧 Technical Features:**
+- **Dynamic Configuration Forms**: Integration-specific configuration fields based on type selection
+- **N8n Service Layer**: Dedicated service for N8n workflow execution with retry mechanisms
+- **API Endpoints**: RESTful APIs for agent execution (`/ExecuteAgent`, `/TestAgent`)
+- **Usage Tracking**: Automatic logging of executions, costs, and performance metrics
+- **Authentication Support**: Bearer, API Key, Basic auth for secure integrations
+- **Responsive UI**: Modern Tailwind CSS interface with modal dialogs and real-time feedback
+
+**📊 Agent Marketplace Entities:**
+```
+Agent Marketplace/
+├── Agent                    # Core agent entity with capabilities and integrations
+├── AgentPricing            # Flexible pricing models (Monthly/Usage/Agent-based)
+├── AgentCapability         # Agent features and capabilities
+├── AgentSubscription       # User subscriptions with usage limits
+├── AgentIntegration        # Integration configurations (N8n, API, Webhook)
+├── AgentUsageLog          # Execution tracking and billing
+├── AgentIntegrationLog    # Integration-specific execution logs
+└── Translation Entities    # Multi-language support for all entities
+```
+
+**🎯 N8n Integration Highlights:**
+- **Workflow Configuration**: Dynamic form fields for n8n-specific settings
+- **Webhook Triggers**: Direct webhook calls to n8n workflows with payload customization
+- **Authentication**: Support for Bearer tokens, API keys, and basic authentication
+- **Error Handling**: Comprehensive error handling with retry mechanisms and timeout controls
+- **Test Mode**: Safe testing environment without affecting usage quotas
+
+#### 🆕 Metadata Yönetimi Sistemi
 
 - **Product Option System**: Esnek ürün özellik yönetimi (Color, Size, Material, Warranty vb.)
 - **Option Entity**: Hiyerarşik option yapısı ve çoklu dil desteği

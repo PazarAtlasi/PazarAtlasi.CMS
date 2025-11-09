@@ -17,6 +17,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddPersistenceServiceRegistrations(builder.Configuration);
 builder.Services.AddInfrastructureServiceRegistrations(builder.Configuration);
 
+// Add Agent Marketplace Services
+builder.Services.AddHttpClient<PazarAtlasi.CMS.Services.Interfaces.IN8nService, PazarAtlasi.CMS.Services.N8nService>();
+builder.Services.AddScoped<PazarAtlasi.CMS.Services.Interfaces.IN8nService, PazarAtlasi.CMS.Services.N8nService>();
+
 // Localization is now handled by LanguageService and LanguageMiddleware
 
 var app = builder.Build();

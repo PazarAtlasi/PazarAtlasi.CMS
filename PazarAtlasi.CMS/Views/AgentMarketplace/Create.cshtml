@@ -9,7 +9,8 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
     <!-- Back Navigation -->
     <div class="max-w-7xl mx-auto px-4 py-4">
-        <a href="@Url.Action("Manage")" class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+        <a href="@Url.Action("Manage")"
+            class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
             <i class="fas fa-arrow-left mr-2"></i>
             Back to Manage Agents
         </a>
@@ -33,23 +34,28 @@
             <!-- Basic Information -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h2 class="text-xl font-semibold text-slate-900 mb-6">Basic Information</h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label asp-for="Name" class="block text-sm font-medium text-slate-700 mb-2">Agent Name</label>
-                        <input asp-for="Name" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Reporting Agent">
+                        <input asp-for="Name"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="e.g., Reporting Agent">
                         <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
                     </div>
 
                     <div>
                         <label asp-for="Version" class="block text-sm font-medium text-slate-700 mb-2">Version</label>
-                        <input asp-for="Version" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="1.0.0">
+                        <input asp-for="Version"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="1.0.0">
                         <span asp-validation-for="Version" class="text-red-600 text-sm"></span>
                     </div>
 
                     <div>
                         <label asp-for="Type" class="block text-sm font-medium text-slate-700 mb-2">Agent Type</label>
-                        <select asp-for="Type" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select asp-for="Type"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Type</option>
                             @foreach (var type in ViewBag.AgentTypes)
                             {
@@ -61,7 +67,8 @@
 
                     <div>
                         <label asp-for="Category" class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-                        <select asp-for="Category" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select asp-for="Category"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Category</option>
                             @foreach (var category in ViewBag.AgentCategories)
                             {
@@ -72,8 +79,10 @@
                     </div>
 
                     <div>
-                        <label asp-for="ExecutionType" class="block text-sm font-medium text-slate-700 mb-2">Execution Type</label>
-                        <select asp-for="ExecutionType" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <label asp-for="ExecutionType" class="block text-sm font-medium text-slate-700 mb-2">Execution
+                            Type</label>
+                        <select asp-for="ExecutionType"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Execution Type</option>
                             @foreach (var execType in ViewBag.ExecutionTypes)
                             {
@@ -84,28 +93,40 @@
                     </div>
 
                     <div>
-                        <label asp-for="IconClass" class="block text-sm font-medium text-slate-700 mb-2">Icon Class</label>
-                        <input asp-for="IconClass" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="fas fa-robot">
+                        <label asp-for="IconClass" class="block text-sm font-medium text-slate-700 mb-2">Icon
+                            Class</label>
+                        <input asp-for="IconClass"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="fas fa-robot">
                         <span asp-validation-for="IconClass" class="text-red-600 text-sm"></span>
                         <p class="text-xs text-slate-500 mt-1">Use FontAwesome icon classes (e.g., fas fa-robot)</p>
                     </div>
                 </div>
 
                 <div class="mt-6">
-                    <label asp-for="Description" class="block text-sm font-medium text-slate-700 mb-2">Short Description</label>
-                    <textarea asp-for="Description" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Brief description of what this agent does..."></textarea>
+                    <label asp-for="Description" class="block text-sm font-medium text-slate-700 mb-2">Short
+                        Description</label>
+                    <textarea asp-for="Description" rows="3"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Brief description of what this agent does..."></textarea>
                     <span asp-validation-for="Description" class="text-red-600 text-sm"></span>
                 </div>
 
                 <div class="mt-6">
-                    <label asp-for="DetailedDescription" class="block text-sm font-medium text-slate-700 mb-2">Detailed Description</label>
-                    <textarea asp-for="DetailedDescription" rows="6" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Detailed explanation of the agent's capabilities, use cases, and benefits..."></textarea>
+                    <label asp-for="DetailedDescription" class="block text-sm font-medium text-slate-700 mb-2">Detailed
+                        Description</label>
+                    <textarea asp-for="DetailedDescription" rows="6"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Detailed explanation of the agent's capabilities, use cases, and benefits..."></textarea>
                     <span asp-validation-for="DetailedDescription" class="text-red-600 text-sm"></span>
                 </div>
 
                 <div class="mt-6">
-                    <label asp-for="ImageUrl" class="block text-sm font-medium text-slate-700 mb-2">Image URL (Optional)</label>
-                    <input asp-for="ImageUrl" type="url" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com/agent-image.png">
+                    <label asp-for="ImageUrl" class="block text-sm font-medium text-slate-700 mb-2">Image URL
+                        (Optional)</label>
+                    <input asp-for="ImageUrl" type="url"
+                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="https://example.com/agent-image.png">
                     <span asp-validation-for="ImageUrl" class="text-red-600 text-sm"></span>
                 </div>
             </div>
@@ -113,39 +134,123 @@
             <!-- Settings -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                 <h2 class="text-xl font-semibold text-slate-900 mb-6">Settings</h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label asp-for="SortOrder" class="block text-sm font-medium text-slate-700 mb-2">Sort Order</label>
-                        <input asp-for="SortOrder" type="number" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="0">
+                        <label asp-for="SortOrder" class="block text-sm font-medium text-slate-700 mb-2">Sort
+                            Order</label>
+                        <input asp-for="SortOrder" type="number"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="0">
                         <span asp-validation-for="SortOrder" class="text-red-600 text-sm"></span>
                         <p class="text-xs text-slate-500 mt-1">Lower numbers appear first</p>
                     </div>
 
                     <div class="space-y-4">
                         <div class="flex items-center">
-                            <input asp-for="IsActive" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
+                            <input asp-for="IsActive" type="checkbox"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
                             <label asp-for="IsActive" class="ml-2 block text-sm text-slate-700">Active</label>
                         </div>
 
                         <div class="flex items-center">
-                            <input asp-for="IsFeatured" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
+                            <input asp-for="IsFeatured" type="checkbox"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
                             <label asp-for="IsFeatured" class="ml-2 block text-sm text-slate-700">Featured Agent</label>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Integration Configuration -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-xl font-semibold text-slate-900 mb-6">Integration Configuration</h2>
+
+                <div id="integrations-container">
+                    <!-- Integration Template (Hidden) -->
+                    <div id="integration-template" class="integration-item border border-slate-200 rounded-lg p-4 mb-4"
+                        style="display: none;">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-medium text-slate-900">Integration #<span
+                                    class="integration-number">1</span></h3>
+                            <button type="button" class="text-red-600 hover:text-red-800 remove-integration">
+                                <i class="fas fa-trash mr-1"></i>Remove
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Integration Name</label>
+                                <input type="text" name="Integrations[INDEX].Name"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="e.g., Report Generator Workflow">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Integration Type</label>
+                                <select name="Integrations[INDEX].Type"
+                                    class="integration-type w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">Select Type</option>
+                                    <option value="N8nWorkflow">N8n Workflow</option>
+                                    <option value="CustomApi">Custom API</option>
+                                    <option value="Webhook">Webhook</option>
+                                    <option value="InternalService">Internal Service</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Trigger Type</label>
+                                <select name="Integrations[INDEX].TriggerType"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="Manual">Manual</option>
+                                    <option value="ApiCall">API Call</option>
+                                    <option value="Schedule">Schedule</option>
+                                    <option value="Event">Event</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Priority</label>
+                                <input type="number" name="Integrations[INDEX].Priority"
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    value="1" min="1">
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Configuration Area -->
+                        <div class="mt-4 integration-config-area">
+                            <!-- Configuration will be dynamically loaded here -->
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" name="Integrations[INDEX].IsActive"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" checked>
+                                <label class="ml-2 block text-sm text-slate-700">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="add-integration"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Add Integration
+                </button>
+            </div>
+
             <!-- Action Buttons -->
             <div class="flex items-center justify-between pt-6">
-                <a href="@Url.Action("Manage")" class="px-6 py-3 text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                <a href="@Url.Action("Manage")"
+                    class="px-6 py-3 text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
                     Cancel
                 </a>
                 <div class="space-x-3">
-                    <button type="submit" name="status" value="Draft" class="px-6 py-3 text-slate-700 bg-slate-100 border border-slate-300 rounded-lg hover:bg-slate-200 transition-colors">
+                    <button type="submit" name="status" value="Draft"
+                        class="px-6 py-3 text-slate-700 bg-slate-100 border border-slate-300 rounded-lg hover:bg-slate-200 transition-colors">
                         Save as Draft
                     </button>
-                    <button type="submit" name="status" value="Active" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <button type="submit" name="status" value="Active"
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         Create & Activate
                     </button>
                 </div>
@@ -153,3 +258,326 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        let integrationCounter = 0;
+
+        // Integration configuration templates
+        const integrationConfigs = {
+            'N8nWorkflow': {
+                title: 'N8n Workflow Configuration',
+                fields: [
+                    {
+                        name: 'workflowId',
+                        label: 'Workflow ID',
+                        type: 'text',
+                        placeholder: 'e.g., report_generator_001',
+                        required: true,
+                        help: 'Unique identifier for your n8n workflow'
+                    },
+                    {
+                        name: 'webhookUrl',
+                        label: 'Webhook URL',
+                        type: 'url',
+                        placeholder: 'https://n8n.example.com/webhook/your-webhook',
+                        required: true,
+                        help: 'The webhook URL from your n8n workflow'
+                    },
+                    {
+                        name: 'httpMethod',
+                        label: 'HTTP Method',
+                        type: 'select',
+                        options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+                        default: 'POST',
+                        help: 'HTTP method for webhook calls'
+                    },
+                    {
+                        name: 'timeout',
+                        label: 'Timeout (ms)',
+                        type: 'number',
+                        default: 30000,
+                        min: 1000,
+                        max: 300000,
+                        help: 'Request timeout in milliseconds'
+                    },
+                    {
+                        name: 'retryCount',
+                        label: 'Retry Count',
+                        type: 'number',
+                        default: 3,
+                        min: 0,
+                        max: 10,
+                        help: 'Number of retry attempts on failure'
+                    },
+                    {
+                        name: 'authentication',
+                        label: 'Authentication',
+                        type: 'select',
+                        options: ['none', 'bearer', 'basic', 'apikey'],
+                        default: 'none',
+                        help: 'Authentication method for webhook'
+                    },
+                    {
+                        name: 'authToken',
+                        label: 'Auth Token/API Key',
+                        type: 'password',
+                        placeholder: 'Enter your authentication token',
+                        help: 'Authentication token or API key (if required)',
+                        showWhen: 'authentication != none'
+                    }
+                ]
+            },
+            'CustomApi': {
+                title: 'Custom API Configuration',
+                fields: [
+                    {
+                        name: 'endpoint',
+                        label: 'API Endpoint',
+                        type: 'url',
+                        placeholder: 'https://api.example.com/process',
+                        required: true,
+                        help: 'Full URL of your API endpoint'
+                    },
+                    {
+                        name: 'method',
+                        label: 'HTTP Method',
+                        type: 'select',
+                        options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+                        default: 'POST',
+                        help: 'HTTP method for API calls'
+                    },
+                    {
+                        name: 'contentType',
+                        label: 'Content Type',
+                        type: 'select',
+                        options: ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data', 'text/plain'],
+                        default: 'application/json',
+                        help: 'Content type for request body'
+                    },
+                    {
+                        name: 'timeout',
+                        label: 'Timeout (ms)',
+                        type: 'number',
+                        default: 15000,
+                        min: 1000,
+                        max: 300000,
+                        help: 'Request timeout in milliseconds'
+                    },
+                    {
+                        name: 'headers',
+                        label: 'Custom Headers',
+                        type: 'textarea',
+                        placeholder: '{"Authorization": "Bearer token", "X-Custom-Header": "value"}',
+                        help: 'Additional headers as JSON object'
+                    }
+                ]
+            },
+            'Webhook': {
+                title: 'Webhook Configuration',
+                fields: [
+                    {
+                        name: 'url',
+                        label: 'Webhook URL',
+                        type: 'url',
+                        placeholder: 'https://hooks.example.com/webhook',
+                        required: true,
+                        help: 'URL where webhook notifications will be sent'
+                    },
+                    {
+                        name: 'secret',
+                        label: 'Webhook Secret',
+                        type: 'password',
+                        placeholder: 'Enter webhook secret for verification',
+                        help: 'Secret key for webhook signature verification'
+                    },
+                    {
+                        name: 'events',
+                        label: 'Trigger Events',
+                        type: 'multiselect',
+                        options: ['agent.executed', 'agent.failed', 'agent.started', 'subscription.created', 'usage.limit.reached'],
+                        help: 'Events that will trigger this webhook'
+                    }
+                ]
+            },
+            'InternalService': {
+                title: 'Internal Service Configuration',
+                fields: [
+                    {
+                        name: 'serviceName',
+                        label: 'Service Name',
+                        type: 'text',
+                        placeholder: 'e.g., ReportingService',
+                        required: true,
+                        help: 'Name of the internal service class'
+                    },
+                    {
+                        name: 'methodName',
+                        label: 'Method Name',
+                        type: 'text',
+                        placeholder: 'e.g., GenerateReport',
+                        required: true,
+                        help: 'Method to call on the service'
+                    },
+                    {
+                        name: 'parameters',
+                        label: 'Default Parameters',
+                        type: 'textarea',
+                        placeholder: '{"format": "pdf", "template": "default"}',
+                        help: 'Default parameters as JSON object'
+                    }
+                ]
+            }
+        };
+
+        // Add new integration
+        document.getElementById('add-integration').addEventListener('click', function () {
+            const template = document.getElementById('integration-template');
+            const container = document.getElementById('integrations-container');
+            const clone = template.cloneNode(true);
+
+            integrationCounter++;
+            clone.id = 'integration-' + integrationCounter;
+            clone.style.display = 'block';
+
+            // Update form field names and IDs
+            const inputs = clone.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                const name = input.getAttribute('name');
+                if (name) {
+                    input.setAttribute('name', name.replace('INDEX', integrationCounter - 1));
+                }
+            });
+
+            // Update integration number
+            clone.querySelector('.integration-number').textContent = integrationCounter;
+
+            // Add remove functionality
+            clone.querySelector('.remove-integration').addEventListener('click', function () {
+                clone.remove();
+            });
+
+            // Add integration type change handler
+            const typeSelect = clone.querySelector('.integration-type');
+            typeSelect.addEventListener('change', function () {
+                updateIntegrationConfig(clone, this.value, integrationCounter - 1);
+            });
+
+            container.appendChild(clone);
+        });
+
+        // Update integration configuration based on type
+        function updateIntegrationConfig(container, type, index) {
+            const configArea = container.querySelector('.integration-config-area');
+
+            if (!type || !integrationConfigs[type]) {
+                configArea.innerHTML = '';
+                return;
+            }
+
+            const config = integrationConfigs[type];
+            let html = `<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-medium text-blue-900 mb-3">${config.title}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+
+            config.fields.forEach(field => {
+                html += generateFieldHtml(field, index);
+            });
+
+            html += '</div></div>';
+            configArea.innerHTML = html;
+
+            // Add conditional field logic
+            addConditionalFieldLogic(configArea);
+        }
+
+        // Generate HTML for configuration field
+        function generateFieldHtml(field, index) {
+            const fieldName = `Integrations[${index}].ConfigurationJson.${field.name}`;
+            let inputHtml = '';
+
+            switch (field.type) {
+                case 'text':
+                case 'url':
+                case 'password':
+                case 'number':
+                    inputHtml = `<input type="${field.type}" name="${fieldName}" 
+                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                            placeholder="${field.placeholder || ''}" 
+                            ${field.required ? 'required' : ''}
+                            ${field.min ? `min="${field.min}"` : ''}
+                            ${field.max ? `max="${field.max}"` : ''}
+                            ${field.default ? `value="${field.default}"` : ''}
+                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
+                    break;
+
+                case 'select':
+                    inputHtml = `<select name="${fieldName}" 
+                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
+                    field.options.forEach(option => {
+                        const selected = field.default === option ? 'selected' : '';
+                        inputHtml += `<option value="${option}" ${selected}>${option}</option>`;
+                    });
+                    inputHtml += '</select>';
+                    break;
+
+                case 'textarea':
+                    inputHtml = `<textarea name="${fieldName}" rows="3"
+                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                            placeholder="${field.placeholder || ''}"
+                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>${field.default || ''}</textarea>`;
+                    break;
+
+                case 'multiselect':
+                    inputHtml = `<select name="${fieldName}" multiple 
+                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>`;
+                    field.options.forEach(option => {
+                        inputHtml += `<option value="${option}">${option}</option>`;
+                    });
+                    inputHtml += '</select>';
+                    break;
+            }
+
+            return `
+                    <div class="config-field" ${field.showWhen ? `data-show-when="${field.showWhen}"` : ''}>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">
+                            ${field.label} ${field.required ? '<span class="text-red-500">*</span>' : ''}
+                        </label>
+                        ${inputHtml}
+                        ${field.help ? `<p class="text-xs text-slate-500 mt-1">${field.help}</p>` : ''}
+                    </div>
+                `;
+        }
+
+        // Add conditional field logic
+        function addConditionalFieldLogic(container) {
+            const conditionalFields = container.querySelectorAll('[data-show-when]');
+
+            conditionalFields.forEach(field => {
+                const condition = field.getAttribute('data-show-when');
+                const [conditionField, conditionValue] = condition.split(' != ');
+
+                // Find the field that controls visibility
+                const controlField = container.querySelector(`[name*="${conditionField}"]`);
+                if (controlField) {
+                    controlField.addEventListener('change', function () {
+                        const shouldShow = this.value !== conditionValue;
+                        field.style.display = shouldShow ? 'block' : 'none';
+                    });
+
+                    // Initial state
+                    const shouldShow = controlField.value !== conditionValue;
+                    field.style.display = shouldShow ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Add first integration by default
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto-add first integration when page loads
+            // document.getElementById('add-integration').click();
+        });
+    </script>
+}
