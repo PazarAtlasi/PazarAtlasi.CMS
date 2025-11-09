@@ -213,13 +213,7 @@ if (typeof DataSchemaManager === "undefined") {
         $(this).closest(".option-item").remove();
       });
 
-      // Field key generation
-      $(document).on("input", ".field-name-input", function () {
-        const fieldItem = $(this).closest(".field-item");
-        const fieldName = $(this).val();
-        const fieldKey = generateFieldKey(fieldName);
-        fieldItem.find(".field-key-input").val(fieldKey);
-      });
+      // Field key will be generated in backend from field name
     }
 
     // Add new field
@@ -303,11 +297,11 @@ if (typeof DataSchemaManager === "undefined") {
                                    placeholder="Örn: Storage" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Alan Anahtarı *</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Alan Anahtarı</label>
                             <input type="text" name="Fields[${fieldIndex}].FieldKey" 
-                                   class="field-key-input w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" 
-                                   placeholder="Örn: storage_gb" required pattern="^[a-z0-9_]+$">
-                            <p class="text-xs text-slate-500 mt-1">Sadece küçük harf, rakam ve alt çizgi</p>
+                                   class="field-key-input w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 cursor-not-allowed focus:ring-2 focus:ring-purple-500 focus:border-purple-500" 
+                                   placeholder="Otomatik oluşturulacak" readonly>
+                            <p class="text-xs text-slate-500 mt-1">Alan adından otomatik oluşturulur</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Alan Tipi *</label>

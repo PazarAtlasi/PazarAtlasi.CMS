@@ -1040,7 +1040,7 @@ namespace PazarAtlasi.CMS.Controllers
                 var dataSchema = new DataSchema
                 {
                     Name = model.Name,
-                    Key = model.Key,
+                    Key = GenerateSchemaKey(model.Name, model.Key),
                     Description = model.Description,
                     Configuration = model.Configuration ?? "{}",
                     SortOrder = model.SortOrder,
@@ -1079,7 +1079,7 @@ namespace PazarAtlasi.CMS.Controllers
                     var fields = model.Fields.Select((field, index) => new DataSchemaField
                     {
                         DataSchemaId = dataSchema.Id,
-                        FieldKey = field.FieldKey,
+                        FieldKey = GenerateFieldKey(field.FieldName, field.FieldKey),
                         FieldName = field.FieldName,
                         Description = field.Description,
                         Type = field.Type,
@@ -1348,6 +1348,86 @@ namespace PazarAtlasi.CMS.Controllers
         private bool DataSchemaExists(int id)
         {
             return _context.DataSchemas.Any(e => e.Id == id);
+        }
+
+        /// <summary>
+        /// Generate schema key from schema name
+        /// </summary>
+        private string GenerateSchemaKey(string schemaName, string? existingKey = null)
+        {
+            // If existing key is provided and not empty, use it
+            if (!string.IsNullOrWhiteSpace(existingKey))
+            {
+                return existingKey;
+            }
+
+            // Generate from schema name
+            if (string.IsNullOrWhiteSpace(schemaName))
+            {
+                return $"schema_{Guid.NewGuid().ToString("N").Substring(0, 8)}";
+            }
+
+            // Convert to lowercase and replace spaces with dash
+            var key = schemaName.ToLowerInvariant()
+                .Replace(" ", "-")
+                .Replace("ı", "i")
+                .Replace("ğ", "g")
+                .Replace("ü", "u")
+                .Replace("ş", "s")
+                .Replace("ö", "o")
+                .Replace("ç", "c")
+                .Replace("İ", "i");
+
+            // Remove all non-alphanumeric characters except dash and underscore
+            key = System.Text.RegularExpressions.Regex.Replace(key, @"[^a-z0-9\-_]", "");
+
+            // Ensure it starts with a letter
+            if (key.Length > 0 && !char.IsLetter(key[0]))
+            {
+                key = "schema-" + key;
+            }
+
+            return key;
+        }
+
+        /// <summary>
+        /// Generate field key from field name
+        /// </summary>
+        private string GenerateFieldKey(string fieldName, string? existingKey = null)
+        {
+            // If existing key is provided and not empty, use it
+            if (!string.IsNullOrWhiteSpace(existingKey))
+            {
+                return existingKey;
+            }
+
+            // Generate from field name
+            if (string.IsNullOrWhiteSpace(fieldName))
+            {
+                return $"field_{Guid.NewGuid().ToString("N").Substring(0, 8)}";
+            }
+
+            // Convert to lowercase and replace spaces/special chars with underscore
+            var key = fieldName.ToLowerInvariant()
+                .Replace(" ", "_")
+                .Replace("ı", "i")
+                .Replace("ğ", "g")
+                .Replace("ü", "u")
+                .Replace("ş", "s")
+                .Replace("ö", "o")
+                .Replace("ç", "c")
+                .Replace("İ", "i");
+
+            // Remove all non-alphanumeric characters except underscore
+            key = System.Text.RegularExpressions.Regex.Replace(key, @"[^a-z0-9_]", "");
+
+            // Ensure it starts with a letter
+            if (key.Length > 0 && !char.IsLetter(key[0]))
+            {
+                key = "field_" + key;
+            }
+
+            return key;
         }
 
         /// <summary>

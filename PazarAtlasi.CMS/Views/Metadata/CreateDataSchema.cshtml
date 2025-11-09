@@ -40,11 +40,11 @@
                         <span asp-validation-for="Name" class="text-red-500 text-sm"></span>
                     </div>
                     <div>
-                        <label asp-for="Key" class="block text-sm font-medium text-slate-700 mb-2">Şema Anahtarı *</label>
-                        <input asp-for="Key" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                               placeholder="Örn: smartphone-specs" required pattern="^[a-z0-9-_]+$">
+                        <label asp-for="Key" class="block text-sm font-medium text-slate-700 mb-2">Şema Anahtarı</label>
+                        <input asp-for="Key" class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                               placeholder="Otomatik oluşturulacak" readonly>
                         <span asp-validation-for="Key" class="text-red-500 text-sm"></span>
-                        <p class="text-xs text-slate-500 mt-1">Sadece küçük harf, rakam, tire ve alt çizgi kullanın</p>
+                        <p class="text-xs text-slate-500 mt-1">Şema adından otomatik oluşturulur</p>
                     </div>
                     <div>
                         <label asp-for="SortOrder" class="block text-sm font-medium text-slate-700 mb-2">Sıralama</label>
@@ -173,16 +173,7 @@
         $(document).ready(function() {
             DataSchemaManager.init();
             
-            // Auto-generate key from name
-            $('input[name="Name"]').on('input', function() {
-                const name = $(this).val();
-                const key = name.toLowerCase()
-                    .replace(/[^a-z0-9\s-]/g, '')
-                    .replace(/\s+/g, '-')
-                    .replace(/-+/g, '-')
-                    .trim('-');
-                $('input[name="Key"]').val(key);
-            });
+            // Key will be auto-generated in backend from Name
         });
 
         // Language tab switching
