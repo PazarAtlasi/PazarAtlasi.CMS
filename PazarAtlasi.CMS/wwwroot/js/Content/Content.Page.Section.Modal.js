@@ -1138,7 +1138,7 @@ const SectionModal = (function () {
     console.log(templates);
     // Create modal HTML
     const modalHTML = `
-      <div id="templateSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div id="templateSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[80vh] overflow-y-auto">
           <div class="p-6">
             <div class="flex items-center justify-between mb-4">
@@ -1196,7 +1196,12 @@ const SectionModal = (function () {
     // Add to body
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = modalHTML;
-    document.body.appendChild(tempDiv.firstElementChild);
+    const modal = tempDiv.firstElementChild;
+
+    // Set z-index higher than main section modal
+    modal.style.zIndex = "10001";
+
+    document.body.appendChild(modal);
     document.body.style.overflow = "hidden";
   }
 
@@ -1207,7 +1212,8 @@ const SectionModal = (function () {
     const modal = document.getElementById("templateSelectionModal");
     if (modal) {
       modal.remove();
-      document.body.style.overflow = "";
+      // Don't restore body overflow since main section modal is still open
+      // document.body.style.overflow = "";
     }
   }
 
