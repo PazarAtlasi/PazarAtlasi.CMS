@@ -56,15 +56,19 @@
             z-index: 1001 !important;
         }
         
-        /* Modal overlay should be above everything */
-        #sectionModalOverlay {
-            z-index: 9999 !important;
+        /* Modal overlays should be above everything including header */
+        #sectionModalOverlay,
+        #slugEditModalOverlay,
+        #slugCreateModalOverlay {
+            z-index: 10000 !important;
         }
         
         /* Modal content should be above overlay backdrop */
-        #sectionModalOverlay .section-modal {
+        #sectionModalOverlay .section-modal,
+        #slugEditModalOverlay > div,
+        #slugCreateModalOverlay > div {
             position: relative;
-            z-index: 10000 !important;
+            z-index: 10001 !important;
         }
         
         /* Prevent content from overlapping header */

@@ -1,0 +1,163 @@
+<!-- Modal Overlay -->
+<div id="slugManagementModal" class="fixed inset-0 bg-black bg-opacity-50 z-[10000] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden relative z-[10001]">
+        
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i id="modalIcon" class="fas fa-link text-white text-lg"></i>
+                </div>
+                <div>
+                    <h3 id="modalTitle" class="text-xl font-bold text-white">Slug Yönetimi</h3>
+                    <p id="modalSubtitle" class="text-purple-100 text-sm">URL yapısını yönetin</p>
+                </div>
+            </div>
+            <button onclick="closeSlugModal()" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-5 overflow-y-auto max-h-[calc(90vh-140px)]">
+            <form id="slugForm">
+                <input type="hidden" id="slugId" name="Id" value="0" />
+                <input type="hidden" id="contentId" name="ContentId" value="0" />
+
+                <!-- Entity Info (Read-only - only for edit mode) -->
+                <div id="entityInfoSection" class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 mb-4 border border-blue-100 hidden">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-layer-group text-white"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs font-medium text-gray-600">Entity:</span>
+                                <span id="entityTypeBadge" class="px-2 py-0.5 bg-blue-500 text-white text-xs font-medium rounded-full"></span>
+                            </div>
+                            <div id="entityName" class="text-sm font-semibold text-gray-800 truncate"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entity Type Selection (only for create mode) -->
+                <div id="entityTypeSection" class="mb-4 hidden">
+                    <label for="entityType" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <i class="fas fa-layer-group text-purple-500 mr-1"></i> Entity Tipi *
+                    </label>
+                    <select id="entityType" name="EntityType" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                        <option value="">Seçiniz...</option>
+                    </select>
+                </div>
+
+                <!-- Entity Selection (only for create mode) -->
+                <div id="entitySelectionSection" class="mb-4 hidden">
+                    <label for="entityId" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <i class="fas fa-file text-purple-500 mr-1"></i> Entity Seçimi *
+                    </label>
+                    <select id="entityId" name="EntityId" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                        <option value="">Önce entity tipi seçin...</option>
+                    </select>
+                    <div id="entityLoadingSpinner" class="hidden mt-1 text-xs text-gray-500">
+                        <i class="fas fa-spinner fa-spin mr-1"></i> Yükleniyor...
+                    </div>
+                </div>
+
+                <!-- Slug Input -->
+                <div class="mb-4">
+                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <i class="fas fa-link text-purple-500 mr-1"></i> Slug *
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">/</span>
+                        <input type="text" 
+                               id="slug" 
+                               name="Slug" 
+                               required
+                               class="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                               placeholder="ornek-slug-yapisi" />
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Sadece küçük harf, rakam, tire ve slash</p>
+                </div>
+
+                <!-- Language Selection -->
+                <div class="mb-4">
+                    <label for="languageId" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <i class="fas fa-language text-purple-500 mr-1"></i> Dil *
+                    </label>
+                    <select id="languageId" name="LanguageId" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                    </select>
+                </div>
+
+                <!-- Priority and Canonical -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label for="priority" class="block text-sm font-medium text-gray-700 mb-1.5">
+                            <i class="fas fa-sort-numeric-down text-purple-500 mr-1"></i> Öncelik
+                        </label>
+                        <input type="number" id="priority" name="Priority" value="1" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" placeholder="1" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            <i class="fas fa-check-circle text-purple-500 mr-1"></i> Durum
+                        </label>
+                        <div class="flex items-center h-[38px] px-3 border border-gray-300 rounded-lg bg-gray-50">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" id="isCanonical" name="IsCanonical" class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" />
+                                <span class="ml-2 text-sm font-medium text-gray-700">Canonical</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEO Information (only for create mode) - Collapsible -->
+                <details id="seoSection" class="mb-4 hidden">
+                    <summary class="cursor-pointer text-sm font-medium text-gray-700 mb-2 flex items-center gap-2 hover:text-purple-600">
+                        <i class="fas fa-search text-purple-500"></i>
+                        SEO Bilgileri (Opsiyonel)
+                        <i class="fas fa-chevron-down text-xs ml-auto"></i>
+                    </summary>
+                    <div class="mt-3 space-y-3 pl-6 border-l-2 border-purple-200">
+                        <div>
+                            <label for="title" class="block text-xs font-medium text-gray-700 mb-1">Başlık</label>
+                            <input type="text" id="title" name="Title" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Sayfa başlığı" />
+                        </div>
+                        <div>
+                            <label for="metaTitle" class="block text-xs font-medium text-gray-700 mb-1">Meta Başlık</label>
+                            <input type="text" id="metaTitle" name="MetaTitle" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="SEO meta başlık" />
+                        </div>
+                        <div>
+                            <label for="metaDescription" class="block text-xs font-medium text-gray-700 mb-1">Meta Açıklama</label>
+                            <textarea id="metaDescription" name="MetaDescription" rows="2" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="SEO meta açıklama"></textarea>
+                        </div>
+                        <div>
+                            <label for="metaKeywords" class="block text-xs font-medium text-gray-700 mb-1">Meta Anahtar Kelimeler</label>
+                            <input type="text" id="metaKeywords" name="MetaKeywords" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="anahtar, kelime, listesi" />
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Info Box -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div class="flex gap-2">
+                        <i class="fas fa-info-circle text-blue-500 text-sm mt-0.5"></i>
+                        <div class="text-xs text-blue-800">
+                            <p class="font-semibold mb-0.5">Canonical URL</p>
+                            <p>Arama motorlarına hangi URL'nin asıl versiyon olduğunu belirtir.</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="bg-gray-50 px-5 py-3 flex items-center justify-end gap-2 border-t border-gray-200">
+            <button type="button" onclick="closeSlugModal()" class="px-4 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                <i class="fas fa-times mr-1"></i> İptal
+            </button>
+            <button type="button" id="saveButton" onclick="saveSlugModal()" class="px-4 py-2 text-sm bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-md hover:shadow-lg font-medium">
+                <i class="fas fa-save mr-1"></i> Kaydet
+            </button>
+        </div>
+    </div>
+</div>

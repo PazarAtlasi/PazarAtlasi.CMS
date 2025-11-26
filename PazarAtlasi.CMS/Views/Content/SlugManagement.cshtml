@@ -1,0 +1,549 @@
+@model PazarAtlasi.CMS.Models.ViewModels.SlugManagementListResponse
+@{
+    ViewData["Title"] = "Slug Yönetimi";
+}
+
+<div class="slug-management-container">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Slug Yönetimi</h1>
+            <p class="text-gray-600 mt-1">URL yapılarını ve SEO slug'larını yönetin</p>
+        </div>
+        <button onclick="openCreateSlugModal()" class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+            <i class="fas fa-plus"></i>
+            <span>Yeni Slug Ekle</span>
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <form method="get" asp-action="SlugManagement" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Search -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-search text-gray-400 mr-1"></i> Ara
+                </label>
+                <input type="text" name="search" value="@Model.SearchTerm" 
+                       placeholder="Slug ara..." 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+            </div>
+
+            <!-- Entity Type Filter -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-filter text-gray-400 mr-1"></i> Entity Tipi
+                </label>
+                <select name="entityType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <option value="">Tümü</option>
+                    @foreach (var et in ViewBag.EntityTypes)
+                    {
+                        <option value="@et.Value" selected="@(Model.EntityTypeFilter?.ToString() == et.Value.ToString())">@et.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Language Filter -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-language text-gray-400 mr-1"></i> Dil
+                </label>
+                <select name="languageId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <option value="">Tümü</option>
+                    @foreach (var lang in ViewBag.Languages)
+                    {
+                        <option value="@lang.Id" selected="@(Model.LanguageFilter == lang.Id)">@lang.Name (@lang.Code)</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-span-1 flex items-end gap-2">
+                <button type="submit" class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-filter mr-1"></i> Filtrele
+                </button>
+                <a href="@Url.Action("SlugManagement")" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-redo"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-blue-100 text-sm font-medium">Toplam Slug</p>
+                    <p class="text-3xl font-bold mt-1">@Model.TotalCount</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-4">
+                    <i class="fas fa-link text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-green-100 text-sm font-medium">Canonical</p>
+                    <p class="text-3xl font-bold mt-1">@Model.Slugs.Count(s => s.IsCanonical)</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-4">
+                    <i class="fas fa-check-circle text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-purple-100 text-sm font-medium">Diller</p>
+                    <p class="text-3xl font-bold mt-1">@ViewBag.Languages.Count</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-4">
+                    <i class="fas fa-language text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-orange-100 text-sm font-medium">Entity Tipleri</p>
+                    <p class="text-3xl font-bold mt-1">@Model.Slugs.Select(s => s.EntityType).Distinct().Count()</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-4">
+                    <i class="fas fa-layer-group text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slugs Table -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Slug</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Entity</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Dil</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Durum</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Öncelik</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Oluşturulma</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @if (Model.Slugs.Any())
+                    {
+                        @foreach (var slug in Model.Slugs)
+                        {
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-link text-purple-500"></i>
+                                        <div>
+                                            <div class="font-medium text-gray-900">/@slug.Slug</div>
+                                            <div class="text-sm text-gray-500">@slug.ContentTitle</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+                                                @slug.EntityTypeName
+                                            </span>
+                                        </div>
+                                        <div class="text-sm text-gray-600 mt-1">@slug.EntityName</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                                            @slug.LanguageCode.ToUpper()
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if (slug.IsCanonical)
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                                            <i class="fas fa-check-circle"></i> Canonical
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+                                            <i class="fas fa-circle"></i> Alternative
+                                        </span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-gray-700 font-medium">@(slug.Priority ?? 0)</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-600">
+                                        @slug.CreatedAt.ToString("dd.MM.yyyy")
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button onclick="editSlug(@slug.Id)" 
+                                                class="text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                                                title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="deleteSlug(@slug.Id, '@slug.Slug')" 
+                                                class="text-red-600 hover:text-red-800 transition-colors p-2 hover:bg-red-50 rounded-lg"
+                                                title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center justify-center text-gray-400">
+                                    <i class="fas fa-link text-6xl mb-4"></i>
+                                    <p class="text-lg font-medium">Henüz slug bulunmuyor</p>
+                                    <p class="text-sm mt-1">Yeni bir slug eklemek için yukarıdaki butonu kullanın</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        Toplam <span class="font-medium">@Model.TotalCount</span> kayıt - 
+                        Sayfa <span class="font-medium">@Model.PageNumber</span> / <span class="font-medium">@Model.TotalPages</span>
+                    </div>
+                    <div class="flex gap-2">
+                        @if (Model.PageNumber > 1)
+                        {
+                            <a href="@Url.Action("SlugManagement", new { page = Model.PageNumber - 1, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })" 
+                               class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        }
+                        
+                        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                        {
+                            <a href="@Url.Action("SlugManagement", new { page = i, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })" 
+                               class="px-4 py-2 @(i == Model.PageNumber ? "bg-purple-600 text-white" : "bg-white border border-gray-300 hover:bg-gray-50") rounded-lg transition-colors">
+                                @i
+                            </a>
+                        }
+                        
+                        @if (Model.PageNumber < Model.TotalPages)
+                        {
+                            <a href="@Url.Action("SlugManagement", new { page = Model.PageNumber + 1, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })" 
+                               class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal -->
+@await Html.PartialAsync("_SlugManagementModal")
+
+@section Scripts {
+    <script>
+        let currentMode = 'edit'; // 'edit' or 'create'
+        let availableLanguages = @Html.Raw(Json.Serialize(ViewBag.Languages));
+        let availableEntityTypes = @Html.Raw(Json.Serialize(ViewBag.EntityTypes));
+
+        // Open modal for creating new slug
+        function openCreateSlugModal() {
+            currentMode = 'create';
+            const modal = document.getElementById('slugManagementModal');
+            
+            // Update header
+            document.getElementById('modalIcon').className = 'fas fa-plus text-white text-lg';
+            document.getElementById('modalTitle').textContent = 'Yeni Slug Ekle';
+            document.getElementById('modalSubtitle').textContent = 'Content ve slug oluşturun';
+            document.getElementById('saveButton').innerHTML = '<i class="fas fa-plus mr-1"></i> Oluştur';
+            
+            // Show/hide sections
+            document.getElementById('entityInfoSection').classList.add('hidden');
+            document.getElementById('entityTypeSection').classList.remove('hidden');
+            document.getElementById('entitySelectionSection').classList.add('hidden');
+            document.getElementById('seoSection').classList.remove('hidden');
+            
+            // Reset form
+            document.getElementById('slugForm').reset();
+            document.getElementById('slugId').value = '0';
+            document.getElementById('contentId').value = '0';
+            document.getElementById('isCanonical').checked = true;
+            document.getElementById('priority').value = '1';
+            
+            // Populate entity types
+            const entityTypeSelect = document.getElementById('entityType');
+            entityTypeSelect.innerHTML = '<option value="">Seçiniz...</option>';
+            availableEntityTypes.forEach(et => {
+                entityTypeSelect.innerHTML += `<option value="${et.value}">${et.name}</option>`;
+            });
+            
+            // Populate languages
+            populateLanguages();
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Open modal for editing existing slug
+        async function editSlug(id) {
+            try {
+                const response = await fetch(`/Content/GetSlugEditModal?id=${id}`);
+                const data = await response.json();
+                
+                if (!data.success) {
+                    Swal.fire('Hata', data.message || 'Slug bilgileri yüklenemedi', 'error');
+                    return;
+                }
+                
+                currentMode = 'edit';
+                const modal = document.getElementById('slugManagementModal');
+                const slug = data.slug;
+                
+                // Update header
+                document.getElementById('modalIcon').className = 'fas fa-edit text-white text-lg';
+                document.getElementById('modalTitle').textContent = 'Slug Düzenle';
+                document.getElementById('modalSubtitle').textContent = 'URL yapısını güncelleyin';
+                document.getElementById('saveButton').innerHTML = '<i class="fas fa-save mr-1"></i> Kaydet';
+                
+                // Show/hide sections
+                document.getElementById('entityInfoSection').classList.remove('hidden');
+                document.getElementById('entityTypeSection').classList.add('hidden');
+                document.getElementById('entitySelectionSection').classList.add('hidden');
+                document.getElementById('seoSection').classList.add('hidden');
+                
+                // Fill entity info
+                document.getElementById('entityTypeBadge').textContent = slug.entityTypeName;
+                document.getElementById('entityName').textContent = slug.entityName;
+                
+                // Fill form
+                document.getElementById('slugId').value = slug.id;
+                document.getElementById('contentId').value = slug.contentId;
+                document.getElementById('slug').value = slug.slug;
+                document.getElementById('priority').value = slug.priority || 1;
+                document.getElementById('isCanonical').checked = slug.isCanonical;
+                
+                // Populate languages
+                populateLanguages(slug.languageId);
+                
+                // Show modal
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } catch (error) {
+                console.error('Error loading slug:', error);
+                Swal.fire('Hata', 'Slug bilgileri yüklenirken bir hata oluştu', 'error');
+            }
+        }
+
+        // Close modal
+        function closeSlugModal() {
+            const modal = document.getElementById('slugManagementModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Populate languages dropdown
+        function populateLanguages(selectedId = null) {
+            const languageSelect = document.getElementById('languageId');
+            languageSelect.innerHTML = '';
+            availableLanguages.forEach(lang => {
+                const selected = selectedId === lang.id || (!selectedId && lang.isDefault);
+                languageSelect.innerHTML += `<option value="${lang.id}" ${selected ? 'selected' : ''}>${lang.name} (${lang.code.toUpperCase()})${lang.isDefault ? ' - Varsayılan' : ''}</option>`;
+            });
+        }
+
+        // Entity type change handler
+        document.getElementById('entityType').addEventListener('change', async function() {
+            const entityType = this.value;
+            const entitySelect = document.getElementById('entityId');
+            const container = document.getElementById('entitySelectionSection');
+            const spinner = document.getElementById('entityLoadingSpinner');
+            
+            if (!entityType) {
+                container.classList.add('hidden');
+                return;
+            }
+            
+            container.classList.remove('hidden');
+            spinner.classList.remove('hidden');
+            entitySelect.disabled = true;
+            entitySelect.innerHTML = '<option value="">Yükleniyor...</option>';
+            
+            try {
+                const response = await fetch(`/Content/GetEntitiesByType?entityType=${entityType}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    entitySelect.innerHTML = '<option value="">Seçiniz...</option>';
+                    data.entities.forEach(entity => {
+                        entitySelect.innerHTML += `<option value="${entity.id}">${entity.name}</option>`;
+                    });
+                } else {
+                    entitySelect.innerHTML = '<option value="">Hata: ' + data.message + '</option>';
+                }
+            } catch (error) {
+                console.error('Error loading entities:', error);
+                entitySelect.innerHTML = '<option value="">Yükleme hatası</option>';
+            } finally {
+                spinner.classList.add('hidden');
+                entitySelect.disabled = false;
+            }
+        });
+
+        // Auto-format slug on input
+        document.getElementById('slug').addEventListener('input', function(e) {
+            let value = e.target.value;
+            value = value.toLowerCase()
+                         .replace(/[^a-z0-9\-\/]/g, '-')
+                         .replace(/-+/g, '-')
+                         .replace(/^-|-$/g, '');
+            e.target.value = value;
+        });
+
+        // Save slug
+        async function saveSlugModal() {
+            const form = document.getElementById('slugForm');
+            const formData = new FormData(form);
+            
+            const data = {
+                Id: parseInt(formData.get('Id')),
+                ContentId: parseInt(formData.get('ContentId')),
+                Slug: formData.get('Slug'),
+                LanguageId: parseInt(formData.get('LanguageId')),
+                Priority: formData.get('Priority') ? parseInt(formData.get('Priority')) : 1,
+                IsCanonical: formData.get('IsCanonical') === 'on'
+            };
+            
+            if (currentMode === 'create') {
+                data.EntityType = parseInt(formData.get('EntityType'));
+                data.EntityId = parseInt(formData.get('EntityId'));
+                data.Title = formData.get('Title') || null;
+                data.MetaTitle = formData.get('MetaTitle') || null;
+                data.MetaDescription = formData.get('MetaDescription') || null;
+                data.MetaKeywords = formData.get('MetaKeywords') || null;
+            }
+            
+            // Validation
+            if (!data.Slug || data.Slug.trim() === '') {
+                Swal.fire('Uyarı', 'Slug alanı zorunludur', 'warning');
+                return;
+            }
+            
+            const slugPattern = /^[a-z0-9\-\/]+$/;
+            if (!slugPattern.test(data.Slug)) {
+                Swal.fire('Uyarı', 'Slug sadece küçük harf, rakam, tire ve slash içerebilir', 'warning');
+                return;
+            }
+            
+            if (currentMode === 'create') {
+                if (!data.EntityType || data.EntityType === 0) {
+                    Swal.fire('Uyarı', 'Entity tipi seçimi zorunludur', 'warning');
+                    return;
+                }
+                if (!data.EntityId || data.EntityId === 0) {
+                    Swal.fire('Uyarı', 'Entity seçimi zorunludur', 'warning');
+                    return;
+                }
+            }
+            
+            try {
+                const url = currentMode === 'create' ? '/Content/CreateContentSlug' : '/Content/SaveSlug';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    Swal.fire('Başarılı!', result.message, 'success').then(() => {
+                        closeSlugModal();
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Hata', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving slug:', error);
+                Swal.fire('Hata', 'Slug kaydedilirken bir hata oluştu', 'error');
+            }
+        }
+
+        // Delete slug
+        async function deleteSlug(id, slug) {
+            const result = await Swal.fire({
+                title: 'Emin misiniz?',
+                html: `<strong>${slug}</strong> slug'ını silmek istediğinizden emin misiniz?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Evet, Sil',
+                cancelButtonText: 'İptal'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch('/Content/DeleteSlug', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(id)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        Swal.fire('Başarılı!', data.message, 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Hata', data.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting slug:', error);
+                    Swal.fire('Hata', 'Slug silinirken bir hata oluştu', 'error');
+                }
+            }
+        }
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSlugModal();
+            }
+        });
+
+        // Close modal on overlay click
+        document.getElementById('slugManagementModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSlugModal();
+            }
+        });
+    </script>
+}

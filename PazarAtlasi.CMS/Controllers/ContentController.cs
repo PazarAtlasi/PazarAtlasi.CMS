@@ -4923,6 +4923,351 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
+        /// <summary>
+        /// Slug yönetimi ana sayfası
+        /// </summary>
+        public async Task<IActionResult> SlugManagement(int page = 1, int pageSize = 20, string? search = null, EntityType? entityType = null, int? languageId = null)
+        {
+            var query = _pazarAtlasiDbContext.ContentSlugs
+                .Include(cs => cs.Content)
+                .Include(cs => cs.Language)
+                .Where(cs => !cs.IsDeleted);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(cs => cs.Slug.Contains(search));
+            }
+
+            if (entityType.HasValue && entityType.Value != EntityType.None)
+            {
+                query = query.Where(cs => cs.Content.RelatedDataEntityType == entityType.Value);
+            }
+
+            if (languageId.HasValue)
+            {
+                query = query.Where(cs => cs.LanguageId == languageId.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var slugs = await query
+                .OrderByDescending(cs => cs.IsCanonical)
+                .ThenBy(cs => cs.Priority)
+                .ThenBy(cs => cs.Slug)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(cs => new SlugManagementListViewModel
+                {
+                    Id = cs.Id,
+                    Slug = cs.Slug,
+                    ContentId = cs.ContentId,
+                    ContentTitle = cs.Content.Title,
+                    EntityType = cs.Content.RelatedDataEntityType,
+                    EntityTypeName = cs.Content.RelatedDataEntityType.ToString(),
+                    EntityId = cs.Content.RelatedDataEntityId,
+                    LanguageId = cs.LanguageId,
+                    LanguageName = cs.Language.Name,
+                    LanguageCode = cs.Language.Code,
+                    IsCanonical = cs.IsCanonical,
+                    Priority = cs.Priority,
+                    CreatedAt = cs.CreatedAt
+                })
+                .ToListAsync();
+
+            foreach (var slug in slugs)
+            {
+                slug.EntityName = await GetEntityNameByType(slug.EntityType, slug.EntityId);
+            }
+
+            var model = new SlugManagementListResponse
+            {
+                Slugs = slugs,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize,
+                SearchTerm = search,
+                EntityTypeFilter = entityType,
+                LanguageFilter = languageId
+            };
+
+            ViewBag.Languages = await _pazarAtlasiDbContext.Languages
+                .Where(l => !l.IsDeleted)
+                .Select(l => new LanguageViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Code = l.Code
+                })
+                .ToListAsync();
+
+            ViewBag.EntityTypes = Enum.GetValues<EntityType>()
+                .Where(et => et != EntityType.None)
+                .Select(et => new { Value = (int)et, Name = et.ToString() })
+                .ToList();
+
+            return View(model);
+        }
+
+        private async Task<string> GetEntityNameByType(EntityType entityType, int entityId)
+        {
+            return entityType switch
+            {
+                EntityType.Page => (await _pazarAtlasiDbContext.Pages.FindAsync(entityId))?.Name ?? "Unknown",
+                EntityType.Article => (await _pazarAtlasiDbContext.Articles
+                    .Include(a => a.Translations)
+                    .FirstOrDefaultAsync(a => a.Id == entityId))?.Translations.FirstOrDefault()?.Title ?? "Unknown",
+                EntityType.Category => (await _pazarAtlasiDbContext.Categories
+                    .Include(c => c.Translations)
+                    .FirstOrDefaultAsync(c => c.Id == entityId))?.Translations.FirstOrDefault()?.Name ?? "Unknown",
+                EntityType.Product => (await _pazarAtlasiDbContext.Products
+                    .Include(p => p.Translations)
+                    .FirstOrDefaultAsync(p => p.Id == entityId))?.Translations.FirstOrDefault()?.Name ?? "Unknown",
+                _ => "Unknown"
+            };
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSlugEditModal(int id)
+        {
+            var slug = await _pazarAtlasiDbContext.ContentSlugs
+                .Include(cs => cs.Content)
+                .Include(cs => cs.Language)
+                .FirstOrDefaultAsync(cs => cs.Id == id);
+
+            if (slug == null)
+            {
+                return Json(new { success = false, message = "Slug bulunamadı." });
+            }
+
+            var slugData = new
+            {
+                id = slug.Id,
+                contentId = slug.ContentId,
+                slug = slug.Slug,
+                languageId = slug.LanguageId,
+                priority = slug.Priority,
+                isCanonical = slug.IsCanonical,
+                entityType = slug.Content.RelatedDataEntityType,
+                entityTypeName = slug.Content.RelatedDataEntityType.ToString(),
+                entityId = slug.Content.RelatedDataEntityId,
+                entityName = await GetEntityNameByType(slug.Content.RelatedDataEntityType, slug.Content.RelatedDataEntityId)
+            };
+
+            return Json(new { success = true, slug = slugData });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveSlug([FromBody] SlugEditViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "Geçersiz veri." });
+                }
+
+                var existingSlug = await _pazarAtlasiDbContext.ContentSlugs
+                    .FirstOrDefaultAsync(cs => cs.Slug == model.Slug && cs.LanguageId == model.LanguageId && cs.Id != model.Id);
+
+                if (existingSlug != null)
+                {
+                    return Json(new { success = false, message = "Bu slug ve dil kombinasyonu zaten kullanılıyor." });
+                }
+
+                if (model.Id > 0)
+                {
+                    var slug = await _pazarAtlasiDbContext.ContentSlugs.FindAsync(model.Id);
+                    if (slug == null)
+                    {
+                        return Json(new { success = false, message = "Slug bulunamadı." });
+                    }
+
+                    slug.Slug = model.Slug;
+                    slug.LanguageId = model.LanguageId;
+                    slug.Priority = model.Priority;
+                    slug.IsCanonical = model.IsCanonical;
+                    slug.UpdatedAt = DateTime.UtcNow;
+                }
+                else
+                {
+                    var newSlug = new ContentSlugs
+                    {
+                        ContentId = model.ContentId,
+                        Slug = model.Slug,
+                        LanguageId = model.LanguageId,
+                        Priority = model.Priority,
+                        IsCanonical = model.IsCanonical,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+
+                    _pazarAtlasiDbContext.ContentSlugs.Add(newSlug);
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Slug başarıyla kaydedildi." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteSlug(int id)
+        {
+            try
+            {
+                var slug = await _pazarAtlasiDbContext.ContentSlugs.FindAsync(id);
+                if (slug == null)
+                {
+                    return Json(new { success = false, message = "Slug bulunamadı." });
+                }
+
+                if (slug.IsCanonical)
+                {
+                    return Json(new { success = false, message = "Canonical slug silinemez. Önce başka bir slug'ı canonical yapın." });
+                }
+
+                _pazarAtlasiDbContext.ContentSlugs.Remove(slug);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Slug başarıyla silindi." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEntitiesByType(EntityType entityType)
+        {
+            try
+            {
+                List<EntitySelectItem> entities = new();
+
+                switch (entityType)
+                {
+                    case EntityType.Page:
+                        entities = await _pazarAtlasiDbContext.Pages
+                            .Where(p => !p.IsDeleted)
+                            .Select(p => new EntitySelectItem
+                            {
+                                Id = p.Id,
+                                Name = p.Name,
+                                Code = p.Code
+                            })
+                            .ToListAsync();
+                        break;
+
+                    case EntityType.Article:
+                        entities = await _pazarAtlasiDbContext.Articles
+                            .Include(a => a.Translations)
+                            .Where(a => !a.IsDeleted)
+                            .Select(a => new EntitySelectItem
+                            {
+                                Id = a.Id,
+                                Name = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault().Title : "Untitled",
+                                Code = null
+                            })
+                            .ToListAsync();
+                        break;
+
+                    case EntityType.Category:
+                        entities = await _pazarAtlasiDbContext.Categories
+                            .Include(c => c.Translations)
+                            .Where(c => !c.IsDeleted)
+                            .Select(c => new EntitySelectItem
+                            {
+                                Id = c.Id,
+                                Name = c.Translations.FirstOrDefault() != null ? c.Translations.FirstOrDefault().Name : "Untitled",
+                                Code = null
+                            })
+                            .ToListAsync();
+                        break;
+
+                    case EntityType.Product:
+                        entities = await _pazarAtlasiDbContext.Products
+                            .Include(p => p.Translations)
+                            .Where(p => !p.IsDeleted)
+                            .Select(p => new EntitySelectItem
+                            {
+                                Id = p.Id,
+                                Name = p.Translations.FirstOrDefault() != null ? p.Translations.FirstOrDefault().Name : "Untitled",
+                                Code = p.Code
+                            })
+                            .ToListAsync();
+                        break;
+
+                    default:
+                        return Json(new { success = false, message = "Desteklenmeyen entity tipi" });
+                }
+
+                return Json(new { success = true, entities });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateContentSlug([FromBody] CreateContentSlugViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "Geçersiz veri." });
+                }
+
+                var existingSlug = await _pazarAtlasiDbContext.ContentSlugs
+                    .FirstOrDefaultAsync(cs => cs.Slug == model.Slug && cs.LanguageId == model.LanguageId);
+
+                if (existingSlug != null)
+                {
+                    return Json(new { success = false, message = "Bu slug ve dil kombinasyonu zaten kullanılıyor." });
+                }
+
+                var content = new Domain.Entities.Content.Content
+                {
+                    RelatedDataEntityType = model.EntityType,
+                    RelatedDataEntityId = model.EntityId,
+                    Title = model.Title,
+                    MetaTitle = model.MetaTitle,
+                    MetaDescription = model.MetaDescription,
+                    MetaKeywords = model.MetaKeywords,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.Contents.Add(content);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                var slug = new ContentSlugs
+                {
+                    ContentId = content.Id,
+                    Slug = model.Slug,
+                    LanguageId = model.LanguageId,
+                    Priority = model.Priority,
+                    IsCanonical = model.IsCanonical,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.ContentSlugs.Add(slug);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Content ve slug başarıyla oluşturuldu." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+            }
+        }
+
         #endregion
 
         #region Articles / News Management
