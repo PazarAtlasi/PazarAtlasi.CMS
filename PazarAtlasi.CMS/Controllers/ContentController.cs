@@ -5279,6 +5279,151 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllSlugsForContent(int contentId)
+        {
+            try
+            {
+                var slugs = await _pazarAtlasiDbContext.ContentSlugs
+                    .Where(cs => cs.ContentId == contentId && !cs.IsDeleted)
+                    .Select(cs => new
+                    {
+                        id = cs.Id,
+                        slug = cs.Slug,
+                        languageId = cs.LanguageId,
+                        priority = cs.Priority,
+                        isCanonical = cs.IsCanonical
+                    })
+                    .ToListAsync();
+
+                return Json(new { success = true, slugs });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMultiLanguageSlug([FromBody] MultiLanguageSlugRequest request)
+        {
+            try
+            {
+                // Create content
+                var content = new Domain.Entities.Content.Content
+                {
+                    RelatedDataEntityType = request.EntityType,
+                    RelatedDataEntityId = request.EntityId,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.Contents.Add(content);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                // Create slugs for all languages
+                foreach (var slugDto in request.Slugs)
+                {
+                    var slug = new ContentSlugs
+                    {
+                        ContentId = content.Id,
+                        Slug = slugDto.Slug,
+                        LanguageId = slugDto.LanguageId,
+                        Priority = slugDto.Priority,
+                        IsCanonical = slugDto.IsCanonical,
+                        CreatedAt = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+
+                    _pazarAtlasiDbContext.ContentSlugs.Add(slug);
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"{request.Slugs.Count} dil için slug başarıyla oluşturuldu." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveMultiLanguageSlugs([FromBody] MultiLanguageSlugRequest request)
+        {
+            try
+            {
+                // Update content entity
+                var content = await _pazarAtlasiDbContext.Contents.FindAsync(request.ContentId);
+                if (content != null)
+                {
+                    content.RelatedDataEntityType = request.EntityType;
+                    content.RelatedDataEntityId = request.EntityId;
+                    content.UpdatedAt = DateTime.UtcNow;
+                }
+
+                // Get existing slugs
+                var existingSlugs = await _pazarAtlasiDbContext.ContentSlugs
+                    .Where(cs => cs.ContentId == request.ContentId && !cs.IsDeleted)
+                    .ToListAsync();
+
+                // Update or create slugs
+                foreach (var slugDto in request.Slugs)
+                {
+                    var existingSlug = existingSlugs.FirstOrDefault(s => s.LanguageId == slugDto.LanguageId);
+                    
+                    if (existingSlug != null)
+                    {
+                        // Update existing
+                        existingSlug.Slug = slugDto.Slug;
+                        existingSlug.Priority = slugDto.Priority;
+                        existingSlug.IsCanonical = slugDto.IsCanonical;
+                        existingSlug.UpdatedAt = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        // Create new
+                        var newSlug = new ContentSlugs
+                        {
+                            ContentId = request.ContentId,
+                            Slug = slugDto.Slug,
+                            LanguageId = slugDto.LanguageId,
+                            Priority = slugDto.Priority,
+                            IsCanonical = slugDto.IsCanonical,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        };
+                        _pazarAtlasiDbContext.ContentSlugs.Add(newSlug);
+                    }
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"{request.Slugs.Count} dil için slug başarıyla güncellendi." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
+            }
+        }
+
+        public class MultiLanguageSlugRequest
+        {
+            public int ContentId { get; set; }
+            public EntityType EntityType { get; set; }
+            public int EntityId { get; set; }
+            public List<SlugDto> Slugs { get; set; } = new();
+        }
+
+        public class SlugDto
+        {
+            public int Id { get; set; }
+            public string Slug { get; set; } = string.Empty;
+            public int LanguageId { get; set; }
+            public int Priority { get; set; }
+            public bool IsCanonical { get; set; }
+        }
+
         #endregion
 
         #region Articles / News Management

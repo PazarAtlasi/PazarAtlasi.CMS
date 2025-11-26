@@ -24,8 +24,8 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-search text-gray-400 mr-1"></i> Ara
                 </label>
-                <input type="text" name="search" value="@Model.SearchTerm" 
-                       placeholder="Slug ara..." 
+                <input type="text" name="search" value="@Model.SearchTerm"
+                       placeholder="Slug ara..."
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
             </div>
 
@@ -107,10 +107,10 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
+        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-orange-100 text-sm font-medium">Entity Tipleri</p>
+                    <p class="text-indigo-100 text-sm font-medium">Entity Tipleri</p>
                     <p class="text-3xl font-bold mt-1">@Model.Slugs.Select(s => s.EntityType).Distinct().Count()</p>
                 </div>
                 <div class="bg-white/20 rounded-full p-4">
@@ -191,12 +191,12 @@
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <button onclick="editSlug(@slug.Id)" 
+                                        <button onclick="editSlug(@slug.Id)"
                                                 class="text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded-lg"
                                                 title="Düzenle">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button onclick="deleteSlug(@slug.Id, '@slug.Slug')" 
+                                        <button onclick="deleteSlug(@slug.Id, '@slug.Slug')"
                                                 class="text-red-600 hover:text-red-800 transition-colors p-2 hover:bg-red-50 rounded-lg"
                                                 title="Sil">
                                             <i class="fas fa-trash"></i>
@@ -228,29 +228,29 @@
             <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
                 <div class="flex items-center justify-between">
                     <div class="text-sm text-gray-600">
-                        Toplam <span class="font-medium">@Model.TotalCount</span> kayıt - 
+                        Toplam <span class="font-medium">@Model.TotalCount</span> kayıt -
                         Sayfa <span class="font-medium">@Model.PageNumber</span> / <span class="font-medium">@Model.TotalPages</span>
                     </div>
                     <div class="flex gap-2">
                         @if (Model.PageNumber > 1)
                         {
-                            <a href="@Url.Action("SlugManagement", new { page = Model.PageNumber - 1, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })" 
+                            <a href="@Url.Action("SlugManagement", new { page = Model.PageNumber - 1, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })"
                                class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-chevron-left"></i>
                             </a>
                         }
-                        
+
                         @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
                         {
-                            <a href="@Url.Action("SlugManagement", new { page = i, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })" 
+                            <a href="@Url.Action("SlugManagement", new { page = i, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })"
                                class="px-4 py-2 @(i == Model.PageNumber ? "bg-purple-600 text-white" : "bg-white border border-gray-300 hover:bg-gray-50") rounded-lg transition-colors">
                                 @i
                             </a>
                         }
-                        
+
                         @if (Model.PageNumber < Model.TotalPages)
                         {
-                            <a href="@Url.Action("SlugManagement", new { page = Model.PageNumber + 1, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })" 
+                            <a href="@Url.Action("SlugManagement", new { page = Model.PageNumber + 1, pageSize = Model.PageSize, search = Model.SearchTerm, entityType = Model.EntityTypeFilter, languageId = Model.LanguageFilter })"
                                class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-chevron-right"></i>
                             </a>
@@ -270,43 +270,51 @@
         let currentMode = 'edit'; // 'edit' or 'create'
         let availableLanguages = @Html.Raw(Json.Serialize(ViewBag.Languages));
         let availableEntityTypes = @Html.Raw(Json.Serialize(ViewBag.EntityTypes));
+        let slugData = {}; // Store slug data for each language
+        let currentContentId = 0;
 
         // Open modal for creating new slug
         function openCreateSlugModal() {
             currentMode = 'create';
+            currentContentId = 0;
+            slugData = {};
+
             const modal = document.getElementById('slugManagementModal');
-            
+
             // Update header
             document.getElementById('modalIcon').className = 'fas fa-plus text-white text-lg';
-            document.getElementById('modalTitle').textContent = 'Yeni Slug Ekle';
-            document.getElementById('modalSubtitle').textContent = 'Content ve slug oluşturun';
-            document.getElementById('saveButton').innerHTML = '<i class="fas fa-plus mr-1"></i> Oluştur';
-            
-            // Show/hide sections
-            document.getElementById('entityTypeSection').classList.remove('hidden');
-            document.getElementById('entitySelectionSection').classList.add('hidden');
-            document.getElementById('seoSection').classList.remove('hidden');
-            
-            // Reset form
-            document.getElementById('slugForm').reset();
-            document.getElementById('slugId').value = '0';
-            document.getElementById('contentId').value = '0';
-            document.getElementById('isCanonical').checked = true;
-            document.getElementById('priority').value = '1';
-            
+            document.getElementById('modalTitle').textContent = 'Yeni Çoklu Dil Slug Ekle';
+            document.getElementById('modalSubtitle').textContent = 'Tüm diller için slug oluşturun';
+            document.getElementById('saveButton').innerHTML = '<i class="fas fa-plus mr-1"></i> Tümünü Oluştur';
+
             // Populate entity types
             const entityTypeSelect = document.getElementById('entityType');
             entityTypeSelect.innerHTML = '<option value="">Seçiniz...</option>';
             availableEntityTypes.forEach(et => {
                 entityTypeSelect.innerHTML += `<option value="${et.value}">${et.name}</option>`;
             });
-            
+
             // Reset entity selection
             document.getElementById('entityId').innerHTML = '<option value="">Önce entity tipi seçin...</option>';
-            
-            // Populate languages
-            populateLanguages();
-            
+
+            // Initialize empty slug data for all languages
+            availableLanguages.forEach(lang => {
+                slugData[lang.id] = {
+                    id: 0,
+                    slug: '',
+                    priority: 1,
+                    isCanonical: lang.isDefault,
+                    languageId: lang.id
+                };
+            });
+
+            // Render tabs and content
+            renderLanguageTabs();
+            updateSlugCount();
+
+            // Setup entity type handler
+            setupEntityTypeHandler();
+
             // Show modal
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -317,33 +325,24 @@
             try {
                 const response = await fetch(`/Content/GetSlugEditModal?id=${id}`);
                 const data = await response.json();
-                
+
                 if (!data.success) {
                     Swal.fire('Hata', data.message || 'Slug bilgileri yüklenemedi', 'error');
                     return;
                 }
-                
+
                 currentMode = 'edit';
-                const modal = document.getElementById('slugManagementModal');
                 const slug = data.slug;
-                
+                currentContentId = slug.contentId;
+
+                const modal = document.getElementById('slugManagementModal');
+
                 // Update header
                 document.getElementById('modalIcon').className = 'fas fa-edit text-white text-lg';
-                document.getElementById('modalTitle').textContent = 'Slug Düzenle';
-                document.getElementById('modalSubtitle').textContent = 'URL yapısını güncelleyin';
-                document.getElementById('saveButton').innerHTML = '<i class="fas fa-save mr-1"></i> Kaydet';
-                
-                // Show/hide sections
-                document.getElementById('entityTypeSection').classList.remove('hidden');
-                document.getElementById('seoSection').classList.add('hidden');
-                
-                // Fill form
-                document.getElementById('slugId').value = slug.id;
-                document.getElementById('contentId').value = slug.contentId;
-                document.getElementById('slug').value = slug.slug;
-                document.getElementById('priority').value = slug.priority || 1;
-                document.getElementById('isCanonical').checked = slug.isCanonical;
-                
+                document.getElementById('modalTitle').textContent = 'Çoklu Dil Slug Düzenle';
+                document.getElementById('modalSubtitle').textContent = 'Tüm diller için slug yönetin';
+                document.getElementById('saveButton').innerHTML = '<i class="fas fa-save mr-1"></i> Tümünü Kaydet';
+
                 // Populate entity types
                 const entityTypeSelect = document.getElementById('entityType');
                 entityTypeSelect.innerHTML = '<option value="">Seçiniz...</option>';
@@ -351,15 +350,20 @@
                     const selected = et.value == slug.entityType;
                     entityTypeSelect.innerHTML += `<option value="${et.value}" ${selected ? 'selected' : ''}>${et.name}</option>`;
                 });
-                
-                // Load entities for selected type
+
+                // Load entities and all slugs for this content
                 if (slug.entityType) {
                     await loadEntitiesForEdit(slug.entityType, slug.entityId);
+                    await loadAllSlugsForContent(slug.contentId);
                 }
-                
-                // Populate languages
-                populateLanguages(slug.languageId);
-                
+
+                // Render tabs and content
+                renderLanguageTabs();
+                updateSlugCount();
+
+                // Setup entity type handler
+                setupEntityTypeHandler();
+
                 // Show modal
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
@@ -369,21 +373,44 @@
             }
         }
 
+        // Load all slugs for a content
+        async function loadAllSlugsForContent(contentId) {
+            try {
+                const response = await fetch(`/Content/GetAllSlugsForContent?contentId=${contentId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Initialize slug data for all languages
+                    slugData = {};
+                    availableLanguages.forEach(lang => {
+                        const existingSlug = data.slugs.find(s => s.languageId === lang.id);
+                        slugData[lang.id] = existingSlug || {
+                            id: 0,
+                            slug: '',
+                            priority: 1,
+                            isCanonical: false,
+                            languageId: lang.id
+                        };
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading slugs:', error);
+            }
+        }
+
         // Load entities for edit mode
         async function loadEntitiesForEdit(entityType, selectedEntityId) {
             const entitySelect = document.getElementById('entityId');
-            const container = document.getElementById('entitySelectionSection');
             const spinner = document.getElementById('entityLoadingSpinner');
-            
-            container.classList.remove('hidden');
+
             spinner.classList.remove('hidden');
             entitySelect.disabled = true;
             entitySelect.innerHTML = '<option value="">Yükleniyor...</option>';
-            
+
             try {
                 const response = await fetch(`/Content/GetEntitiesByType?entityType=${entityType}`);
                 const data = await response.json();
-                
+
                 if (data.success) {
                     entitySelect.innerHTML = '<option value="">Seçiniz...</option>';
                     data.entities.forEach(entity => {
@@ -402,60 +429,188 @@
             }
         }
 
+        // Render language tabs
+        function renderLanguageTabs() {
+            const tabsContainer = document.getElementById('languageTabs');
+            const contentsContainer = document.getElementById('tabContents');
+
+            tabsContainer.innerHTML = '';
+            contentsContainer.innerHTML = '';
+
+            availableLanguages.forEach((lang, index) => {
+                const hasSlug = slugData[lang.id] && slugData[lang.id].slug;
+                const isActive = index === 0;
+
+                // Create tab
+                const tab = document.createElement('button');
+                tab.type = 'button';
+                tab.className = `language-tab ${isActive ? 'active' : ''}`;
+                tab.onclick = () => switchTab(lang.id);
+                tab.innerHTML = `
+                    <span class="fi fi-${lang.code === 'tr' ? 'tr' : lang.code === 'en' ? 'gb' : lang.code}"></span>
+                    <span>${lang.name}</span>
+                    <span class="badge ${hasSlug ? 'filled' : 'empty'}">
+                        <i class="fas fa-${hasSlug ? 'check' : 'times'}"></i>
+                    </span>
+                `;
+                tabsContainer.appendChild(tab);
+
+                // Create tab content
+                const content = document.createElement('div');
+                content.id = `tab-${lang.id}`;
+                content.className = `tab-content ${isActive ? 'active' : ''}`;
+                content.innerHTML = renderTabContent(lang);
+                contentsContainer.appendChild(content);
+            });
+        }
+
+        // Render tab content for a language
+        function renderTabContent(lang) {
+            const data = slugData[lang.id] || { slug: '', priority: 1, isCanonical: false };
+
+            return `
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            <i class="fas fa-link text-purple-500 mr-1"></i> Slug (${lang.name})
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">/</span>
+                            <input type="text"
+                                   id="slug-${lang.id}"
+                                   value="${data.slug}"
+                                   onchange="updateSlugData(${lang.id}, 'slug', this.value)"
+                                   oninput="formatSlugInput(this)"
+                                   class="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                   placeholder="ornek-slug-yapisi" />
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Sadece küçük harf, rakam, tire ve slash</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                <i class="fas fa-sort-numeric-down text-purple-500 mr-1"></i> Öncelik
+                            </label>
+                            <input type="number"
+                                   id="priority-${lang.id}"
+                                   value="${data.priority || 1}"
+                                   onchange="updateSlugData(${lang.id}, 'priority', parseInt(this.value || 1))"
+                                   min="0"
+                                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                <i class="fas fa-check-circle text-purple-500 mr-1"></i> Durum
+                            </label>
+                            <div class="flex items-center h-[38px] px-3 border border-gray-300 rounded-lg bg-gray-50">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox"
+                                           id="canonical-${lang.id}"
+                                           ${data.isCanonical ? 'checked' : ''}
+                                           onchange="updateSlugData(${lang.id}, 'isCanonical', this.checked)"
+                                           class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" />
+                                    <span class="ml-2 text-sm font-medium text-gray-700">Canonical</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Switch tab
+        function switchTab(languageId) {
+            // Update tabs
+            document.querySelectorAll('.language-tab').forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Update contents
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${languageId}`).classList.add('active');
+        }
+
+        // Update slug data
+        function updateSlugData(languageId, field, value) {
+            if (!slugData[languageId]) {
+                slugData[languageId] = { id: 0, slug: '', priority: 1, isCanonical: false, languageId };
+            }
+            slugData[languageId][field] = value;
+            updateSlugCount();
+            renderLanguageTabs(); // Re-render to update badges
+        }
+
+        // Format slug input
+        function formatSlugInput(input) {
+            let value = input.value;
+            value = value.toLowerCase()
+                         .replace(/[^a-z0-9\-\/]/g, '-')
+                         .replace(/-+/g, '-')
+                         .replace(/^-|-$/g, '');
+            input.value = value;
+        }
+
+        // Update slug count
+        function updateSlugCount() {
+            const count = Object.values(slugData).filter(s => s.slug && s.slug.trim() !== '').length;
+            document.getElementById('slugCount').textContent = `${count} dil için slug tanımlandı`;
+        }
+
         // Close modal
         function closeSlugModal() {
             const modal = document.getElementById('slugManagementModal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-        }
-
-        // Populate languages dropdown
-        function populateLanguages(selectedId = null) {
-            const languageSelect = document.getElementById('languageId');
-            languageSelect.innerHTML = '';
-            availableLanguages.forEach(lang => {
-                const selected = selectedId === lang.id || (!selectedId && lang.isDefault);
-                languageSelect.innerHTML += `<option value="${lang.id}" ${selected ? 'selected' : ''}>${lang.name} (${lang.code.toUpperCase()})${lang.isDefault ? ' - Varsayılan' : ''}</option>`;
-            });
+            slugData = {};
+            currentContentId = 0;
         }
 
         // Entity type change handler
-        document.getElementById('entityType').addEventListener('change', async function() {
-            const entityType = this.value;
-            const entitySelect = document.getElementById('entityId');
-            const container = document.getElementById('entitySelectionSection');
-            const spinner = document.getElementById('entityLoadingSpinner');
-            
-            if (!entityType) {
-                container.classList.add('hidden');
-                return;
-            }
-            
-            container.classList.remove('hidden');
-            spinner.classList.remove('hidden');
-            entitySelect.disabled = true;
-            entitySelect.innerHTML = '<option value="">Yükleniyor...</option>';
-            
-            try {
-                const response = await fetch(`/Content/GetEntitiesByType?entityType=${entityType}`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    entitySelect.innerHTML = '<option value="">Seçiniz...</option>';
-                    data.entities.forEach(entity => {
-                        entitySelect.innerHTML += `<option value="${entity.id}">${entity.name}</option>`;
-                    });
-                } else {
-                    entitySelect.innerHTML = '<option value="">Hata: ' + data.message + '</option>';
+        function setupEntityTypeHandler() {
+            const entityTypeSelect = document.getElementById('entityType');
+            if (!entityTypeSelect) return;
+
+            // Remove old listeners
+            const newSelect = entityTypeSelect.cloneNode(true);
+            entityTypeSelect.parentNode.replaceChild(newSelect, entityTypeSelect);
+
+            // Add new listener
+            newSelect.addEventListener('change', async function() {
+                const entityType = this.value;
+                const entitySelect = document.getElementById('entityId');
+                const spinner = document.getElementById('entityLoadingSpinner');
+
+                if (!entityType) {
+                    entitySelect.innerHTML = '<option value="">Önce entity tipi seçin...</option>';
+                    return;
                 }
-            } catch (error) {
-                console.error('Error loading entities:', error);
-                entitySelect.innerHTML = '<option value="">Yükleme hatası</option>';
-            } finally {
-                spinner.classList.add('hidden');
-                entitySelect.disabled = false;
-            }
-        });
+
+                spinner.classList.remove('hidden');
+                entitySelect.disabled = true;
+                entitySelect.innerHTML = '<option value="">Yükleniyor...</option>';
+
+                try {
+                    const response = await fetch(`/Content/GetEntitiesByType?entityType=${entityType}`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        entitySelect.innerHTML = '<option value="">Seçiniz...</option>';
+                        data.entities.forEach(entity => {
+                            entitySelect.innerHTML += `<option value="${entity.id}">${entity.name}</option>`;
+                        });
+                    } else {
+                        entitySelect.innerHTML = '<option value="">Hata: ' + data.message + '</option>';
+                    }
+                } catch (error) {
+                    console.error('Error loading entities:', error);
+                    entitySelect.innerHTML = '<option value="">Yükleme hatası</option>';
+                } finally {
+                    spinner.classList.add('hidden');
+                    entitySelect.disabled = false;
+                }
+            });
+        }
 
         // Auto-format slug on input
         document.getElementById('slug').addEventListener('input', function(e) {
@@ -467,71 +622,78 @@
             e.target.value = value;
         });
 
-        // Save slug
-        async function saveSlugModal() {
-            const form = document.getElementById('slugForm');
-            const formData = new FormData(form);
-            
-            const data = {
-                Id: parseInt(formData.get('Id')),
-                ContentId: parseInt(formData.get('ContentId')),
-                Slug: formData.get('Slug'),
-                LanguageId: parseInt(formData.get('LanguageId')),
-                Priority: formData.get('Priority') ? parseInt(formData.get('Priority')) : 1,
-                IsCanonical: formData.get('IsCanonical') === 'on',
-                EntityType: parseInt(formData.get('EntityType')),
-                EntityId: parseInt(formData.get('EntityId'))
-            };
-            
-            if (currentMode === 'create') {
-                data.Title = formData.get('Title') || null;
-                data.MetaTitle = formData.get('MetaTitle') || null;
-                data.MetaDescription = formData.get('MetaDescription') || null;
-                data.MetaKeywords = formData.get('MetaKeywords') || null;
-            }
-            
+        // Save all slugs
+        async function saveAllSlugs() {
+            const entityType = parseInt(document.getElementById('entityType').value);
+            const entityId = parseInt(document.getElementById('entityId').value);
+
             // Validation
-            if (!data.Slug || data.Slug.trim() === '') {
-                Swal.fire('Uyarı', 'Slug alanı zorunludur', 'warning');
-                return;
-            }
-            
-            const slugPattern = /^[a-z0-9\-\/]+$/;
-            if (!slugPattern.test(data.Slug)) {
-                Swal.fire('Uyarı', 'Slug sadece küçük harf, rakam, tire ve slash içerebilir', 'warning');
-                return;
-            }
-            
-            if (!data.EntityType || data.EntityType === 0) {
+            if (!entityType || entityType === 0) {
                 Swal.fire('Uyarı', 'Entity tipi seçimi zorunludur', 'warning');
                 return;
             }
-            if (!data.EntityId || data.EntityId === 0) {
+            if (!entityId || entityId === 0) {
                 Swal.fire('Uyarı', 'Entity seçimi zorunludur', 'warning');
                 return;
             }
-            
+
+            // Collect all slugs
+            const slugsToSave = [];
+            for (const [langId, data] of Object.entries(slugData)) {
+                if (data.slug && data.slug.trim() !== '') {
+                    // Validate slug format
+                    const slugPattern = /^[a-z0-9\-\/]+$/;
+                    if (!slugPattern.test(data.slug)) {
+                        const lang = availableLanguages.find(l => l.id == langId);
+                        Swal.fire('Uyarı', `${lang.name} için slug formatı geçersiz. Sadece küçük harf, rakam, tire ve slash kullanın.`, 'warning');
+                        return;
+                    }
+
+                    slugsToSave.push({
+                        id: data.id || 0,
+                        slug: data.slug,
+                        languageId: parseInt(langId),
+                        priority: data.priority || 1,
+                        isCanonical: data.isCanonical || false
+                    });
+                }
+            }
+
+            if (slugsToSave.length === 0) {
+                Swal.fire('Uyarı', 'En az bir dil için slug tanımlamalısınız', 'warning');
+                return;
+            }
+
+            const requestData = {
+                contentId: currentContentId,
+                entityType: entityType,
+                entityId: entityId,
+                slugs: slugsToSave
+            };
+
             try {
-                const url = currentMode === 'create' ? '/Content/CreateContentSlug' : '/Content/SaveSlug';
+                const url = currentMode === 'create' ? '/Content/CreateMultiLanguageSlug' : '/Content/SaveMultiLanguageSlugs';
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(requestData)
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     Swal.fire('Başarılı!', result.message, 'success').then(() => {
                         closeSlugModal();
                         location.reload();
                     });
-                } else {
+                }
+                else {
                     Swal.fire('Hata', result.message, 'error');
                 }
-            } catch (error) {
-                console.error('Error saving slug:', error);
-                Swal.fire('Hata', 'Slug kaydedilirken bir hata oluştu', 'error');
+            }
+            catch (error) {
+                console.error('Error saving slugs:', error);
+                Swal.fire('Hata', 'Sluglar kaydedilirken bir hata oluştu', 'error');
             }
         }
 

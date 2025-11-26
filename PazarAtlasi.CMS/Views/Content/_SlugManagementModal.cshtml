@@ -1,7 +1,7 @@
 <!-- Modal Overlay -->
 <div id="slugManagementModal" class="fixed inset-0 bg-black bg-opacity-50 z-[10000] hidden items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden relative z-[10001]">
-        
+    <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden relative z-[10001]">
+
         <!-- Modal Header -->
         <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -10,7 +10,7 @@
                 </div>
                 <div>
                     <h3 id="modalTitle" class="text-xl font-bold text-white">Slug Yönetimi</h3>
-                    <p id="modalSubtitle" class="text-purple-100 text-sm">URL yapısını yönetin</p>
+                    <p id="modalSubtitle" class="text-purple-100 text-sm">Çoklu dil URL yapısını yönetin</p>
                 </div>
             </div>
             <button onclick="closeSlugModal()" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors">
@@ -19,129 +19,150 @@
         </div>
 
         <!-- Modal Body -->
-        <div class="p-5 overflow-y-auto max-h-[calc(90vh-140px)]">
-            <form id="slugForm">
-                <input type="hidden" id="slugId" name="Id" value="0" />
-                <input type="hidden" id="contentId" name="ContentId" value="0" />
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
 
-                <!-- Entity Type Selection -->
-                <div id="entityTypeSection" class="mb-4">
-                    <label for="entityType" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        <i class="fas fa-layer-group text-purple-500 mr-1"></i> Entity Tipi *
-                    </label>
-                    <select id="entityType" name="EntityType" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
-                        <option value="">Seçiniz...</option>
-                    </select>
-                </div>
+            <!-- Entity Selection Section -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6 border border-blue-100">
+                <h4 class="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-layer-group text-purple-600"></i>
+                    Entity Seçimi
+                </h4>
 
-                <!-- Entity Selection -->
-                <div id="entitySelectionSection" class="mb-4 hidden">
-                    <label for="entityId" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        <i class="fas fa-file text-purple-500 mr-1"></i> Entity Seçimi *
-                    </label>
-                    <select id="entityId" name="EntityId" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
-                        <option value="">Önce entity tipi seçin...</option>
-                    </select>
-                    <div id="entityLoadingSpinner" class="hidden mt-1 text-xs text-gray-500">
-                        <i class="fas fa-spinner fa-spin mr-1"></i> Yükleniyor...
-                    </div>
-                </div>
-
-                <!-- Slug Input -->
-                <div class="mb-4">
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        <i class="fas fa-link text-purple-500 mr-1"></i> Slug *
-                    </label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">/</span>
-                        <input type="text" 
-                               id="slug" 
-                               name="Slug" 
-                               required
-                               class="w-full pl-7 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                               placeholder="ornek-slug-yapisi" />
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">Sadece küçük harf, rakam, tire ve slash</p>
-                </div>
-
-                <!-- Language Selection -->
-                <div class="mb-4">
-                    <label for="languageId" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        <i class="fas fa-language text-purple-500 mr-1"></i> Dil *
-                    </label>
-                    <select id="languageId" name="LanguageId" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
-                    </select>
-                </div>
-
-                <!-- Priority and Canonical -->
-                <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Entity Type -->
                     <div>
-                        <label for="priority" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            <i class="fas fa-sort-numeric-down text-purple-500 mr-1"></i> Öncelik
+                        <label for="entityType" class="block text-xs font-medium text-gray-700 mb-1.5">
+                            <i class="fas fa-cube text-purple-500 mr-1"></i> Entity Tipi *
                         </label>
-                        <input type="number" id="priority" name="Priority" value="1" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" placeholder="1" />
+                        <select id="entityType" name="EntityType" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                            <option value="">Seçiniz...</option>
+                        </select>
                     </div>
+
+                    <!-- Entity Selection -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                            <i class="fas fa-check-circle text-purple-500 mr-1"></i> Durum
+                        <label for="entityId" class="block text-xs font-medium text-gray-700 mb-1.5">
+                            <i class="fas fa-file text-purple-500 mr-1"></i> Entity *
                         </label>
-                        <div class="flex items-center h-[38px] px-3 border border-gray-300 rounded-lg bg-gray-50">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="checkbox" id="isCanonical" name="IsCanonical" class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" />
-                                <span class="ml-2 text-sm font-medium text-gray-700">Canonical</span>
-                            </label>
+                        <select id="entityId" name="EntityId" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                            <option value="">Önce entity tipi seçin...</option>
+                        </select>
+                        <div id="entityLoadingSpinner" class="hidden mt-1 text-xs text-gray-500">
+                            <i class="fas fa-spinner fa-spin mr-1"></i> Yükleniyor...
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- SEO Information (only for create mode) - Collapsible -->
-                <details id="seoSection" class="mb-4 hidden">
-                    <summary class="cursor-pointer text-sm font-medium text-gray-700 mb-2 flex items-center gap-2 hover:text-purple-600">
-                        <i class="fas fa-search text-purple-500"></i>
-                        SEO Bilgileri (Opsiyonel)
-                        <i class="fas fa-chevron-down text-xs ml-auto"></i>
-                    </summary>
-                    <div class="mt-3 space-y-3 pl-6 border-l-2 border-purple-200">
-                        <div>
-                            <label for="title" class="block text-xs font-medium text-gray-700 mb-1">Başlık</label>
-                            <input type="text" id="title" name="Title" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Sayfa başlığı" />
-                        </div>
-                        <div>
-                            <label for="metaTitle" class="block text-xs font-medium text-gray-700 mb-1">Meta Başlık</label>
-                            <input type="text" id="metaTitle" name="MetaTitle" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="SEO meta başlık" />
-                        </div>
-                        <div>
-                            <label for="metaDescription" class="block text-xs font-medium text-gray-700 mb-1">Meta Açıklama</label>
-                            <textarea id="metaDescription" name="MetaDescription" rows="2" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="SEO meta açıklama"></textarea>
-                        </div>
-                        <div>
-                            <label for="metaKeywords" class="block text-xs font-medium text-gray-700 mb-1">Meta Anahtar Kelimeler</label>
-                            <input type="text" id="metaKeywords" name="MetaKeywords" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="anahtar, kelime, listesi" />
-                        </div>
-                    </div>
-                </details>
+            <!-- Language Tabs -->
+            <div class="mb-6">
+                <div class="border-b border-gray-200">
+                    <nav class="flex gap-2" id="languageTabs">
+                        <!-- Tabs will be populated by JavaScript -->
+                    </nav>
+                </div>
+            </div>
 
-                <!-- Info Box -->
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div class="flex gap-2">
-                        <i class="fas fa-info-circle text-blue-500 text-sm mt-0.5"></i>
-                        <div class="text-xs text-blue-800">
-                            <p class="font-semibold mb-0.5">Canonical URL</p>
-                            <p>Arama motorlarına hangi URL'nin asıl versiyon olduğunu belirtir.</p>
-                        </div>
+            <!-- Tab Content -->
+            <div id="tabContents">
+                <!-- Tab contents will be populated by JavaScript -->
+            </div>
+
+            <!-- Info Box -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                <div class="flex gap-2">
+                    <i class="fas fa-info-circle text-blue-500 text-sm mt-0.5"></i>
+                    <div class="text-xs text-blue-800">
+                        <p class="font-semibold mb-0.5">Çoklu Dil Slug Yönetimi</p>
+                        <p>Her dil için ayrı slug tanımlayabilirsiniz. Canonical URL, arama motorlarına hangi URL'nin asıl versiyon olduğunu belirtir.</p>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <!-- Modal Footer -->
-        <div class="bg-gray-50 px-5 py-3 flex items-center justify-end gap-2 border-t border-gray-200">
-            <button type="button" onclick="closeSlugModal()" class="px-4 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                <i class="fas fa-times mr-1"></i> İptal
-            </button>
-            <button type="button" id="saveButton" onclick="saveSlugModal()" class="px-4 py-2 text-sm bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-md hover:shadow-lg font-medium">
-                <i class="fas fa-save mr-1"></i> Kaydet
-            </button>
+        <div class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200">
+            <div class="text-sm text-gray-600">
+                <i class="fas fa-lightbulb text-yellow-500 mr-1"></i>
+                <span id="slugCount">0 dil için slug tanımlandı</span>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" onclick="closeSlugModal()" class="px-4 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                    <i class="fas fa-times mr-1"></i> İptal
+                </button>
+                <button type="button" id="saveButton" onclick="saveAllSlugs()" class="px-4 py-2 text-sm bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-md hover:shadow-lg font-medium">
+                    <i class="fas fa-save mr-1"></i> Tümünü Kaydet
+                </button>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .language-tab {
+        padding: 0.75rem 1.5rem;
+        border-bottom: 2px solid transparent;
+        color: #6b7280;
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .language-tab:hover {
+        color: #9333ea;
+        background-color: #faf5ff;
+    }
+
+    .language-tab.active {
+        color: #9333ea;
+        border-bottom-color: #9333ea;
+        background-color: #faf5ff;
+    }
+
+    .language-tab .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .language-tab .badge.filled {
+        background-color: #22c55e;
+        color: white;
+    }
+
+    .language-tab .badge.empty {
+        background-color: #e5e7eb;
+        color: #6b7280;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.2s ease-in;
+    }
+
+</style>
