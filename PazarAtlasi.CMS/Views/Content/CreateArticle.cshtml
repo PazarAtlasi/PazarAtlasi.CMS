@@ -339,6 +339,42 @@
 @section Scripts {
     <!-- Summernote CSS -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    
+    <!-- Fix horizontal scroll issue -->
+    <style>
+        body {
+            overflow-x: hidden !important;
+        }
+        
+        .note-editor {
+            max-width: 100% !important;
+        }
+        
+        .note-editable {
+            overflow-x: auto !important;
+            max-width: 100% !important;
+        }
+        
+        .grid {
+            overflow-x: hidden !important;
+        }
+        
+        #articleForm {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Fix sidebar overflow */
+        .lg\:col-span-1 {
+            overflow-x: hidden !important;
+        }
+        
+        /* Ensure all inputs don't overflow */
+        input, textarea, select {
+            max-width: 100% !important;
+        }
+    </style>
+    
     <!-- Summernote JS -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
