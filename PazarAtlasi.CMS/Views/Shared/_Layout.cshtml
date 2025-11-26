@@ -59,14 +59,16 @@
         /* Modal overlays should be above everything including header */
         #sectionModalOverlay,
         #slugEditModalOverlay,
-        #slugCreateModalOverlay {
+        #slugCreateModalOverlay,
+        #slugManagementModal {
             z-index: 10000 !important;
         }
         
         /* Modal content should be above overlay backdrop */
         #sectionModalOverlay .section-modal,
         #slugEditModalOverlay > div,
-        #slugCreateModalOverlay > div {
+        #slugCreateModalOverlay > div,
+        #slugManagementModal > div {
             position: relative;
             z-index: 10001 !important;
         }

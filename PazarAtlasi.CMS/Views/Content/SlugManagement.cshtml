@@ -283,7 +283,6 @@
             document.getElementById('saveButton').innerHTML = '<i class="fas fa-plus mr-1"></i> Oluştur';
             
             // Show/hide sections
-            document.getElementById('entityInfoSection').classList.add('hidden');
             document.getElementById('entityTypeSection').classList.remove('hidden');
             document.getElementById('entitySelectionSection').classList.add('hidden');
             document.getElementById('seoSection').classList.remove('hidden');
@@ -301,6 +300,9 @@
             availableEntityTypes.forEach(et => {
                 entityTypeSelect.innerHTML += `<option value="${et.value}">${et.name}</option>`;
             });
+            
+            // Reset entity selection
+            document.getElementById('entityId').innerHTML = '<option value="">Önce entity tipi seçin...</option>';
             
             // Populate languages
             populateLanguages();
@@ -332,14 +334,8 @@
                 document.getElementById('saveButton').innerHTML = '<i class="fas fa-save mr-1"></i> Kaydet';
                 
                 // Show/hide sections
-                document.getElementById('entityInfoSection').classList.remove('hidden');
-                document.getElementById('entityTypeSection').classList.add('hidden');
-                document.getElementById('entitySelectionSection').classList.add('hidden');
+                document.getElementById('entityTypeSection').classList.remove('hidden');
                 document.getElementById('seoSection').classList.add('hidden');
-                
-                // Fill entity info
-                document.getElementById('entityTypeBadge').textContent = slug.entityTypeName;
-                document.getElementById('entityName').textContent = slug.entityName;
                 
                 // Fill form
                 document.getElementById('slugId').value = slug.id;
@@ -347,6 +343,19 @@
                 document.getElementById('slug').value = slug.slug;
                 document.getElementById('priority').value = slug.priority || 1;
                 document.getElementById('isCanonical').checked = slug.isCanonical;
+                
+                // Populate entity types
+                const entityTypeSelect = document.getElementById('entityType');
+                entityTypeSelect.innerHTML = '<option value="">Seçiniz...</option>';
+                availableEntityTypes.forEach(et => {
+                    const selected = et.value == slug.entityType;
+                    entityTypeSelect.innerHTML += `<option value="${et.value}" ${selected ? 'selected' : ''}>${et.name}</option>`;
+                });
+                
+                // Load entities for selected type
+                if (slug.entityType) {
+                    await loadEntitiesForEdit(slug.entityType, slug.entityId);
+                }
                 
                 // Populate languages
                 populateLanguages(slug.languageId);
@@ -357,6 +366,39 @@
             } catch (error) {
                 console.error('Error loading slug:', error);
                 Swal.fire('Hata', 'Slug bilgileri yüklenirken bir hata oluştu', 'error');
+            }
+        }
+
+        // Load entities for edit mode
+        async function loadEntitiesForEdit(entityType, selectedEntityId) {
+            const entitySelect = document.getElementById('entityId');
+            const container = document.getElementById('entitySelectionSection');
+            const spinner = document.getElementById('entityLoadingSpinner');
+            
+            container.classList.remove('hidden');
+            spinner.classList.remove('hidden');
+            entitySelect.disabled = true;
+            entitySelect.innerHTML = '<option value="">Yükleniyor...</option>';
+            
+            try {
+                const response = await fetch(`/Content/GetEntitiesByType?entityType=${entityType}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    entitySelect.innerHTML = '<option value="">Seçiniz...</option>';
+                    data.entities.forEach(entity => {
+                        const selected = entity.id == selectedEntityId;
+                        entitySelect.innerHTML += `<option value="${entity.id}" ${selected ? 'selected' : ''}>${entity.name}</option>`;
+                    });
+                } else {
+                    entitySelect.innerHTML = '<option value="">Hata: ' + data.message + '</option>';
+                }
+            } catch (error) {
+                console.error('Error loading entities:', error);
+                entitySelect.innerHTML = '<option value="">Yükleme hatası</option>';
+            } finally {
+                spinner.classList.add('hidden');
+                entitySelect.disabled = false;
             }
         }
 
@@ -436,12 +478,12 @@
                 Slug: formData.get('Slug'),
                 LanguageId: parseInt(formData.get('LanguageId')),
                 Priority: formData.get('Priority') ? parseInt(formData.get('Priority')) : 1,
-                IsCanonical: formData.get('IsCanonical') === 'on'
+                IsCanonical: formData.get('IsCanonical') === 'on',
+                EntityType: parseInt(formData.get('EntityType')),
+                EntityId: parseInt(formData.get('EntityId'))
             };
             
             if (currentMode === 'create') {
-                data.EntityType = parseInt(formData.get('EntityType'));
-                data.EntityId = parseInt(formData.get('EntityId'));
                 data.Title = formData.get('Title') || null;
                 data.MetaTitle = formData.get('MetaTitle') || null;
                 data.MetaDescription = formData.get('MetaDescription') || null;
@@ -460,15 +502,13 @@
                 return;
             }
             
-            if (currentMode === 'create') {
-                if (!data.EntityType || data.EntityType === 0) {
-                    Swal.fire('Uyarı', 'Entity tipi seçimi zorunludur', 'warning');
-                    return;
-                }
-                if (!data.EntityId || data.EntityId === 0) {
-                    Swal.fire('Uyarı', 'Entity seçimi zorunludur', 'warning');
-                    return;
-                }
+            if (!data.EntityType || data.EntityType === 0) {
+                Swal.fire('Uyarı', 'Entity tipi seçimi zorunludur', 'warning');
+                return;
+            }
+            if (!data.EntityId || data.EntityId === 0) {
+                Swal.fire('Uyarı', 'Entity seçimi zorunludur', 'warning');
+                return;
             }
             
             try {

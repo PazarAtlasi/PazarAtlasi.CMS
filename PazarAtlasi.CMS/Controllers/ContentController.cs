@@ -5076,7 +5076,10 @@ namespace PazarAtlasi.CMS.Controllers
 
                 if (model.Id > 0)
                 {
-                    var slug = await _pazarAtlasiDbContext.ContentSlugs.FindAsync(model.Id);
+                    var slug = await _pazarAtlasiDbContext.ContentSlugs
+                        .Include(cs => cs.Content)
+                        .FirstOrDefaultAsync(cs => cs.Id == model.Id);
+                    
                     if (slug == null)
                     {
                         return Json(new { success = false, message = "Slug bulunamadı." });
@@ -5087,6 +5090,14 @@ namespace PazarAtlasi.CMS.Controllers
                     slug.Priority = model.Priority;
                     slug.IsCanonical = model.IsCanonical;
                     slug.UpdatedAt = DateTime.UtcNow;
+
+                    // Update content entity if changed
+                    if (slug.Content != null && (model.EntityType != default && model.EntityId > 0))
+                    {
+                        slug.Content.RelatedDataEntityType = model.EntityType;
+                        slug.Content.RelatedDataEntityId = model.EntityId;
+                        slug.Content.UpdatedAt = DateTime.UtcNow;
+                    }
                 }
                 else
                 {
