@@ -24,15 +24,6 @@ namespace PazarAtlasi.API.Controllers
         }
 
         /// <summary>
-        /// Test endpoint to check if API is working
-        /// </summary>
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            return Ok(new { message = "API is working!", timestamp = DateTime.UtcNow });
-        }
-
-        /// <summary>
         /// Get page by slug with all sections, items, fields and values (including layout sections)
         /// </summary>
         /// <param name="slug">Page slug</param>
