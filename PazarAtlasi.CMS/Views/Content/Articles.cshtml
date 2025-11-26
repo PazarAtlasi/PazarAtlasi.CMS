@@ -1,0 +1,263 @@
+@model PazarAtlasi.CMS.Models.ViewModels.ArticleListResponse
+@{
+    ViewData["Title"] = "Haberler / News";
+}
+
+<!-- Page Header -->
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800">@Html.L("Navigation.News")</h1>
+        <p class="text-gray-500 mt-1">@Html.L("Articles.ManageDescription")</p>
+    </div>
+    <a asp-action="CreateArticle" 
+       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+        <i class="fas fa-plus mr-2"></i>
+        @Html.L("Articles.CreateNew")
+    </a>
+</div>
+
+<!-- Filters -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+    <div class="flex flex-wrap gap-4">
+        <!-- Category Filter -->
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Common.Category")</label>
+            <select id="categoryFilter" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                <option value="">@Html.L("Common.AllCategories")</option>
+                @foreach (var category in ViewBag.Categories as List<PazarAtlasi.CMS.Models.ViewModels.ArticleCategoryViewModel>)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Common.Status")</label>
+            <select id="statusFilter" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                <option value="">@Html.L("Common.AllStatuses")</option>
+                <option value="Active">@Html.L("Status.Active")</option>
+                <option value="Draft">@Html.L("Status.Draft")</option>
+                <option value="Pending">@Html.L("Status.Pending")</option>
+            </select>
+        </div>
+
+        <!-- Search -->
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Common.Search")</label>
+            <div class="relative">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="searchBox" placeholder="@Html.L("Articles.SearchPlaceholder")" 
+                       class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Articles Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @if (Model.Articles != null && Model.Articles.Any())
+    {
+        foreach (var article in Model.Articles)
+        {
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <!-- Featured Image -->
+                @if (!string.IsNullOrEmpty(article.FeaturedImage))
+                {
+                    <div class="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                        <img src="@article.FeaturedImage" alt="@article.Title" 
+                             class="w-full h-full object-cover">
+                        
+                        <!-- Badges -->
+                        <div class="absolute top-3 left-3 flex gap-2">
+                            @if (article.IsFeatured)
+                            {
+                                <span class="px-2.5 py-1 bg-amber-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                                    <i class="fas fa-star mr-1"></i>Featured
+                                </span>
+                            }
+                            @if (article.IsTrending)
+                            {
+                                <span class="px-2.5 py-1 bg-rose-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                                    <i class="fas fa-fire mr-1"></i>Trending
+                                </span>
+                            }
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="absolute top-3 right-3">
+                            @switch (article.Status)
+                            {
+                                case PazarAtlasi.CMS.Domain.Common.Status.Active:
+                                    <span class="px-2.5 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                                        <i class="fas fa-check-circle mr-1"></i>@Html.L("Status.Active")
+                                    </span>
+                                    break;
+                                case PazarAtlasi.CMS.Domain.Common.Status.Draft:
+                                    <span class="px-2.5 py-1 bg-gray-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                                        <i class="fas fa-edit mr-1"></i>@Html.L("Status.Draft")
+                                    </span>
+                                    break;
+                                case PazarAtlasi.CMS.Domain.Common.Status.Pending:
+                                    <span class="px-2.5 py-1 bg-yellow-500 text-white text-xs font-semibold rounded-full shadow-lg">
+                                        <i class="fas fa-clock mr-1"></i>@Html.L("Status.Pending")
+                                    </span>
+                                    break;
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="h-48 bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
+                        <i class="fas fa-newspaper text-6xl text-gray-300"></i>
+                    </div>
+                }
+
+                <!-- Content -->
+                <div class="p-5">
+                    <!-- Category -->
+                    @if (!string.IsNullOrEmpty(article.CategoryName))
+                    {
+                        <div class="mb-2">
+                            <span class="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+                                @article.CategoryName
+                            </span>
+                        </div>
+                    }
+
+                    <!-- Title -->
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+                        @article.Title
+                    </h3>
+
+                    <!-- Summary -->
+                    @if (!string.IsNullOrEmpty(article.Summary))
+                    {
+                        <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                            @article.Summary
+                        </p>
+                    }
+
+                    <!-- Meta Info -->
+                    <div class="flex items-center justify-between text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
+                        <div class="flex items-center gap-4">
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-eye"></i>
+                                @article.ViewCount
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-heart"></i>
+                                @article.LikeCount
+                            </span>
+                        </div>
+                        @if (article.PublishedAt.HasValue)
+                        {
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-calendar"></i>
+                                @article.PublishedAt.Value.ToString("dd MMM yyyy")
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-2">
+                        <a asp-action="EditArticle" asp-route-id="@article.Id" 
+                           class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-edit mr-2"></i>
+                            @Html.L("Common.Edit")
+                        </a>
+                        <button onclick="deleteArticle(@article.Id)" 
+                                class="px-4 py-2 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-span-full">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+                <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">@Html.L("Articles.NoArticles")</h3>
+                <p class="text-gray-500 mb-6">@Html.L("Articles.NoArticlesDescription")</p>
+                <a asp-action="CreateArticle" 
+                   class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    @Html.L("Articles.CreateFirst")
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Pagination -->
+@if (Model.TotalPages > 1)
+{
+    <div class="mt-8 flex justify-center">
+        <nav class="inline-flex rounded-lg shadow-sm">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="?page=@i" 
+                   class="px-4 py-2 text-sm font-medium @(i == Model.PageNumber ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50") border border-gray-300 @(i == 1 ? "rounded-l-lg" : "") @(i == Model.TotalPages ? "rounded-r-lg" : "")">
+                    @i
+                </a>
+            }
+        </nav>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function deleteArticle(id) {
+            Swal.fire({
+                title: '@Html.L("Common.AreYouSure")',
+                text: '@Html.L("Articles.DeleteConfirmation")',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '@Html.L("Common.YesDelete")',
+                cancelButtonText: '@Html.L("Common.Cancel")'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Content/DeleteArticle',
+                        type: 'POST',
+                        data: { 
+                            id: id,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: '@Html.L("Common.Deleted")',
+                                    text: response.message,
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('@Html.L("Common.Error")', response.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('@Html.L("Common.Error")', '@Html.L("Common.ErrorOccurred")', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        // Filter functionality
+        $('#categoryFilter, #statusFilter').on('change', function() {
+            const category = $('#categoryFilter').val();
+            const status = $('#statusFilter').val();
+            window.location.href = `/Content/Articles?categoryId=${category}&status=${status}`;
+        });
+    </script>
+}

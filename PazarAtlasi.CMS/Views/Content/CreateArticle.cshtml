@@ -1,0 +1,422 @@
+@model PazarAtlasi.CMS.Models.ViewModels.ArticleViewModel
+@{
+    ViewData["Title"] = Model.Id > 0 ? "Haber Düzenle / Edit Article" : "Yeni Haber / New Article";
+}
+
+<form asp-action="@(Model.Id > 0 ? "EditArticle" : "CreateArticle")" method="post" id="articleForm" class="space-y-6">
+    @Html.AntiForgeryToken()
+    
+    @if (Model.Id > 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <!-- Page Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">
+                @if (Model.Id > 0)
+                {
+                    <i class="fas fa-edit mr-2 text-blue-600"></i>@Html.L("Articles.Edit")
+                }
+                else
+                {
+                    <i class="fas fa-plus-circle mr-2 text-blue-600"></i>@Html.L("Articles.CreateNew")
+                }
+            </h1>
+            <p class="text-gray-500 mt-1">
+                @Html.L("Articles.FormDescription")
+            </p>
+        </div>
+        <a asp-action="Articles" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            @Html.L("Common.Back")
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Multilingual Content -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-language mr-2 text-blue-600"></i>
+                        @Html.L("Articles.Content")
+                    </h3>
+                </div>
+
+                <div class="p-6">
+                    <!-- Language Tabs -->
+                    <div class="flex flex-wrap gap-2 mb-6 bg-gray-50 rounded-lg p-2">
+                        @foreach (var lang in Model.AvailableLanguages)
+                        {
+                            <button type="button"
+                                    class="language-tab flex-1 min-w-[100px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all @(lang.IsDefault ? "bg-blue-600 text-white shadow-md" : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200")"
+                                    data-language-id="@lang.Id"
+                                    onclick="switchLanguageTab(@lang.Id)">
+                                <i class="fas fa-flag mr-2"></i>
+                                @lang.Name
+                                @if (lang.IsDefault)
+                                {
+                                    <span class="ml-1 text-xs">●</span>
+                                }
+                            </button>
+                        }
+                    </div>
+
+                    <!-- Translation Content -->
+                    @foreach (var lang in Model.AvailableLanguages)
+                    {
+                        var translation = Model.Translations.FirstOrDefault(t => t.LanguageId == lang.Id);
+                        var index = Model.AvailableLanguages.IndexOf(lang);
+                        
+                        <div class="translation-content space-y-4 @(lang.IsDefault ? "" : "hidden")" data-language-id="@lang.Id">
+                            <input type="hidden" name="Translations[@index].LanguageId" value="@lang.Id" />
+                            
+                            <!-- Title -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    @Html.L("Articles.Title") *
+                                </label>
+                                <input type="text"
+                                       name="Translations[@index].Title"
+                                       value="@(translation?.Title ?? "")"
+                                       required
+                                       maxlength="200"
+                                       placeholder="@Html.L("Articles.TitlePlaceholder")"
+                                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
+                            </div>
+
+                            <!-- Slug -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    @Html.L("Articles.Slug") *
+                                </label>
+                                <div class="relative">
+                                    <i class="fas fa-link absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text"
+                                           name="Translations[@index].Slug"
+                                           value="@(translation?.Slug ?? "")"
+                                           required
+                                           maxlength="200"
+                                           placeholder="@Html.L("Articles.SlugPlaceholder")"
+                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
+                                </div>
+                            </div>
+
+                            <!-- Summary -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    @Html.L("Articles.Summary")
+                                </label>
+                                <textarea name="Translations[@index].Summary"
+                                          rows="3"
+                                          maxlength="500"
+                                          placeholder="@Html.L("Articles.SummaryPlaceholder")"
+                                          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">@(translation?.Summary ?? "")</textarea>
+                                <p class="text-xs text-gray-500 mt-1">@Html.L("Articles.SummaryHelp")</p>
+                            </div>
+
+                            <!-- Content -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    @Html.L("Articles.ContentBody")
+                                </label>
+                                <textarea name="Translations[@index].Content"
+                                          rows="10"
+                                          placeholder="@Html.L("Articles.ContentPlaceholder")"
+                                          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono text-sm">@(translation?.Content ?? "")</textarea>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    @Html.L("Articles.ContentHelp")
+                                </p>
+                            </div>
+
+                            <!-- Meta Title -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    @Html.L("Articles.MetaTitle")
+                                </label>
+                                <input type="text"
+                                       name="Translations[@index].MetaTitle"
+                                       value="@(translation?.MetaTitle ?? "")"
+                                       maxlength="200"
+                                       placeholder="@Html.L("Articles.MetaTitlePlaceholder")"
+                                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            
+            <!-- Publish Settings -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-cog mr-2 text-green-600"></i>
+                        @Html.L("Articles.PublishSettings")
+                    </h4>
+                </div>
+                <div class="p-4 space-y-4">
+                    <!-- Status -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Common.Status")</label>
+                        <select asp-for="Status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            @foreach (var status in Enum.GetValues<PazarAtlasi.CMS.Domain.Common.Status>())
+                            {
+                                <option value="@status">@status.ToString()</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Published Date -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Articles.PublishDate")</label>
+                        <input type="datetime-local" asp-for="PublishedAt" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+
+                    <!-- Reading Time -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Articles.ReadingTime")</label>
+                        <div class="relative">
+                            <input type="number" asp-for="ReadingTime" min="1" max="999" 
+                                   placeholder="5"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">@Html.L("Articles.Minutes")</span>
+                        </div>
+                    </div>
+
+                    <!-- Sort Order -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Common.SortOrder")</label>
+                        <input type="number" asp-for="SortOrder" min="0" max="999" 
+                               placeholder="0"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-3 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-folder mr-2 text-purple-600"></i>
+                        @Html.L("Common.Category")
+                    </h4>
+                </div>
+                <div class="p-4">
+                    <select asp-for="CategoryId" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">@Html.L("Articles.SelectCategory")</option>
+                        @foreach (var category in Model.AvailableCategories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Featured Image -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-3 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-image mr-2 text-amber-600"></i>
+                        @Html.L("Articles.FeaturedImage")
+                    </h4>
+                </div>
+                <div class="p-4">
+                    <input type="text" asp-for="FeaturedImage" 
+                           placeholder="@Html.L("Articles.ImageUrlPlaceholder")"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-2" />
+                    @if (!string.IsNullOrEmpty(Model.FeaturedImage))
+                    {
+                        <img src="@Model.FeaturedImage" alt="Preview" class="w-full rounded-lg mt-2" />
+                    }
+                </div>
+            </div>
+
+            <!-- Video URL -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-red-50 to-rose-50 px-4 py-3 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-video mr-2 text-red-600"></i>
+                        @Html.L("Articles.VideoUrl")
+                    </h4>
+                </div>
+                <div class="p-4">
+                    <input type="text" asp-for="VideoUrl" 
+                           placeholder="@Html.L("Articles.VideoUrlPlaceholder")"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-50 to-blue-50 px-4 py-3 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-sliders-h mr-2 text-cyan-600"></i>
+                        @Html.L("Articles.Options")
+                    </h4>
+                </div>
+                <div class="p-4 space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" asp-for="IsFeatured" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                        <span class="ml-2 text-sm text-gray-700">
+                            <i class="fas fa-star text-amber-500 mr-1"></i>
+                            @Html.L("Articles.IsFeatured")
+                        </span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" asp-for="IsTrending" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                        <span class="ml-2 text-sm text-gray-700">
+                            <i class="fas fa-fire text-rose-500 mr-1"></i>
+                            @Html.L("Articles.IsTrending")
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SEO -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 px-4 py-3 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-search mr-2 text-indigo-600"></i>
+                        @Html.L("Articles.SEO")
+                    </h4>
+                </div>
+                <div class="p-4 space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Articles.MetaDescription")</label>
+                        <textarea asp-for="MetaDescription" rows="3" maxlength="500"
+                                  placeholder="@Html.L("Articles.MetaDescriptionPlaceholder")"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Articles.MetaKeywords")</label>
+                        <input type="text" asp-for="MetaKeywords" maxlength="500"
+                               placeholder="@Html.L("Articles.MetaKeywordsPlaceholder")"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">@Html.L("Articles.Tags")</label>
+                        <input type="text" asp-for="Tags"
+                               placeholder='["tag1","tag2","tag3"]'
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono" />
+                        <p class="text-xs text-gray-500 mt-1">@Html.L("Articles.TagsHelp")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-between bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <a asp-action="Articles" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+            <i class="fas fa-times mr-2"></i>
+            @Html.L("Common.Cancel")
+        </a>
+        <div class="flex gap-3">
+            <button type="submit" name="status" value="Draft" 
+                    class="inline-flex items-center px-6 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors shadow-md">
+                <i class="fas fa-save mr-2"></i>
+                @Html.L("Articles.SaveDraft")
+            </button>
+            <button type="submit" name="status" value="Active"
+                    class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all shadow-md">
+                <i class="fas fa-check-circle mr-2"></i>
+                @Html.L(Model.Id > 0 ? "Articles.Update" : "Articles.Publish")
+            </button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function switchLanguageTab(languageId) {
+            // Hide all translation contents
+            document.querySelectorAll('.translation-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.language-tab').forEach(tab => {
+                tab.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                tab.classList.add('bg-white', 'text-gray-700', 'hover:bg-gray-100', 'border', 'border-gray-200');
+            });
+
+            // Show selected translation content
+            const selectedContent = document.querySelector(`.translation-content[data-language-id="${languageId}"]`);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+
+            // Add active class to selected tab
+            const selectedTab = document.querySelector(`.language-tab[data-language-id="${languageId}"]`);
+            if (selectedTab) {
+                selectedTab.classList.remove('bg-white', 'text-gray-700', 'hover:bg-gray-100', 'border', 'border-gray-200');
+                selectedTab.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+            }
+        }
+
+        // Form validation
+        document.getElementById('articleForm').addEventListener('submit', function(e) {
+            let hasError = false;
+            
+            // Check if at least one title is filled
+            const titles = document.querySelectorAll('input[name*="Title"]');
+            const hasTitleFilled = Array.from(titles).some(input => input.value.trim() !== '');
+            
+            if (!hasTitleFilled) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: '@Html.L("Common.Error")',
+                    text: '@Html.L("Articles.TitleRequired")',
+                });
+                return false;
+            }
+
+            // Check if at least one slug is filled
+            const slugs = document.querySelectorAll('input[name*="Slug"]');
+            const hasSlugFilled = Array.from(slugs).some(input => input.value.trim() !== '');
+            
+            if (!hasSlugFilled) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: '@Html.L("Common.Error")',
+                    text: '@Html.L("Articles.SlugRequired")',
+                });
+                return false;
+            }
+        });
+
+        // Auto-generate slug from title
+        document.querySelectorAll('input[name*="Title"]').forEach((titleInput, index) => {
+            titleInput.addEventListener('blur', function() {
+                const slugInput = document.querySelectorAll('input[name*="Slug"]')[index];
+                if (!slugInput.value) {
+                    const slug = this.value
+                        .toLowerCase()
+                        .replace(/ğ/g, 'g')
+                        .replace(/ü/g, 'u')
+                        .replace(/ş/g, 's')
+                        .replace(/ı/g, 'i')
+                        .replace(/ö/g, 'o')
+                        .replace(/ç/g, 'c')
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-')
+                        .trim();
+                    slugInput.value = slug;
+                }
+            });
+        });
+    </script>
+}

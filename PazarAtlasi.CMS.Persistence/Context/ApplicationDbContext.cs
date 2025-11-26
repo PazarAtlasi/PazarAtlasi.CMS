@@ -104,6 +104,13 @@ namespace PazarAtlasi.CMS.Persistence.Context
         public DbSet<AgentUsageLog> AgentUsageLogs { get; set; }
         public DbSet<AgentIntegrationLog> AgentIntegrationLogs { get; set; }
 
+        // Articles/News
+        public DbSet<Article> Articles { get; set; }
+        public DbSet<ArticleTranslation> ArticleTranslations { get; set; }
+        public DbSet<ArticleCategory> ArticleCategories { get; set; }
+        public DbSet<ArticleCategoryTranslation> ArticleCategoryTranslations { get; set; }
+
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var now = DateTime.UtcNow;

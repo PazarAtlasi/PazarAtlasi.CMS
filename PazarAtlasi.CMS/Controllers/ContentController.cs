@@ -4930,5 +4930,365 @@ namespace PazarAtlasi.CMS.Controllers
         }
 
         #endregion
+
+        #region Articles / News Management
+
+        /// <summary>
+        /// Articles list with pagination and filtering
+        /// </summary>
+        public async Task<IActionResult> Articles(int page = 1, int pageSize = 12, int? categoryId = null, string? status = null)
+        {
+            var query = _pazarAtlasiDbContext.Articles
+                .Include(a => a.Category)
+                    .ThenInclude(c => c.Translations)
+                .Include(a => a.Translations)
+                .Where(a => !a.IsDeleted);
+
+            // Filter by category
+            if (categoryId.HasValue)
+            {
+                query = query.Where(a => a.CategoryId == categoryId.Value);
+            }
+
+            // Filter by status
+            if (!string.IsNullOrEmpty(status) && Enum.TryParse<Status>(status, out var statusValue))
+            {
+                query = query.Where(a => a.Status == statusValue);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var articles = await query
+                .OrderByDescending(a => a.PublishedAt ?? a.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(a => new ArticleListViewModel
+                {
+                    Id = a.Id,
+                    Title = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Title : $"Article {a.Id}",
+                    Summary = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Summary : null,
+                    CategoryName = a.Category != null && a.Category.Translations.Any() 
+                        ? a.Category.Translations.FirstOrDefault()!.Name 
+                        : null,
+                    FeaturedImage = a.FeaturedImage,
+                    PublishedAt = a.PublishedAt,
+                    ViewCount = a.ViewCount,
+                    LikeCount = a.LikeCount,
+                    IsFeatured = a.IsFeatured,
+                    IsTrending = a.IsTrending,
+                    Status = a.Status,
+                    CreatedAt = a.CreatedAt
+                })
+                .ToListAsync();
+
+            var model = new ArticleListResponse
+            {
+                Articles = articles,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+
+            // Get categories for filter dropdown
+            ViewBag.Categories = await _pazarAtlasiDbContext.ArticleCategories
+                .Include(c => c.Translations)
+                .Where(c => !c.IsDeleted && c.Status == Status.Active)
+                .Select(c => new ArticleCategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Translations.FirstOrDefault() != null ? c.Translations.FirstOrDefault()!.Name : $"Category {c.Id}"
+                })
+                .ToListAsync();
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Create new article - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> CreateArticle()
+        {
+            var model = new ArticleViewModel
+            {
+                Status = Status.Draft,
+                PublishedAt = DateTime.Now,
+                AvailableLanguages = await GetAvailableLanguagesAsync(),
+                AvailableCategories = await GetArticleCategoriesAsync()
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Create new article - POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateArticle(ArticleViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                    model.AvailableCategories = await GetArticleCategoriesAsync();
+                    return View(model);
+                }
+
+                var article = new Article
+                {
+                    CategoryId = model.CategoryId,
+                    FeaturedImage = model.FeaturedImage,
+                    VideoUrl = model.VideoUrl,
+                    PublishedAt = model.PublishedAt,
+                    ViewCount = 0,
+                    LikeCount = 0,
+                    IsFeatured = model.IsFeatured,
+                    IsTrending = model.IsTrending,
+                    ReadingTime = model.ReadingTime,
+                    Tags = model.Tags,
+                    MetaDescription = model.MetaDescription,
+                    MetaKeywords = model.MetaKeywords,
+                    SortOrder = model.SortOrder,
+                    Status = model.Status,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+
+                _pazarAtlasiDbContext.Articles.Add(article);
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                // Add translations
+                if (model.Translations != null && model.Translations.Any())
+                {
+                    foreach (var translationDto in model.Translations)
+                    {
+                        var translation = new ArticleTranslation
+                        {
+                            ArticleId = article.Id,
+                            LanguageId = translationDto.LanguageId,
+                            Title = translationDto.Title,
+                            Slug = translationDto.Slug,
+                            Summary = translationDto.Summary,
+                            Content = translationDto.Content,
+                            MetaTitle = translationDto.MetaTitle,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        };
+
+                        _pazarAtlasiDbContext.ArticleTranslations.Add(translation);
+                    }
+
+                    await _pazarAtlasiDbContext.SaveChangesAsync();
+                }
+
+                TempData["SuccessMessage"] = "Article created successfully!";
+                return RedirectToAction(nameof(Articles));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while creating the article: " + ex.Message;
+                model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                model.AvailableCategories = await GetArticleCategoriesAsync();
+                return View(model);
+            }
+        }
+
+        /// <summary>
+        /// Edit article - GET
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> EditArticle(int id)
+        {
+            var article = await _pazarAtlasiDbContext.Articles
+                .Include(a => a.Translations)
+                    .ThenInclude(t => t.Language)
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ArticleViewModel
+            {
+                Id = article.Id,
+                CategoryId = article.CategoryId,
+                FeaturedImage = article.FeaturedImage,
+                VideoUrl = article.VideoUrl,
+                PublishedAt = article.PublishedAt,
+                ViewCount = article.ViewCount,
+                LikeCount = article.LikeCount,
+                IsFeatured = article.IsFeatured,
+                IsTrending = article.IsTrending,
+                ReadingTime = article.ReadingTime,
+                Tags = article.Tags,
+                MetaDescription = article.MetaDescription,
+                MetaKeywords = article.MetaKeywords,
+                SortOrder = article.SortOrder,
+                Status = article.Status,
+                Translations = article.Translations.Select(t => new ArticleTranslationViewModel
+                {
+                    Id = t.Id,
+                    ArticleId = t.ArticleId,
+                    LanguageId = t.LanguageId,
+                    LanguageCode = t.Language.Code,
+                    LanguageName = t.Language.Name,
+                    Title = t.Title,
+                    Slug = t.Slug,
+                    Summary = t.Summary,
+                    Content = t.Content,
+                    MetaTitle = t.MetaTitle
+                }).ToList(),
+                AvailableLanguages = await GetAvailableLanguagesAsync(),
+                AvailableCategories = await GetArticleCategoriesAsync()
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Edit article - POST
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditArticle(ArticleViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                    model.AvailableCategories = await GetArticleCategoriesAsync();
+                    return View(model);
+                }
+
+                var article = await _pazarAtlasiDbContext.Articles
+                    .Include(a => a.Translations)
+                    .FirstOrDefaultAsync(a => a.Id == model.Id && !a.IsDeleted);
+
+                if (article == null)
+                {
+                    return NotFound();
+                }
+
+                // Update article properties
+                article.CategoryId = model.CategoryId;
+                article.FeaturedImage = model.FeaturedImage;
+                article.VideoUrl = model.VideoUrl;
+                article.PublishedAt = model.PublishedAt;
+                article.IsFeatured = model.IsFeatured;
+                article.IsTrending = model.IsTrending;
+                article.ReadingTime = model.ReadingTime;
+                article.Tags = model.Tags;
+                article.MetaDescription = model.MetaDescription;
+                article.MetaKeywords = model.MetaKeywords;
+                article.SortOrder = model.SortOrder;
+                article.Status = model.Status;
+                article.UpdatedAt = DateTime.UtcNow;
+
+                // Update translations
+                if (model.Translations != null)
+                {
+                    // Remove existing translations
+                    _pazarAtlasiDbContext.ArticleTranslations.RemoveRange(article.Translations);
+
+                    // Add new translations
+                    foreach (var translationDto in model.Translations)
+                    {
+                        var translation = new ArticleTranslation
+                        {
+                            ArticleId = article.Id,
+                            LanguageId = translationDto.LanguageId,
+                            Title = translationDto.Title,
+                            Slug = translationDto.Slug,
+                            Summary = translationDto.Summary,
+                            Content = translationDto.Content,
+                            MetaTitle = translationDto.MetaTitle,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        };
+
+                        _pazarAtlasiDbContext.ArticleTranslations.Add(translation);
+                    }
+                }
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Article updated successfully!";
+                return RedirectToAction(nameof(Articles));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the article: " + ex.Message;
+                model.AvailableLanguages = await GetAvailableLanguagesAsync();
+                model.AvailableCategories = await GetArticleCategoriesAsync();
+                return View(model);
+            }
+        }
+
+        /// <summary>
+        /// Delete article
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteArticle(int id)
+        {
+            try
+            {
+                var article = await _pazarAtlasiDbContext.Articles
+                    .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+
+                if (article == null)
+                {
+                    return Json(new { success = false, message = "Article not found." });
+                }
+
+                // Soft delete
+                article.IsDeleted = true;
+                article.UpdatedAt = DateTime.UtcNow;
+
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Article deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get article categories
+        /// </summary>
+        private async Task<List<ArticleCategoryViewModel>> GetArticleCategoriesAsync()
+        {
+            return await _pazarAtlasiDbContext.ArticleCategories
+                .Include(c => c.Translations)
+                .Where(c => !c.IsDeleted && c.Status == Status.Active)
+                .Select(c => new ArticleCategoryViewModel
+                {
+                    Id = c.Id,
+                    ParentCategoryId = c.ParentCategoryId,
+                    Icon = c.Icon,
+                    Color = c.Color,
+                    SortOrder = c.SortOrder,
+                    Status = c.Status,
+                    Name = c.Translations.FirstOrDefault() != null ? c.Translations.FirstOrDefault()!.Name : $"Category {c.Id}",
+                    Translations = c.Translations.Select(t => new ArticleCategoryTranslationViewModel
+                    {
+                        Id = t.Id,
+                        ArticleCategoryId = t.ArticleCategoryId,
+                        LanguageId = t.LanguageId,
+                        Name = t.Name,
+                        Description = t.Description,
+                        Slug = t.Slug
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        #endregion
     }
 }
