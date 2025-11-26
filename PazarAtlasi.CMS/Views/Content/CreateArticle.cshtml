@@ -342,12 +342,20 @@
     
     <!-- Fix horizontal scroll issue -->
     <style>
-        body {
+        /* Aggressively hide all horizontal scrollbars */
+        html, body {
             overflow-x: hidden !important;
+            max-width: 100vw !important;
+        }
+        
+        /* Fix all containers */
+        * {
+            max-width: 100% !important;
         }
         
         .note-editor {
             max-width: 100% !important;
+            width: 100% !important;
         }
         
         .note-editable {
@@ -365,13 +373,60 @@
         }
         
         /* Fix sidebar overflow */
-        .lg\:col-span-1 {
+        .lg\:col-span-1, .lg\:col-span-2 {
             overflow-x: hidden !important;
         }
         
         /* Ensure all inputs don't overflow */
         input, textarea, select {
             max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Disable textarea resize handle */
+        textarea {
+            resize: none !important;
+        }
+        
+        /* Hide Summernote resize handle */
+        .note-resizebar {
+            display: none !important;
+        }
+        
+        /* Fix white space issues */
+        .space-y-6, .space-y-4, .space-y-3 {
+            overflow-x: hidden !important;
+        }
+        
+        /* Fix rounded containers */
+        .rounded-xl, .rounded-lg {
+            overflow-x: hidden !important;
+        }
+        
+        /* Fix main content area */
+        .main-content {
+            overflow-x: hidden !important;
+        }
+        
+        /* Fix container-fluid */
+        .container-fluid {
+            overflow-x: hidden !important;
+            max-width: 100% !important;
+        }
+        
+        /* Remove excessive height from main content */
+        .flex-1 {
+            min-height: auto !important;
+        }
+        
+        /* Fix page height */
+        .main-content > div {
+            min-height: auto !important;
+        }
+        
+        /* Remove min-height from body */
+        body, html {
+            min-height: auto !important;
         }
     </style>
     

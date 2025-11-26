@@ -721,7 +721,8 @@ body {
   transform: rotate(90deg);
 }
 
-/* Animation for skewed card background */
+/* Animation for skewed card background - DISABLED to fix diagonal white lines issue */
+/*
 @keyframes shimmer {
   0% {
     transform: skewX(-15deg) translateX(60%);
@@ -743,6 +744,7 @@ body {
   animation: shimmer 3s ease-in-out infinite alternate;
   z-index: 0;
 }
+*/
 
 /* Custom scrollbar for Webkit browsers */
 ::-webkit-scrollbar {
