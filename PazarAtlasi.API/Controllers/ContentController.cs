@@ -7,6 +7,7 @@ using PazarAtlasi.CMS.Application.Models.API.Response;
 using PazarAtlasi.CMS.Domain.Common;
 using PazarAtlasi.CMS.Persistence.Context;
 using System.Globalization;
+using System.Text.Json;
 
 namespace PazarAtlasi.API.Controllers
 {
@@ -789,5 +790,527 @@ namespace PazarAtlasi.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        #region Article Endpoints
+
+        /// <summary>
+        /// Get article by slug with full details
+        /// </summary>
+        /// <param name="slug">Article slug</param>
+        /// <param name="culture">Culture code</param>
+        /// <returns>Complete article data with category and related articles</returns>
+        [HttpGet("articles/{slug}")]
+        public async Task<ActionResult<ArticleResponse>> GetArticle(string slug, [FromQuery] string culture = "tr-TR")
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(slug))
+                {
+                    return BadRequest("Slug is required.");
+                }
+
+                // Get language by culture
+                var language = await _pazarAtlasiDbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == culture && !l.IsDeleted);
+
+                if (language == null)
+                {
+                    return BadRequest($"Language with culture '{culture}' not found.");
+                }
+
+                // Get article by slug with all related data
+                var article = await _pazarAtlasiDbContext.Articles
+                    .Include(a => a.Category)
+                        .ThenInclude(c => c.Translations.Where(ct => ct.LanguageId == language.Id))
+                    .Include(a => a.Translations.Where(t => t.LanguageId == language.Id))
+                    .FirstOrDefaultAsync(a => 
+                        a.Translations.Any(t => t.Slug.ToLower() == slug.ToLower() && t.LanguageId == language.Id) &&
+                        a.Status == Status.Active && 
+                        !a.IsDeleted);
+
+                if (article == null)
+                {
+                    return NotFound($"Article with slug '{slug}' not found.");
+                }
+
+                // Increment view count
+                article.ViewCount++;
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                var translation = article.Translations.FirstOrDefault();
+                var categoryTranslation = article.Category?.Translations.FirstOrDefault();
+
+                // Parse tags from JSON
+                var tags = new List<string>();
+                if (!string.IsNullOrEmpty(article.Tags))
+                {
+                    try
+                    {
+                        tags = JsonSerializer.Deserialize<List<string>>(article.Tags) ?? new List<string>();
+                    }
+                    catch { }
+                }
+
+                // Get related articles (same category, excluding current)
+                var relatedArticles = await GetRelatedArticles(article.Id, article.CategoryId, language.Id, 4);
+
+                var response = new ArticleResponse
+                {
+                    Id = article.Id,
+                    Title = translation?.Title ?? string.Empty,
+                    Slug = translation?.Slug ?? string.Empty,
+                    Summary = translation?.Summary,
+                    Content = translation?.Content,
+                    FeaturedImage = article.FeaturedImage,
+                    VideoUrl = article.VideoUrl,
+                    PublishedAt = article.PublishedAt,
+                    ViewCount = article.ViewCount,
+                    LikeCount = article.LikeCount,
+                    IsFeatured = article.IsFeatured,
+                    IsTrending = article.IsTrending,
+                    ReadingTime = article.ReadingTime,
+                    Tags = tags,
+                    Status = article.Status,
+                    MetaTitle = translation?.MetaTitle,
+                    MetaDescription = article.MetaDescription,
+                    MetaKeywords = article.MetaKeywords,
+                    Category = article.Category != null ? new ArticleCategoryResponse
+                    {
+                        Id = article.Category.Id,
+                        Name = categoryTranslation?.Name ?? string.Empty,
+                        Description = categoryTranslation?.Description,
+                        Icon = article.Category.Icon,
+                        Color = article.Category.Color,
+                        ParentCategoryId = article.Category.ParentCategoryId
+                    } : null,
+                    RelatedArticles = relatedArticles,
+                    CreatedAt = article.CreatedAt,
+                    UpdatedAt = article.UpdatedAt
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Get article list with filtering and pagination
+        /// </summary>
+        /// <param name="culture">Culture code</param>
+        /// <param name="page">Page number</param>
+        /// <param name="pageSize">Page size</param>
+        /// <param name="categoryId">Filter by category ID</param>
+        /// <param name="isFeatured">Filter by featured</param>
+        /// <param name="isTrending">Filter by trending</param>
+        /// <param name="searchTerm">Search term</param>
+        /// <param name="sortBy">Sort by (latest, popular, trending, oldest)</param>
+        /// <returns>Paginated article list</returns>
+        [HttpGet("articles")]
+        public async Task<ActionResult<ArticleListResponse>> GetArticleList(
+            [FromQuery] string culture = "tr-TR",
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 12,
+            [FromQuery] int? categoryId = null,
+            [FromQuery] bool? isFeatured = null,
+            [FromQuery] bool? isTrending = null,
+            [FromQuery] string? searchTerm = null,
+            [FromQuery] string sortBy = "latest")
+        {
+            try
+            {
+                // Get language by culture
+                var language = await _pazarAtlasiDbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == culture && !l.IsDeleted);
+
+                if (language == null)
+                {
+                    return BadRequest($"Language with culture '{culture}' not found.");
+                }
+
+                // Build query
+                var articlesQuery = _pazarAtlasiDbContext.Articles
+                    .Include(a => a.Category)
+                        .ThenInclude(c => c.Translations.Where(ct => ct.LanguageId == language.Id))
+                    .Include(a => a.Translations.Where(t => t.LanguageId == language.Id))
+                    .Where(a => a.Status == Status.Active && !a.IsDeleted);
+
+                // Apply filters
+                if (categoryId.HasValue)
+                {
+                    articlesQuery = articlesQuery.Where(a => a.CategoryId == categoryId.Value);
+                }
+
+                if (isFeatured.HasValue)
+                {
+                    articlesQuery = articlesQuery.Where(a => a.IsFeatured == isFeatured.Value);
+                }
+
+                if (isTrending.HasValue)
+                {
+                    articlesQuery = articlesQuery.Where(a => a.IsTrending == isTrending.Value);
+                }
+
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    var search = searchTerm.ToLower();
+                    articlesQuery = articlesQuery.Where(a => 
+                        a.Translations.Any(t => 
+                            t.Title.ToLower().Contains(search) || 
+                            (t.Summary != null && t.Summary.ToLower().Contains(search)) ||
+                            (t.Content != null && t.Content.ToLower().Contains(search))));
+                }
+
+                // Apply sorting
+                articlesQuery = sortBy.ToLower() switch
+                {
+                    "popular" => articlesQuery.OrderByDescending(a => a.ViewCount),
+                    "trending" => articlesQuery.OrderByDescending(a => a.IsTrending).ThenByDescending(a => a.ViewCount),
+                    "oldest" => articlesQuery.OrderBy(a => a.PublishedAt ?? a.CreatedAt),
+                    _ => articlesQuery.OrderByDescending(a => a.PublishedAt ?? a.CreatedAt) // latest (default)
+                };
+
+                // Get total count
+                var totalCount = await articlesQuery.CountAsync();
+
+                // Apply pagination
+                var articles = await articlesQuery
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(a => new ArticleListItemResponse
+                    {
+                        Id = a.Id,
+                        Title = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Title : string.Empty,
+                        Slug = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Slug : string.Empty,
+                        Summary = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Summary : null,
+                        FeaturedImage = a.FeaturedImage,
+                        PublishedAt = a.PublishedAt,
+                        ViewCount = a.ViewCount,
+                        LikeCount = a.LikeCount,
+                        IsFeatured = a.IsFeatured,
+                        IsTrending = a.IsTrending,
+                        ReadingTime = a.ReadingTime,
+                        CategoryId = a.CategoryId,
+                        CategoryName = a.Category != null && a.Category.Translations.Any() 
+                            ? a.Category.Translations.FirstOrDefault()!.Name 
+                            : null,
+                        CategoryColor = a.Category != null ? a.Category.Color : null,
+                        CategoryIcon = a.Category != null ? a.Category.Icon : null
+                    })
+                    .ToListAsync();
+
+                var response = new ArticleListResponse
+                {
+                    Articles = articles,
+                    TotalCount = totalCount,
+                    PageNumber = page,
+                    PageSize = pageSize
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Get featured articles
+        /// </summary>
+        /// <param name="culture">Culture code</param>
+        /// <param name="count">Number of articles to return</param>
+        /// <returns>List of featured articles</returns>
+        [HttpGet("articles/featured")]
+        public async Task<ActionResult<List<ArticleListItemResponse>>> GetFeaturedArticles(
+            [FromQuery] string culture = "tr-TR", 
+            [FromQuery] int count = 5)
+        {
+            try
+            {
+                var language = await _pazarAtlasiDbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == culture && !l.IsDeleted);
+
+                if (language == null)
+                {
+                    return BadRequest($"Language with culture '{culture}' not found.");
+                }
+
+                var articles = await _pazarAtlasiDbContext.Articles
+                    .Include(a => a.Category)
+                        .ThenInclude(c => c.Translations.Where(ct => ct.LanguageId == language.Id))
+                    .Include(a => a.Translations.Where(t => t.LanguageId == language.Id))
+                    .Where(a => a.IsFeatured && a.Status == Status.Active && !a.IsDeleted)
+                    .OrderByDescending(a => a.PublishedAt ?? a.CreatedAt)
+                    .Take(count)
+                    .Select(a => new ArticleListItemResponse
+                    {
+                        Id = a.Id,
+                        Title = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Title : string.Empty,
+                        Slug = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Slug : string.Empty,
+                        Summary = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Summary : null,
+                        FeaturedImage = a.FeaturedImage,
+                        PublishedAt = a.PublishedAt,
+                        ViewCount = a.ViewCount,
+                        LikeCount = a.LikeCount,
+                        IsFeatured = a.IsFeatured,
+                        IsTrending = a.IsTrending,
+                        ReadingTime = a.ReadingTime,
+                        CategoryId = a.CategoryId,
+                        CategoryName = a.Category != null && a.Category.Translations.Any() 
+                            ? a.Category.Translations.FirstOrDefault()!.Name 
+                            : null,
+                        CategoryColor = a.Category != null ? a.Category.Color : null,
+                        CategoryIcon = a.Category != null ? a.Category.Icon : null
+                    })
+                    .ToListAsync();
+
+                return Ok(articles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Get trending articles
+        /// </summary>
+        /// <param name="culture">Culture code</param>
+        /// <param name="count">Number of articles to return</param>
+        /// <returns>List of trending articles</returns>
+        [HttpGet("articles/trending")]
+        public async Task<ActionResult<List<ArticleListItemResponse>>> GetTrendingArticles(
+            [FromQuery] string culture = "tr-TR", 
+            [FromQuery] int count = 5)
+        {
+            try
+            {
+                var language = await _pazarAtlasiDbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == culture && !l.IsDeleted);
+
+                if (language == null)
+                {
+                    return BadRequest($"Language with culture '{culture}' not found.");
+                }
+
+                var articles = await _pazarAtlasiDbContext.Articles
+                    .Include(a => a.Category)
+                        .ThenInclude(c => c.Translations.Where(ct => ct.LanguageId == language.Id))
+                    .Include(a => a.Translations.Where(t => t.LanguageId == language.Id))
+                    .Where(a => a.IsTrending && a.Status == Status.Active && !a.IsDeleted)
+                    .OrderByDescending(a => a.ViewCount)
+                    .ThenByDescending(a => a.PublishedAt ?? a.CreatedAt)
+                    .Take(count)
+                    .Select(a => new ArticleListItemResponse
+                    {
+                        Id = a.Id,
+                        Title = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Title : string.Empty,
+                        Slug = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Slug : string.Empty,
+                        Summary = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Summary : null,
+                        FeaturedImage = a.FeaturedImage,
+                        PublishedAt = a.PublishedAt,
+                        ViewCount = a.ViewCount,
+                        LikeCount = a.LikeCount,
+                        IsFeatured = a.IsFeatured,
+                        IsTrending = a.IsTrending,
+                        ReadingTime = a.ReadingTime,
+                        CategoryId = a.CategoryId,
+                        CategoryName = a.Category != null && a.Category.Translations.Any() 
+                            ? a.Category.Translations.FirstOrDefault()!.Name 
+                            : null,
+                        CategoryColor = a.Category != null ? a.Category.Color : null,
+                        CategoryIcon = a.Category != null ? a.Category.Icon : null
+                    })
+                    .ToListAsync();
+
+                return Ok(articles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Get article categories with hierarchical structure
+        /// </summary>
+        /// <param name="query">Category query</param>
+        /// <returns>List of categories with optional article counts</returns>
+        [HttpGet("article-categories")]
+        public async Task<ActionResult<ArticleCategoryListResponse>> GetArticleCategories([FromQuery] ArticleCategoryQuery query)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var language = await _pazarAtlasiDbContext.Languages
+                    .FirstOrDefaultAsync(l => l.Code == query.Culture && !l.IsDeleted);
+
+                if (language == null)
+                {
+                    return BadRequest($"Language with culture '{query.Culture}' not found.");
+                }
+
+                var categoriesQuery = _pazarAtlasiDbContext.ArticleCategories
+                    .Include(c => c.Translations.Where(t => t.LanguageId == language.Id))
+                    .Where(c => c.Status == Status.Active && !c.IsDeleted);
+
+                if (query.IncludeChildren)
+                {
+                    categoriesQuery = categoriesQuery.Include(c => c.ChildCategories
+                        .Where(cc => cc.Status == Status.Active && !cc.IsDeleted))
+                        .ThenInclude(cc => cc.Translations.Where(t => t.LanguageId == language.Id));
+                }
+
+                var categories = await categoriesQuery
+                    .OrderBy(c => c.SortOrder)
+                    .ToListAsync();
+
+                var categoryResponses = new List<ArticleCategoryResponse>();
+
+                foreach (var category in categories.Where(c => c.ParentCategoryId == null))
+                {
+                    var categoryResponse = await BuildArticleCategoryResponse(category, language.Id, query.IncludeArticleCount, query.IncludeChildren);
+                    categoryResponses.Add(categoryResponse);
+                }
+
+                var response = new ArticleCategoryListResponse
+                {
+                    Categories = categoryResponses
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Like an article
+        /// </summary>
+        /// <param name="id">Article ID</param>
+        /// <returns>Updated like count</returns>
+        [HttpPost("article/{id}/like")]
+        public async Task<ActionResult<int>> LikeArticle(int id)
+        {
+            try
+            {
+                var article = await _pazarAtlasiDbContext.Articles
+                    .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+
+                if (article == null)
+                {
+                    return NotFound($"Article with ID '{id}' not found.");
+                }
+
+                article.LikeCount++;
+                await _pazarAtlasiDbContext.SaveChangesAsync();
+
+                return Ok(article.LikeCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Article Helper Methods
+
+        /// <summary>
+        /// Get related articles based on category
+        /// </summary>
+        private async Task<List<ArticleListItemResponse>> GetRelatedArticles(int currentArticleId, int? categoryId, int languageId, int count)
+        {
+            if (!categoryId.HasValue)
+            {
+                return new List<ArticleListItemResponse>();
+            }
+
+            var relatedArticles = await _pazarAtlasiDbContext.Articles
+                .Include(a => a.Category)
+                    .ThenInclude(c => c.Translations.Where(ct => ct.LanguageId == languageId))
+                .Include(a => a.Translations.Where(t => t.LanguageId == languageId))
+                .Where(a => 
+                    a.CategoryId == categoryId && 
+                    a.Id != currentArticleId && 
+                    a.Status == Status.Active && 
+                    !a.IsDeleted)
+                .OrderByDescending(a => a.ViewCount)
+                .Take(count)
+                .Select(a => new ArticleListItemResponse
+                {
+                    Id = a.Id,
+                    Title = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Title : string.Empty,
+                    Slug = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Slug : string.Empty,
+                    Summary = a.Translations.FirstOrDefault() != null ? a.Translations.FirstOrDefault()!.Summary : null,
+                    FeaturedImage = a.FeaturedImage,
+                    PublishedAt = a.PublishedAt,
+                    ViewCount = a.ViewCount,
+                    LikeCount = a.LikeCount,
+                    IsFeatured = a.IsFeatured,
+                    IsTrending = a.IsTrending,
+                    ReadingTime = a.ReadingTime,
+                    CategoryId = a.CategoryId,
+                    CategoryName = a.Category != null && a.Category.Translations.Any() 
+                        ? a.Category.Translations.FirstOrDefault()!.Name 
+                        : null,
+                    CategoryColor = a.Category != null ? a.Category.Color : null,
+                    CategoryIcon = a.Category != null ? a.Category.Icon : null
+                })
+                .ToListAsync();
+
+            return relatedArticles;
+        }
+
+        /// <summary>
+        /// Build category response with children
+        /// </summary>
+        private async Task<ArticleCategoryResponse> BuildArticleCategoryResponse(
+            PazarAtlasi.CMS.Domain.Entities.Content.ArticleCategory category, 
+            int languageId, 
+            bool includeArticleCount, 
+            bool includeChildren)
+        {
+            var translation = category.Translations.FirstOrDefault();
+
+            var response = new ArticleCategoryResponse
+            {
+                Id = category.Id,
+                Name = translation?.Name ?? string.Empty,
+                Description = translation?.Description,
+                Icon = category.Icon,
+                Color = category.Color,
+                ParentCategoryId = category.ParentCategoryId
+            };
+
+            if (includeArticleCount)
+            {
+                response.ArticleCount = await _pazarAtlasiDbContext.Articles
+                    .CountAsync(a => a.CategoryId == category.Id && a.Status == Status.Active && !a.IsDeleted);
+            }
+
+            if (includeChildren && category.ChildCategories.Any())
+            {
+                foreach (var child in category.ChildCategories.OrderBy(c => c.SortOrder))
+                {
+                    var childResponse = await BuildArticleCategoryResponse(child, languageId, includeArticleCount, false);
+                    response.ChildCategories.Add(childResponse);
+                }
+            }
+
+            return response;
+        }
+
+        #endregion
     }
 }

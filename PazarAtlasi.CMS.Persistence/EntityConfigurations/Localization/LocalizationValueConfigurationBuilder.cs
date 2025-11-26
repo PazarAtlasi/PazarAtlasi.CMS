@@ -865,6 +865,164 @@ namespace PazarAtlasi.CMS.Persistence.EntityConfigurations.Localization
                 });
             }
 
+            // Article Management keys - Turkish
+            var articleKeysTr = new Dictionary<string, string>
+            {
+                { "Articles.ManageDescription", "Haber ve blog yazılarınızı yönetin" },
+                { "Articles.CreateNew", "Yeni Haber Oluştur" },
+                { "Articles.Edit", "Haber Düzenle" },
+                { "Articles.SearchPlaceholder", "Haber ara..." },
+                { "Articles.NoArticles", "Henüz haber yok" },
+                { "Articles.NoArticlesDescription", "Henüz hiç haber eklenmemiş. İlk haberinizi oluşturun!" },
+                { "Articles.CreateFirst", "İlk Haberi Oluştur" },
+                { "Articles.DeleteConfirmation", "Bu haberi silmek istediğinizden emin misiniz?" },
+                { "Articles.FormDescription", "Haber bilgilerini girin ve çoklu dil desteği ile içerik oluşturun" },
+                { "Articles.Content", "İçerik" },
+                { "Articles.Title", "Başlık" },
+                { "Articles.TitlePlaceholder", "Haber başlığını girin" },
+                { "Articles.TitleRequired", "En az bir dilde başlık girmelisiniz" },
+                { "Articles.Slug", "URL Slug" },
+                { "Articles.SlugPlaceholder", "url-slug" },
+                { "Articles.SlugRequired", "En az bir dilde slug girmelisiniz" },
+                { "Articles.Summary", "Özet" },
+                { "Articles.SummaryPlaceholder", "Kısa özet girin (maksimum 500 karakter)" },
+                { "Articles.SummaryHelp", "Haber listelerinde gösterilecek kısa özet" },
+                { "Articles.ContentBody", "İçerik" },
+                { "Articles.ContentPlaceholder", "Haber içeriğini girin (HTML desteklenir)" },
+                { "Articles.ContentHelp", "HTML etiketleri kullanabilirsiniz" },
+                { "Articles.MetaTitle", "Meta Başlık" },
+                { "Articles.MetaTitlePlaceholder", "SEO için meta başlık" },
+                { "Articles.PublishSettings", "Yayın Ayarları" },
+                { "Articles.PublishDate", "Yayın Tarihi" },
+                { "Articles.ReadingTime", "Okuma Süresi" },
+                { "Articles.Minutes", "dakika" },
+                { "Articles.SelectCategory", "Kategori Seçin" },
+                { "Articles.FeaturedImage", "Öne Çıkan Görsel" },
+                { "Articles.ImageUrlPlaceholder", "Görsel URL'si girin" },
+                { "Articles.VideoUrl", "Video URL" },
+                { "Articles.VideoUrlPlaceholder", "YouTube veya Vimeo URL'si" },
+                { "Articles.Options", "Seçenekler" },
+                { "Articles.IsFeatured", "Öne Çıkan" },
+                { "Articles.IsTrending", "Trend" },
+                { "Articles.SEO", "SEO Ayarları" },
+                { "Articles.MetaDescription", "Meta Açıklama" },
+                { "Articles.MetaDescriptionPlaceholder", "SEO için meta açıklama (maksimum 500 karakter)" },
+                { "Articles.MetaKeywords", "Meta Anahtar Kelimeler" },
+                { "Articles.MetaKeywordsPlaceholder", "Virgülle ayrılmış anahtar kelimeler" },
+                { "Articles.Tags", "Etiketler" },
+                { "Articles.TagsHelp", "JSON formatında etiketler: [\"etiket1\",\"etiket2\"]" },
+                { "Articles.SaveDraft", "Taslak Olarak Kaydet" },
+                { "Articles.Update", "Güncelle" },
+                { "Articles.Publish", "Yayınla" },
+                { "Common.Category", "Kategori" },
+                { "Common.AllCategories", "Tüm Kategoriler" },
+                { "Common.AllStatuses", "Tüm Durumlar" },
+                { "Common.Status", "Durum" },
+                { "Common.SortOrder", "Sıralama" },
+                { "Common.YesDelete", "Evet, Sil" },
+                { "Common.Deleted", "Silindi" },
+                { "Common.ErrorOccurred", "Bir hata oluştu" },
+                { "Status.Active", "Aktif" },
+                { "Status.Draft", "Taslak" },
+                { "Status.Pending", "Beklemede" }
+            };
+
+            // Article Management keys - English
+            var articleKeysEn = new Dictionary<string, string>
+            {
+                { "Articles.ManageDescription", "Manage your news articles and blog posts" },
+                { "Articles.CreateNew", "Create New Article" },
+                { "Articles.Edit", "Edit Article" },
+                { "Articles.SearchPlaceholder", "Search articles..." },
+                { "Articles.NoArticles", "No articles yet" },
+                { "Articles.NoArticlesDescription", "No articles have been added yet. Create your first article!" },
+                { "Articles.CreateFirst", "Create First Article" },
+                { "Articles.DeleteConfirmation", "Are you sure you want to delete this article?" },
+                { "Articles.FormDescription", "Enter article information and create content with multi-language support" },
+                { "Articles.Content", "Content" },
+                { "Articles.Title", "Title" },
+                { "Articles.TitlePlaceholder", "Enter article title" },
+                { "Articles.TitleRequired", "You must enter a title in at least one language" },
+                { "Articles.Slug", "URL Slug" },
+                { "Articles.SlugPlaceholder", "url-slug" },
+                { "Articles.SlugRequired", "You must enter a slug in at least one language" },
+                { "Articles.Summary", "Summary" },
+                { "Articles.SummaryPlaceholder", "Enter short summary (max 500 characters)" },
+                { "Articles.SummaryHelp", "Short summary to be displayed in article lists" },
+                { "Articles.ContentBody", "Content" },
+                { "Articles.ContentPlaceholder", "Enter article content (HTML supported)" },
+                { "Articles.ContentHelp", "You can use HTML tags" },
+                { "Articles.MetaTitle", "Meta Title" },
+                { "Articles.MetaTitlePlaceholder", "Meta title for SEO" },
+                { "Articles.PublishSettings", "Publish Settings" },
+                { "Articles.PublishDate", "Publish Date" },
+                { "Articles.ReadingTime", "Reading Time" },
+                { "Articles.Minutes", "minutes" },
+                { "Articles.SelectCategory", "Select Category" },
+                { "Articles.FeaturedImage", "Featured Image" },
+                { "Articles.ImageUrlPlaceholder", "Enter image URL" },
+                { "Articles.VideoUrl", "Video URL" },
+                { "Articles.VideoUrlPlaceholder", "YouTube or Vimeo URL" },
+                { "Articles.Options", "Options" },
+                { "Articles.IsFeatured", "Featured" },
+                { "Articles.IsTrending", "Trending" },
+                { "Articles.SEO", "SEO Settings" },
+                { "Articles.MetaDescription", "Meta Description" },
+                { "Articles.MetaDescriptionPlaceholder", "Meta description for SEO (max 500 characters)" },
+                { "Articles.MetaKeywords", "Meta Keywords" },
+                { "Articles.MetaKeywordsPlaceholder", "Comma-separated keywords" },
+                { "Articles.Tags", "Tags" },
+                { "Articles.TagsHelp", "Tags in JSON format: [\"tag1\",\"tag2\"]" },
+                { "Articles.SaveDraft", "Save as Draft" },
+                { "Articles.Update", "Update" },
+                { "Articles.Publish", "Publish" },
+                { "Common.Category", "Category" },
+                { "Common.AllCategories", "All Categories" },
+                { "Common.AllStatuses", "All Statuses" },
+                { "Common.Status", "Status" },
+                { "Common.SortOrder", "Sort Order" },
+                { "Common.YesDelete", "Yes, Delete" },
+                { "Common.Deleted", "Deleted" },
+                { "Common.ErrorOccurred", "An error occurred" },
+                { "Status.Active", "Active" },
+                { "Status.Draft", "Draft" },
+                { "Status.Pending", "Pending" }
+            };
+
+            // Add Article Management Turkish keys
+            foreach (var kvp in articleKeysTr)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 1, // Turkish
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"Turkish translation for {kvp.Key}",
+                    Category = "Articles",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
+            // Add Article Management English keys
+            foreach (var kvp in articleKeysEn)
+            {
+                seedData.Add(new LocalizationValue
+                {
+                    Id = currentId++,
+                    LanguageId = 2, // English
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                    Description = $"English translation for {kvp.Key}",
+                    Category = "Articles",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                });
+            }
+
             builder.HasData(seedData);
             // Seed data will be added via data seeder service instead of migration
             // This prevents conflicts with existing data
