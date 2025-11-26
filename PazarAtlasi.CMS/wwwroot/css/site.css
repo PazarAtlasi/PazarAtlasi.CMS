@@ -52,6 +52,7 @@ body {
 .sidebar {
   position: fixed;
   top: 0;
+  border-bottom-left-radius: 1rem !important;
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
@@ -83,10 +84,16 @@ body {
   width: var(--sidebar-collapsed-width) !important;
 }
 
+/* Sidebar bottom-left rounded corner */
+#sidebar {
+  border-bottom-left-radius: 1rem !important;
+}
+
 /* Hover state for sidebar - pure CSS solution */
 #sidebar:hover {
   width: 250px !important;
   z-index: 2000;
+  border-bottom-left-radius: 1rem !important;
 }
 
 /* Show text when hovering - direct selector with !important */
