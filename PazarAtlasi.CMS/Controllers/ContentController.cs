@@ -479,12 +479,6 @@ namespace PazarAtlasi.CMS.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult WebUrl()
-        {
-            return View();
-        }
-
         #region Section Item Management
 
         /// <summary>
