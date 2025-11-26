@@ -3,6 +3,25 @@
     ViewData["Title"] = "Duyuru Düzenle";
 }
 
+<!-- DEBUG: Model değerlerini kontrol et -->
+@if (Model == null)
+{
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <strong>HATA:</strong> Model null!
+    </div>
+}
+else
+{
+    <!-- DEBUG INFO - Geliştirme tamamlandıktan sonra silinecek -->
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4 text-sm">
+        <strong>DEBUG:</strong> 
+        Model.Id = @Model.Id, 
+        Translations Count = @Model.Translations?.Count, 
+        AvailableLanguages Count = @Model.AvailableLanguages?.Count,
+        CoverImage = @(string.IsNullOrEmpty(Model.CoverImage) ? "BOŞ" : "DOLU")
+    </div>
+}
+
 <div class="announcement-edit">
     <div class="flex flex-wrap items-center mb-8">
         <div class="w-full lg:w-2/3 mb-4 lg:mb-0">
